@@ -1,3 +1,10 @@
+# 1.0.0 (2026-05-31)
+
+
+### Features
+
+* **content:** statement collection schema + placeholder fixture ([a4fea9d](https://github.com/auditmos/ogsfrompoly-lp/commit/a4fea9d36919ee85f8f28994ece18c232e409b75)), closes [#2](https://github.com/auditmos/ogsfrompoly-lp/issues/2)
+
 # [1.1.0](https://github.com/auditmos/astro-on-cf/compare/v1.0.0...v1.1.0) (2026-05-25)
 
 
