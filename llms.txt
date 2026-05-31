@@ -1,43 +1,57 @@
-# tstack-on-cf
+# ogsfrompoly-lp
 
-> TanStack Start frontend + Hono API backend on Cloudflare Workers (single-app, no monorepo).
+> Source for ogsfrompoly.com — the public landing page for the poly-track Polymarket skilled-trader detection project. Astro (SSR) on Cloudflare Workers; Tailwind v4; Astro content collections for markdown.
+
+This file is the **developer / agent index for the repository itself**. The public-facing `/llms.txt` served at `https://ogsfrompoly.com/llms.txt` is a different artifact — generated at build time from the published content collections by the Feed Generators module (issue #4) — and lists every published `.md` URL for LLM consumers of the site.
 
 ## Project
 
-- [Project overview](AGENTS.md): Stack, project structure, scripts, conventions
+- [Project overview (AGENTS.md / CLAUDE.md)](AGENTS.md): stack, project structure, scripts, conventions, disclosure policy
+- [README](README.md): human-facing project intro + quick start
+- [PRD #1](https://github.com/auditmos/ogsfrompoly-lp/issues/1): scope, user stories, validation strategy
+- [Implementation plan](plans/ogsfrompoly-lp.md): phased vertical slices and architectural decisions
+- [Open v1 issues](https://github.com/auditmos/ogsfrompoly-lp/issues?q=is%3Aopen+label%3Av1): grabbable slices for v1 launch
+- [Open v2 issues](https://github.com/auditmos/ogsfrompoly-lp/issues?q=is%3Aopen+label%3Av2): deferred until v1 ships
 
-## Rules
+## Architectural decisions (load-bearing)
+
+- **Content storage**: markdown in `src/content/` via Astro content collections. No CMS, no submodule, no runtime fetch from upstream.
+- **Content schema = cross-repo contract**: Zod frontmatter is the stable interface between this repo and the future poly-track CLI producer. Breaking changes require a `SCHEMA_VERSION` bump.
+- **Dual-format invariant**: every content entry must resolve at both `/<collection>/<slug>` (HTML) and `/<collection>/<slug>.md` (`text/markdown`). No per-route boilerplate.
+- **Distribution model**: RSS + `.md` feed only. No email capture, no newsletter, no comments.
+- **Disclosure policy**: methodology + aggregate results only. Wallets appear only as truncated/hashed IDs (e.g. `wallet_a3f…`). Live alpha never published.
+- **Hosting**: `ogsfrompoly.com` via Cloudflare custom domain (zone already active); cookie-less Cloudflare Web Analytics.
+
+## Rules (auto-activated by file context)
 
 ### General
-- [General TypeScript & Cloudflare](.claude/rules/general.md): Type safety, error handling, naming, array access, bug fix workflow
-- [Cloudflare Deployment](.claude/rules/cloudflare-deployment.md): Hostname separation, custom domains, SSL/TLS, Vite plugin environments
+- [General TypeScript & Cloudflare](.claude/rules/general.md): type safety, error handling, naming, array access, bug fix workflow
+- [Cloudflare Deployment](.claude/rules/cloudflare-deployment.md): custom domains, SSL/TLS, HTTP→HTTPS, vite plugin environments
 - [Error Handling](.claude/rules/error-handling.md): Drizzle error unwrapping, Result pattern, AppError flow
-- [Atomic Imports](.claude/rules/atomic-imports.md): Combine import + usage in one Edit (PostToolUse cleanup)
-- [Deep Modules](.claude/rules/deep-modules.md): Narrow interface, hidden implementation; module boundaries
+- [Atomic Imports](.claude/rules/atomic-imports.md): combine import + usage in one Edit (PostToolUse cleanup)
+- [Deep Modules](.claude/rules/deep-modules.md): narrow interface, hidden implementation; module boundaries
 
 ### api
-- [Hono](.claude/rules/api/hono.md): Handler/service/query pattern, middleware chain, Result type
-- [Cloudflare Workers](.claude/rules/api/cloudflare-workers.md): Worker patterns, bindings, WorkerEntrypoint
-
-### db
-- [Drizzle ORM](.claude/rules/db/drizzle.md): Schema definitions, migrations, query patterns
-- [Zod Validation](.claude/rules/db/zod.md): Schema naming conventions, request/response patterns
-- [Neon Postgres](.claude/rules/db/neon.md): Serverless DB connection patterns
+- [Astro Endpoints](.claude/rules/api/astro-endpoints.md): handler shape, Zod validation at the boundary, Response conventions
+- [Cloudflare Workers](.claude/rules/api/cloudflare-workers.md): worker patterns, bindings, env access
 
 ### frontend
-- [TanStack](.claude/rules/frontend/tanstack.md): Router, Query, server functions, SSR patterns
-- [React](.claude/rules/frontend/react.md): Component patterns, hooks
-- [UI](.claude/rules/frontend/ui.md): Component library patterns
-- [shadcn/tweakcn](.claude/rules/frontend/shadcn-tweakcn.md): UI primitives
-- [Forms](.claude/rules/frontend/form-patterns.md): Form validation and submission
+- [Astro](.claude/rules/frontend/astro.md): pages, layouts, components, server-vs-client islands, content collections
+- [Tailwind v4](.claude/rules/frontend/tailwind-v4.md): `@theme` tokens, `@utility`, no JS config file
 
 ## Agents
 
-- [Design Doc Writer](.claude/agents/dd-w.md): Create design documents and technical specifications
-- [Design Doc Implementer](.claude/agents/dd-i.md): Implement features from existing design documents
-- [MVP Advisor](.claude/agents/mvp-e.md): Ensure speed-over-perfection principles
+- [Design Doc Writer (dd-w)](.claude/agents/dd-w.md): create design documents and technical specifications
+- [Design Doc Implementer (dd-i)](.claude/agents/dd-i.md): implement features from existing design documents
+- [MVP Advisor (mvp-e)](.claude/agents/mvp-e.md): ensure speed-over-perfection principles
 
 ## Commands
 
-- [Implement](.claude/commands/implement.md): Implement a design doc
-- [Verify Design Docs](.claude/commands/verify-dd.md): Review design docs for implementation readiness
+- [Implement](.claude/commands/implement.md): implement a design doc
+- [Verify Design Docs](.claude/commands/verify-dd.md): review design docs for implementation readiness
+
+## Brand reference
+
+Voice and aesthetic anchor: <https://hermes-agent.nousresearch.com/> — bold display type, terminal/install-snippet moments, opinionated function-forward copy.
+
+Hero claim (locked): *"We measure who is actually skilled on Polymarket — and we show our work, weekly."*
