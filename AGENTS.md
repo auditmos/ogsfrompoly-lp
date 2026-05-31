@@ -90,9 +90,9 @@ Hero claim (locked): *"We measure who is actually skilled on Polymarket — and 
 
 Access bindings through `import { env } from "cloudflare:workers"` — this is the only supported pattern in Astro v6 + `@astrojs/cloudflare` v13 (the old `Astro.locals.runtime.env` was removed). `env` is typed against `worker-configuration.d.ts`. After editing `wrangler.jsonc` bindings, run `pnpm cf-typegen`.
 
-`wrangler.jsonc` ships with three env blocks (`dev`, `staging`, `production`) — each gets its own Worker name. Deploy a specific env with `wrangler deploy --env <name>`. Production deploys to `ogsfrompoly.com` via `custom_domain: true` (zone already active in Cloudflare).
+`wrangler.jsonc` ships with three env blocks (`dev`, `staging`, `production`) — each gets its own Worker name. Deploy a specific env with `pnpm deploy:<env>` (which sets `CLOUDFLARE_ENV=<env>` at build time so the Astro adapter flattens the right env into the [redirected deploy config](https://developers.cloudflare.com/workers/wrangler/configuration/#generated-wrangler-configuration)). `pnpm deploy` aliases `deploy:production`. Production deploys to `ogsfrompoly.com` via `custom_domain: true` (zone already active in Cloudflare).
 
-Per-env secrets live in `.dev.vars` / `.staging.vars` / `.production.vars` locally (never committed) and as Cloudflare secrets in production (`wrangler secret put`).
+Per-env secrets live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production` locally (never committed) and as Cloudflare secrets in production (`wrangler secret put`). This matches the [Wrangler convention](https://developers.cloudflare.com/workers/configuration/secrets/) — when `CLOUDFLARE_ENV=<name>` is set, `.dev.vars.<name>` is loaded ahead of `.dev.vars`.
 
 ## Verification
 

@@ -111,7 +111,7 @@ The same four are required by CI on every PR (see issue [#5](https://github.com/
 - SSL/TLS mode must be Full or Full (strict), never Flexible.
 - HTTP → HTTPS via the "Always Use HTTPS" toggle, never the "Redirect from HTTP to HTTPS" rule (causes self-redirect loops on Worker custom domains).
 - Access bindings via `import { env } from "cloudflare:workers"` — `Astro.locals.runtime` was removed in Astro v6.
-- Per-env secrets live in `.dev.vars` / `.staging.vars` / `.production.vars` locally (never committed) and as Cloudflare secrets in production.
+- Per-env secrets live in `.dev.vars` / `.dev.vars.staging` / `.dev.vars.production` locally (never committed; wrangler loads `.dev.vars.<env>` ahead of `.dev.vars` when `CLOUDFLARE_ENV=<env>` is set) and as Cloudflare secrets in production.
 
 ## Agent-assisted development
 

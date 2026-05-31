@@ -1,4 +1,6 @@
 ---
+import { env } from "cloudflare:workers";
+import { buildBeaconAttributes } from "@/lib/analytics/cloudflare-beacon";
 import "@/styles/globals.css";
 
 interface Props {
@@ -7,6 +9,7 @@ interface Props {
 }
 
 const { title = "astro-on-cf", description = "Astro on Cloudflare Workers" } = Astro.props;
+const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
 ---
 
 <!doctype html>
@@ -19,6 +22,7 @@ const { title = "astro-on-cf", description = "Astro on Cloudflare Workers" } = A
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		{beacon && <script is:inline src={beacon.src} defer data-cf-beacon={beacon.dataCfBeacon}></script>}
 	</head>
 	<body class="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
 		<slot />

@@ -13,26 +13,39 @@
 		"head_sampling_rate": 1
 	},
 	"vars": {
-		"CLOUDFLARE_ENV": "dev"
+		"CLOUDFLARE_ENV": "dev",
+		"CLOUDFLARE_WEB_ANALYTICS_TOKEN": ""
 	},
 	"env": {
 		"dev": {
 			"name": "ogsfrompoly-lp-dev",
 			"vars": {
-				"CLOUDFLARE_ENV": "dev"
+				"CLOUDFLARE_ENV": "dev",
+				"CLOUDFLARE_WEB_ANALYTICS_TOKEN": ""
 			}
 		},
 		"staging": {
 			"name": "ogsfrompoly-lp-staging",
 			"vars": {
-				"CLOUDFLARE_ENV": "staging"
+				"CLOUDFLARE_ENV": "staging",
+				"CLOUDFLARE_WEB_ANALYTICS_TOKEN": ""
 			}
 		},
 		"production": {
 			"name": "ogsfrompoly-lp-production",
+			// Beacon tokens are public-by-design (ship in the HTML beacon).
+			// Replace "" with the token from CF dashboard > Web Analytics before first deploy.
 			"vars": {
-				"CLOUDFLARE_ENV": "production"
-			}
+				"CLOUDFLARE_ENV": "production",
+				"CLOUDFLARE_WEB_ANALYTICS_TOKEN": "13b5d0ac217549e3bbaab7208c6c10bd"
+			},
+			// custom_domain auto-creates DNS + SSL; see .claude/rules/cloudflare-deployment.md.
+			"routes": [
+				{
+					"pattern": "ogsfrompoly.com",
+					"custom_domain": true
+				}
+			]
 		}
 	}
 	// Uncomment to enable scheduled jobs:
