@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.0.0...v1.1.0) (2026-05-31)
+
+
+### Features
+
+* **routing:** dual-format serving for content collections ([7a8ff61](https://github.com/auditmos/ogsfrompoly-lp/commit/7a8ff6158ff4f8de6ecf7c595caa4972028029d3))
+
 # 1.0.0 (2026-05-31)
 
 
