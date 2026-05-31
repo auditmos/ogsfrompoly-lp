@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.2.0...v1.3.0) (2026-05-31)
+
+
+### Features
+
+* **deploy:** production deploy + Cloudflare Web Analytics beacon ([3798a5d](https://github.com/auditmos/ogsfrompoly-lp/commit/3798a5dcb0338e3ad88f0b041fb8836fc5431ce4)), closes [#6](https://github.com/auditmos/ogsfrompoly-lp/issues/6)
+
 # [1.2.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.1.0...v1.2.0) (2026-05-31)
 
 
