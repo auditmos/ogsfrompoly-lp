@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.1.0...v1.2.0) (2026-05-31)
+
+
+### Features
+
+* **feeds:** generate rss.xml, llms.txt, sitemap.xml from content collections ([1cbde0e](https://github.com/auditmos/ogsfrompoly-lp/commit/1cbde0ec6bc6e99acc0f49e01a32539364f3007c)), closes [#4](https://github.com/auditmos/ogsfrompoly-lp/issues/4)
+
 # [1.1.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.0.0...v1.1.0) (2026-05-31)
 
 
