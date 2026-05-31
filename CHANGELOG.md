@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.3.0...v1.4.0) (2026-05-31)
+
+
+### Features
+
+* **brand:** tokens + component primitives (display heading, install snippet, statement card/table) ([3a4ca71](https://github.com/auditmos/ogsfrompoly-lp/commit/3a4ca71a921a4dc6bec1450fb747cacf58ea61af))
+
 # [1.3.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.2.0...v1.3.0) (2026-05-31)
 
 
