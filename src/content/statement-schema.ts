@@ -1,0 +1,60 @@
+import { z } from "zod";
+
+const isoDate = z.preprocess(
+	(v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
+	z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "expected ISO date YYYY-MM-DD"),
+);
+
+const category = z.enum(["politics", "macro-finance", "crypto"]);
+
+const truncatedWalletId = z
+	.string()
+	.min(1)
+	.max(32, "truncated_id must be ≤ 32 chars; full addresses are not permitted")
+	.refine((s) => !/0x[0-9a-f]{40}/i.test(s), {
+		message: "truncated_id must not contain a full EVM address",
+	});
+
+const truncatedWallet = z.object({
+	truncated_id: truncatedWalletId,
+	category,
+});
+
+const sharedFields = {
+	schema_version: z.literal(1),
+	title: z.string().min(1),
+	summary: z.string().min(1),
+	period_start: isoDate,
+	period_end: isoDate,
+	bankroll_usd: z.number().positive(),
+	alert_count: z.number().int().nonnegative(),
+	hit_rate: z.number().min(0).max(1),
+	hypothetical_pnl_usd: z.number(),
+	categories: z.array(category).min(1),
+	top_wallets: z.array(truncatedWallet),
+} as const;
+
+const weeklyStatement = z.object({
+	...sharedFields,
+	type: z.literal("weekly"),
+});
+
+const monthlyPnl = z.object({
+	revenue_usd: z.number(),
+	opex_usd: z.number(),
+	net_usd: z.number(),
+	runway_months: z.number().nullable(),
+});
+
+const monthlyStatement = z.object({
+	...sharedFields,
+	type: z.literal("monthly"),
+	pnl: monthlyPnl,
+});
+
+export const statementSchema = z
+	.discriminatedUnion("type", [weeklyStatement, monthlyStatement])
+	.refine((s) => s.period_start <= s.period_end, {
+		message: "period_start must be on or before period_end",
+		path: ["period_end"],
+	});
