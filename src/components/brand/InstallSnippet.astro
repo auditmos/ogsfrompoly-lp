@@ -1,0 +1,25 @@
+---
+import { buildLlmsTxtSnippet } from "@/lib/install-snippet/snippet";
+
+interface Props {
+	siteUrl: string;
+	caption?: string;
+}
+
+const { siteUrl, caption } = Astro.props;
+const { prompt, command } = buildLlmsTxtSnippet(siteUrl);
+---
+
+<figure class="flex flex-col gap-2">
+	<pre
+		class="m-0 overflow-x-auto rounded-terminal border border-terminal-border bg-terminal-bg px-5 py-4 font-mono text-sm text-ink-8"><code><span
+				class="select-none pr-2 text-accent"
+				aria-hidden="true">{prompt}</span>{command}</code></pre>
+	{
+		caption && (
+			<figcaption class="font-mono text-eyebrow uppercase text-ink-5">
+				{caption}
+			</figcaption>
+		)
+	}
+</figure>

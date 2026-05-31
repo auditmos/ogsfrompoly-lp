@@ -1,0 +1,83 @@
+---
+import DisplayHeading from "@/components/brand/DisplayHeading.astro";
+import InstallSnippet from "@/components/brand/InstallSnippet.astro";
+import StatementCard from "@/components/brand/StatementCard.astro";
+import StatementTable, {
+	type StatementTableRow,
+} from "@/components/brand/StatementTable.astro";
+import Layout from "@/layouts/Layout.astro";
+import { formatPercent } from "@/lib/statement-format/percent";
+import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
+import { formatUsdCompact } from "@/lib/statement-format/usd-compact";
+
+const weeklyRows: StatementTableRow[] = [
+	{ label: "Bankroll", value: formatUsdCompact(50_000) },
+	{ label: "Alerts", value: "12" },
+	{ label: "Hit rate", value: formatPercent(0.6428) },
+	{ label: "Hypothetical PnL", value: formatSignedUsd(2_143), tone: "accent" },
+];
+
+const monthlyRows: StatementTableRow[] = [
+	{ label: "Revenue", value: formatSignedUsd(0) },
+	{ label: "Opex", value: formatSignedUsd(-4_200), tone: "loss" },
+	{ label: "Net", value: formatSignedUsd(-4_200), tone: "loss" },
+	{ label: "Runway", value: "11 mo." },
+];
+---
+
+<Layout title="Preview · brand primitives" description="Internal preview of Phase 2 brand primitives.">
+	<main class="mx-auto flex max-w-5xl flex-col gap-16 px-gutter py-16">
+		<section class="flex flex-col gap-6">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">section · display heading</p>
+			<DisplayHeading eyebrow="ogsfrompoly · weekly + monthly">
+				We measure who is actually skilled on Polymarket — and we show our work, weekly.
+			</DisplayHeading>
+		</section>
+
+		<section class="flex flex-col gap-6">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">section · install snippet</p>
+			<InstallSnippet
+				siteUrl="https://ogsfrompoly.com"
+				caption="feed any LLM the full content map"
+			/>
+		</section>
+
+		<section class="flex flex-col gap-6">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">section · statement card</p>
+			<div class="grid gap-6 md:grid-cols-2">
+				<StatementCard
+					slug="2026-05-25-weekly-fixture"
+					type="weekly"
+					title="Weekly statement · May 25 → 31"
+					summary="Twelve alerts across politics, macro-finance, crypto. Sign-randomized skill p-value below threshold."
+					periodStart="2026-05-25"
+					periodEnd="2026-05-31"
+					hitRate={0.6428}
+					alertCount={12}
+					hypotheticalPnlUsd={2_143}
+					categories={["politics", "macro-finance", "crypto"]}
+				/>
+				<StatementCard
+					slug="2026-04-30-monthly-fixture"
+					type="monthly"
+					title="Monthly statement · April 2026"
+					summary="Open-book project P&L. Opex dominated by warehouse. Zero revenue this period; runway commentary below."
+					periodStart="2026-04-01"
+					periodEnd="2026-04-30"
+					hitRate={0.61}
+					alertCount={48}
+					hypotheticalPnlUsd={-487}
+					categories={["politics", "macro-finance"]}
+				/>
+			</div>
+		</section>
+
+		<section class="flex flex-col gap-6">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">section · statement table</p>
+			<div class="grid gap-10 md:grid-cols-2">
+				<StatementTable caption="Weekly · numerics" rows={weeklyRows} />
+				<StatementTable caption="Monthly · project P&L" rows={monthlyRows} />
+			</div>
+		</section>
+	</main>
+</Layout>

@@ -1,0 +1,55 @@
+---
+import { formatCategoryList, type Category } from "@/lib/statement-format/categories";
+import { statementHref } from "@/lib/statement-format/href";
+import { formatPercent } from "@/lib/statement-format/percent";
+import { formatPeriodLabel } from "@/lib/statement-format/period";
+import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
+
+interface Props {
+	slug: string;
+	type: "weekly" | "monthly";
+	title: string;
+	summary: string;
+	periodStart: string;
+	periodEnd: string;
+	hitRate: number;
+	alertCount: number;
+	hypotheticalPnlUsd: number;
+	categories: ReadonlyArray<Category>;
+}
+
+const props = Astro.props;
+const periodLabel = formatPeriodLabel(props.periodStart, props.periodEnd, props.type);
+const eyebrow = `${props.type} · ${periodLabel}`;
+const href = statementHref(props.slug);
+---
+
+<a
+	href={href}
+	class="group flex flex-col gap-4 rounded-card border border-ink-3 bg-ink-1 p-6 transition-colors hover:border-accent-dim hover:bg-ink-2"
+>
+	<p class="font-mono text-eyebrow uppercase text-ink-6">{eyebrow}</p>
+	<h3 class="text-2xl font-semibold tracking-tight text-ink-8 group-hover:text-accent">
+		{props.title}
+	</h3>
+	<p class="text-base text-ink-6">{props.summary}</p>
+	<dl class="mt-2 grid grid-cols-3 gap-4 font-mono text-sm">
+		<div class="flex flex-col">
+			<dt class="text-eyebrow uppercase text-ink-5">Hit rate</dt>
+			<dd class="text-ink-8">{formatPercent(props.hitRate)}</dd>
+		</div>
+		<div class="flex flex-col">
+			<dt class="text-eyebrow uppercase text-ink-5">Alerts</dt>
+			<dd class="text-ink-8">{props.alertCount}</dd>
+		</div>
+		<div class="flex flex-col">
+			<dt class="text-eyebrow uppercase text-ink-5">Hypo. PnL</dt>
+			<dd class={props.hypotheticalPnlUsd < 0 ? "text-loss" : "text-accent"}>
+				{formatSignedUsd(props.hypotheticalPnlUsd)}
+			</dd>
+		</div>
+	</dl>
+	<p class="font-mono text-eyebrow uppercase text-ink-5">
+		{formatCategoryList(props.categories)}
+	</p>
+</a>

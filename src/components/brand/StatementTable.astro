@@ -1,0 +1,47 @@
+---
+export type StatementTableRow = {
+	label: string;
+	value: string;
+	tone?: "default" | "accent" | "loss";
+};
+
+interface Props {
+	caption?: string;
+	rows: ReadonlyArray<StatementTableRow>;
+}
+
+const { caption, rows } = Astro.props;
+
+function toneClass(tone: StatementTableRow["tone"]): string {
+	if (tone === "accent") return "text-accent";
+	if (tone === "loss") return "text-loss";
+	return "text-ink-8";
+}
+---
+
+<table class="w-full border-collapse font-mono text-sm">
+	{
+		caption && (
+			<caption class="pb-3 text-left text-eyebrow uppercase text-ink-5">
+				{caption}
+			</caption>
+		)
+	}
+	<tbody>
+		{
+			rows.map((row) => (
+				<tr class="border-t border-ink-3 first:border-t-0">
+					<th
+						scope="row"
+						class="w-1/2 py-3 pr-4 text-left font-normal text-ink-6"
+					>
+						{row.label}
+					</th>
+					<td class:list={["py-3 pl-4 text-right tabular-nums", toneClass(row.tone)]}>
+						{row.value}
+					</td>
+				</tr>
+			))
+		}
+	</tbody>
+</table>

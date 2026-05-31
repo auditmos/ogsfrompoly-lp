@@ -1,0 +1,21 @@
+---
+interface Props {
+	eyebrow?: string;
+	as?: "h1" | "h2";
+}
+
+const { eyebrow, as: Tag = "h1" } = Astro.props;
+---
+
+<header class="flex flex-col gap-4">
+	{
+		eyebrow && (
+			<p class="font-mono text-eyebrow uppercase text-ink-6">
+				{eyebrow}
+			</p>
+		)
+	}
+	<Tag class="text-display font-sans text-ink-8 [text-wrap:balance]">
+		<slot />
+	</Tag>
+</header>
