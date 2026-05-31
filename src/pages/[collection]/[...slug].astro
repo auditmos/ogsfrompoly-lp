@@ -1,0 +1,35 @@
+---
+import type { CollectionKey } from "astro:content";
+import { getEntry, render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+
+const { collection, slug } = Astro.params;
+
+if (!collection || !slug) {
+	return new Response("Not Found", { status: 404 });
+}
+
+let entry: Awaited<ReturnType<typeof getEntry>> | undefined;
+try {
+	entry = await getEntry(collection as CollectionKey, slug);
+} catch {
+	entry = undefined;
+}
+
+if (!entry) {
+	return new Response("Not Found", { status: 404 });
+}
+
+const { Content } = await render(entry);
+const data = entry.data as { title?: string };
+const title = data.title ?? entry.id;
+---
+
+<Layout title={title}>
+	<main class="mx-auto max-w-3xl px-6 py-16">
+		<h1 class="mb-6 text-3xl font-semibold tracking-tight">{title}</h1>
+		<article class="prose prose-invert">
+			<Content />
+		</article>
+	</main>
+</Layout>
