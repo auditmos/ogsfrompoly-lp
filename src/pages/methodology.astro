@@ -1,0 +1,21 @@
+---
+import { marked } from "marked";
+import Layout from "@/layouts/Layout.astro";
+import {
+	methodologyDescription,
+	methodologyMarkdown,
+	methodologyTitle,
+} from "@/methodology/content";
+
+const html = marked.parse(methodologyMarkdown, { async: false }) as string;
+---
+
+<Layout title={`${methodologyTitle} · ogsfrompoly`} description={methodologyDescription}>
+	<main class="mx-auto max-w-3xl px-gutter py-24">
+		<article
+			class="prose prose-invert prose-headings:font-sans prose-headings:tracking-tight prose-h1:text-display prose-h1:[text-wrap:balance] prose-h2:mt-16 prose-h2:text-3xl prose-p:text-ink-7 prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-ink-8 prose-code:text-accent prose-code:before:content-none prose-code:after:content-none prose-li:text-ink-7"
+		>
+			<Fragment set:html={html} />
+		</article>
+	</main>
+</Layout>
