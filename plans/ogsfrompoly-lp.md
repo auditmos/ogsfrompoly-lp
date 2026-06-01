@@ -98,9 +98,27 @@ This phase produces no new components — only real content and the schema-freez
 
 ### What to build
 
-Add a `poly-track report public {weekly,monthly}` subcommand to the upstream poly-track CLI that reads the warehouse and emits a markdown file matching the schema frozen in Phase 3. A GitHub Action in poly-track runs on the agreed cron (weekly on a fixed weekday; monthly on a fixed day-of-month), invokes the CLI, and opens a pull request on `ogsfrompoly-lp` via a fine-scoped GitHub App token containing only the generated markdown file. Cloudflare deploys on merge.
+Add a `poly-track report public {weekly,monthly}` subcommand to the upstream poly-track CLI that reads the warehouse and emits a markdown file matching the schema frozen in Phase 3. A GitHub Action in poly-track runs on the agreed cron (see locked decisions below), invokes the CLI, and opens a pull request on `ogsfrompoly-lp` via a fine-scoped GitHub App token containing only the generated markdown file. Cloudflare deploys on merge.
 
 The schema does not change. The site does not change. Only the producer changes.
+
+### Locked decisions (2026-06-01)
+
+| Decision | Value | Notes |
+| --- | --- | --- |
+| Weekly cron | Tue 14:00 UTC (`0 14 * * 2`) | After Mon US close, before Wed open. |
+| Monthly cron | 3rd @ 14:00 UTC (`0 14 3 * *`) | Buffer for end-of-month settlement + opex line items. |
+| Publisher identity | Personal GitHub App, installed on `ogsfrompoly-lp` only | Scopes: `pull_requests:write` + `contents:write`. Not a PAT. |
+| Runbook home | `ogsfrompoly/docs/runbooks/lp-publish-fallback.md` | Lives next to the workflow it documents. |
+
+### Slicing (tracer-bullet order)
+
+1. **Slice 1 — Schema vendoring + drift CI** (upstream `ogsfrompoly`): vendor the LP `statement` Zod schema as a JSON-Schema-equivalent or hand-mirrored validator; CI job fails if the LP source drifts. Proves AC4 before any markdown generation exists.
+2. **Slice 2 — CLI emits valid file locally** (upstream): `poly-track report public weekly --period-end YYYY-MM-DD --out -` writes markdown to stdout; passes local validation; integration test asserts a fixture round-trips through the LP's Astro content parser.
+3. **Slice 3 — Manual PR via App** (upstream + GitHub ops): create + install the GitHub App, stash App ID + private key in `ogsfrompoly` secrets, ship a `workflow_dispatch`-only workflow that runs the CLI and opens a PR. Tests AC2/AC3 without committing to cron yet.
+4. **Slice 4 — Cron + runbook** (upstream): flip trigger to `schedule:`, write the fallback runbook, record one full cycle.
+
+The LP repo is untouched across all four slices — that is the schema-as-contract pay-off from Phase 3.
 
 ### Acceptance criteria
 
