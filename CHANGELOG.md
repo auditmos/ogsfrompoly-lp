@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.5.0...v1.6.0) (2026-06-01)
+
+
+### Features
+
+* **methodology:** /methodology page citing source papers, skill test, disclosure policy ([9484c32](https://github.com/auditmos/ogsfrompoly-lp/commit/9484c3249abed0dd342c91bb64e74b38fc947542)), closes [#9](https://github.com/auditmos/ogsfrompoly-lp/issues/9)
+
 # [1.5.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.4.0...v1.5.0) (2026-06-01)
 
 
