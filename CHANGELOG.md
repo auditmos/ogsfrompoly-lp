@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.4.0...v1.5.0) (2026-06-01)
+
+
+### Features
+
+* **homepage:** hero, install snippet, latest-statement teaser, footer ([57ada9b](https://github.com/auditmos/ogsfrompoly-lp/commit/57ada9be938e8f82c8b33397cebab296073f6be5)), closes [#8](https://github.com/auditmos/ogsfrompoly-lp/issues/8)
+
 # [1.4.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.3.0...v1.4.0) (2026-05-31)
 
 
