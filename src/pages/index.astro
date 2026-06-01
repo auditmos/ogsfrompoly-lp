@@ -1,27 +1,72 @@
 ---
-import { env } from "cloudflare:workers";
+import { getCollection } from "astro:content";
+import DisplayHeading from "@/components/brand/DisplayHeading.astro";
+import InstallSnippet from "@/components/brand/InstallSnippet.astro";
+import StatementCard from "@/components/brand/StatementCard.astro";
 import Layout from "@/layouts/Layout.astro";
+import { pickLatestStatement } from "@/lib/statement-format/latest";
 
-const envLabel = env.CLOUDFLARE_ENV ?? "local";
+const SITE_URL = "https://ogsfrompoly.com";
+const CONTACT_EMAIL = "hi@ogsfrompoly.com";
+
+const statements = await getCollection("statements");
+const latest = pickLatestStatement(statements);
 ---
 
-<Layout title="astro-on-cf">
-	<main class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
-		<p class="mb-3 font-mono text-xs uppercase tracking-widest text-neutral-500">
-			env: {envLabel}
-		</p>
-		<h1 class="mb-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-			Astro on Cloudflare
-		</h1>
-		<p class="mb-8 max-w-prose text-neutral-400">
-			Auditmos template — Astro 6 SSR on Cloudflare Workers, Tailwind v4, Biome,
-			knip, semantic-release. Optional Drizzle + Neon data layer via
-			<code class="rounded bg-neutral-900 px-1.5 py-0.5 font-mono text-sm">pnpm run init-project --with-db</code>.
-		</p>
-		<ul class="space-y-2 text-sm text-neutral-400">
-			<li>→ Edit <code class="font-mono text-neutral-200">src/pages/index.astro</code> to start</li>
-			<li>→ Add API endpoints under <code class="font-mono text-neutral-200">src/pages/api/</code></li>
-			<li>→ See <code class="font-mono text-neutral-200">AGENTS.md</code> for stack conventions</li>
-		</ul>
+<Layout
+	title="ogsfrompoly — skilled traders on Polymarket"
+	description="We measure who is actually skilled on Polymarket — and we show our work, weekly."
+>
+	<main class="mx-auto flex max-w-4xl flex-col gap-24 px-gutter py-24">
+		<section class="flex flex-col gap-8">
+			<DisplayHeading eyebrow="ogsfrompoly">
+				We measure who is actually skilled on Polymarket — and we show our work,
+				weekly.
+			</DisplayHeading>
+			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
+				Open-book strategy track record and project P&amp;L. Aggregate-only.
+				Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS
+				and a markdown feed your agent can read.
+			</p>
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">
+				Install for your LLM agent
+			</p>
+			<InstallSnippet
+				siteUrl={SITE_URL}
+				caption="Pipes the project's llms.txt into your agent's context"
+			/>
+		</section>
+
+		{
+			latest && (
+				<section class="flex flex-col gap-4">
+					<p class="font-mono text-eyebrow uppercase text-ink-5">Latest statement</p>
+					<StatementCard
+						slug={latest.id}
+						type={latest.data.type}
+						title={latest.data.title}
+						summary={latest.data.summary}
+						periodStart={latest.data.period_start}
+						periodEnd={latest.data.period_end}
+						hitRate={latest.data.hit_rate}
+						alertCount={latest.data.alert_count}
+						hypotheticalPnlUsd={latest.data.hypothetical_pnl_usd}
+						categories={latest.data.categories}
+					/>
+				</section>
+			)
+		}
 	</main>
+
+	<footer class="mx-auto max-w-4xl px-gutter pb-12">
+		<p class="font-mono text-eyebrow uppercase text-ink-5">
+			Partnership inquiries:
+			<a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
+				{CONTACT_EMAIL}
+			</a>
+		</p>
+	</footer>
 </Layout>
