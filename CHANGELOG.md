@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.7.0...v1.7.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* **nav:** replace template favicon, add global header/footer nav, statement empty-state ([89461dd](https://github.com/auditmos/ogsfrompoly-lp/commit/89461dd9ab74d1519a75571bc5023b6c2b0fa7ac))
+
 # [1.7.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.6.0...v1.7.0) (2026-06-01)
 
 
