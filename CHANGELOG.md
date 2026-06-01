@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.6.0...v1.7.0) (2026-06-01)
+
+
+### Features
+
+* **schema-freeze:** SCHEMA_VERSION export, draft fence, body-disclosure invariant, statement skeletons ([8532780](https://github.com/auditmos/ogsfrompoly-lp/commit/8532780c20ad18f0e44e8f156592c1ed999dd717)), closes [#10](https://github.com/auditmos/ogsfrompoly-lp/issues/10)
+
 # [1.6.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.5.0...v1.6.0) (2026-06-01)
 
 
