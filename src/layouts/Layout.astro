@@ -8,8 +8,18 @@ interface Props {
 	description?: string;
 }
 
-const { title = "astro-on-cf", description = "Astro on Cloudflare Workers" } = Astro.props;
+const {
+	title = "ogsfrompoly — skilled traders on Polymarket",
+	description = "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
+} = Astro.props;
 const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
+
+const CONTACT_EMAIL = "hi@ogsfrompoly.com";
+const navLinks = [
+	{ href: "/methodology", label: "Methodology" },
+	{ href: "/rss.xml", label: "RSS" },
+	{ href: "/llms.txt", label: "llms.txt" },
+] as const;
 ---
 
 <!doctype html>
@@ -19,12 +29,50 @@ const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{beacon && <script is:inline src={beacon.src} defer data-cf-beacon={beacon.dataCfBeacon}></script>}
 	</head>
 	<body class="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
+		<header class="mx-auto flex max-w-4xl items-center justify-between px-gutter py-6">
+			<a
+				href="/"
+				class="font-mono text-sm font-semibold uppercase tracking-wider text-ink-8 hover:text-accent"
+			>
+				ogsfrompoly
+			</a>
+			<nav aria-label="Primary">
+				<ul class="flex items-center gap-6 font-mono text-eyebrow uppercase tracking-wider text-ink-6">
+					{
+						navLinks.map((link) => (
+							<li>
+								<a class="hover:text-accent" href={link.href}>
+									{link.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+		</header>
+
 		<slot />
+
+		<footer class="mx-auto mt-24 max-w-4xl border-t border-ink-3 px-gutter py-8">
+			<div class="flex flex-col gap-3 font-mono text-eyebrow uppercase tracking-wider text-ink-5 sm:flex-row sm:items-center sm:justify-between">
+				<p>
+					Partnership inquiries:
+					<a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
+						{CONTACT_EMAIL}
+					</a>
+				</p>
+				<ul class="flex items-center gap-4">
+					<li><a class="hover:text-accent" href="/methodology">Methodology</a></li>
+					<li><a class="hover:text-accent" href="/rss.xml">RSS</a></li>
+					<li><a class="hover:text-accent" href="/llms.txt">llms.txt</a></li>
+					<li><a class="hover:text-accent" href="/sitemap.xml">Sitemap</a></li>
+				</ul>
+			</div>
+		</footer>
 	</body>
 </html>

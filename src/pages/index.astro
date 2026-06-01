@@ -8,7 +8,6 @@ import { pickLatestStatement } from "@/lib/statement-format/latest";
 import { excludeDrafts } from "@/lib/statement-format/published";
 
 const SITE_URL = "https://ogsfrompoly.com";
-const CONTACT_EMAIL = "hi@ogsfrompoly.com";
 
 const statements = excludeDrafts(await getCollection("statements"));
 const latest = pickLatestStatement(statements);
@@ -41,10 +40,10 @@ const latest = pickLatestStatement(statements);
 			/>
 		</section>
 
-		{
-			latest && (
-				<section class="flex flex-col gap-4">
-					<p class="font-mono text-eyebrow uppercase text-ink-5">Latest statement</p>
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">Latest statement</p>
+			{
+				latest ? (
 					<StatementCard
 						slug={latest.id}
 						type={latest.data.type}
@@ -57,17 +56,22 @@ const latest = pickLatestStatement(statements);
 						hypotheticalPnlUsd={latest.data.hypothetical_pnl_usd}
 						categories={latest.data.categories}
 					/>
-				</section>
-			)
-		}
+				) : (
+					<div class="flex flex-col gap-3 rounded-card border border-dashed border-ink-3 bg-ink-1 p-6">
+						<p class="text-base text-ink-7">
+							No published statements yet — the first real weekly statement is
+							being prepared. The cadence promise is weekly + monthly.
+						</p>
+						<p class="font-mono text-eyebrow uppercase text-ink-5">
+							Subscribe via <a class="text-ink-7 hover:text-accent" href="/rss.xml">RSS</a>
+							{" · "}
+							<a class="text-ink-7 hover:text-accent" href="/llms.txt">llms.txt</a>
+							{" · "}
+							<a class="text-ink-7 hover:text-accent" href="/methodology">read the methodology</a>
+						</p>
+					</div>
+				)
+			}
+		</section>
 	</main>
-
-	<footer class="mx-auto max-w-4xl px-gutter pb-12">
-		<p class="font-mono text-eyebrow uppercase text-ink-5">
-			Partnership inquiries:
-			<a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-				{CONTACT_EMAIL}
-			</a>
-		</p>
-	</footer>
 </Layout>
