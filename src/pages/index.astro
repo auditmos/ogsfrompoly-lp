@@ -5,11 +5,12 @@ import InstallSnippet from "@/components/brand/InstallSnippet.astro";
 import StatementCard from "@/components/brand/StatementCard.astro";
 import Layout from "@/layouts/Layout.astro";
 import { pickLatestStatement } from "@/lib/statement-format/latest";
+import { excludeDrafts } from "@/lib/statement-format/published";
 
 const SITE_URL = "https://ogsfrompoly.com";
 const CONTACT_EMAIL = "hi@ogsfrompoly.com";
 
-const statements = await getCollection("statements");
+const statements = excludeDrafts(await getCollection("statements"));
 const latest = pickLatestStatement(statements);
 ---
 

@@ -4,6 +4,11 @@
 > This document describes the contract; the Zod schema enforces it.
 >
 > **Audience:** content authors (today: human; later: upstream `poly-track` CLI).
+>
+> **Schema-freeze status (v1 launch, 2026-06):** frozen at `SCHEMA_VERSION = 1`.
+> The cross-repo contract is stable. Any change to required-field shape must
+> bump the version and be coordinated with the upstream `poly-track` CLI before
+> producer-side automation lands (Phase 4 / v2).
 
 This schema is the **stable interface** between this repo and any producer of
 statement content. Changing it is a breaking change for downstream automation.
@@ -14,11 +19,21 @@ See PRD #1 "Implementation Decisions → Content Schema" and `plans/ogsfrompoly-
 
 Every entry MUST declare `schema_version: 1` at the top of frontmatter.
 
-- Adding an optional field: not a version bump.
+The schema module exports `SCHEMA_VERSION` as a single source of truth:
+
+```ts
+import { SCHEMA_VERSION } from "@/content/statement-schema"; // === 1
+```
+
+- Adding an optional field with a default: **not** a version bump (e.g. the
+  `draft` field added in v1 launch).
 - Adding a required field, removing a field, narrowing a type, tightening a
-  constraint: **breaking**. Bump to `schema_version: 2` and accept both during
-  transition.
-- The schema source file's `z.literal(1)` is what CI enforces.
+  constraint: **breaking**. Bump `SCHEMA_VERSION` to `2` and accept both
+  during a transition window.
+- The schema source file's `z.literal(SCHEMA_VERSION)` is what CI enforces;
+  the test in `statement-schema.test.ts` guards against drift.
+- Breaking changes require a coordinated PR against the upstream `poly-track`
+  repo (which holds the producer-side CLI) before the bump can merge.
 
 ## Top-level fields (all statements)
 
@@ -36,6 +51,7 @@ Every entry MUST declare `schema_version: 1` at the top of frontmatter.
 | `hypothetical_pnl_usd` | number (signed)                          | Hypothetical PnL on `bankroll_usd`.                            |
 | `categories`           | non-empty array of category enum         | See `Category` below.                                          |
 | `top_wallets`          | array of `{ truncated_id, category }`    | See `TopWallets` below.                                        |
+| `draft`                | boolean, optional, defaults `false`      | When `true`, the entry is excluded from feeds, the homepage teaser, and both dual-format routes (HTML + `.md`). Used for skeletons before publication. |
 
 ## Weekly-only
 

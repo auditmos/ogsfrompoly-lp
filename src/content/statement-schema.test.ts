@@ -1,4 +1,4 @@
-import { statementSchema } from "./statement-schema";
+import { SCHEMA_VERSION, statementSchema } from "./statement-schema";
 
 const validWeekly = {
 	schema_version: 1,
@@ -38,6 +38,25 @@ const validMonthly = {
 		runway_months: 18,
 	},
 };
+
+describe("SCHEMA_VERSION", () => {
+	it("is exported as a stable cross-repo contract marker", () => {
+		expect(SCHEMA_VERSION).toBe(1);
+	});
+
+	it("matches the literal accepted by the schema (drift guard)", () => {
+		const result = statementSchema.safeParse({ ...validWeekly, schema_version: SCHEMA_VERSION });
+		expect(result.success).toBe(true);
+	});
+
+	it("rejects SCHEMA_VERSION + 1 (would be the next breaking version)", () => {
+		const result = statementSchema.safeParse({
+			...validWeekly,
+			schema_version: SCHEMA_VERSION + 1,
+		});
+		expect(result.success).toBe(false);
+	});
+});
 
 describe("statementSchema", () => {
 	it("parses a minimal valid weekly statement", () => {
@@ -116,6 +135,20 @@ describe("statementSchema", () => {
 	])("rejects schema_version %s (%s)", (badVersion) => {
 		const result = statementSchema.safeParse({ ...validWeekly, schema_version: badVersion });
 		expect(result.success).toBe(false);
+	});
+
+	it("defaults the draft field to false when frontmatter omits it", () => {
+		const result = statementSchema.safeParse(validWeekly);
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+		expect(result.data.draft).toBe(false);
+	});
+
+	it("accepts an explicit draft: true marker (used by placeholder fixtures)", () => {
+		const result = statementSchema.safeParse({ ...validWeekly, draft: true });
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+		expect(result.data.draft).toBe(true);
 	});
 
 	it("accepts YAML-parsed Date instances for period bounds and normalises them to ISO date strings", () => {

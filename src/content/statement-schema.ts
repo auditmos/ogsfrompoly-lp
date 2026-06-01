@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+/**
+ * Stable cross-repo contract marker. The upstream `poly-track` CLI emits
+ * statements declaring this version; producers and consumers must agree.
+ *
+ * Bumping this is a breaking change — coordinate with poly-track before
+ * widening, narrowing, or renaming required fields. See
+ * `docs/statement-schema.md` for the full version-bump protocol.
+ */
+export const SCHEMA_VERSION = 1 as const;
+
 const isoDate = z.preprocess(
 	(v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
 	z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "expected ISO date YYYY-MM-DD"),
@@ -21,7 +31,7 @@ const truncatedWallet = z.object({
 });
 
 const sharedFields = {
-	schema_version: z.literal(1),
+	schema_version: z.literal(SCHEMA_VERSION),
 	title: z.string().min(1),
 	summary: z.string().min(1),
 	period_start: isoDate,
@@ -32,6 +42,7 @@ const sharedFields = {
 	hypothetical_pnl_usd: z.number(),
 	categories: z.array(category).min(1),
 	top_wallets: z.array(truncatedWallet),
+	draft: z.boolean().default(false),
 } as const;
 
 const weeklyStatement = z.object({

@@ -1,6 +1,7 @@
 ---
 schema_version: 1
 type: weekly
+draft: true
 title: "Placeholder weekly statement — May 19–25, 2026"
 summary: "Schema-exercise fixture. Not real numbers. Replaced before launch."
 period_start: 2026-05-19

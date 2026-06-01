@@ -20,6 +20,10 @@ if (!entry) {
 	return new Response("Not Found", { status: 404 });
 }
 
+if ((entry.data as { draft?: boolean }).draft) {
+	return new Response("Not Found", { status: 404 });
+}
+
 const { Content } = await render(entry);
 const data = entry.data as { title?: string };
 const title = data.title ?? entry.id;

@@ -9,6 +9,9 @@ export const GET: APIRoute = async ({ params }) => {
 
 	try {
 		const entry = await getEntry(collection as CollectionKey, slug);
+		if (entry && (entry.data as { draft?: boolean }).draft) {
+			return markdownResponse(undefined);
+		}
 		return markdownResponse(entry);
 	} catch {
 		return markdownResponse(undefined);
