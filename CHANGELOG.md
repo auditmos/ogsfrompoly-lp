@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.7.1...v1.8.0) (2026-06-02)
+
+
+### Features
+
+* **methodology:** refresh public methodology and llms index ([dbe4e40](https://github.com/auditmos/ogsfrompoly-lp/commit/dbe4e40ca195f3fbbd140fe88d61351b99b9a14a))
+
 ## [1.7.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.7.0...v1.7.1) (2026-06-01)
 
 
