@@ -1,9 +1,16 @@
 import { sortEntries } from "./sort";
 import type { FeedEntry, FeedInput } from "./types";
 
+const METHODOLOGY_SUMMARY =
+	"How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.";
+
 function renderLine(entry: FeedEntry, siteUrl: string): string {
 	const url = `${siteUrl}/${entry.collection}/${entry.slug}.md`;
 	return `- [${entry.title}](${url}): ${entry.summary}`;
+}
+
+function renderMethodologyLine(siteUrl: string): string {
+	return `- [Methodology](${siteUrl}/methodology.md): ${METHODOLOGY_SUMMARY}`;
 }
 
 export function generateLlmsTxt(input: FeedInput): string {
@@ -17,5 +24,16 @@ export function generateLlmsTxt(input: FeedInput): string {
 		return `## ${collection}\n\n${rows}`;
 	});
 
-	return [`# ${input.siteTitle}`, "", `> ${input.siteDescription}`, "", ...sections, ""].join("\n");
+	return [
+		`# ${input.siteTitle}`,
+		"",
+		`> ${input.siteDescription}`,
+		"",
+		"## Methodology",
+		"",
+		renderMethodologyLine(input.siteUrl),
+		"",
+		...sections,
+		"",
+	].join("\n");
 }

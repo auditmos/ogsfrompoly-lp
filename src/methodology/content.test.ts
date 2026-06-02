@@ -41,8 +41,29 @@ describe("methodologyMarkdown", () => {
 			expect(body).toContain("p-value");
 		});
 
+		it("defines the p-value calculation formula", () => {
+			expect(body).toContain("a = sum(x_i)");
+			expect(body).toContain("b = 1,000 simulations");
+			expect(body).toContain("t_j = sum(s_{j,i} * abs(x_i))");
+			expect(body).toContain("p = count(t_j >= a) / b");
+		});
+
 		it("notes that only realized PnL feeds the test", () => {
 			expect(body).toMatch(/only[-\s]realized\s+pnl/);
+		});
+	});
+
+	describe("current public coverage", () => {
+		const body = methodologyMarkdown.toLowerCase();
+
+		it("states the current published categories", () => {
+			expect(body).toContain("politics");
+			expect(body).toContain("macro-finance");
+		});
+
+		it("does not describe crypto as part of the current public track record", () => {
+			expect(body).not.toContain("crypto");
+			expect(body).not.toMatch(/track three categories.*crypto/s);
 		});
 	});
 

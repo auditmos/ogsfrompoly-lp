@@ -42,13 +42,25 @@ describe("generateLlmsTxt", () => {
 		});
 
 		const articlesIdx = txt.indexOf("## articles");
+		const methodologyIdx = txt.indexOf("## Methodology");
 		const statementsIdx = txt.indexOf("## statements");
 		expect(articlesIdx).toBeGreaterThan(-1);
+		expect(methodologyIdx).toBeGreaterThan(-1);
 		expect(statementsIdx).toBeGreaterThan(-1);
-		// alphabetical collection order — articles before statements
+		// Methodology is pinned before collection sections; collections stay alphabetical.
+		expect(methodologyIdx).toBeLessThan(articlesIdx);
 		expect(articlesIdx).toBeLessThan(statementsIdx);
 		expect(txt).toContain(
 			"- [Build log 01](https://ogsfrompoly.com/articles/build-log-01.md): How we set up the warehouse.",
+		);
+	});
+
+	it("links to the methodology markdown endpoint for LLM consumers", () => {
+		const txt = generateLlmsTxt(baseInput);
+
+		expect(txt).toContain("## Methodology");
+		expect(txt).toContain(
+			"- [Methodology](https://ogsfrompoly.com/methodology.md): How ogsfrompoly tests Polymarket wallets for repeatable skill",
 		);
 	});
 
