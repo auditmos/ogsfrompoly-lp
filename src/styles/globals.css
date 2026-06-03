@@ -39,7 +39,7 @@
 	--spacing-gutter: 1.5rem;
 }
 
-.methodology-article {
+.long-form-article {
 	max-width: 44rem;
 	margin-inline: auto;
 	color: var(--color-ink-7);
@@ -48,7 +48,7 @@
 	text-align: left;
 }
 
-.methodology-article h1 {
+.long-form-article h1 {
 	margin: 0 0 1rem;
 	color: var(--color-ink-8);
 	font-size: clamp(2.75rem, 5vw + 1rem, 4.75rem);
@@ -58,7 +58,7 @@
 	text-wrap: balance;
 }
 
-.methodology-article h2 {
+.long-form-article h2 {
 	margin: 4rem 0 1rem;
 	padding-top: 1.5rem;
 	border-top: 1px solid var(--color-ink-3);
@@ -70,12 +70,12 @@
 	text-wrap: balance;
 }
 
-.methodology-article p,
-.methodology-article ul {
+.long-form-article p,
+.long-form-article ul {
 	margin: 0 0 1rem;
 }
 
-.methodology-article h1 + p {
+.long-form-article h1 + p {
 	max-width: 38rem;
 	margin-bottom: 2rem;
 	color: var(--color-ink-6);
@@ -84,29 +84,29 @@
 	text-wrap: pretty;
 }
 
-.methodology-article strong {
+.long-form-article strong {
 	color: var(--color-ink-8);
 	font-weight: 700;
 }
 
-.methodology-article ul {
+.long-form-article ul {
 	display: grid;
 	gap: 0.5rem;
 	padding-left: 1.25rem;
 	list-style: disc;
 }
 
-.methodology-article li {
+.long-form-article li {
 	padding-left: 0.25rem;
 }
 
-.methodology-article code {
+.long-form-article code {
 	color: var(--color-accent);
 	font-family: var(--font-mono);
 	font-size: 0.92em;
 }
 
-.methodology-article blockquote {
+.long-form-article blockquote {
 	margin: 1.5rem 0 2rem;
 	padding: 1rem 0 1rem 1.25rem;
 	border-left: 2px solid var(--color-accent);
@@ -116,6 +116,6 @@
 	line-height: 1.5;
 }
 
-.methodology-article blockquote p {
+.long-form-article blockquote p {
 	margin: 0;
 }

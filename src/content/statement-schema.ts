@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 /**
- * Stable cross-repo contract marker. The upstream `poly-track` CLI emits
+ * Stable cross-repo contract marker. The upstream `ogsfrompoly` CLI emits
  * statements declaring this version; producers and consumers must agree.
  *
- * Bumping this is a breaking change — coordinate with poly-track before
+ * Bumping this is a breaking change — coordinate with ogsfrompoly before
  * widening, narrowing, or renaming required fields. See
  * `docs/statement-schema.md` for the full version-bump protocol.
  */

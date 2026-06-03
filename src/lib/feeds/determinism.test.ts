@@ -115,6 +115,10 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 
 			> We measure who is actually skilled on Polymarket.
 
+			## Browse all
+
+			- [All statements](https://ogsfrompoly.com/statements.md): Index of every published statement — weekly track record and monthly project P&L, newest first.
+
 			## Methodology
 
 			- [Methodology](https://ogsfrompoly.com/methodology.md): How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.

@@ -12,7 +12,7 @@ const html = marked.parse(methodologyMarkdown, { async: false }) as string;
 
 <Layout title={`${methodologyTitle} · ogsfrompoly`} description={methodologyDescription}>
 	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
-		<article class="methodology-article">
+		<article class="long-form-article">
 			<Fragment set:html={html} />
 		</article>
 	</main>

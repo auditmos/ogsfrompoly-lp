@@ -2,6 +2,58 @@
 import type { CollectionKey } from "astro:content";
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
+import { type Category, formatCategoryList } from "@/lib/statement-format/categories";
+import { formatPercent } from "@/lib/statement-format/percent";
+import { formatPeriodLabel } from "@/lib/statement-format/period";
+import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
+
+type StatementType = "weekly" | "monthly";
+
+interface TruncatedWallet {
+	truncated_id: string;
+	category: Category;
+}
+
+interface StatementShape {
+	title: string;
+	summary: string;
+	type: StatementType;
+	period_start: string;
+	period_end: string;
+	hit_rate: number;
+	alert_count: number;
+	hypothetical_pnl_usd: number;
+	categories: ReadonlyArray<Category>;
+	top_wallets: ReadonlyArray<TruncatedWallet>;
+	draft?: boolean;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+function isTruncatedWallet(value: unknown): value is TruncatedWallet {
+	if (!isRecord(value)) return false;
+	if (typeof value.truncated_id !== "string" || value.truncated_id.length === 0) return false;
+	if (typeof value.category !== "string") return false;
+	return true;
+}
+
+function isStatementData(value: unknown): value is StatementShape {
+	if (!isRecord(value)) return false;
+	const { type, title, summary, period_start, period_end } = value;
+	if (typeof title !== "string" || title.length === 0) return false;
+	if (typeof summary !== "string") return false;
+	if (typeof period_start !== "string" || typeof period_end !== "string") return false;
+	if (type !== "weekly" && type !== "monthly") return false;
+	if (typeof value.hit_rate !== "number") return false;
+	if (typeof value.alert_count !== "number") return false;
+	if (typeof value.hypothetical_pnl_usd !== "number") return false;
+	if (!Array.isArray(value.categories)) return false;
+	if (!Array.isArray(value.top_wallets)) return false;
+	if (!value.top_wallets.every(isTruncatedWallet)) return false;
+	return true;
+}
 
 const { collection, slug } = Astro.params;
 
@@ -20,19 +72,102 @@ if (!entry) {
 	return new Response("Not Found", { status: 404 });
 }
 
-if ((entry.data as { draft?: boolean }).draft) {
+const rawData: unknown = entry.data;
+if (isRecord(rawData) && rawData.draft === true) {
 	return new Response("Not Found", { status: 404 });
 }
 
 const { Content } = await render(entry);
-const data = entry.data as { title?: string };
-const title = data.title ?? entry.id;
+
+const statement = isStatementData(rawData) ? rawData : null;
+const fallbackTitle =
+	isRecord(rawData) && typeof rawData.title === "string" ? rawData.title : entry.id;
+const title = statement?.title ?? fallbackTitle;
+const summary =
+	statement?.summary ??
+	(isRecord(rawData) && typeof rawData.summary === "string" ? rawData.summary : null);
+const eyebrow = statement
+	? `${statement.type} · ${formatPeriodLabel(statement.period_start, statement.period_end, statement.type)}`
+	: null;
+const pnlClass =
+	statement && statement.hypothetical_pnl_usd < 0 ? "text-loss" : "text-accent";
 ---
 
-<Layout title={title}>
-	<main class="mx-auto max-w-3xl px-6 py-16">
-		<h1 class="mb-6 text-3xl font-semibold tracking-tight">{title}</h1>
-		<article class="prose prose-invert">
+<Layout title={`${title} · ogsfrompoly`} description={summary ?? undefined}>
+	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
+		<article class="long-form-article">
+			{
+				eyebrow && (
+					<p class="mb-6 font-mono text-eyebrow uppercase tracking-wider text-ink-6">
+						{eyebrow}
+					</p>
+				)
+			}
+			<h1>{title}</h1>
+			{summary && <p>{summary}</p>}
+			{
+				statement && (
+					<dl class="not-prose mt-2 mb-10 grid grid-cols-2 gap-6 border-y border-ink-3 py-6 font-mono text-sm sm:grid-cols-4">
+						<div class="flex flex-col gap-1.5">
+							<dt class="text-eyebrow uppercase tracking-wider text-ink-5">Hit rate</dt>
+							<dd class="text-lg text-ink-8">{formatPercent(statement.hit_rate)}</dd>
+							<p class="font-sans text-xs leading-snug text-ink-5">
+								Share of resolved alerts that hit the predicted side.
+								{" "}0.50 ≈ a coin flip; above 0.50 is signal.
+							</p>
+						</div>
+						<div class="flex flex-col gap-1.5">
+							<dt class="text-eyebrow uppercase tracking-wider text-ink-5">Alerts</dt>
+							<dd class="text-lg text-ink-8">{statement.alert_count}</dd>
+							<p class="font-sans text-xs leading-snug text-ink-5">
+								Retrospective signals emitted in this window from skilled
+								wallets. No live alerts are published.
+							</p>
+						</div>
+						<div class="flex flex-col gap-1.5">
+							<dt class="text-eyebrow uppercase tracking-wider text-ink-5">Hypo. PnL</dt>
+							<dd class={`text-lg ${pnlClass}`}>
+								{formatSignedUsd(statement.hypothetical_pnl_usd)}
+							</dd>
+							<p class="font-sans text-xs leading-snug text-ink-5">
+								Hypothetical profit/loss if every alert had been mirrored
+								with a fixed bankroll. Not a real trading account.
+							</p>
+						</div>
+						<div class="flex flex-col gap-1.5">
+							<dt class="text-eyebrow uppercase tracking-wider text-ink-5">Categories</dt>
+							<dd class="text-lg text-ink-8">{formatCategoryList(statement.categories)}</dd>
+							<p class="font-sans text-xs leading-snug text-ink-5">
+								Polymarket areas the alerts in this window cover.
+							</p>
+						</div>
+					</dl>
+				)
+			}
+			{
+				statement && statement.top_wallets.length > 0 && (
+					<section class="not-prose mb-10">
+						<h3 class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							Top wallets ({statement.top_wallets.length})
+						</h3>
+						<p class="mb-4 font-sans text-xs leading-snug text-ink-5">
+							Highlighted skilled wallets that contributed to this window.
+							{" "}Truncated, opaque IDs — never reversible to a full on-chain
+							address. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
+						</p>
+						<ul class="grid grid-cols-1 gap-x-6 gap-y-2 font-mono text-sm sm:grid-cols-2">
+							{statement.top_wallets.map((wallet) => (
+								<li class="flex items-center justify-between border-b border-ink-3 py-2">
+									<span class="text-accent">{wallet.truncated_id}</span>
+									<span class="text-eyebrow uppercase tracking-wider text-ink-5">
+										{wallet.category}
+									</span>
+								</li>
+							))}
+						</ul>
+					</section>
+				)
+			}
 			<Content />
 		</article>
 	</main>

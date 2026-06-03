@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import StatementCard from "@/components/brand/StatementCard.astro";
+import Layout from "@/layouts/Layout.astro";
+import { excludeDrafts } from "@/lib/statement-format/published";
+import { sortStatementsNewestFirst } from "@/lib/statement-format/sort-newest-first";
+
+const statements = sortStatementsNewestFirst(
+	excludeDrafts(await getCollection("statements")),
+);
+---
+
+<Layout
+	title="Statements · ogsfrompoly"
+	description="Every published ogsfrompoly statement — weekly track record and monthly project P&L, newest first."
+>
+	<main class="mx-auto flex max-w-4xl flex-col gap-12 px-gutter py-24">
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">Statements</p>
+			<h1 class="text-4xl font-semibold tracking-tight text-ink-8 sm:text-5xl">
+				Every statement, newest first.
+			</h1>
+			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
+				Weekly strategy track record and monthly project P&amp;L. Aggregate-only,
+				truncated wallet IDs, no live alpha. Subscribe via
+				<a class="text-ink-7 hover:text-accent" href="/rss.xml">RSS</a>
+				{" · "}
+				<a class="text-ink-7 hover:text-accent" href="/llms.txt">llms.txt</a>
+				{" · "}
+				<a class="text-ink-7 hover:text-accent" href="/statements.md">statements.md</a>.
+			</p>
+		</section>
+
+		<section class="flex flex-col gap-6">
+			{
+				statements.length === 0 ? (
+					<div class="flex flex-col gap-3 rounded-card border border-dashed border-ink-3 bg-ink-1 p-6">
+						<p class="text-base text-ink-7">
+							No published statements yet — the first real weekly statement is
+							being prepared. The cadence promise is weekly + monthly.
+						</p>
+					</div>
+				) : (
+					statements.map((entry) => (
+						<StatementCard
+							slug={entry.id}
+							type={entry.data.type}
+							title={entry.data.title}
+							summary={entry.data.summary}
+							periodStart={entry.data.period_start}
+							periodEnd={entry.data.period_end}
+							hitRate={entry.data.hit_rate}
+							alertCount={entry.data.alert_count}
+							hypotheticalPnlUsd={entry.data.hypothetical_pnl_usd}
+							categories={entry.data.categories}
+						/>
+					))
+				)
+			}
+		</section>
+	</main>
+</Layout>

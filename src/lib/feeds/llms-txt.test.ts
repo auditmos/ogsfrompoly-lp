@@ -42,16 +42,28 @@ describe("generateLlmsTxt", () => {
 		});
 
 		const articlesIdx = txt.indexOf("## articles");
+		const browseAllIdx = txt.indexOf("## Browse all");
 		const methodologyIdx = txt.indexOf("## Methodology");
 		const statementsIdx = txt.indexOf("## statements");
 		expect(articlesIdx).toBeGreaterThan(-1);
+		expect(browseAllIdx).toBeGreaterThan(-1);
 		expect(methodologyIdx).toBeGreaterThan(-1);
 		expect(statementsIdx).toBeGreaterThan(-1);
-		// Methodology is pinned before collection sections; collections stay alphabetical.
+		// Browse all → Methodology → per-collection sections (alphabetical).
+		expect(browseAllIdx).toBeLessThan(methodologyIdx);
 		expect(methodologyIdx).toBeLessThan(articlesIdx);
 		expect(articlesIdx).toBeLessThan(statementsIdx);
 		expect(txt).toContain(
 			"- [Build log 01](https://ogsfrompoly.com/articles/build-log-01.md): How we set up the warehouse.",
+		);
+	});
+
+	it("exposes the statements index as a top-level Browse-all entry for agent discovery", () => {
+		const txt = generateLlmsTxt(baseInput);
+
+		expect(txt).toContain("## Browse all");
+		expect(txt).toContain(
+			"- [All statements](https://ogsfrompoly.com/statements.md): Index of every published statement — weekly track record and monthly project P&L, newest first.",
 		);
 	});
 

@@ -16,6 +16,7 @@ const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
 
 const CONTACT_EMAIL = "hi@ogsfrompoly.com";
 const navLinks = [
+	{ href: "/statements", label: "Statements" },
 	{ href: "/methodology", label: "Methodology" },
 	{ href: "/rss.xml", label: "RSS" },
 	{ href: "/llms.txt", label: "llms.txt" },
@@ -67,6 +68,7 @@ const navLinks = [
 					</a>
 				</p>
 				<ul class="flex items-center gap-4">
+					<li><a class="hover:text-accent" href="/statements">Statements</a></li>
 					<li><a class="hover:text-accent" href="/methodology">Methodology</a></li>
 					<li><a class="hover:text-accent" href="/rss.xml">RSS</a></li>
 					<li><a class="hover:text-accent" href="/llms.txt">llms.txt</a></li>

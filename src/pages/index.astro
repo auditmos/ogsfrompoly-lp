@@ -44,18 +44,26 @@ const latest = pickLatestStatement(statements);
 			<p class="font-mono text-eyebrow uppercase text-ink-5">Latest statement</p>
 			{
 				latest ? (
-					<StatementCard
-						slug={latest.id}
-						type={latest.data.type}
-						title={latest.data.title}
-						summary={latest.data.summary}
-						periodStart={latest.data.period_start}
-						periodEnd={latest.data.period_end}
-						hitRate={latest.data.hit_rate}
-						alertCount={latest.data.alert_count}
-						hypotheticalPnlUsd={latest.data.hypothetical_pnl_usd}
-						categories={latest.data.categories}
-					/>
+					<>
+						<StatementCard
+							slug={latest.id}
+							type={latest.data.type}
+							title={latest.data.title}
+							summary={latest.data.summary}
+							periodStart={latest.data.period_start}
+							periodEnd={latest.data.period_end}
+							hitRate={latest.data.hit_rate}
+							alertCount={latest.data.alert_count}
+							hypotheticalPnlUsd={latest.data.hypothetical_pnl_usd}
+							categories={latest.data.categories}
+						/>
+						<a
+							class="font-mono text-eyebrow uppercase tracking-wider text-ink-6 hover:text-accent"
+							href="/statements"
+						>
+							View all statements →
+						</a>
+					</>
 				) : (
 					<div class="flex flex-col gap-3 rounded-card border border-dashed border-ink-3 bg-ink-1 p-6">
 						<p class="text-base text-ink-7">
@@ -63,7 +71,9 @@ const latest = pickLatestStatement(statements);
 							being prepared. The cadence promise is weekly + monthly.
 						</p>
 						<p class="font-mono text-eyebrow uppercase text-ink-5">
-							Subscribe via <a class="text-ink-7 hover:text-accent" href="/rss.xml">RSS</a>
+							Browse <a class="text-ink-7 hover:text-accent" href="/statements">all statements</a>
+							{" · "}
+							subscribe via <a class="text-ink-7 hover:text-accent" href="/rss.xml">RSS</a>
 							{" · "}
 							<a class="text-ink-7 hover:text-accent" href="/llms.txt">llms.txt</a>
 							{" · "}
