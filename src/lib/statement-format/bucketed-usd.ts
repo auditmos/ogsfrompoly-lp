@@ -7,7 +7,7 @@ export function bucketUsdToNearest(amount: number, bucket: number): number {
 
 export function formatBucketedUsd(amount: number, bucket: number): string {
 	const bucketed = bucketUsdToNearest(amount, bucket);
-	if (bucketed === 0) return "~$0";
+	if (bucketed === 0) return `<$${bucket.toLocaleString("en-US")}`;
 	const abs = Math.abs(bucketed).toLocaleString("en-US");
 	return bucketed > 0 ? `~+$${abs}` : `~${MINUS}$${abs}`;
 }

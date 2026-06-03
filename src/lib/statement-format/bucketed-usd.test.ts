@@ -25,13 +25,15 @@ describe("bucketUsdToNearest", () => {
 
 describe("formatBucketedUsd", () => {
 	it.each<[number, number, string]>([
-		[0, 25, "~$0"],
-		[12, 25, "~$0"],
+		[0, 25, "<$25"],
+		[12, 25, "<$25"],
+		[-12, 25, "<$25"],
 		[13, 25, "~+$25"],
 		[58, 25, "~+$50"],
 		[146, 25, "~+$150"],
 		[-58, 25, "~−$50"],
 		[1234, 25, "~+$1,225"],
+		[4, 10, "<$10"],
 	])("formats %s bucketed by $%s as %s", (amount, bucket, expected) => {
 		expect(formatBucketedUsd(amount, bucket)).toBe(expected);
 	});

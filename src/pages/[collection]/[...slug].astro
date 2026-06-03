@@ -2,7 +2,7 @@
 import type { CollectionKey } from "astro:content";
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
+import { bucketUsdToNearest, formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
 import { type Category, formatCategoryList } from "@/lib/statement-format/categories";
 import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
 import { formatPercent } from "@/lib/statement-format/percent";
@@ -159,10 +159,12 @@ const pnlClass =
 							Top wallets ({statement.top_wallets.length})
 						</h3>
 						<p class="mb-4 font-sans text-xs leading-snug text-ink-5">
-							Highlighted skilled wallets that contributed to this window.
-							{" "}Truncated, opaque IDs — never reversible to a full on-chain
-							address. Dollar contribution is bucketed to the nearest ${PNL_BUCKET_USD} to avoid leaking
-							precise per-wallet sizing. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
+							Top wallets are selected by realized PnL magnitude.
+							{" "}Bucket shows that wallet's approximate hypothetical PnL
+							contribution, rounded to the nearest ${PNL_BUCKET_USD} to avoid
+							leaking precise per-wallet sizing — rows do not sum to headline
+							PnL. Truncated, opaque IDs, never reversible to a full on-chain
+							address. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
 						</p>
 						<ul class="flex flex-col font-mono text-sm">
 							<li class="grid grid-cols-[1fr_5rem_4rem_8rem] items-center gap-x-6 border-b border-ink-3 pb-2 text-eyebrow uppercase tracking-wider text-ink-5">
@@ -173,20 +175,29 @@ const pnlClass =
 							</li>
 							{statement.top_wallets.map((wallet) => {
 								const hasPnl = wallet.hypothetical_pnl_usd !== undefined;
-								const pnlColor =
-									hasPnl && (wallet.hypothetical_pnl_usd as number) < 0
-										? "text-loss"
-										: "text-accent";
-								const pctText = hasPnl
-									? formatContributionPercent(
+								const bucketed = hasPnl
+									? bucketUsdToNearest(
 											wallet.hypothetical_pnl_usd as number,
-											statement.hypothetical_pnl_usd,
+											PNL_BUCKET_USD,
 										)
 									: null;
+								const pnlColor =
+									bucketed === null || bucketed === 0
+										? "text-ink-5"
+										: bucketed < 0
+											? "text-loss"
+											: "text-accent";
+								const pctText =
+									bucketed !== null
+										? formatContributionPercent(
+												bucketed,
+												statement.hypothetical_pnl_usd,
+											)
+										: null;
 								return (
 									<li class="grid grid-cols-[1fr_5rem_4rem_8rem] items-center gap-x-6 border-b border-ink-3 py-3">
 										<span class="truncate text-accent">{wallet.truncated_id}</span>
-										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
+										<span class={`text-right tabular-nums ${pnlColor}`}>
 											{hasPnl
 												? formatBucketedUsd(
 														wallet.hypothetical_pnl_usd as number,
@@ -194,7 +205,7 @@ const pnlClass =
 													)
 												: "—"}
 										</span>
-										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
+										<span class={`text-right tabular-nums ${pnlColor}`}>
 											{pctText ?? "—"}
 										</span>
 										<span class="text-left text-eyebrow uppercase tracking-wider text-ink-5">
