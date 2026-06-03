@@ -132,6 +132,8 @@ The LP repo is untouched across all four slices — that is the schema-as-contra
 
 ## Phase 5 — Build Log series + about page (v2)
 
+> **Carved into a dedicated plan:** [`plans/slice-11-build-log.md`](./slice-11-build-log.md) — four sub-phases (article spine → about page → workflow tracer → batch + launch acceptance). The summary below remains as the parent-plan reference.
+
 ### What to build
 
 The "How this project was built" article series, derived from poly-track's git history and code changes. Each article narrates a build phase / refactor / methodology evolution and links to the relevant commit range. Generation method (LLM-summarized commits vs hand-written narrative; or hybrid: LLM produces the draft, human curates) is a Phase 5 discovery question — defer until v1 is in market and the cadence cost is known. Add an `/about` page covering the team (or single author), project origin, and acquirer-conversation contact.
