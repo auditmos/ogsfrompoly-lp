@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.8.0...v1.9.0) (2026-06-03)
+
+
+### Features
+
+* **site:** statements index + long-form detail + llms discovery ([3e93654](https://github.com/auditmos/ogsfrompoly-lp/commit/3e936541e1692f3e19ba582c3f98ed69db28a811))
+
 # [1.8.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.7.1...v1.8.0) (2026-06-02)
 
 
