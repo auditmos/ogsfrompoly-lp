@@ -1,0 +1,532 @@
+=== SESSION HANDOFF: OGSFROMPOLY-LP + AUDITMOS/OGSFROMPOLY (ISSUE #11 PHASE 4) ===
+
+  Generated 2026-06-03 for handoff to Codex / Cursor.
+  Source: chat session with Claude.
+
+--- TL;DR ---
+
+* Goal: ship auditmos/ogsfrompoly-lp#11 (Phase 4 cross-repo automation: poly-track produces weekly statements, opens PR on the LP repo via a GitHub App, Cloudflare deploys on merge).
+* All 4 slices shipped end-to-end. Mechanics fully proven: self-hosted GH Actions runner on the VPS, App token exchange, PR opening, LP CI green on generated content.
+* AC3 (real-data publication) is blocked behind a producer-side perf wall. Five rounds of refinement on compute_realized_pnl in auditmos/ogsfrompoly:src/poly_track/weekly_digest.py -- timeout bumps, scope cuts, bulk-JOIN refactor, SQL-aggregation rewrite -- did not converge. Per LP CLAUDE.md Lesson #6, this is structural divergence territory; stop refining.
+* auditmos/ogsfrompoly#179 is currently CLOSED with the SQL-aggregation rewrite (2a31c4b) but a 30-min lp-publish.yml dispatch on that commit cancelled at the timeout wall. Memory bounded (1.4 GB RSS peak) but runtime not bounded.
+* LP repo (ogsfrompoly-lp) was untouched for the entire Phase 4 effort except plans/ updates -- the schema-as-contract architecture from Phase 3 held perfectly.
+* Three architectural directions remain (none of them "tweak the CLI again"): pre-compute outcomes nightly into a cache table, narrow the published statement to fields derivable from state-db only, or park the cron and publish manually.
+
+--- Project Context ---
+
+* Name: ogsfrompoly (Polymarket skilled-trader detection LP) + poly-track (upstream producer)
+* Repos:
+  * LP: https://github.com/auditmos/ogsfrompoly-lp
+  * Producer: https://github.com/auditmos/ogsfrompoly
+* Local paths:
+  * LP: /Users/tkow/Documents/Code/Auditmos/ogsfrompoly-lp
+  * Producer: /Users/tkow/Documents/Code/Auditmos/ogsfrompoly
+* Stack LP: Astro 6 (output: "server"), @astrojs/cloudflare v13, Tailwind v4 (@tailwindcss/vite), Zod schemas, Astro content collections, Biome, Vitest, knip, pnpm 10, semantic-release
+* Stack producer (poly-track): Python (uv-managed), Typer CLI, DuckDB warehouse (warehouse_slim.duckdb 1.8 GB symlinked at /home/polytrack/poly-track/current/warehouse.duckdb), per-category SQLite state-dbs at /home/polytrack/poly-track/data/watch_state_{macro,politics}.sqlite (crypto removed mid-session)
+* Deployment:
+  * LP: Cloudflare Workers, custom domain ogsfrompoly.com, three env blocks (dev/staging/production) in wrangler.jsonc
+  * Producer: Hostinger VPS Ubuntu 24.04.4 LTS, srv1204871.hstgr.cloud, IP 72.62.27.139, polytrack user with passwordless sudo
+* Key deps: Astro 6, @astrojs/cloudflare v13, Zod, actions/create-github-app-token@v1, DuckDB, Polars (Python), Typer
+* Branch / working state:
+  * LP main: head is c82ab45 (docs(plan): lock phase 4 cross-repo automation decisions); council file plans/council-narrow-vs-broad-categories-2026-06-01.md is untracked locally but referenced in #11 comments via main URL -- Needs commit + push.
+  * Producer main: 2a31c4b Move realized-PnL walk into DuckDB to fix #179 OOM (SQL-aggregation fix landed)
+  * Producer CI: red for >7 days on a pre-existing Ruff format issue affecting src/poly_track/cli.py, cost_doctor.py, stream_supervisor.py + 3 test files. Unrelated to LP work; orthogonal. lp-publish.yml runs independently and is not gated on CI.
+
+--- Session Goal ---
+
+User came in asking how to organize/split work for ogsfrompoly-lp#11 (Phase 4: cross-repo automation from poly-track to the LP). Across the session: scoped the issue into 4 tracer-bullet slices, shipped all 4 producer-side, discovered + fixed multiple infrastructure defects (rsync path, firewall blocking GH-hosted runners, missing gh CLI, missing --warehouse arg), hit a producer-side perf wall, ran an LLM council session that triggered a category narrowing (crypto dropped), tried two perf fixes (bulk-JOIN then SQL-aggregation), and finally documented the structural divergence per Lesson #6.
+
+--- Timeline ---
+
+1. Scoped #11 into 4 tracer-bullet slices and 4 HITL decisions. Decisions locked via AskUserQuestion: weekly Tue 14:00 UTC, monthly 3rd @ 14:00 UTC, personal GitHub App scoped to LP repo only, runbook at auditmos/ogsfrompoly/docs/runbooks/lp-publish-fallback.md.
+2. Plan file updated. Commit c82ab45 on LP main (the only LP code commit this session).
+3. Slice 1 (producer 2489c0d): vendored LP statement-schema.ts byte-for-byte into src/poly_track/lp_schema/, added Python validator.py mirror, added .github/workflows/lp-schema-drift.yml (daily 06:00 UTC cron + push + PR triggers).
+4. Slice 2 (producer 4139d4a): poly-track report public {weekly,monthly} Typer subcommand + src/poly_track/report/public_statement.py payload builder. 22 unit tests in tests/test_cli_report_public.py.
+5. GitHub App setup (browser-only): created personal auditmos-poly-track-publisher GitHub App. User hit "Only on this account" install-scope gotcha; switched to "Any account" scope (still personal-owned), installed on auditmos/ogsfrompoly-lp only with pull_requests:write + contents:write. App ID + private key stashed as Actions secrets LP_PUBLISHER_APP_ID + LP_PUBLISHER_PRIVATE_KEY in auditmos/ogsfrompoly.
+6. Slice 3 (producer 4f52f77 then f729757 fix): lp-publish.yml workflow_dispatch:-only workflow that runs the CLI, exchanges App token via actions/create-github-app-token@v1, opens a PR on LP. Smoke-test dispatched: PR #14 opened by app/auditmos-poly-track-publisher. CI green on the smoke-test PR (heartbeat statement, 0 alerts because state-db empty in CI). PR #14 closed without merge.
+7. Slice 4 (producer c2cf58b): added cron triggers 0 14 * * 2 (weekly) + 0 14 3 * * (monthly), date math extracted to stdlib-only src/poly_track/report/lp_publish_window.py with 23 tests, runbook at docs/runbooks/lp-publish-fallback.md covering missed cron, App token rotation, schema drift, operator post-PR workflow.
+8. #168 discovered + fixed: tests/test_cli_playbook_pre_event.py failing on main since 943cfc1 (2026-05-30). Time-bomb fixture (static timestamps; subcommand filtered events relative to wall-clock now). User fixed via a413039 "Anchor pre-event CLI test fixture to wall-clock now".
+9. #169 discovered + fixed: lp-publish.yml rsync source path used ${VPS_DEPLOY_PATH}/current/data/watch_state.sqlite (singular) but VPS layout is three per-category files at ${VPS_DEPLOY_PATH}/data/watch_state_{macro,crypto,politics}.sqlite (no /current/). Fixed in 712df3f "Fix lp-publish rsync to pull per-category state DBs (#169)" by introducing CLI --state-db-dir flag.
+10. GH-hosted runner firewall block: dispatching lp-publish.yml from ubuntu-latest failed "ssh: connect to host 72.62.27.139 port 22: Connection timed out". UFW on the VPS only allowed port 22 from operator home IP 213.92.154.25. Five options evaluated; chose self-hosted runner.
+11. Self-hosted runner installed: generated dedicated CI keypair ~/.ssh/ogsfrompoly-ci_ed25519, appended pubkey to ~polytrack/.ssh/authorized_keys (label github-actions@auditmos-ogsfrompoly), stashed VPS_SSH_HOST/VPS_DEPLOY_PATH/VPS_SSH_PRIVATE_KEY secrets in auditmos/ogsfrompoly (later proved obsolete by self-hosted switch). Then: downloaded actions/runner v2.334.0 binary locally via gh release download, scp'd to VPS, ran ./config.sh --url https://github.com/auditmos/ogsfrompoly --token <REG> --name srv1204871-polytrack --labels vps-polytrack --work _work --unattended --replace, installed as systemd service via sudo ./svc.sh install polytrack && sudo ./svc.sh start. Runner online status srv1204871-polytrack with labels self-hosted,Linux,X64,vps-polytrack.
+12. lp-publish.yml switched to self-hosted (producer 4c58269): runs-on: [self-hosted, Linux, X64, vps-polytrack], rsync replaced with cp /home/polytrack/poly-track/data/watch_state_${cat}.sqlite data/vps_state/, empty-seed fallback dropped (single-purpose runner, fail loud).
+13. gh missing on runner: first dispatch on self-hosted failed at "Open draft PR on ogsfrompoly-lp" step with "gh: command not found". Branch was already pushed (lp-publish/weekly/2026-05-31-26770106166). User installed gh on VPS via apt (sudo apt install -y gh, version 2.45.0).
+14. --warehouse flag missing: re-dispatch produced PR #16 with alert_count: 1291 (real data) but hit_rate: 0.0, hypothetical_pnl_usd: 0, top_wallets: [] because CLI's optional --warehouse flag was not passed by the workflow. PR #16 closed without merge. Fix in producer 1970ccd to add --warehouse /home/polytrack/poly-track/current/warehouse.duckdb to the CLI invocation.
+15. Round 1: --warehouse run: dispatch cancelled at 15-min timeout in "Generate statement markdown" step.
+16. Round 2: timeout bumped 15 -> 30: producer ded125a. Re-dispatch cancelled at 30-min timeout.
+17. LLM Council session: invoked /llm-council on whether to narrow LP categories. Verdict: keep schema permissive, drop crypto from producer emission, defer regime-ledger expansion. Transcript at plans/council-narrow-vs-broad-categories-2026-06-01.md.
+18. Round 3: crypto dropped from producer (producer commits #171-#176). Then producer a96a383 removed crypto from lp-publish.yml state-db copy loop (drop crypto from "for cat in macro crypto politics"). Re-dispatch cancelled at 30-min timeout.
+19. #179 filed + closed (round 4): diagnosed compute_realized_pnl N+1 (one DuckDB query per unique wallet). Proposed bulk-JOIN. User implemented in producer 7dade88 "Bulk-JOIN compute_realized_pnl to fix weekly-digest N+1 (closes #179)". Re-dispatch failed at 22 min with OOM kill (6.6 GB RSS); the self-hosted runner systemd unit was killed in the cascade and manually restarted (sudo systemctl reset-failed && sudo systemctl start ...). Critical evidence: dmesg showed "oom-kill:constraint=CONSTRAINT_NONE ... cpuset=actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service ... task=poly-track,pid=1270545 ... total-vm:9051420kB, anon-rss:6622228kB". Root cause: fills_for_skilled has 5,203,792 rows; bulk-JOIN + .fetchall() materialised hundreds of thousands of Fill dataclass instances in Python heap.
+20. #179 reopened + closed (round 5): proposed SQL-aggregation rewrite (push PnL walk into DuckDB; return per-wallet aggregates, not fills). User implemented in producer 2a31c4b "Move realized-PnL walk into DuckDB to fix #179 OOM". New function _load_realized_pnl_per_wallet(conn, wallet_lcs: list[str]) -> dict[str, int] returns per-wallet PnL microunits (bounded by wallet count, ~500). Re-dispatch cancelled at 30-min timeout. Memory bounded (peak 1.4 GB RSS during run) but runtime not bounded.
+21. Structural finding posted on #11 and #179 reopened a second time with the round-5 evidence; LP issue parked behind producer perf work.
+
+--- Decisions ---
+
+| Decision                                                              | Rationale                                                                                                                                            | Alternatives Rejected                                                                                                                                                                                       |
+|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Weekly cron 0 14 * * 2                                                | After Mon US close, before Wed open; matches most prediction-market weekly cycles                                                                    | Mon 09:00 UTC (weekend settlement edge cases), Sun 22:00 UTC (low-traffic publish window)                                                                                                                   |
+| Monthly cron 0 14 3 * *                                               | Buffer for end-of-month settlement + opex line items                                                                                                 | 1st @ 09:00 UTC (catches unresolved markets), 5th @ 14:00 UTC (more conservative but trades freshness)                                                                                                       |
+| Personal GitHub App, "Any account" install scope                       | User controls App without org-admin coordination; revocable per-repo                                                                                  | Org-owned App (more setup, but more durable -- can transfer later if needed), fine-scoped PAT (issue #11 explicitly rejects PATs as non-auditable)                                                          |
+| Vendoring strategy: schema copy + Python validator + drift CI         | Bounded blast radius; CLI keeps single --state-db-dir contract                                                                                       | Option B --state-db-dir CLI extension (chosen for #169 specifically), Option C warehouse-only mode (CLI requires state-db)                                                                                  |
+| Don't bump SCHEMA_VERSION when narrowing categories                   | Schema permits crypto, producer just stops emitting; zero blast radius                                                                                | Bump enum 1 -> 2 (breaking change, Council recommended against; Contrarian advisor flagged that schema bump locks in a strategic decision that may need to reverse)                                          |
+| Self-hosted runner on VPS                                              | Aligns with operator's security posture (UFW allowlist by IP); no inbound SSH change; data never leaves VPS; outbound HTTPS to api.github.com allowed | Allowlist GH IP ranges (~2000 CIDRs, rotating, maintenance burden), VPS pushes outward (clean but multi-quarter rewrite), open port 22 to 0.0.0.0/0 (throws away allowlist), non-22 SSH port + keys (same maintenance) |
+| Dedicated CI keypair, not reusing operator Mac key                    | Independently revocable -- removing CI access doesn't break operator local access                                                                     | Reuse poly-track-deploy@Mac-20260515 key (simpler but coupled blast radius)                                                                                                                                  |
+| Install self-hosted runner as polytrack user                          | Matches existing deploy posture; minimal new attack surface                                                                                          | Dedicated gh-runner user with no sudo (cleaner but added ~10 min setup), runs as root (broader than needed for read-only job)                                                                                |
+| Replace VPS rsync with local cp after self-hosted switch              | Runner is on the VPS itself; no network hop; data already on disk; UFW unchanged                                                                      | Keep rsync as fallback (no scenario where it helps; the empty-seed fallback masked the #169 path bug and we don't want that pattern again)                                                                  |
+| Bulk-JOIN -> SQL-aggregation -> stop after round 5                    | Lesson #6 invoked: 5 rounds of refinement without convergence is structural divergence                                                                | "One more tweak" -- explicitly the goalpost-moving pattern the lesson warns against                                                                                                                          |
+| Drop crypto from producer (per LLM Council)                           | Operator months-long observation: crypto markets on Polymarket are too thin / too retail-driven for skilled signal                                    | Keep three categories with honest negative reporting on crypto + politics (Council Expansionist; rejected because n=1 evidence isn't publication-grade and the LP is a solo-dev op)                          |
+| Park #11 behind producer #179                                          | Producer-side perf is the blocker; LP repo is mechanically complete; AC2/AC3 can close in one dispatch once #179 is structurally resolved             | Manually run CLI on laptop and commit statement (closes AC3 once but leaves cron permanently broken)                                                                                                         |
+
+--- Constraints, Gotchas, and Hard Rules ---
+
+* LP CLAUDE.md Lesson #1: never quote performance ETAs without measurement. Broken twice this session -- both bulk-JOIN ("single-digit seconds") and SQL-aggregation ("memory bounded, should be fast") estimates were unmeasured. Mea culpas recorded on #179.
+* LP CLAUDE.md Lesson #6: structural divergence after 2+ rounds of refinement -> stop refining, document the finding, mark AC partial. Invoked formally at round 4 and round 5 of _compute_report_inputs perf work.
+* LP CLAUDE.md Lesson #4: completeness claims must enumerate verified vs unverified ACs. Followed throughout via the AC status tables in #11 progress comments.
+* LP schema is a stable cross-repo contract. Dropping enum values is a BREAKING change requiring SCHEMA_VERSION bump. Schema is at auditmos/ogsfrompoly-lp/src/content/statement-schema.ts; doc at docs/statement-schema.md. Currently SCHEMA_VERSION = 1 and Category enum still has crypto (intentional per Council decision).
+* LP disclosure policy: never publish full wallet addresses (schema rejects truncated_id matching 0x[0-9a-f]{40} regex). Never publish live alerts. Only retrospective aggregate results. Producer side maps internal digest categories Politics/Macro/FOMC/Earnings/Crypto -> LP enum politics/macro-finance/crypto; drops Sports/Pop Culture.
+* LP draft fence: draft: true in frontmatter excludes the entry from feeds, the homepage teaser, and BOTH dual-format routes (HTML + .md). Generated statements default to draft: true -- HITL gate before publication.
+* VPS UFW state: default deny incoming; only allow 22/tcp from 213.92.154.25 # SSH from operator home. Outbound is default-allow. Any GitHub-hosted runner trying to SSH in will silently time out via the UFW DROP rule (not REJECT, so 2-min TCP retry exhaustion).
+* VPS layout: /home/polytrack/poly-track/ is the deploy base (verified via scripts/deploy_vps.sh:30 and ops/RUNBOOK.md:123). Per-category SQLite state-dbs live at data/watch_state_{macro,politics}.sqlite directly (NO /current/ subdir for state-dbs). crypto watch_state file was removed when crypto category was dropped from producer. Warehouse symlink: /home/polytrack/poly-track/current/warehouse.duckdb -> /home/polytrack/poly-track/releases/warehouse_slim.duckdb (1.8 GB). fills_for_skilled table inside the warehouse has 5,203,792 rows.
+* VPS memory: 7.8 GB total, ~2.6-2.8 GB normally used by poly-track watch trackers + doctor cost + system. Any CLI process pushing past ~5 GB risks OOM cascade that kills both the CLI AND the self-hosted runner systemd unit.
+* VPS hosts BOTH live poly-track watch trackers (cron-driven) AND the self-hosted GH Actions runner. Memory contention is a real concern; OOM in the runner unit cgroup just happened once this session.
+* Self-hosted runner: actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service systemd unit, runs as polytrack user, work dir /home/polytrack/actions-runner/_work/ogsfrompoly/ogsfrompoly/. Restart: sudo systemctl reset-failed actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service && sudo systemctl start actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service.
+* gh CLI was missing on VPS at session start; installed via apt at /usr/bin/gh version 2.45.0 from noble-security/universe. Required by lp-publish.yml's gh pr create step. PATH for runner inherits systemd default which includes /usr/bin, so newly-installed gh is visible to spawned bash without runner restart.
+* gh run watch --exit-status exit code is unreliable for run conclusion; ALWAYS verify via gh run view <id> --json status,conclusion. Twice this session a watched run returned exit 0 but the actual conclusion was cancelled or failure.
+* Direct push to auditmos/ogsfrompoly main is BLOCKED by the Claude Code auto mode classifier for this session. Pattern: I edit + commit locally; the user must run "git push origin main" manually. This happened 4 times (4c58269, 1970ccd, ded125a, a96a383).
+* LP repo direct push to main IS allowed without per-commit confirmation (different classifier scope). One commit landed on LP main this session: c82ab45 docs(plan): lock phase 4 cross-repo automation decisions.
+* Pre-existing CI red on auditmos/ogsfrompoly main: Ruff format check fails on 6 unrelated files. NOT a regression from any LP work. lp-publish.yml does NOT gate on CI; runs independently. Trivial fix is "uv run ruff format src tests" + commit, but nobody's done it this session.
+* Atomic imports rule from LP CLAUDE.md (.claude/rules/atomic-imports.md): PostToolUse hooks may auto-delete unused imports between sequential Edit calls. Always combine import additions with their usage in a single Edit. If too large for one Edit, add the usage FIRST (creates import errors temporarily), then add the import SECOND.
+
+--- Files Touched ---
+
+| Path                                                                       | Purpose                                                                                                                              | Status                                                       |
+|----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| ogsfrompoly-lp/plans/ogsfrompoly-lp.md                                      | Plan file; Phase 4 section locked with HITL decisions + tracer-bullet slicing                                                         | modified, committed c82ab45                                  |
+| ogsfrompoly-lp/plans/council-narrow-vs-broad-categories-2026-06-01.md       | LLM Council transcript + chairman verdict                                                                                            | created locally, uncommitted (still in git status as ??)     |
+| ogsfrompoly-lp/handoffs/handoff-ogsfrompoly-lp-2026-06-03.md                | This handoff (md)                                                                                                                    | created                                                      |
+| ogsfrompoly-lp/handoffs/handoff-ogsfrompoly-lp-2026-06-03.txt                | This handoff (txt)                                                                                                                   | created                                                      |
+| ogsfrompoly/src/poly_track/lp_schema/ (dir)                                 | Vendored LP schema + Python validator (Slice 1)                                                                                      | created by user, commit 2489c0d                              |
+| ogsfrompoly/src/poly_track/lp_schema/statement-schema.ts                    | Byte-for-byte vendored copy of LP source schema                                                                                      | created                                                      |
+| ogsfrompoly/src/poly_track/lp_schema/validator.py                           | Python mirror of Zod schema for producer-side validation                                                                              | created                                                      |
+| ogsfrompoly/.github/workflows/lp-schema-drift.yml                           | Daily 06:00 UTC drift-check fetching LP main:src/content/statement-schema.ts via raw URL and diffing                                  | created                                                      |
+| ogsfrompoly/src/poly_track/report/public_statement.py                       | Payload builder mapping internal digest categories -> LP enum, truncating wallet IDs, rendering frontmatter + body                    | created Slice 2 4139d4a                                      |
+| ogsfrompoly/src/poly_track/report/lp_publish_window.py                      | stdlib-only date math: cron string -> (type, period_start, period_end). Runs BEFORE uv sync                                          | created Slice 4 c2cf58b                                      |
+| ogsfrompoly/src/poly_track/cli.py                                           | report public {weekly,monthly} subcommand added; --state-db-dir and other flags                                                       | modified Slices 2/3/4 + #169                                 |
+| ogsfrompoly/src/poly_track/weekly_digest.py                                 | compute_outcome_quality, compute_hypothetical_pnl, compute_realized_pnl, _load_realized_pnl_per_wallet. PERF HOTSPOT                  | modified multiple times; current at 2a31c4b                  |
+| ogsfrompoly/tests/test_cli_report_public.py                                 | 22+ tests for Slice 2; 271 lines added in #169 fix; new tests for --state-db-dir                                                      | created/extended                                             |
+| ogsfrompoly/tests/test_lp_publish_window.py                                 | 23 tests for date math                                                                                                                | created Slice 4                                              |
+| ogsfrompoly/tests/test_lp_schema.py                                         | Tests for vendored validator                                                                                                          | created Slice 1                                              |
+| ogsfrompoly/tests/test_weekly_digest_pnl.py                                 | Extended in #179 (~258 line additions) for bulk-JOIN; further extended in SQL-aggregation fix                                         | modified                                                     |
+| ogsfrompoly/tests/test_cli_playbook_pre_event.py                            | Fixed in #168 "Anchor pre-event CLI test fixture to wall-clock now" (a413039)                                                         | modified                                                     |
+| ogsfrompoly/.github/workflows/lp-publish.yml                                | Slice 3 created (4f52f77 + f729757), Slice 4 added cron (c2cf58b), #169 rsync fix (712df3f), --warehouse arg (1970ccd), runs-on: self-hosted + local cp (4c58269), timeout-minutes: 30 (ded125a), drop crypto from loop (a96a383) | created + heavily modified                                  |
+| ogsfrompoly/docs/runbooks/lp-publish-fallback.md                            | Operator runbook                                                                                                                      | created Slice 4                                              |
+| GitHub state: ogsfrompoly-lp#11                                              | Phase 4 issue; 5+ progress comments, 1 council finding, blocker label removed                                                         | annotated                                                    |
+| GitHub state: ogsfrompoly-lp#14, #16                                         | Smoke-test PRs from publisher App                                                                                                     | both closed without merge                                    |
+| GitHub state: ogsfrompoly#168                                                | Pre-existing CI failure                                                                                                               | closed by user via a413039                                   |
+| GitHub state: ogsfrompoly#169                                                | rsync source path doesn't match VPS layout                                                                                            | closed by user via 712df3f                                   |
+| GitHub state: ogsfrompoly#179                                                | compute_realized_pnl perf                                                                                                             | currently CLOSED with 2a31c4b but reopened + re-closed       |
+| VPS: ~polytrack/.ssh/authorized_keys                                         | Added line: ssh-ed25519 AAAAC3...bryI github-actions@auditmos-ogsfrompoly                                                              | appended                                                     |
+| VPS: /etc/systemd/system/actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service | GitHub Actions runner systemd unit                                                                                                    | created via sudo ./svc.sh install polytrack                  |
+| Local: ~/.ssh/ogsfrompoly-ci_ed25519 + .pub                                  | Dedicated CI keypair (no passphrase) -- now obsolete since runner is on VPS itself                                                    | created                                                      |
+| Actions secrets: LP_PUBLISHER_APP_ID, LP_PUBLISHER_PRIVATE_KEY                | Personal GitHub App auth                                                                                                              | stashed                                                      |
+| Actions secrets: VPS_SSH_HOST, VPS_DEPLOY_PATH, VPS_SSH_PRIVATE_KEY           | rsync-era secrets, now historical                                                                                                     | stashed but unused after self-hosted switch                  |
+| Local memory: ~/.claude/projects/-Users-tkow-Documents-Code-Auditmos-ogsfrompoly-lp/memory/project_publish_cadence.md + MEMORY.md | Persisted cadence decision for future sessions                                                                                       | created                                                      |
+
+--- Code Artifacts ---
+
+auditmos/ogsfrompoly-lp/plans/ogsfrompoly-lp.md -- Phase 4 section (the only LP-side change in c82ab45):
+
+--- CODE: plans/ogsfrompoly-lp.md (Phase 4 section) [FINAL] ---
+    ## Phase 4 -- Cross-repo automation: poly-track -> LP (v2)
+
+    User stories (forward-looking): the "author" stories already covered in v1 become *operator* stories in v2 -- the publishing surface stays the same; the producer changes from human to CLI.
+
+    ### What to build
+
+    Add a `poly-track report public {weekly,monthly}` subcommand to the upstream poly-track CLI that reads the warehouse and emits a markdown file matching the schema frozen in Phase 3. A GitHub Action in poly-track runs on the agreed cron (see locked decisions below), invokes the CLI, and opens a pull request on `ogsfrompoly-lp` via a fine-scoped GitHub App token containing only the generated markdown file. Cloudflare deploys on merge.
+
+    The schema does not change. The site does not change. Only the producer changes.
+
+    ### Locked decisions (2026-06-01)
+
+    | Decision | Value | Notes |
+    | --- | --- | --- |
+    | Weekly cron | Tue 14:00 UTC (`0 14 * * 2`) | After Mon US close, before Wed open. |
+    | Monthly cron | 3rd @ 14:00 UTC (`0 14 3 * *`) | Buffer for end-of-month settlement + opex line items. |
+    | Publisher identity | Personal GitHub App, installed on `ogsfrompoly-lp` only | Scopes: `pull_requests:write` + `contents:write`. Not a PAT. |
+    | Runbook home | `ogsfrompoly/docs/runbooks/lp-publish-fallback.md` | Lives next to the workflow it documents. |
+
+    ### Slicing (tracer-bullet order)
+
+    1. Slice 1 -- Schema vendoring + drift CI (upstream `ogsfrompoly`)
+    2. Slice 2 -- CLI emits valid file locally (upstream)
+    3. Slice 3 -- Manual PR via App (upstream + GitHub ops)
+    4. Slice 4 -- Cron + runbook (upstream)
+
+    The LP repo is untouched across all four slices -- that is the schema-as-contract pay-off from Phase 3.
+
+    ### Acceptance criteria
+
+    - [ ] poly-track CLI subcommand emits a markdown file that passes the LP's schema validation when committed
+    - [ ] GitHub Action in poly-track runs on cron, opens a PR on `ogsfrompoly-lp` via a fine-scoped GitHub App (not a PAT)
+    - [ ] PR merges trigger a Cloudflare deploy that renders the new statement at its stable URL
+    - [ ] A statement schema change in the LP repo fails the poly-track CLI's local validation before commit, signalling the breaking change
+    - [ ] Authoring runbook documents the manual-fallback path if the GitHub App token rotates or the cron misses
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/.github/workflows/lp-publish.yml (runs-on, 4c58269) [FINAL] ---
+        # Self-hosted runner installed on the VPS itself (see
+        # docs/runbooks/lp-publish-fallback.md "Runner administration"). The
+        # state-dbs (~950 MB total) live at /home/polytrack/poly-track/data/
+        # on the same host, so the workflow uses a local copy instead of an
+        # SSH rsync -- UFW only allowlists the operator's home IP, and
+        # widening that to GitHub-hosted runner ranges would inflate the
+        # inbound attack surface for what is fundamentally a read-only job.
+        runs-on: [self-hosted, Linux, X64, vps-polytrack]
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/.github/workflows/lp-publish.yml (timeout-minutes, ded125a) [FINAL] ---
+        # Warehouse-attached `report public` runs three per-alert compute
+        # functions over the full window (compute_outcome_quality,
+        # compute_hypothetical_pnl, compute_realized_pnl) against a ~1.8 GB
+        # DuckDB warehouse. Observed runtime on the self-hosted runner: ~11.5
+        # min for a 7-day weekly window with ~1300 alerts before a previous
+        # 15-min cap killed the step at ~75 % progress. 30 min gives ~2x the
+        # observed runtime as headroom; if a future weekly suite blows past
+        # that, the right fix is to profile the compute functions, not to
+        # keep bumping the timeout.
+        timeout-minutes: 30
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/.github/workflows/lp-publish.yml (Source state-db, a96a383) [FINAL] ---
+          - name: Source state-db (local copy from VPS)
+            run: |
+              set -euo pipefail
+              mkdir -p data/vps_state
+              # Self-hosted runner is on the same VPS that runs poly-track,
+              # so each watch_state_<cat>.sqlite is already on local disk
+              # at /home/polytrack/poly-track/data/. cp (not symlink) so the
+              # CLI's read traffic doesn't share an inode with the live
+              # tracker file. Fail loud if any per-category file is missing
+              # -- the runner is single-purpose and an empty-seed fallback
+              # would only mask data outages.
+              #
+              # Crypto category was dropped from poly-track (closes #171-#176)
+              # after months of observation that Polymarket crypto markets show
+              # no skilled-trader signal -- the LP schema still permits crypto
+              # entries (council decision: don't bump SCHEMA_VERSION; narrow
+              # output without narrowing the contract), but the producer no
+              # longer emits them and there is no watch_state_crypto.sqlite on
+              # the VPS to copy.
+              for cat in macro politics; do
+                src="/home/polytrack/poly-track/data/watch_state_${cat}.sqlite"
+                if [[ ! -f "$src" ]]; then
+                  echo "::error::missing required state-db at $src"
+                  exit 1
+                fi
+                cp "$src" "data/vps_state/watch_state_${cat}.sqlite"
+              done
+              ls -lh data/vps_state/
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/.github/workflows/lp-publish.yml (CLI invocation, 1970ccd) [FINAL] ---
+              # --warehouse: outcome resolution + hypothetical PnL + top-wallet
+              # ranking all come from the slim warehouse. Without it, hit_rate /
+              # hypothetical_pnl_usd / top_wallets collapse to no-data zeros that
+              # *render* as "0/0/empty" without any "outcomes pending" caveat --
+              # i.e. they read as honest claims about a fully-resolved window.
+              # current/ is the symlink that survives release rotations.
+              uv run poly-track report public "$REPORT_TYPE" \
+                --state-db-dir data/vps_state/ \
+                --warehouse /home/polytrack/poly-track/current/warehouse.duckdb \
+                --period-start "$PERIOD_START" \
+                --period-end "$PERIOD_END" \
+                --bankroll-usd "$BANKROLL_USD" \
+                --out /tmp/statement.md
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/src/poly_track/weekly_digest.py _load_fills_for_wallet pre-#179 [SUPERSEDED] ---
+    Replaced because: N+1 problem. One DuckDB query per unique wallet (~500 queries per 7-day window) against fills_for_skilled (5.2M rows), OR clause across lower(maker) and lower(taker) blocks any index use. Dominant cost of weekly digest cron at >=30 min on the self-hosted runner.
+
+    def _load_fills_for_wallet(conn: duckdb.DuckDBPyConnection, wallet_lc: str) -> list[Fill]:
+        """Read every fills_for_skilled row touching wallet_lc and convert
+        each row back into a Fill so the existing pnl.py primitives can consume them."""
+        rows = conn.execute(
+            "SELECT id, timestamp, transaction_hash, order_hash, maker, taker,"
+            " side, token_id, maker_amount, taker_amount, fee"
+            " FROM fills_for_skilled"
+            " WHERE lower(maker) = ? OR lower(taker) = ?"
+            " ORDER BY timestamp ASC",
+            [wallet_lc, wallet_lc],
+        ).fetchall()
+        # ... row -> Fill conversion (see commit history)
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/src/poly_track/weekly_digest.py _load_fills_for_wallets bulk-JOIN (7dade88) [SUPERSEDED] ---
+    Replaced because: OOM-killed the self-hosted runner at 6.6 GB RSS after 22 min. fills_for_skilled has 5,203,792 rows; the bulk JOIN + .fetchall() materialised hundreds of thousands of Fill dataclass instances into Python heap. The per-wallet design accidentally bounded memory by being sequential. dmesg: oom-kill:constraint=CONSTRAINT_NONE ... cpuset=actions.runner... task=poly-track,pid=1270545 ... total-vm:9051420kB, anon-rss:6622228kB.
+
+    def _load_fills_for_wallets(conn, wallet_lcs: list[str]) -> dict[str, list[Fill]]:
+        if not wallet_lcs:
+            return {}
+        target_wallets = pl.DataFrame({"wallet_lc": list(wallet_lcs)}, schema={"wallet_lc": pl.Utf8})
+        conn.register(_TARGET_WALLETS_VIEW, target_wallets)
+        try:
+            rows = conn.execute(f"""
+                SELECT
+                    CASE
+                        WHEN lower(f.maker) IN (SELECT wallet_lc FROM {_TARGET_WALLETS_VIEW})
+                        THEN lower(f.maker)
+                        ELSE lower(f.taker)
+                    END AS wallet_lc,
+                    f.id, f.timestamp, f.transaction_hash, f.order_hash,
+                    f.maker, f.taker, f.side, f.token_id,
+                    f.maker_amount, f.taker_amount, f.fee
+                FROM fills_for_skilled f
+                JOIN {_TARGET_WALLETS_VIEW} w
+                  ON lower(f.maker) = w.wallet_lc OR lower(f.taker) = w.wallet_lc
+                ORDER BY wallet_lc, f.timestamp ASC
+            """).fetchall()
+        finally:
+            with contextlib.suppress(Exception):
+                conn.unregister(_TARGET_WALLETS_VIEW)
+        # group rows by wallet_lc in Python (omitted)
+--- END ---
+
+--- CODE: auditmos/ogsfrompoly/src/poly_track/weekly_digest.py _load_realized_pnl_per_wallet SQL-aggregation (2a31c4b) [FINAL] ---
+    Status note: memory-bounded (peak 1.4 GB RSS observed), but a 30-min lp-publish.yml dispatch on this commit still cancelled at the timeout wall. The fix solved the OOM but not the runtime. Re-opening documented at auditmos/ogsfrompoly#179 comment 4606330754.
+
+    def _load_realized_pnl_per_wallet(conn, wallet_lcs: list[str]) -> dict[str, int]:
+        """Return per-wallet realized PnL in USDC microunits, computed
+        entirely inside DuckDB (issue #179 re-open).
+
+        The previous shape -- bulk-JOIN fills_for_skilled and .fetchall()
+        millions of joined fill rows into Python Fill instances -- passed
+        the single-query AC but OOM-killed the self-hosted runner at 6.6 GB
+        ... (full body in src; key shape is: SQL window functions walk fills
+        in (wallet, token) order, track running cost basis, emit closed-position
+        PnL contributions, GROUP BY wallet_lc, return one row per wallet)
+        """
+        # Full implementation in auditmos/ogsfrompoly@2a31c4b -- not pasted
+        # here because the receiving model should read it directly to verify
+        # the SQL window-function shape and any optimisation hints.
+--- END ---
+
+Note for receiving model: read this function VERBATIM from the producer repo before iterating. The chat session never captured the full implementation; we only verified the signature change (dict[str, list[Fill]] -> dict[str, int]) and observed the runtime behaviour.
+
+--- CODE: #179 reopen SQL-aggregation sketch (the shape that landed) [DRAFT] ---
+    # Inside DuckDB: for each (wallet, token) pair, walk fills in timestamp order,
+    # track running cost basis, emit closed-position PnL contributions only.
+    # Return one row per wallet with the summed realized PnL in microunits.
+    result = conn.execute("""
+        WITH wallet_fills AS (
+            SELECT
+                CASE WHEN lower(f.maker) = w.wallet_lc THEN w.wallet_lc
+                     ELSE w.wallet_lc END AS wallet_lc,
+                f.token_id,
+                f.timestamp,
+                f.side, f.maker_amount, f.taker_amount, f.fee
+            FROM fills_for_skilled f
+            JOIN _target_wallets w
+              ON lower(f.maker) = w.wallet_lc OR lower(f.taker) = w.wallet_lc
+        ),
+        -- per-(wallet, token) cost-basis walk via window functions
+        ...
+        SELECT wallet_lc, SUM(closed_pnl_microunits) AS realized_pnl_microunits
+        FROM closed_legs
+        GROUP BY wallet_lc
+    """).fetchall()
+--- END ---
+
+REJECTED concept-level choices:
+
+* Reuse operator Mac SSH key for CI -- Rejected because: revoking CI access later would require revoking operator's local access too. Generated a dedicated CI keypair instead. (no code; behavioural choice)
+* Bump SCHEMA_VERSION 1 -> 2 to drop crypto from enum -- Rejected because: LLM Council recommended keeping the schema permissive so the strategic decision (narrow output) can be reversed without a coordinated schema change. (no code; behavioural choice)
+* Open VPS port 22 to GitHub Actions IP ranges in UFW -- Rejected because: ~2000+ rotating CIDRs from https://api.github.com/meta, recurring maintenance burden, widens inbound attack surface. (no code; behavioural choice)
+* Allow rm -rf /tmp/lp-publish-smoke after CI key smoke test -- Rejected because: classifier denied as destructive bash outside explicit "go ahead with all four steps" authorization. (no code; environmental note)
+* Auto-push 4c58269 to auditmos/ogsfrompoly main after local commit -- Rejected because: Claude Code auto mode classifier blocked direct push to producer repo's default branch without per-commit explicit authorization. (no code; environmental note)
+
+--- Errors and Fixes ---
+
+| Error                                                                                                                              | Root Cause                                                                                                                                                            | Fix                                                                                                                                       |
+|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| ssh: connect to host 72.62.27.139 port 22: Connection timed out (GH-hosted runner -> VPS rsync)                                    | UFW default deny incoming; only 22/tcp ALLOW IN from 213.92.154.25 for operator home IP. GitHub-hosted runner IPs silently dropped.                                    | Switched to self-hosted runner on the VPS itself. Producer 4c58269.                                                                       |
+| rsync: connection unexpectedly closed (0 bytes received so far)                                                                    | Same UFW issue                                                                                                                                                         | Same fix.                                                                                                                                  |
+| tests/test_cli_playbook_pre_event.py - assert 0 == 1 (where 0 = len([]))                                                            | Time-bomb fixture rotted as wall-clock now passed event timestamps                                                                                                     | User fix a413039 "Anchor pre-event CLI test fixture to wall-clock now (#168)".                                                              |
+| rsync at ${VPS_DEPLOY_PATH}/current/data/watch_state.sqlite fails "No such file or directory"                                     | VPS layout is ${VPS_DEPLOY_PATH}/data/watch_state_{macro,crypto,politics}.sqlite (no /current/, three per-category files). Empty-seed fallback masked the defect.       | Producer 712df3f loop over {macro,crypto,politics}; CLI extended with --state-db-dir.                                                       |
+| gh: command not found (after self-hosted switch)                                                                                   | gh CLI never installed on VPS                                                                                                                                          | User ran sudo apt install -y gh (Ubuntu universe v2.45.0).                                                                                  |
+| PR #16 had alert_count: 1291 but hit_rate: 0.0, top_wallets: []                                                                    | lp-publish.yml did not pass --warehouse to CLI; _compute_report_inputs returned empty dicts which render as honest zeros                                               | Producer 1970ccd "Pass --warehouse to lp-publish CLI invocation". PR #16 closed without merge.                                              |
+| Round-1 dispatch cancelled at 15-min timeout                                                                                       | Warehouse-attached run slower than no-warehouse path                                                                                                                   | Producer ded125a bumped timeout-minutes 15 -> 30 (insufficient; led to rounds 2-5).                                                         |
+| Round-4 dispatch failed at 22 min: OOM kill                                                                                        | dmesg: Out of memory: Killed process 1270545 (poly-track) total-vm:9051420kB, anon-rss:6622228kB. Bulk-JOIN .fetchall() materialised hundreds of thousands of Fill instances. | (a) Manual runner restart. (b) #179 reopened with SQL-aggregation proposal.                                                                  |
+| Round-5 dispatch cancelled at 30-min timeout, memory bounded at 1.4 GB RSS peak                                                    | SQL-aggregation rewrite pushed PnL walk into DuckDB; memory resolved. But total query time exceeds 30 min wallclock. OR JOIN predicate against fills_for_skilled 5.2M rows. | Open. Five rounds without convergence -> Lesson #6 -> stop refining; pick one of three architectural directions (see Next Steps).            |
+| gh secret list grep VPS appeared empty after stashing                                                                              | None -- secrets did stash successfully                                                                                                                                  | None needed. (Recorded so receiving model doesn't chase a ghost.)                                                                            |
+| gh run watch --exit-status returned exit 0 but run cancelled                                                                       | Bug in gh run watch exit-status semantics                                                                                                                              | Always verify with gh run view --json status,conclusion                                                                                     |
+| Direct push git push origin main to auditmos/ogsfrompoly denied by classifier                                                      | Auto mode classifier policy                                                                                                                                            | User pushes manually after I commit locally. 4 commits this session.                                                                         |
+
+--- Commands ---
+
+--- CODE: command-summary.sh [FINAL] ---
+    # Issue scoping + decision capture
+    gh issue view 11 --repo auditmos/ogsfrompoly-lp
+    gh issue view 10 --repo auditmos/ogsfrompoly-lp
+    gh issue comment 11 --repo auditmos/ogsfrompoly-lp --body "..."
+    gh issue edit 11 --repo auditmos/ogsfrompoly-lp --remove-label blocked
+
+    # LP plan file commit
+    cd /Users/tkow/Documents/Code/Auditmos/ogsfrompoly-lp
+    git add plans/ogsfrompoly-lp.md
+    git commit -m "docs(plan): lock phase 4 cross-repo automation decisions (cron, app scope, runbook home)"
+    git pull --rebase
+    git push
+
+    # Producer-side per-commit pattern (user pushes manually)
+    cd /Users/tkow/Documents/Code/Auditmos/ogsfrompoly
+    git add .github/workflows/lp-publish.yml
+    git commit -m "<commit message>"
+    # User runs: git push origin main
+
+    # GitHub App registration token + runner install
+    REG_TOKEN=$(gh api -X POST /repos/auditmos/ogsfrompoly/actions/runners/registration-token --jq '.token')
+    gh release download v2.334.0 --repo actions/runner --pattern 'actions-runner-linux-x64-2.334.0.tar.gz' --dir /tmp/
+    scp /tmp/actions-runner-linux-x64-2.334.0.tar.gz poly-track:~/actions-runner-linux-x64-2.334.0.tar.gz
+    ssh poly-track 'mkdir -p ~/actions-runner && cd ~/actions-runner && tar xzf ~/actions-runner-linux-x64-2.334.0.tar.gz'
+    ssh poly-track "cd ~/actions-runner && ./config.sh --url https://github.com/auditmos/ogsfrompoly --token '$REG_TOKEN' --name srv1204871-polytrack --labels vps-polytrack --work _work --unattended --replace"
+    ssh poly-track 'cd ~/actions-runner && sudo ./svc.sh install polytrack && sudo ./svc.sh start && sudo ./svc.sh status'
+
+    # Dedicated CI keypair for VPS (obsolete but kept for audit trail)
+    ssh-keygen -t ed25519 -N "" -C "github-actions@auditmos-ogsfrompoly" -f ~/.ssh/ogsfrompoly-ci_ed25519 -q
+    chmod 600 ~/.ssh/ogsfrompoly-ci_ed25519
+    chmod 644 ~/.ssh/ogsfrompoly-ci_ed25519.pub
+    ssh poly-track 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/ogsfrompoly-ci_ed25519.pub
+
+    # Stash secrets
+    gh secret set LP_PUBLISHER_APP_ID --repo auditmos/ogsfrompoly --body "<app-id>"
+    gh secret set LP_PUBLISHER_PRIVATE_KEY --repo auditmos/ogsfrompoly < ~/Downloads/<app-name>.<date>.private-key.pem
+    gh secret set VPS_SSH_HOST --repo auditmos/ogsfrompoly --body "polytrack@72.62.27.139"
+    gh secret set VPS_DEPLOY_PATH --repo auditmos/ogsfrompoly --body "/home/polytrack/poly-track"
+    gh secret set VPS_SSH_PRIVATE_KEY --repo auditmos/ogsfrompoly < ~/.ssh/ogsfrompoly-ci_ed25519
+
+    # Install gh on VPS
+    ssh poly-track 'sudo apt install -y gh'
+
+    # Dispatch lp-publish
+    gh workflow run lp-publish.yml --repo auditmos/ogsfrompoly --ref main \
+      -f type=weekly \
+      -f period_start=2026-05-25 \
+      -f period_end=2026-05-31 \
+      -f bankroll_usd=10000
+
+    # Watch + verify
+    gh run list --repo auditmos/ogsfrompoly --workflow lp-publish.yml --limit 1 --json databaseId,status
+    gh run watch <run-id> --repo auditmos/ogsfrompoly --exit-status
+    gh run view <run-id> --repo auditmos/ogsfrompoly --json conclusion,status,createdAt,updatedAt
+    gh run view <run-id> --repo auditmos/ogsfrompoly --json jobs -q '.jobs[].steps[] | "[\(.conclusion // .status)] \(.name)"'
+    gh run view <run-id> --repo auditmos/ogsfrompoly --log-failed 2>&1 | tail -40
+
+    # Cancel + clean stale PRs
+    gh pr close 14 --repo auditmos/ogsfrompoly-lp --comment "..."
+    gh pr close 16 --repo auditmos/ogsfrompoly-lp --comment "..."
+
+    # OOM diagnosis (round 4)
+    ssh poly-track 'sudo dmesg -T 2>/dev/null | tail -20 | grep -iE "killed|oom|memory"'
+    ssh poly-track 'sudo systemctl status actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service --no-pager | head -10'
+
+    # Runner restart after OOM cascade
+    ssh poly-track 'sudo systemctl reset-failed actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service && sudo systemctl start actions.runner.auditmos-ogsfrompoly.srv1204871-polytrack.service'
+
+    # Live process inspection during run
+    ssh poly-track 'ps -eo pid,etime,pcpu,pmem,rss,args --sort=-pcpu | grep -E "report public" | grep -v grep'
+    ssh poly-track 'free -h | head -2'
+
+    # Verify warehouse state
+    ssh poly-track 'ls -lh /home/polytrack/poly-track/data/*.duckdb /home/polytrack/poly-track/releases/*.duckdb /home/polytrack/poly-track/current/*.duckdb'
+    ssh poly-track 'cd ~/poly-track && /home/polytrack/poly-track/repo/.venv/bin/python -c "import duckdb; c = duckdb.connect(\"current/warehouse.duckdb\", read_only=True); print(c.execute(\"SELECT COUNT(*) FROM fills_for_skilled\").fetchone())"'
+
+    # Issue management
+    gh issue create --repo auditmos/ogsfrompoly --title "..." --label bug --body "..."
+    gh issue comment 179 --repo auditmos/ogsfrompoly --body "..."
+    gh issue reopen 179 --repo auditmos/ogsfrompoly --comment "..."
+    gh issue view 179 --repo auditmos/ogsfrompoly --json state,closedAt
+--- END ---
+
+--- User Preferences and Style Rules ---
+
+* Lesson #1 (CLAUDE.md): never quote performance ETAs without measurement. Do calibration first OR cite documented benchmark OR explicitly say "I don't know -- want me to do a 5-min calibration?".
+* Lesson #4 (CLAUDE.md): completeness claims must enumerate verified vs unverified ACs. Headlines should be "X of N ACs verified, blocking on Y", never just "complete".
+* Lesson #6 (CLAUDE.md): structural divergence vs implementation gap. When 2+ rounds of refinement don't converge, the failure is most likely structural, not an implementation bug. Stop refining; document the structural finding; mark AC partial with explicit tolerance_band.
+* No em-dashes anywhere in handoff outputs. Use -- or commas.
+* Terse responses preferred, no trailing summaries; user can read the diff.
+* Atomic imports (.claude/rules/atomic-imports.md): combine import additions with their usage in a single Edit. PostToolUse hooks (biome) may auto-delete unused imports.
+* Deep modules (.claude/rules/deep-modules.md): small interface hiding large implementation. Test at the module boundary, not internals.
+* No "any" in TypeScript; explicit interfaces/types. Discriminated unions over boolean flags. "satisfies" for type-safe object literals. Always guard array[i] access (returns T | undefined).
+* Schema discipline: LP schema is the cross-repo contract. Adding optional field with default = not a version bump. Adding required field / removing field / narrowing type = bump SCHEMA_VERSION.
+* GH operations:
+  * Always use gh CLI for github.com, api.github.com, raw.githubusercontent.com, gist.github.com (per ~/Library/Mobile Documents/com~apple~CloudDocs/claude-config/rules/tool-prefer-exa.md).
+  * Exception: *.github.io URLs are regular websites -- use Exa for those.
+* Web search: prefer Exa MCP tools over built-in WebSearch.
+* Direct push to auditmos/ogsfrompoly main: user must do this manually; classifier blocks me.
+* End-of-task wrap-up: "Let me take more off your plate" section with 3 categories: Next actions I can do right now / Automations or systems I can set up / Things to delegate to your team. 3-5 bullets max, no fluff.
+* Honest partial > green checkbox: relaxing thresholds to manufacture PASS hides findings. Better to mark partial with rich documentation.
+
+--- Open Threads ---
+
+* auditmos/ogsfrompoly#179 is closed but the perf problem is not actually solved. SQL-aggregation rewrite (2a31c4b) bounded memory but a 30-min lp-publish.yml dispatch on the fix commit (26845018904) still cancelled at the timeout wall. Issue body documents this. Needs another structural pass OR an architectural pivot.
+* auditmos/ogsfrompoly-lp#11 AC2 (cron half) + AC3 (deploy verification) are blocked behind #179. LP-side is mechanically done; nothing to do on LP repo to unblock.
+* plans/council-narrow-vs-broad-categories-2026-06-01.md is uncommitted locally (still in git status as ??). Should be committed + pushed before the handoff is consumed elsewhere.
+* Producer CI red on main since 7dade88 (and earlier) on Ruff format issue affecting 6 unrelated files. Trivial fix: cd ../ogsfrompoly && uv run ruff format src tests && git add . && git commit -m "style: ruff format" + user pushes. Orthogonal to LP work but should be cleaned up before more producer commits land.
+* VPS secrets VPS_SSH_HOST / VPS_DEPLOY_PATH / VPS_SSH_PRIVATE_KEY and the matching github-actions@auditmos-ogsfrompoly entry in ~polytrack/.ssh/authorized_keys are now obsolete after the self-hosted runner switch. Header comment in lp-publish.yml documents this and says they can be deleted.
+* ~/.ssh/ogsfrompoly-ci_ed25519 local files -- private key for the obsolete CI SSH path. Can delete after VPS_SSH_PRIVATE_KEY secret is removed.
+* PR #14 and #16 branches on auditmos/ogsfrompoly-lp are orphaned. Branch deletion was explicitly denied by classifier earlier (operator only authorized "close PR"). Cleanup: gh api -X DELETE repos/auditmos/ogsfrompoly-lp/git/refs/heads/lp-publish/weekly/<period-end>-<run-id> for each.
+* Pre-existing #168 fix is in (a413039); pre-existing #169 fix is in (712df3f). Both unrelated to LP work but cleaned up incidentally.
+* Operator's day-to-day observation that "crypto is random, politics is operationally heavy with marginal alpha, only macro-finance yields consistent skilled-trader signal" is n=1 from one operator's warehouse over months. LLM Council Lesson #6 warning: this itself may be a structural-divergence trap if used as a publishable "regime verdict" without statistical-power calibration. Council recommended dropping crypto (done) but NOT publishing regime verdicts.
+
+--- Next Steps ---
+
+1. Commit + push the council file: cd /Users/tkow/Documents/Code/Auditmos/ogsfrompoly-lp && git add plans/council-narrow-vs-broad-categories-2026-06-01.md && git commit -m "docs(council): narrow-vs-broad-categories session transcript" && git push origin main.
+2. Pick one of three architectural directions for the producer perf wall. None of them are "tweak compute_realized_pnl again":
+   * (A) Pre-compute outcomes nightly into a cache table. New cron on the VPS that runs once nightly, writes per-wallet aggregates to a thin realized_pnl_cache table in the warehouse keyed by (wallet_lc, period_end). The report public weekly CLI then reads cache rows instead of recomputing. Statement freshness lags 0-24h. Schema unchanged. Cron actually fires.
+   * (B) Narrow the published statement. Drop hypothetical_pnl_usd and top_wallets from the published surface; emit only alert_count, categories, and (if feasible from state-db alone) hit_rate. AC2/AC3 close this week. Loses some fields the LP schema currently has -- requires a coordinated SCHEMA_VERSION bump if fields become non-optional, otherwise just omit them from emission like crypto.
+   * (C) Park the cron. LP shows current placeholder + methodology; operator publishes statements manually-but-rarely (quarterly?) when warehouse work permits. Loses "weekly" cadence promise from hero copy.
+3. If (A): add poly-track maintenance build-realized-pnl-cache --period-end YYYY-MM-DD subcommand; cron it nightly; extend _compute_report_inputs to read from cache if available, fall back to live compute. Re-dispatch lp-publish.yml; AC2/AC3 should close.
+4. If (B): propose schema field set in a comment on ogsfrompoly-lp#11; if optional-fields are sufficient, no SCHEMA_VERSION bump needed -- just narrow what the producer emits. Re-dispatch; verify CLI runtime drops to seconds (no warehouse needed for alert_count / categories); AC2/AC3 close.
+5. If (C): post on #11 declaring the cron parked; remove schedule: triggers from lp-publish.yml; keep workflow_dispatch: for manual invocation. Update homepage hero copy from "weekly" to "as published" or similar. AC2/AC3 remain explicitly partial.
+6. Cleanup (independent of above):
+   * Producer CI ruff fix: cd ../ogsfrompoly && uv run ruff format src tests && git add -u && git commit -m "style: ruff format unrelated files" + user pushes.
+   * Delete obsolete VPS secrets: for s in VPS_SSH_HOST VPS_DEPLOY_PATH VPS_SSH_PRIVATE_KEY; do gh secret delete $s --repo auditmos/ogsfrompoly; done.
+   * Delete obsolete authorized_keys entry on VPS: ssh poly-track 'sed -i "/github-actions@auditmos-ogsfrompoly/d" ~/.ssh/authorized_keys'.
+   * Delete obsolete local CI keypair: rm ~/.ssh/ogsfrompoly-ci_ed25519 ~/.ssh/ogsfrompoly-ci_ed25519.pub.
+   * Delete orphaned LP branches from publisher-App smoke tests (operator authorization required).
+7. When (A/B/C) ships and a real-data PR opens on ogsfrompoly-lp: operator review checklist:
+   * Sanity-check frontmatter numbers against your warehouse independently.
+   * Add operator commentary in the markdown body.
+   * Flip draft: true -> draft: false in frontmatter.
+   * Merge.
+   * Verify both URLs render: https://ogsfrompoly.com/statements/<slug> (HTML) and https://ogsfrompoly.com/statements/<slug>.md (raw markdown).
+   * Post final close-out comment on ogsfrompoly-lp#11 with AC table all-green.
+   * Close the issue.
+
+--- Raw Notes ---
+
+* Cloudflare Web Analytics is configured in the LP repo's wrangler.jsonc env blocks but the site has been up only a few days with sparse content -- one of the LLM Council's strongest recommendations ("open Cloudflare Web Analytics and write one sentence naming the reader") was misapplied to this stage. User explicitly pushed back: "what is the reason to know who visit the webpage (it exist for few days, and has almost no content - so the visitors are zero)". The council's reframe value still applies, but the empirical baseline doesn't exist yet.
+* Hero claim (locked, from LP CLAUDE.md): "We measure who is actually skilled on Polymarket -- and we show our work, weekly." This is the credibility play. Narrowing to macro-finance does not break it (Council convergence point: tagline does not require three categories). Parking the cron entirely (option C above) DOES break the "weekly" promise.
+* Internal poly-track digest categories that map to LP enum: Politics -> politics, Macro / FOMC / Earnings -> macro-finance, Crypto -> crypto. Sports + Pop Culture digest categories are dropped from the LP-facing surface entirely. After crypto-drop, the producer effectively maps only Politics and Macro family digest tags.
+* Wallet truncation convention: wallet_<last4-hex> (LP schema rejects truncated_id matching 0x[0-9a-f]{40} regex; max length 32). Producer-side code: cleaned = wallet.lower().removeprefix("0x"); suffix = cleaned[-4:] if cleaned else "anon"; return f"wallet_{suffix}".
+* hit_rate semantic: total_in_favor / total_resolved, clamped to [0, 1]. Zero-resolved returns 0.0 (currently renders as honest claim about a fully-resolved window with hit rate zero -- a known correctness issue when --warehouse is not passed, which was the cause of PR #16 closure). With --warehouse attached AND outcomes computed, this is the intended semantic.
+* --draft/--no-draft CLI flag defaults to --draft. Generated statements ship with draft: true; operator flips it manually post-review per the runbook.
+* Polars + DuckDB pattern used in compute_outcome_quality and compute_hypothetical_pnl (one bulk JOIN against a registered Polars DataFrame): target = pl.DataFrame({...}, schema={...}); conn.register(_VIEW_NAME, target); rows = conn.execute(f"SELECT ... FROM {_VIEW_NAME} a LEFT JOIN markets m ON ...").fetchall(); conn.unregister(_VIEW_NAME). Working pattern for cardinality-bounded outputs (one row per alert).
+* DuckDB OR predicate gotcha: WHERE lower(maker) = ? OR lower(taker) = ? cannot be served by a B-tree index on either column alone. Two paths to index use: separate indexes on lower(maker) and lower(taker) with the query rewritten as UNION ALL, OR a composite "wallet" expression index materialised at warehouse-build time. Neither was attempted this session.
+* compute_outcome_quality and compute_hypothetical_pnl complete in single-digit seconds against the same warehouse -- this establishes the realistic baseline for ONE properly-shaped bulk query against warehouse_slim.duckdb. The hidden cost in compute_realized_pnl is that the JOIN output cardinality is O(fills_touching_alerted_wallets), not O(alerts).
+* _HYPOTHETICAL_NOTIONAL_USDC = 100.0 -- per-alert $100 notional for the hypothetical PnL calculation. Bankroll input (default 10000 USDC) is a separate sizing reference rendered in frontmatter but not used in the per-alert PnL math.
+* LP pnpm test run on PR #14 / #16: Verify (types, test, lint, knip) passes in ~30s. Test count: 25 files / 137 tests. Earlier commit message claimed 139 -- off-by-2 noted in #11 Slice 2 progress comment as a calibration smell.
+* Cron concurrency in lp-publish.yml: group: lp-publish-${{ github.event_name }}-${{ github.event.schedule || format('{0}-{1}', inputs.type, inputs.period_end) }} with cancel-in-progress: false. Different cron strings get distinct groups so weekly + monthly don't mutually cancel.
+* Branch naming for App-opened PRs: lp-publish/<type>/<period_end>-<run_id> (e.g. lp-publish/weekly/2026-05-31-26770106166). Run-ID suffix keeps re-dispatches idempotent.
+* The runbook's missed-cron section has exact gh workflow run lp-publish.yml --repo auditmos/ogsfrompoly --ref main -f type=weekly -f period_start=2026-05-25 -f period_end=2026-05-31 -f bankroll_usd=10000 commands.
+* LLM Council methodology: 5 advisors (Contrarian, First Principles, Expansionist, Outsider, Executor), peer review with randomized anonymization, chairman synthesis. Transcript file structure documented in ~/.claude/plugins/cache/brainstormer/llm-council/1.0.0/skills/llm-council/SKILL.md.
+* Council convergence (3 of 5 reviewers): D ("what is ogsfrompoly actually for?") + A ("name the reader") collectively earned 5 of 5 strongest-response picks. Council clash: alpha-protection threat model (Contrarian) vs negative-results-as-product (Expansionist) -- chairman ruled Contrarian's threat model overweighted given disclosure policy already forbids wallet IDs.
+* Council blind spots that surfaced only in peer review: (1) Cloudflare Web Analytics is already running; (2) upstream poly-track may force a SCHEMA_VERSION bump anyway; (3) disclosure policy already kills the wallet-doxxing leak vector; (4) regulatory / counterparty-doxxing surface; (5) the operator's "crypto is noise" claim is itself n=1 -- silently dropping the category without a documented negative result is goalpost-moving [chairman addition].
+* Project memory persisted to ~/.claude/projects/-Users-tkow-Documents-Code-Auditmos-ogsfrompoly-lp/memory/project_publish_cadence.md and indexed in MEMORY.md. Captures cron decision + App scope + runbook path. Future sessions in this repo load this automatically.
+* Cloudflare Workers env vars: access via "import { env } from 'cloudflare:workers'" in Astro v6 + @astrojs/cloudflare v13 (the old Astro.locals.runtime.env was removed). After editing wrangler.jsonc bindings, run pnpm cf-typegen.
+* LP repo deploy command convention: pnpm deploy:<env> aliases set CLOUDFLARE_ENV=<env> at build time. pnpm deploy aliases deploy:production. Production custom domain: ogsfrompoly.com via custom_domain: true.
+* LP repo testing convention: tests live next to source as *.test.ts. Vitest globals enabled. src/pages/** excluded from test discovery -- extract endpoint logic into src/lib/ or src/<domain>/ modules and test those.
+* LP repo deep-modules rule: test at the module's public boundary, not internals. Pure functions only in unit tests; for code touching fs/network/process, extract a pure helper and test it, cover the side-effecting orchestrator with a separate integration test.
+* This session's main pattern: I edit + commit poly-track locally, user pushes manually. Total user pushes this session: 4 (4c58269, 1970ccd, ded125a, a96a383). Local commits I made that the user has NOT pushed yet: only 2a31c4b is from the user (SQL-aggregation), so my last local commit on producer was a96a383 which is on origin. Net: producer local checkout is clean and up to date.
+* One council file uncommitted in LP repo: see Open Threads. Run "git add plans/council-narrow-vs-broad-categories-2026-06-01.md && git commit -m 'docs(council): narrow-vs-broad-categories transcript' && git push" to clear.
