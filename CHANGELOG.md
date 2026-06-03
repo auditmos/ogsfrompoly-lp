@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.1...v1.10.2) (2026-06-03)
+
+
+### Bug Fixes
+
+* **statements:** align top-wallets bucket and share scales ([3ed6d24](https://github.com/auditmos/ogsfrompoly-lp/commit/3ed6d2458636392154426506388baa348e0294b1))
+
 ## [1.10.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.0...v1.10.1) (2026-06-03)
 
 
