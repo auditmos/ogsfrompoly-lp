@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.9.0...v1.10.0) (2026-06-03)
+
+
+### Features
+
+* **statements:** vertical wallet list with bucketed PnL + share columns ([a379d8b](https://github.com/auditmos/ogsfrompoly-lp/commit/a379d8bdfbd0b245b0d0c350605b2100e16d3fab))
+
 # [1.9.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.8.0...v1.9.0) (2026-06-03)
 
 
