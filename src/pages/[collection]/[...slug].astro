@@ -165,11 +165,11 @@ const pnlClass =
 							precise per-wallet sizing. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
 						</p>
 						<ul class="flex flex-col font-mono text-sm">
-							<li class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b border-ink-3 pb-2 text-eyebrow uppercase tracking-wider text-ink-5">
+							<li class="grid grid-cols-[1fr_5rem_4rem_8rem] items-center gap-x-6 border-b border-ink-3 pb-2 text-eyebrow uppercase tracking-wider text-ink-5">
 								<span>Wallet</span>
 								<span class="text-right">Bucket</span>
 								<span class="text-right">Share</span>
-								<span class="text-right">Category</span>
+								<span class="text-left">Category</span>
 							</li>
 							{statement.top_wallets.map((wallet) => {
 								const hasPnl = wallet.hypothetical_pnl_usd !== undefined;
@@ -184,8 +184,8 @@ const pnlClass =
 										)
 									: null;
 								return (
-									<li class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b border-ink-3 py-3">
-										<span class="text-accent">{wallet.truncated_id}</span>
+									<li class="grid grid-cols-[1fr_5rem_4rem_8rem] items-center gap-x-6 border-b border-ink-3 py-3">
+										<span class="truncate text-accent">{wallet.truncated_id}</span>
 										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
 											{hasPnl
 												? formatBucketedUsd(
@@ -197,7 +197,7 @@ const pnlClass =
 										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
 											{pctText ?? "—"}
 										</span>
-										<span class="text-right text-eyebrow uppercase tracking-wider text-ink-5">
+										<span class="text-left text-eyebrow uppercase tracking-wider text-ink-5">
 											{wallet.category}
 										</span>
 									</li>
