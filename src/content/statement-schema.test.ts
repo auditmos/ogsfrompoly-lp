@@ -144,6 +144,28 @@ describe("statementSchema", () => {
 		expect(result.data.draft).toBe(false);
 	});
 
+	it("accepts an optional hypothetical_pnl_usd on a top_wallets entry (additive, no version bump)", () => {
+		const result = statementSchema.safeParse({
+			...validWeekly,
+			top_wallets: [
+				{ truncated_id: "wallet_a3f8", category: "politics", hypothetical_pnl_usd: 42.5 },
+				{ truncated_id: "wallet_c12e", category: "macro-finance", hypothetical_pnl_usd: -17.25 },
+			],
+		});
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+		const [firstWallet] = result.data.top_wallets;
+		expect(firstWallet?.hypothetical_pnl_usd).toBe(42.5);
+	});
+
+	it("still parses top_wallets entries that omit the optional hypothetical_pnl_usd field", () => {
+		const result = statementSchema.safeParse(validWeekly);
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+		const [firstWallet] = result.data.top_wallets;
+		expect(firstWallet?.hypothetical_pnl_usd).toBeUndefined();
+	});
+
 	it("accepts an explicit draft: true marker (used by placeholder fixtures)", () => {
 		const result = statementSchema.safeParse({ ...validWeekly, draft: true });
 		expect(result.success).toBe(true);

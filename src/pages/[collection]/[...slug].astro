@@ -2,16 +2,21 @@
 import type { CollectionKey } from "astro:content";
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
+import { formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
 import { type Category, formatCategoryList } from "@/lib/statement-format/categories";
+import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
 import { formatPercent } from "@/lib/statement-format/percent";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
+
+const PNL_BUCKET_USD = 25;
 
 type StatementType = "weekly" | "monthly";
 
 interface TruncatedWallet {
 	truncated_id: string;
 	category: Category;
+	hypothetical_pnl_usd?: number;
 }
 
 interface StatementShape {
@@ -36,6 +41,9 @@ function isTruncatedWallet(value: unknown): value is TruncatedWallet {
 	if (!isRecord(value)) return false;
 	if (typeof value.truncated_id !== "string" || value.truncated_id.length === 0) return false;
 	if (typeof value.category !== "string") return false;
+	if (value.hypothetical_pnl_usd !== undefined && typeof value.hypothetical_pnl_usd !== "number") {
+		return false;
+	}
 	return true;
 }
 
@@ -153,17 +161,48 @@ const pnlClass =
 						<p class="mb-4 font-sans text-xs leading-snug text-ink-5">
 							Highlighted skilled wallets that contributed to this window.
 							{" "}Truncated, opaque IDs — never reversible to a full on-chain
-							address. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
+							address. Dollar contribution is bucketed to the nearest ${PNL_BUCKET_USD} to avoid leaking
+							precise per-wallet sizing. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
 						</p>
-						<ul class="grid grid-cols-1 gap-x-6 gap-y-2 font-mono text-sm sm:grid-cols-2">
-							{statement.top_wallets.map((wallet) => (
-								<li class="flex items-center justify-between border-b border-ink-3 py-2">
-									<span class="text-accent">{wallet.truncated_id}</span>
-									<span class="text-eyebrow uppercase tracking-wider text-ink-5">
-										{wallet.category}
-									</span>
-								</li>
-							))}
+						<ul class="flex flex-col font-mono text-sm">
+							<li class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b border-ink-3 pb-2 text-eyebrow uppercase tracking-wider text-ink-5">
+								<span>Wallet</span>
+								<span class="text-right">Bucket</span>
+								<span class="text-right">Share</span>
+								<span class="text-right">Category</span>
+							</li>
+							{statement.top_wallets.map((wallet) => {
+								const hasPnl = wallet.hypothetical_pnl_usd !== undefined;
+								const pnlColor =
+									hasPnl && (wallet.hypothetical_pnl_usd as number) < 0
+										? "text-loss"
+										: "text-accent";
+								const pctText = hasPnl
+									? formatContributionPercent(
+											wallet.hypothetical_pnl_usd as number,
+											statement.hypothetical_pnl_usd,
+										)
+									: null;
+								return (
+									<li class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b border-ink-3 py-3">
+										<span class="text-accent">{wallet.truncated_id}</span>
+										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
+											{hasPnl
+												? formatBucketedUsd(
+														wallet.hypothetical_pnl_usd as number,
+														PNL_BUCKET_USD,
+													)
+												: "—"}
+										</span>
+										<span class={`text-right tabular-nums ${hasPnl ? pnlColor : "text-ink-5"}`}>
+											{pctText ?? "—"}
+										</span>
+										<span class="text-right text-eyebrow uppercase tracking-wider text-ink-5">
+											{wallet.category}
+										</span>
+									</li>
+								);
+							})}
 						</ul>
 					</section>
 				)

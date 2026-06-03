@@ -28,6 +28,7 @@ const truncatedWalletId = z
 const truncatedWallet = z.object({
 	truncated_id: truncatedWalletId,
 	category,
+	hypothetical_pnl_usd: z.number().optional(),
 });
 
 const sharedFields = {
