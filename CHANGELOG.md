@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.0...v1.10.1) (2026-06-03)
+
+
+### Bug Fixes
+
+* **statements:** align top-wallets columns with fixed widths ([753d366](https://github.com/auditmos/ogsfrompoly-lp/commit/753d366e24ec4e4f56d3071638d05e36fceecc03))
+
 # [1.10.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.9.0...v1.10.0) (2026-06-03)
 
 
