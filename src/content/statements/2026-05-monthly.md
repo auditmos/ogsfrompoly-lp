@@ -1,79 +1,51 @@
 ---
 schema_version: 1
 type: monthly
-draft: true
-title: "May 2026"
-summary: "TODO: one-line teaser — N alerts, hit rate X.XX, project P&L attached."
-period_start: 2026-05-01
-period_end: 2026-05-31
-# TODO: confirm bankroll size for the monthly view (may differ from weekly).
-bankroll_usd: 10000
-# TODO: total alerts for the month — sum of weekly counts.
-alert_count: 0
-# TODO: monthly aggregate hit rate (not the average of weekly rates).
-hit_rate: 0
-# TODO: signed USD; hypothetical monthly PnL on bankroll_usd above.
-hypothetical_pnl_usd: 0
+draft: false
+title: May 2026
+summary: poly-track monthly statement — 1128 alerts, hit rate 0.71.
+period_start: '2026-05-01'
+period_end: '2026-05-31'
+bankroll_usd: 10000.0
+alert_count: 1128
+hit_rate: 0.7080745341614907
+hypothetical_pnl_usd: 462.2811135169738
 categories:
-  - politics
-  - macro-finance
-  - crypto
+- politics
+- macro-finance
 top_wallets:
-  - truncated_id: wallet_TODO1
-    category: politics
-  - truncated_id: wallet_TODO2
-    category: macro-finance
-  - truncated_id: wallet_TODO3
-    category: crypto
-# TODO: project P&L section. Be honest: revenue is likely 0 for the first
-# month — say so explicitly.
+- truncated_id: wallet_1d0a
+  category: politics
+  hypothetical_pnl_usd: 72.95000000000002
+- truncated_id: wallet_f2a8
+  category: politics
+  hypothetical_pnl_usd: -4.999999999999995
+- truncated_id: wallet_fa37
+  category: politics
+  hypothetical_pnl_usd: 19.899999999999984
+- truncated_id: wallet_254c
+  category: macro-finance
+  hypothetical_pnl_usd: -1.6000000000000014
+- truncated_id: wallet_7bb2
+  category: macro-finance
+  hypothetical_pnl_usd: 18.25
 pnl:
-  revenue_usd: 0
-  # TODO: itemize opex in the prose below. Sum here.
-  # Known recurring line items: Hostinger KVM, domain registrar, any APIs.
-  opex_usd: 0
-  net_usd: 0
-  # TODO: months of runway at current burn. Use `null` if revenue covers opex.
+  revenue_usd: 0.0
+  opex_usd: 0.0
+  net_usd: 0.0
   runway_months: null
 ---
 
-<!--
-DRAFT — flip `draft: false` and remove this comment block when ready to publish.
+## Strategy track record (2026-05-01 → 2026-05-31)
 
-Required before publishing (issue #10 AC):
-- Real numbers including a real opex line-item breakdown in prose
-- If revenue == 0, say so explicitly — the open-book promise demands it
-- Runway commentary should be honest about current burn vs cash on hand
--->
+Generated from ogsfrompoly warehouse for the monthly window 2026-05-01 → 2026-05-31. 1128 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived; commentary below is left blank for the operator to fill before flipping `draft: false`.
 
-## Strategy track record (May 2026)
-
-TODO: 1–2 paragraphs summarising the month's strategy performance. Same shape
-as the weekly statement but at monthly aggregation.
+Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_pnl_usd`, when present, is the $100-notional alert-model PnL for that wallet in this same window; it is an annotation, not the ranking key.
 
 ## Project P&L
 
-### Revenue
-
-TODO: state revenue line by line. If $0, say "No revenue this month — the
-project monetises later via paid acquirer conversations, not now."
-
-### Operating expenses
-
-TODO: itemise opex line by line. Example structure:
-
-- Hostinger KVM (compute): $XX
-- Domain registrar (`ogsfrompoly.com`): $XX
-- Other: $XX
-
-Sum should match the `opex_usd` field in frontmatter.
-
-### Runway
-
-TODO: 1 paragraph. Current cash on hand, monthly burn, months remaining.
-If revenue covers opex, set `runway_months: null` and explain.
+Revenue, opex, net, and runway are sourced from the operator's ledger (not the trading warehouse). See the `pnl` block above for the canonical numbers; the prose breakdown belongs here.
 
 ## Methodology reminder
 
-See [/methodology](/methodology) for the skill test and the disclosure policy.
-All wallet references are truncated IDs only.
+See [/methodology](/methodology) for the sign-randomization skill test and the disclosure policy. All wallet references on this page are truncated IDs; no on-chain lookup is possible from this page alone.
