@@ -1,7 +1,7 @@
 ---
 schema_version: 1
 type: monthly
-draft: true
+draft: false
 title: May 2026
 summary: poly-track monthly statement — 1128 alerts, hit rate 0.71.
 period_start: '2026-05-01'
