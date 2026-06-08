@@ -38,7 +38,7 @@ pnl:
 
 ## Strategy track record (2026-05-01 → 2026-05-31)
 
-Generated from poly-track warehouse for the monthly window 2026-05-01 → 2026-05-31. 1128 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived; commentary below is left blank for the operator to fill before flipping `draft: false`.
+Generated from ogsfrompoly warehouse for the monthly window 2026-05-01 → 2026-05-31. 1128 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived; commentary below is left blank for the operator to fill before flipping `draft: false`.
 
 Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_pnl_usd`, when present, is the $100-notional alert-model PnL for that wallet in this same window; it is an annotation, not the ranking key.
 
