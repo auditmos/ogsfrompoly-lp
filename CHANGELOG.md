@@ -1,3 +1,10 @@
+## [1.10.4](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.3...v1.10.4) (2026-07-08)
+
+
+### Bug Fixes
+
+* serialize statement frontmatter into .md routes ([#28](https://github.com/auditmos/ogsfrompoly-lp/issues/28)) ([e4088e0](https://github.com/auditmos/ogsfrompoly-lp/commit/e4088e0af1766928546563186a12cc31300eaa82))
+
 ## [1.10.3](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.2...v1.10.3) (2026-07-08)
 
 
