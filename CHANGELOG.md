@@ -1,3 +1,10 @@
+## [1.10.5](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.4...v1.10.5) (2026-07-08)
+
+
+### Bug Fixes
+
+* gate published statements on operator scaffolding lint ([#29](https://github.com/auditmos/ogsfrompoly-lp/issues/29)) ([c1e2187](https://github.com/auditmos/ogsfrompoly-lp/commit/c1e21873bdc607014f2c9fb64598f595b2d04527))
+
 ## [1.10.4](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.3...v1.10.4) (2026-07-08)
 
 
