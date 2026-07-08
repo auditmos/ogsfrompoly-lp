@@ -1,7 +1,7 @@
 ---
 schema_version: 1
 type: monthly
-draft: true
+draft: false
 title: June 2026
 summary: poly-track monthly statement — 17903 alerts, hit rate 0.00.
 period_start: '2026-06-01'
@@ -34,13 +34,13 @@ pnl:
 
 ## Strategy track record (2026-06-01 → 2026-06-30)
 
-Generated from poly-track warehouse for the monthly window 2026-06-01 → 2026-06-30. 17903 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived; commentary below is left blank for the operator to fill before flipping `draft: false`.
+Generated from poly-track warehouse for the monthly window 2026-06-01 → 2026-06-30. 17903 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived.
 
 Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_pnl_usd`, when present, is the $100-notional alert-model PnL for that wallet in this same window; it is an annotation, not the ranking key.
 
 ## Project P&L
 
-Revenue, opex, net, and runway are sourced from the operator's ledger (not the trading warehouse). See the `pnl` block above for the canonical numbers; the prose breakdown belongs here.
+Revenue, opex, net, and runway are sourced from the operator's ledger (not the trading warehouse); the `pnl` block above holds the canonical numbers. Revenue was **$0** for June 2026 — no paid subscriptions, sponsorships, or other income are booked against this period. Operating expenses were also **$0**: no cash costs were booked to the ledger this month, so there are no line items to itemize. Net result is therefore **$0**. Runway is reported as not-applicable (`null` above) — with no recurring cash burn this month, there is no meaningful months-of-runway figure.
 
 ## Methodology reminder
 
