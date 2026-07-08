@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.2...v1.10.3) (2026-07-08)
+
+
+### Bug Fixes
+
+* render monthly P&L block on statement pages ([#27](https://github.com/auditmos/ogsfrompoly-lp/issues/27)) ([7a54730](https://github.com/auditmos/ogsfrompoly-lp/commit/7a54730350bda660b6560168b08e54e4b68562b4))
+
 ## [1.10.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.1...v1.10.2) (2026-06-03)
 
 
