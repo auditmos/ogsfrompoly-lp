@@ -7,9 +7,20 @@ import { type Category, formatCategoryList } from "@/lib/statement-format/catego
 import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
 import { formatPercent } from "@/lib/statement-format/percent";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
+import {
+	type MonthlyPnl,
+	monthlyPnlRows,
+	type PnlTone,
+} from "@/lib/statement-format/monthly-pnl";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
 
 const PNL_BUCKET_USD = 25;
+
+const TONE_CLASS: Record<PnlTone, string> = {
+	default: "text-ink-8",
+	accent: "text-accent",
+	loss: "text-loss",
+};
 
 type StatementType = "weekly" | "monthly";
 
@@ -30,6 +41,7 @@ interface StatementShape {
 	hypothetical_pnl_usd: number;
 	categories: ReadonlyArray<Category>;
 	top_wallets: ReadonlyArray<TruncatedWallet>;
+	pnl?: MonthlyPnl;
 	draft?: boolean;
 }
 
@@ -47,6 +59,15 @@ function isTruncatedWallet(value: unknown): value is TruncatedWallet {
 	return true;
 }
 
+function isMonthlyPnl(value: unknown): value is MonthlyPnl {
+	if (!isRecord(value)) return false;
+	if (typeof value.revenue_usd !== "number") return false;
+	if (typeof value.opex_usd !== "number") return false;
+	if (typeof value.net_usd !== "number") return false;
+	if (value.runway_months !== null && typeof value.runway_months !== "number") return false;
+	return true;
+}
+
 function isStatementData(value: unknown): value is StatementShape {
 	if (!isRecord(value)) return false;
 	const { type, title, summary, period_start, period_end } = value;
@@ -60,6 +81,7 @@ function isStatementData(value: unknown): value is StatementShape {
 	if (!Array.isArray(value.categories)) return false;
 	if (!Array.isArray(value.top_wallets)) return false;
 	if (!value.top_wallets.every(isTruncatedWallet)) return false;
+	if (type === "monthly" && !isMonthlyPnl(value.pnl)) return false;
 	return true;
 }
 
@@ -150,6 +172,33 @@ const pnlClass =
 							</p>
 						</div>
 					</dl>
+				)
+			}
+			{
+				statement && statement.type === "monthly" && statement.pnl && (
+					<section class="not-prose mb-10">
+						<h3 class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							Monthly P&amp;L
+						</h3>
+						<p class="mb-4 font-sans text-xs leading-snug text-ink-5">
+							Open-book project economics for this month — revenue,
+							operating spend, net, and how many months of runway the
+							current bankroll covers. "Covered" means revenue meets or
+							exceeds opex, so runway is indefinite.
+						</p>
+						<dl class="grid grid-cols-2 gap-6 border-y border-ink-3 py-6 font-mono text-sm sm:grid-cols-4">
+							{monthlyPnlRows(statement.pnl).map((row) => (
+								<div class="flex flex-col gap-1.5">
+									<dt class="text-eyebrow uppercase tracking-wider text-ink-5">
+										{row.label}
+									</dt>
+									<dd class={`text-lg tabular-nums ${TONE_CLASS[row.tone]}`}>
+										{row.value}
+									</dd>
+								</div>
+							))}
+						</dl>
+					</section>
 				)
 			}
 			{
