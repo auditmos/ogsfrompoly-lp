@@ -21,4 +21,17 @@ describe("formatUsdCompact", () => {
 		expect(formatUsdCompact(1_000_000)).toBe("$1M");
 		expect(formatUsdCompact(2_300_000)).toBe("$2.3M");
 	});
+
+	it("rolls over to 'M' when a sub-million value rounds up to 1000K", () => {
+		expect(formatUsdCompact(999_999)).toBe("$1M");
+		expect(formatUsdCompact(999_950)).toBe("$1M");
+	});
+
+	it("prefixes negatives with the U+2212 minus sign, not an ASCII hyphen inside the amount", () => {
+		expect(formatUsdCompact(-2_143)).toBe("−$2,143");
+		expect(formatUsdCompact(-50_000)).toBe("−$50K");
+		expect(formatUsdCompact(-12_500)).toBe("−$12.5K");
+		expect(formatUsdCompact(-1_500_000)).toBe("−$1.5M");
+		expect(formatUsdCompact(-999_999)).toBe("−$1M");
+	});
 });
