@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.6...v1.11.0) (2026-07-09)
+
+
+### Features
+
+* add consumer-side statement data sanity lint ([#30](https://github.com/auditmos/ogsfrompoly-lp/issues/30)) ([#45](https://github.com/auditmos/ogsfrompoly-lp/issues/45)) ([1e66fd2](https://github.com/auditmos/ogsfrompoly-lp/commit/1e66fd21f0c14dd51d5dda6992443eebc1703f34)), closes [#26](https://github.com/auditmos/ogsfrompoly-lp/issues/26) [#26](https://github.com/auditmos/ogsfrompoly-lp/issues/26) [#26](https://github.com/auditmos/ogsfrompoly-lp/issues/26)
+
 ## [1.10.6](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.5...v1.10.6) (2026-07-09)
 
 
