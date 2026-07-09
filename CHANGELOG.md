@@ -1,3 +1,10 @@
+## [1.10.6](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.5...v1.10.6) (2026-07-09)
+
+
+### Bug Fixes
+
+* regenerate 5 statements with correct hit_rate after warehouse refresh ([#44](https://github.com/auditmos/ogsfrompoly-lp/issues/44)) ([12e5282](https://github.com/auditmos/ogsfrompoly-lp/commit/12e5282cc5ffb9ba67e85dd9cb4c4d28f9f84478))
+
 ## [1.10.5](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.4...v1.10.5) (2026-07-08)
 
 
