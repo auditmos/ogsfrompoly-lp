@@ -10,9 +10,25 @@ import { z } from "zod";
  */
 export const SCHEMA_VERSION = 1 as const;
 
+/**
+ * A `YYYY-MM-DD` string that also names a real calendar day. The regex alone
+ * lets impossible dates (`2026-02-31`, `2026-13-01`, `2026-00-00`) through;
+ * downstream that renders "undefined 2026" labels and silently shifts RSS
+ * pubDates. Round-trip through `Date.UTC` and require the components to survive.
+ */
+function isRealCalendarDate(iso: string): boolean {
+	const [y, m, d] = iso.split("-").map(Number);
+	const ts = Date.UTC(y, m - 1, d);
+	const back = new Date(ts);
+	return back.getUTCFullYear() === y && back.getUTCMonth() === m - 1 && back.getUTCDate() === d;
+}
+
 const isoDate = z.preprocess(
 	(v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
-	z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "expected ISO date YYYY-MM-DD"),
+	z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/, "expected ISO date YYYY-MM-DD")
+		.refine(isRealCalendarDate, "not a real calendar date"),
 );
 
 const category = z.enum(["politics", "macro-finance", "crypto"]);
@@ -41,7 +57,10 @@ const sharedFields = {
 	alert_count: z.number().int().nonnegative(),
 	hit_rate: z.number().min(0).max(1),
 	hypothetical_pnl_usd: z.number(),
-	categories: z.array(category).min(1),
+	categories: z
+		.array(category)
+		.min(1)
+		.refine((v) => new Set(v).size === v.length, "categories must not contain duplicates"),
 	top_wallets: z.array(truncatedWallet),
 	draft: z.boolean().default(false),
 } as const;

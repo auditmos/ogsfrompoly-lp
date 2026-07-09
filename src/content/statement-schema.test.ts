@@ -94,6 +94,41 @@ describe("statementSchema", () => {
 		expect(result.success).toBe(false);
 	});
 
+	it("rejects a calendar-impossible date that passes the YYYY-MM-DD regex (2026-02-31)", () => {
+		const result = statementSchema.safeParse({ ...validWeekly, period_start: "2026-02-31" });
+		expect(result.success).toBe(false);
+	});
+
+	it.each([
+		["2026-13-01", "month 13"],
+		["2026-00-00", "month/day 00"],
+		["2026-04-31", "April 31 (30-day month)"],
+	])("rejects the calendar-impossible date %s (%s)", (badDate) => {
+		const result = statementSchema.safeParse({ ...validWeekly, period_start: badDate });
+		expect(result.success).toBe(false);
+	});
+
+	it("reports a clear message when a date is calendar-impossible", () => {
+		const result = statementSchema.safeParse({ ...validWeekly, period_start: "2026-13-01" });
+		expect(result.success).toBe(false);
+		if (result.success) return;
+		const offending = result.error.issues.find((i) => i.path.includes("period_start"));
+		expect(offending?.message).toBe("not a real calendar date");
+	});
+
+	it.each([
+		["2026-02-28", "Feb 28 in a common year"],
+		["2024-02-29", "Feb 29 in a leap year"],
+		["2026-12-31", "Dec 31 boundary"],
+	])("accepts the real calendar date %s (%s)", (goodDate) => {
+		const result = statementSchema.safeParse({
+			...validWeekly,
+			period_start: goodDate,
+			period_end: goodDate,
+		});
+		expect(result.success).toBe(true);
+	});
+
 	it("rejects a statement where period_start is after period_end", () => {
 		const result = statementSchema.safeParse({
 			...validWeekly,
@@ -118,6 +153,14 @@ describe("statementSchema", () => {
 		const result = statementSchema.safeParse({
 			...validWeekly,
 			top_wallets: [{ truncated_id: badId, category: "politics" }],
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it("rejects a statement with duplicate categories", () => {
+		const result = statementSchema.safeParse({
+			...validWeekly,
+			categories: ["politics", "politics"],
 		});
 		expect(result.success).toBe(false);
 	});

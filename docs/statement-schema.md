@@ -35,6 +35,25 @@ import { SCHEMA_VERSION } from "@/content/statement-schema"; // === 1
 - Breaking changes require a coordinated PR against the upstream `poly-track`
   repo (which holds the producer-side CLI) before the bump can merge.
 
+### Narrowing log
+
+Constraints that only reject input which was **already invalid** — i.e. no
+legitimate producer could ever have emitted it — are *not* breaking and do
+**not** bump `SCHEMA_VERSION`. They are recorded here so the upstream
+`poly-track` producer can confirm it never relied on the accidental leniency.
+
+- **2026-07 (issue [#33](https://github.com/auditmos/ogsfrompoly-lp/issues/33), `SCHEMA_VERSION` stays `1`):**
+  - `period_start` / `period_end` must now name a **real calendar day**. The
+    regex `\d{4}-\d{2}-\d{2}` alone accepted impossible dates (`2026-02-31`,
+    `2026-13-01`, `2026-00-00`), which rendered `undefined 2026` labels and
+    silently shifted RSS `pubDate`s. The schema round-trips the components
+    through `Date.UTC` and rejects any that do not survive.
+  - `categories` must not contain **duplicate** entries (`["politics","politics"]`
+    previously passed).
+  - Upstream note: this is a pure narrowing of previously-garbage input. No
+    coordinated bump is required; poly-track must only ensure it emits real
+    dates and de-duplicated category lists (it already does both).
+
 ## Top-level fields (all statements)
 
 | Field                  | Type                                     | Notes                                                          |
@@ -43,13 +62,13 @@ import { SCHEMA_VERSION } from "@/content/statement-schema"; // === 1
 | `type`                 | `"weekly"` \| `"monthly"`                | Discriminates the union.                                       |
 | `title`                | string, ≥ 1 char                         | Render in `<h1>` and feed `<title>`.                           |
 | `summary`              | string, ≥ 1 char                         | Teaser for homepage card, RSS, `llms.txt`.                     |
-| `period_start`         | ISO date `YYYY-MM-DD`                    | Inclusive.                                                     |
-| `period_end`           | ISO date `YYYY-MM-DD`                    | Inclusive. Must be ≥ `period_start`.                           |
+| `period_start`         | ISO date `YYYY-MM-DD`                    | Inclusive. Must be a **real calendar day** (see below).        |
+| `period_end`           | ISO date `YYYY-MM-DD`                    | Inclusive. Must be ≥ `period_start`. Must be a **real calendar day**. |
 | `bankroll_usd`         | number, > 0                              | All `*_pnl_usd` claims reference this single bankroll.         |
 | `alert_count`          | non-negative integer                     | Total alerts emitted in the period.                            |
 | `hit_rate`             | number in `[0, 1]`                       | Fraction. `0.58` means 58 %.                                   |
 | `hypothetical_pnl_usd` | number (signed)                          | Hypothetical PnL on `bankroll_usd`.                            |
-| `categories`           | non-empty array of category enum         | See `Category` below.                                          |
+| `categories`           | non-empty array of category enum, **no duplicates** | See `Category` below.                               |
 | `top_wallets`          | array of `{ truncated_id, category }`    | See `TopWallets` below.                                        |
 | `draft`                | boolean, optional, defaults `false`      | When `true`, the entry is excluded from feeds, the homepage teaser, and both dual-format routes (HTML + `.md`). Used for skeletons before publication. |
 

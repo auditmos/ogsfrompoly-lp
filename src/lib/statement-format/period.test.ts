@@ -16,4 +16,16 @@ describe("formatPeriodLabel", () => {
 			"Dec 28, 2026 – Jan 3, 2027",
 		);
 	});
+
+	// Regression: issue #33 — a calendar-impossible month (13) produced an
+	// out-of-bounds index and rendered "undefined 2026". The schema now rejects
+	// such dates; this guards that every schema-valid month formats cleanly.
+	it("never emits 'undefined' for any real calendar month", () => {
+		for (let month = 1; month <= 12; month++) {
+			const mm = String(month).padStart(2, "0");
+			const iso = `2026-${mm}-01`;
+			expect(formatPeriodLabel(iso, iso, "monthly")).not.toContain("undefined");
+			expect(formatPeriodLabel(iso, iso, "weekly")).not.toContain("undefined");
+		}
+	});
 });
