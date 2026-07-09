@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.4...v1.12.0) (2026-07-09)
+
+
+### Features
+
+* **feeds:** add static pages to sitemap and RSS channel metadata ([5820f4e](https://github.com/auditmos/ogsfrompoly-lp/commit/5820f4e6b0c29b6eaab1eae3a80a43cc20cab36d)), closes [#35](https://github.com/auditmos/ogsfrompoly-lp/issues/35)
+
 ## [1.11.4](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.3...v1.11.4) (2026-07-09)
 
 
