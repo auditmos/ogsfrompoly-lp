@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.13.0...v1.14.0) (2026-07-09)
+
+
+### Features
+
+* **http:** cache feed, .md, and HTML responses at the edge ([66e190b](https://github.com/auditmos/ogsfrompoly-lp/commit/66e190b81f1a0aff178fd0de9f4ab78f5fc9f21d)), closes [#37](https://github.com/auditmos/ogsfrompoly-lp/issues/37)
+
 # [1.13.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.12.0...v1.13.0) (2026-07-09)
 
 
