@@ -5,6 +5,7 @@ const baseInput: FeedInput = {
 	siteUrl: "https://ogsfrompoly.com",
 	siteTitle: "ogsfrompoly",
 	siteDescription: "We measure who is actually skilled on Polymarket.",
+	staticPages: [],
 	entries: [
 		{
 			collection: "statements",
@@ -45,6 +46,42 @@ describe("generateSitemap", () => {
 		);
 		// HTML URL only — never .md in the sitemap (RSS + llms.txt cover the .md surface)
 		expect(xml).not.toContain(".md");
+	});
+
+	it("renders static pages ahead of content entries", () => {
+		const xml = generateSitemap({
+			...baseInput,
+			staticPages: [
+				{ path: "/", lastmod: "2026-05-25" },
+				{ path: "/statements", lastmod: "2026-05-25" },
+				{ path: "/methodology" },
+			],
+		});
+
+		expect(xml).toContain("<loc>https://ogsfrompoly.com/</loc>");
+		expect(xml).toContain("<loc>https://ogsfrompoly.com/statements</loc>");
+		expect(xml).toContain("<loc>https://ogsfrompoly.com/methodology</loc>");
+
+		// static pages come before the first content entry
+		const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+		expect(locs.slice(0, 3)).toEqual([
+			"https://ogsfrompoly.com/",
+			"https://ogsfrompoly.com/statements",
+			"https://ogsfrompoly.com/methodology",
+		]);
+	});
+
+	it("emits <lastmod> for dated static pages and omits it for undated ones", () => {
+		const xml = generateSitemap({
+			...baseInput,
+			staticPages: [{ path: "/", lastmod: "2026-05-25" }, { path: "/methodology" }],
+		});
+
+		expect(xml).toContain(
+			"<url>\n<loc>https://ogsfrompoly.com/</loc>\n<lastmod>2026-05-25</lastmod>\n</url>",
+		);
+		// /methodology has no lastmod — the <url> block must contain no <lastmod> at all
+		expect(xml).toContain("<url>\n<loc>https://ogsfrompoly.com/methodology</loc>\n</url>");
 	});
 
 	it("sorts <url> entries deterministically by date desc, slug asc", () => {

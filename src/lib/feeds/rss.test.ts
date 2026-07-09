@@ -14,6 +14,7 @@ const baseInput: FeedInput = {
 	siteUrl: "https://ogsfrompoly.com",
 	siteTitle: "ogsfrompoly",
 	siteDescription: "We measure who is actually skilled on Polymarket.",
+	staticPages: [],
 	entries: [placeholderEntry],
 };
 
@@ -29,6 +30,47 @@ describe("generateRss", () => {
 			"<description>We measure who is actually skilled on Polymarket.</description>",
 		);
 		expect(xml).toContain("<link>https://ogsfrompoly.com</link>");
+	});
+
+	it("declares the channel language as en", () => {
+		const xml = generateRss(baseInput);
+
+		expect(xml).toContain("<language>en</language>");
+	});
+
+	it("declares the atom namespace and a self-referential atom:link", () => {
+		const xml = generateRss(baseInput);
+
+		expect(xml).toContain('xmlns:atom="http://www.w3.org/2005/Atom"');
+		expect(xml).toContain(
+			'<atom:link href="https://ogsfrompoly.com/rss.xml" rel="self" type="application/rss+xml"/>',
+		);
+	});
+
+	it("sets lastBuildDate to the newest entry's pubDate (never build time)", () => {
+		const xml = generateRss({
+			...baseInput,
+			entries: [
+				{
+					collection: "statements",
+					slug: "older",
+					title: "Older",
+					summary: "s",
+					date: "2026-05-25",
+					body: "",
+				},
+				{
+					collection: "statements",
+					slug: "newest",
+					title: "Newest",
+					summary: "s",
+					date: "2026-05-31",
+					body: "",
+				},
+			],
+		});
+
+		expect(xml).toContain("<lastBuildDate>Sun, 31 May 2026 00:00:00 GMT</lastBuildDate>");
 	});
 
 	it("emits one <item> per entry with title, link and pubDate", () => {
@@ -87,6 +129,7 @@ describe("generateRss", () => {
 			siteUrl: "https://ogsfrompoly.com",
 			siteTitle: "ogs & friends <beta>",
 			siteDescription: "alerts & outcomes",
+			staticPages: [],
 			entries: [
 				{
 					collection: "statements",

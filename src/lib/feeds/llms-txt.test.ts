@@ -5,6 +5,7 @@ const baseInput: FeedInput = {
 	siteUrl: "https://ogsfrompoly.com",
 	siteTitle: "ogsfrompoly",
 	siteDescription: "We measure who is actually skilled on Polymarket.",
+	staticPages: [],
 	entries: [
 		{
 			collection: "statements",

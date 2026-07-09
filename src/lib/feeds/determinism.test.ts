@@ -10,6 +10,11 @@ const fixture: FeedInput = {
 	siteUrl: "https://ogsfrompoly.com",
 	siteTitle: "ogsfrompoly",
 	siteDescription: "We measure who is actually skilled on Polymarket.",
+	staticPages: [
+		{ path: "/", lastmod: "2026-05-31" },
+		{ path: "/statements", lastmod: "2026-05-31" },
+		{ path: "/methodology" },
+	],
 	entries: [
 		{
 			collection: "statements",
@@ -65,11 +70,14 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 	it("locks the RSS output as a reviewable snapshot", () => {
 		expect(generateRss(fixture)).toMatchInlineSnapshot(`
 			"<?xml version="1.0" encoding="UTF-8"?>
-			<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+			<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
 			<channel>
 			<title>ogsfrompoly</title>
 			<link>https://ogsfrompoly.com</link>
 			<description>We measure who is actually skilled on Polymarket.</description>
+			<language>en</language>
+			<lastBuildDate>Sun, 31 May 2026 00:00:00 GMT</lastBuildDate>
+			<atom:link href="https://ogsfrompoly.com/rss.xml" rel="self" type="application/rss+xml"/>
 			<item>
 			<title>May 2026</title>
 			<link>https://ogsfrompoly.com/statements/2026-05-31-monthly</link>
@@ -138,6 +146,17 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 		expect(generateSitemap(fixture)).toMatchInlineSnapshot(`
 			"<?xml version="1.0" encoding="UTF-8"?>
 			<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+			<url>
+			<loc>https://ogsfrompoly.com/</loc>
+			<lastmod>2026-05-31</lastmod>
+			</url>
+			<url>
+			<loc>https://ogsfrompoly.com/statements</loc>
+			<lastmod>2026-05-31</lastmod>
+			</url>
+			<url>
+			<loc>https://ogsfrompoly.com/methodology</loc>
+			</url>
 			<url>
 			<loc>https://ogsfrompoly.com/statements/2026-05-31-monthly</loc>
 			<lastmod>2026-05-31</lastmod>

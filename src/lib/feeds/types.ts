@@ -7,9 +7,15 @@ export type FeedEntry = {
 	body: string;
 };
 
+export type StaticPage = {
+	path: string;
+	lastmod?: string;
+};
+
 export type FeedInput = {
 	siteUrl: string;
 	siteTitle: string;
 	siteDescription: string;
 	entries: ReadonlyArray<FeedEntry>;
+	staticPages: ReadonlyArray<StaticPage>;
 };
