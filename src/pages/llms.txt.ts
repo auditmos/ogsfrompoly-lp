@@ -1,11 +1,11 @@
 import type { APIRoute } from "astro";
 import { collectFeedInput } from "@/lib/feeds/collect";
 import { generateLlmsTxt } from "@/lib/feeds/llms-txt";
+import { cachedResponse } from "@/lib/http/cached-response";
 
 export const GET: APIRoute = async () => {
 	const input = await collectFeedInput();
-	return new Response(generateLlmsTxt(input), {
-		status: 200,
-		headers: { "content-type": "text/markdown; charset=utf-8" },
+	return cachedResponse(generateLlmsTxt(input), {
+		contentType: "text/markdown; charset=utf-8",
 	});
 };

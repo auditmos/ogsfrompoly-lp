@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { cachedResponse } from "@/lib/http/cached-response";
 import { SITE_URL } from "@/lib/site/config";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { excludeDrafts } from "@/lib/statement-format/published";
@@ -33,8 +34,5 @@ export const GET: APIRoute = async () => {
 		"",
 	].join("\n");
 
-	return new Response(body, {
-		status: 200,
-		headers: { "content-type": "text/markdown; charset=utf-8" },
-	});
+	return cachedResponse(body, { contentType: "text/markdown; charset=utf-8" });
 };

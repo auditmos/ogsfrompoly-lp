@@ -1,5 +1,6 @@
 import YAML from "yaml";
 import { findFullWalletAddresses } from "@/content/body-disclosure";
+import { FEED_CACHE_CONTROL } from "@/lib/http/cached-response";
 import { markdownResponse } from "./markdown-response";
 
 // A realistic monthly statement — every schema field including `top_wallets`
@@ -32,6 +33,19 @@ describe("markdownResponse", () => {
 
 		expect(response.status).toBe(200);
 		expect(response.headers.get("content-type")).toBe("text/markdown; charset=utf-8");
+	});
+
+	it("caches the 200 with the shared feed Cache-Control policy", () => {
+		const response = markdownResponse({ body: "# hello\n" });
+
+		expect(response.headers.get("cache-control")).toBe(FEED_CACHE_CONTROL);
+	});
+
+	it("marks the 404 no-store so a missing entry is never cached", () => {
+		const response = markdownResponse(undefined);
+
+		expect(response.status).toBe(404);
+		expect(response.headers.get("cache-control")).toBe("no-store");
 	});
 
 	it("prepends a YAML frontmatter block that round-trips to the entry data", async () => {

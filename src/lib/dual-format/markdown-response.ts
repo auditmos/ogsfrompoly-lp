@@ -1,4 +1,5 @@
 import YAML from "yaml";
+import { cachedResponse, NO_STORE_CACHE_CONTROL } from "@/lib/http/cached-response";
 
 export type MarkdownEntry = {
 	body?: string | undefined;
@@ -22,9 +23,10 @@ function serializeFrontmatter(data: Record<string, unknown>): string {
 
 export function markdownResponse(entry: MarkdownEntry | undefined): Response {
 	if (!entry || entry.body === undefined) {
-		return new Response("Not Found", {
+		return cachedResponse("Not Found", {
+			contentType: "text/plain; charset=utf-8",
 			status: 404,
-			headers: { "content-type": "text/plain; charset=utf-8" },
+			cacheControl: NO_STORE_CACHE_CONTROL,
 		});
 	}
 
@@ -33,8 +35,5 @@ export function markdownResponse(entry: MarkdownEntry | undefined): Response {
 		? `${serializeFrontmatter(entry.data as Record<string, unknown>)}${entry.body}`
 		: entry.body;
 
-	return new Response(text, {
-		status: 200,
-		headers: { "content-type": "text/markdown; charset=utf-8" },
-	});
+	return cachedResponse(text, { contentType: "text/markdown; charset=utf-8" });
 }

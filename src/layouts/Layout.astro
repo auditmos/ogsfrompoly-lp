@@ -1,6 +1,7 @@
 ---
 import { env } from "cloudflare:workers";
 import { buildBeaconAttributes } from "@/lib/analytics/cloudflare-beacon";
+import { FEED_CACHE_CONTROL } from "@/lib/http/cached-response";
 import { SITE_URL } from "@/lib/site/config";
 import { buildPageMeta, type OpenGraphType } from "@/lib/site/meta";
 import "@/styles/globals.css";
@@ -16,6 +17,12 @@ const {
 	description = "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
 	ogType = "website",
 } = Astro.props;
+
+// Every HTML page inherits the shared cache policy from one place (issue #37):
+// content changes at most weekly, so a 1h edge cache is safe and spares the
+// Worker a full SSR render on each feed-reader / agent / browser poll.
+Astro.response.headers.set("cache-control", FEED_CACHE_CONTROL);
+
 const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
 const meta = buildPageMeta({
 	site: Astro.site ?? SITE_URL,

@@ -1,11 +1,11 @@
 import type { APIRoute } from "astro";
 import { collectFeedInput } from "@/lib/feeds/collect";
 import { generateRss } from "@/lib/feeds/rss";
+import { cachedResponse } from "@/lib/http/cached-response";
 
 export const GET: APIRoute = async () => {
 	const input = await collectFeedInput();
-	return new Response(generateRss(input), {
-		status: 200,
-		headers: { "content-type": "application/rss+xml; charset=utf-8" },
+	return cachedResponse(generateRss(input), {
+		contentType: "application/rss+xml; charset=utf-8",
 	});
 };
