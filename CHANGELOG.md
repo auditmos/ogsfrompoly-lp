@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.0...v1.11.1) (2026-07-09)
+
+
+### Bug Fixes
+
+* populate statement top-wallet tables via hypothetical-PnL ranking ([#46](https://github.com/auditmos/ogsfrompoly-lp/issues/46)) ([57746f7](https://github.com/auditmos/ogsfrompoly-lp/commit/57746f7b5f8f38e073cdfe4defa2baeb636231b3)), closes [#44](https://github.com/auditmos/ogsfrompoly-lp/issues/44) [poly-track#181](https://github.com/poly-track/issues/181) [poly-track#218](https://github.com/poly-track/issues/218) [#30](https://github.com/auditmos/ogsfrompoly-lp/issues/30)
+
 # [1.11.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.10.6...v1.11.0) (2026-07-09)
 
 
