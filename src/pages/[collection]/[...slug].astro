@@ -212,8 +212,10 @@ const pnlClass =
 							{" "}Bucket shows that wallet's approximate hypothetical PnL
 							contribution, rounded to the nearest ${PNL_BUCKET_USD} to avoid
 							leaking precise per-wallet sizing — rows do not sum to headline
-							PnL. Truncated, opaque IDs, never reversible to a full on-chain
-							address. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
+							PnL. Share is that bucket as a fraction of headline PnL; it can
+							exceed 100% when a single wallet carried the window while other
+							alerts netted negative. Truncated, opaque IDs, never reversible
+							to a full on-chain address. See <a class="text-ink-7 underline-offset-4 hover:text-accent hover:underline" href="/methodology">the methodology</a> for why.
 						</p>
 						<ul class="flex flex-col font-mono text-sm">
 							<li class="grid grid-cols-[1fr_5rem_4rem_8rem] items-center gap-x-6 border-b border-ink-3 pb-2 text-eyebrow uppercase tracking-wider text-ink-5">
