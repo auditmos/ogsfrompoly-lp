@@ -1,3 +1,10 @@
+## [1.11.4](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.3...v1.11.4) (2026-07-09)
+
+
+### Bug Fixes
+
+* gate /dev/preview behind dev-only env check ([#34](https://github.com/auditmos/ogsfrompoly-lp/issues/34)) ([3f825b0](https://github.com/auditmos/ogsfrompoly-lp/commit/3f825b0f6e2b055ab75c3a1dff6b3eedffb69a8d))
+
 ## [1.11.3](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.2...v1.11.3) (2026-07-09)
 
 
