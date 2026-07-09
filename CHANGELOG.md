@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.2...v1.11.3) (2026-07-09)
+
+
+### Bug Fixes
+
+* reject calendar-impossible dates and duplicate categories in statement schema ([133a898](https://github.com/auditmos/ogsfrompoly-lp/commit/133a8982a5a5f1663750895c0b71d0ccd0aaaaf3)), closes [#33](https://github.com/auditmos/ogsfrompoly-lp/issues/33)
+
 ## [1.11.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.1...v1.11.2) (2026-07-09)
 
 
