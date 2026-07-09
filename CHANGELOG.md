@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.12.0...v1.13.0) (2026-07-09)
+
+
+### Features
+
+* **seo:** emit canonical + Open Graph/Twitter meta from a single site origin ([fe9629b](https://github.com/auditmos/ogsfrompoly-lp/commit/fe9629b0a3daefde172e61f57aa6e40fea631722)), closes [#36](https://github.com/auditmos/ogsfrompoly-lp/issues/36)
+
 # [1.12.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.4...v1.12.0) (2026-07-09)
 
 
