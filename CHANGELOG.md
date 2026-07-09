@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.0...v1.14.1) (2026-07-09)
+
+
+### Bug Fixes
+
+* **statements:** consume schema as the one guard and unify same-date ordering ([30a7395](https://github.com/auditmos/ogsfrompoly-lp/commit/30a7395341306f97ab6438b5cacd03b8f88954a0)), closes [#38](https://github.com/auditmos/ogsfrompoly-lp/issues/38)
+
 # [1.14.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.13.0...v1.14.0) (2026-07-09)
 
 
