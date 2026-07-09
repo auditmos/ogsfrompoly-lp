@@ -1,3 +1,11 @@
+## [1.11.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.1...v1.11.2) (2026-07-09)
+
+
+### Bug Fixes
+
+* cap top-wallet contribution share at ±100% ([#47](https://github.com/auditmos/ogsfrompoly-lp/issues/47)) ([588e94c](https://github.com/auditmos/ogsfrompoly-lp/commit/588e94c4a5dc9bb29e6f62a45ee8ea71dd1ce9bc)), closes [#31](https://github.com/auditmos/ogsfrompoly-lp/issues/31)
+* correct USD formatter edge cases ([#32](https://github.com/auditmos/ogsfrompoly-lp/issues/32)) ([18f22dd](https://github.com/auditmos/ogsfrompoly-lp/commit/18f22dd3f72ec640f66494537e46bdb99707d798))
+
 ## [1.11.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.11.0...v1.11.1) (2026-07-09)
 
 
