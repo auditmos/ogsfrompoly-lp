@@ -84,7 +84,7 @@ describe("generateSitemap", () => {
 		expect(xml).toContain("<url>\n<loc>https://ogsfrompoly.com/methodology</loc>\n</url>");
 	});
 
-	it("sorts <url> entries deterministically by date desc, slug asc", () => {
+	it("sorts <url> entries deterministically by date desc, slug desc", () => {
 		const xml = generateSitemap({
 			...baseInput,
 			entries: [
@@ -118,8 +118,8 @@ describe("generateSitemap", () => {
 		const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 		expect(locs).toEqual([
 			"https://ogsfrompoly.com/statements/newer",
-			"https://ogsfrompoly.com/statements/a-older",
 			"https://ogsfrompoly.com/statements/b-older",
+			"https://ogsfrompoly.com/statements/a-older",
 		]);
 	});
 });

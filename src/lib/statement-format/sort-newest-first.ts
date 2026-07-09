@@ -7,8 +7,10 @@ export type SortableStatementEntry = {
  * Returns a new array of statement entries sorted newest-to-oldest.
  *
  * Ordering: `period_end` descending, with `id` descending as a deterministic
- * tiebreaker. Matches the selection logic in `pickLatestStatement` so the
- * head of this list is identical to `pickLatestStatement`'s result.
+ * tiebreaker. This same-date tiebreaker (slug/id descending) is the one
+ * canonical order shared with the feeds (`feeds/sort.ts`), so a given pair of
+ * entries lands in the same order on every surface — see issue #38. The head of
+ * this list is also identical to `pickLatestStatement`'s result by construction.
  *
  * The input array is not mutated.
  */

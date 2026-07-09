@@ -3,16 +3,13 @@ import type { CollectionKey } from "astro:content";
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import { bucketUsdToNearest, formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
-import { type Category, formatCategoryList } from "@/lib/statement-format/categories";
+import { formatCategoryList } from "@/lib/statement-format/categories";
 import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
 import { formatPercent } from "@/lib/statement-format/percent";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
-import {
-	type MonthlyPnl,
-	monthlyPnlRows,
-	type PnlTone,
-} from "@/lib/statement-format/monthly-pnl";
+import { monthlyPnlRows, type PnlTone } from "@/lib/statement-format/monthly-pnl";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
+import { asStatementData } from "@/lib/statement-format/statement-data";
 
 const PNL_BUCKET_USD = 25;
 
@@ -21,69 +18,6 @@ const TONE_CLASS: Record<PnlTone, string> = {
 	accent: "text-accent",
 	loss: "text-loss",
 };
-
-type StatementType = "weekly" | "monthly";
-
-interface TruncatedWallet {
-	truncated_id: string;
-	category: Category;
-	hypothetical_pnl_usd?: number;
-}
-
-interface StatementShape {
-	title: string;
-	summary: string;
-	type: StatementType;
-	period_start: string;
-	period_end: string;
-	hit_rate: number;
-	alert_count: number;
-	hypothetical_pnl_usd: number;
-	categories: ReadonlyArray<Category>;
-	top_wallets: ReadonlyArray<TruncatedWallet>;
-	pnl?: MonthlyPnl;
-	draft?: boolean;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === "object" && value !== null;
-}
-
-function isTruncatedWallet(value: unknown): value is TruncatedWallet {
-	if (!isRecord(value)) return false;
-	if (typeof value.truncated_id !== "string" || value.truncated_id.length === 0) return false;
-	if (typeof value.category !== "string") return false;
-	if (value.hypothetical_pnl_usd !== undefined && typeof value.hypothetical_pnl_usd !== "number") {
-		return false;
-	}
-	return true;
-}
-
-function isMonthlyPnl(value: unknown): value is MonthlyPnl {
-	if (!isRecord(value)) return false;
-	if (typeof value.revenue_usd !== "number") return false;
-	if (typeof value.opex_usd !== "number") return false;
-	if (typeof value.net_usd !== "number") return false;
-	if (value.runway_months !== null && typeof value.runway_months !== "number") return false;
-	return true;
-}
-
-function isStatementData(value: unknown): value is StatementShape {
-	if (!isRecord(value)) return false;
-	const { type, title, summary, period_start, period_end } = value;
-	if (typeof title !== "string" || title.length === 0) return false;
-	if (typeof summary !== "string") return false;
-	if (typeof period_start !== "string" || typeof period_end !== "string") return false;
-	if (type !== "weekly" && type !== "monthly") return false;
-	if (typeof value.hit_rate !== "number") return false;
-	if (typeof value.alert_count !== "number") return false;
-	if (typeof value.hypothetical_pnl_usd !== "number") return false;
-	if (!Array.isArray(value.categories)) return false;
-	if (!Array.isArray(value.top_wallets)) return false;
-	if (!value.top_wallets.every(isTruncatedWallet)) return false;
-	if (type === "monthly" && !isMonthlyPnl(value.pnl)) return false;
-	return true;
-}
 
 const { collection, slug } = Astro.params;
 
@@ -102,25 +36,26 @@ if (!entry) {
 	return new Response("Not Found", { status: 404 });
 }
 
-const rawData: unknown = entry.data;
-if (isRecord(rawData) && rawData.draft === true) {
+// Content-collection data is always an object; read metadata off it opaquely so
+// this catch-all route stays collection-agnostic (dual-format serving for any
+// future collection), while `asStatementData` gates the statement metrics.
+const data = entry.data as Record<string, unknown>;
+if (data.draft === true) {
 	return new Response("Not Found", { status: 404 });
 }
 
 const { Content } = await render(entry);
 
-const statement = isStatementData(rawData) ? rawData : null;
+const statement = asStatementData(entry.data);
 const fallbackTitle =
-	isRecord(rawData) && typeof rawData.title === "string" ? rawData.title : entry.id;
+	typeof data.title === "string" && data.title.length > 0 ? data.title : entry.id;
 const title = statement?.title ?? fallbackTitle;
 const summary =
-	statement?.summary ??
-	(isRecord(rawData) && typeof rawData.summary === "string" ? rawData.summary : null);
+	statement?.summary ?? (typeof data.summary === "string" ? data.summary : null);
 const eyebrow = statement
 	? `${statement.type} · ${formatPeriodLabel(statement.period_start, statement.period_end, statement.type)}`
 	: null;
-const pnlClass =
-	statement && statement.hypothetical_pnl_usd < 0 ? "text-loss" : "text-accent";
+const pnlClass = statement && statement.hypothetical_pnl_usd < 0 ? "text-loss" : "text-accent";
 ---
 
 <Layout title={`${title} · ogsfrompoly`} description={summary ?? undefined} ogType="article">

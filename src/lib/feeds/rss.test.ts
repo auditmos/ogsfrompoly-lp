@@ -86,7 +86,7 @@ describe("generateRss", () => {
 		expect(xml).toMatch(/<pubDate>Mon, 25 May 2026 00:00:00 GMT<\/pubDate>/);
 	});
 
-	it("sorts items by date descending with slug ascending as tiebreak", () => {
+	it("sorts items by date descending with slug descending as tiebreak", () => {
 		const xml = generateRss({
 			...baseInput,
 			entries: [
@@ -121,7 +121,7 @@ describe("generateRss", () => {
 			.map((m) => m[1])
 			.filter((t): t is string => t !== undefined && t !== "ogsfrompoly");
 
-		expect(orderedTitles).toEqual(["Newer", "Older A", "Older B"]);
+		expect(orderedTitles).toEqual(["Newer", "Older B", "Older A"]);
 	});
 
 	it("XML-escapes <, >, & in titles, descriptions, and the channel header", () => {

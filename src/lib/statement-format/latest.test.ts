@@ -1,6 +1,19 @@
 import { pickLatestStatement, type StatementEntry } from "./latest";
+import { sortStatementsNewestFirst } from "./sort-newest-first";
 
 describe("pickLatestStatement", () => {
+	// The load-bearing contract: "latest" is the head of the one canonical sort,
+	// so the two can never disagree on the same-date tiebreaker (issue #38).
+	it("equals the head of sortStatementsNewestFirst, including a same-date tie", () => {
+		const entries: StatementEntry[] = [
+			{ id: "2026-05-31-weekly", data: { period_end: "2026-05-31" } },
+			{ id: "2026-05-monthly", data: { period_end: "2026-05-31" } },
+			{ id: "2026-04-12-april-w2", data: { period_end: "2026-04-12" } },
+		];
+		expect(pickLatestStatement(entries)).toEqual(sortStatementsNewestFirst(entries)[0] ?? null);
+		expect(pickLatestStatement([])).toEqual(sortStatementsNewestFirst([])[0] ?? null);
+	});
+
 	it("picks the entry with the most recent period_end", () => {
 		const entries: StatementEntry[] = [
 			{ id: "2026-04-12-april-w2", data: { period_end: "2026-04-12" } },
