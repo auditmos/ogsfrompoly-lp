@@ -8,6 +8,7 @@ import StatementTable, {
 } from "@/components/brand/StatementTable.astro";
 import Layout from "@/layouts/Layout.astro";
 import { isPreviewEnabled } from "@/lib/preview-gate/preview-gate";
+import { SITE_URL } from "@/lib/site/config";
 import { formatPercent } from "@/lib/statement-format/percent";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
 import { formatUsdCompact } from "@/lib/statement-format/usd-compact";
@@ -45,7 +46,7 @@ const monthlyRows: StatementTableRow[] = [
 		<section class="flex flex-col gap-6">
 			<p class="font-mono text-eyebrow uppercase text-ink-5">section · install snippet</p>
 			<InstallSnippet
-				siteUrl="https://ogsfrompoly.com"
+				siteUrl={SITE_URL}
 				caption="feed any LLM the full content map"
 			/>
 		</section>

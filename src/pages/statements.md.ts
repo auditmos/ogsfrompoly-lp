@@ -1,10 +1,10 @@
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { SITE_URL } from "@/lib/site/config";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { excludeDrafts } from "@/lib/statement-format/published";
 import { sortStatementsNewestFirst } from "@/lib/statement-format/sort-newest-first";
 
-const SITE_URL = "https://ogsfrompoly.com";
 const SITE_TITLE = "ogsfrompoly — statements";
 const SITE_DESCRIPTION =
 	"Every published ogsfrompoly statement — weekly track record and monthly project P&L, newest first.";

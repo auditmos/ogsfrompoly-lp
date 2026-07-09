@@ -1,18 +1,29 @@
 ---
 import { env } from "cloudflare:workers";
 import { buildBeaconAttributes } from "@/lib/analytics/cloudflare-beacon";
+import { SITE_URL } from "@/lib/site/config";
+import { buildPageMeta, type OpenGraphType } from "@/lib/site/meta";
 import "@/styles/globals.css";
 
 interface Props {
 	title?: string;
 	description?: string;
+	ogType?: OpenGraphType;
 }
 
 const {
 	title = "ogsfrompoly — skilled traders on Polymarket",
 	description = "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
+	ogType = "website",
 } = Astro.props;
 const beacon = buildBeaconAttributes(env.CLOUDFLARE_WEB_ANALYTICS_TOKEN);
+const meta = buildPageMeta({
+	site: Astro.site ?? SITE_URL,
+	path: Astro.url.pathname,
+	title,
+	description,
+	type: ogType,
+});
 
 const CONTACT_EMAIL = "hi@ogsfrompoly.com";
 const navLinks = [
@@ -29,6 +40,9 @@ const navLinks = [
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		<link rel="canonical" href={meta.canonical} />
+		{Object.entries(meta.og).map(([property, content]) => <meta property={property} content={content} />)}
+		{Object.entries(meta.twitter).map(([name, content]) => <meta name={name} content={content} />)}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
