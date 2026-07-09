@@ -1,4 +1,5 @@
 ---
+import { env } from "cloudflare:workers";
 import DisplayHeading from "@/components/brand/DisplayHeading.astro";
 import InstallSnippet from "@/components/brand/InstallSnippet.astro";
 import StatementCard from "@/components/brand/StatementCard.astro";
@@ -6,9 +7,16 @@ import StatementTable, {
 	type StatementTableRow,
 } from "@/components/brand/StatementTable.astro";
 import Layout from "@/layouts/Layout.astro";
+import { isPreviewEnabled } from "@/lib/preview-gate/preview-gate";
 import { formatPercent } from "@/lib/statement-format/percent";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
 import { formatUsdCompact } from "@/lib/statement-format/usd-compact";
+
+// Internal brand-primitives fixture with hardcoded fake numbers — never expose past
+// local dev, or crawlers/LLMs index fake performance data on the credibility domain. See #34.
+if (!isPreviewEnabled(env.CLOUDFLARE_ENV)) {
+	return new Response("Not Found", { status: 404 });
+}
 
 const weeklyRows: StatementTableRow[] = [
 	{ label: "Bankroll", value: formatUsdCompact(50_000) },
