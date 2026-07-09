@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import YAML from "yaml";
 import { findFullWalletAddresses, findScaffoldingPhrases } from "./body-disclosure";
+import { findPublishedInconsistencies, type StatementSanityInput } from "./statement-sanity";
 
 const STATEMENTS_DIR = new URL("./statements/", import.meta.url).pathname;
 
@@ -52,5 +53,21 @@ describe("statement markdown bodies", () => {
 
 	it.each(published)("$file (draft:false) ships no operator scaffolding to readers", ({ body }) => {
 		expect(findScaffoldingPhrases(body)).toEqual([]);
+	});
+});
+
+describe("statement frontmatter sanity (ogsfrompoly-lp#30)", () => {
+	const statements = loadStatements();
+
+	// Drafts are exempt (findPublishedInconsistencies skips them), so upstream
+	// producers can land a statement as draft and fix its numbers before flipping
+	// it live. This is the flip-time gate that would have caught the PR #26 case.
+	it("every published statement frontmatter is internally consistent", () => {
+		const entries = statements.map((s) => ({
+			file: s.file,
+			draft: s.data.draft === true,
+			data: s.data as unknown as StatementSanityInput,
+		}));
+		expect(findPublishedInconsistencies(entries)).toEqual([]);
 	});
 });
