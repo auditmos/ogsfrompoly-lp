@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.2...v1.15.0) (2026-07-10)
+
+
+### Features
+
+* **og:** social cards — brand default + build-time statement cards ([0573696](https://github.com/auditmos/ogsfrompoly-lp/commit/0573696bfdefe4fe938aa4d0080724eab6891da6))
+
 ## [1.14.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.1...v1.14.2) (2026-07-10)
 
 
