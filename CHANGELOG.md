@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.1...v1.14.2) (2026-07-10)
+
+
+### Bug Fixes
+
+* **build:** force content-layer rebuild so local deploys can't ship a stale parse ([05bce8c](https://github.com/auditmos/ogsfrompoly-lp/commit/05bce8c0df2b9c5fd86706204707130c01d73ea0)), closes [#39](https://github.com/auditmos/ogsfrompoly-lp/issues/39)
+
 ## [1.14.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.0...v1.14.1) (2026-07-09)
 
 
