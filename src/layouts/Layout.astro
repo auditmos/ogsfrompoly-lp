@@ -2,6 +2,7 @@
 import { env } from "cloudflare:workers";
 import { buildBeaconAttributes } from "@/lib/analytics/cloudflare-beacon";
 import { FEED_CACHE_CONTROL } from "@/lib/http/cached-response";
+import { OG_DEFAULT_IMAGE_PATH } from "@/lib/og/paths";
 import { SITE_URL } from "@/lib/site/config";
 import { buildPageMeta, type OpenGraphType } from "@/lib/site/meta";
 import "@/styles/globals.css";
@@ -10,12 +11,15 @@ interface Props {
 	title?: string;
 	description?: string;
 	ogType?: OpenGraphType;
+	/** Social card image path; defaults to the static brand card. */
+	ogImage?: string;
 }
 
 const {
 	title = "ogsfrompoly — skilled traders on Polymarket",
 	description = "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
 	ogType = "website",
+	ogImage = OG_DEFAULT_IMAGE_PATH,
 } = Astro.props;
 
 // Every HTML page inherits the shared cache policy from one place (issue #37):
@@ -30,6 +34,7 @@ const meta = buildPageMeta({
 	title,
 	description,
 	type: ogType,
+	image: ogImage,
 });
 
 const CONTACT_EMAIL = "hi@ogsfrompoly.com";

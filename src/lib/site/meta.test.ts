@@ -109,4 +109,74 @@ describe("buildPageMeta", () => {
 
 		expect(meta.og["og:type"]).toBe("article");
 	});
+
+	it("emits an absolute og:image resolved against the site origin when an image path is given", () => {
+		const meta = buildPageMeta({
+			site: SITE,
+			path: "/",
+			title: "Home",
+			description: "Landing page.",
+			image: "/og/default.png",
+		});
+
+		expect(meta.og["og:image"]).toBe("https://ogsfrompoly.com/og/default.png");
+	});
+
+	it("emits the fixed 1200×630 image dimensions alongside og:image", () => {
+		const meta = buildPageMeta({
+			site: SITE,
+			path: "/",
+			title: "Home",
+			description: "Landing page.",
+			image: "/og/default.png",
+		});
+
+		expect(meta.og["og:image:width"]).toBe("1200");
+		expect(meta.og["og:image:height"]).toBe("630");
+	});
+
+	it("mirrors the absolute image onto twitter:image and upgrades to a large summary card", () => {
+		const meta = buildPageMeta({
+			site: SITE,
+			path: "/statements/2026-05-31-weekly",
+			title: "Weekly · ogsfrompoly",
+			description: "A weekly statement.",
+			type: "article",
+			image: "/og/statements/2026-05-31-weekly.png",
+		});
+
+		expect(meta.twitter["twitter:image"]).toBe(
+			"https://ogsfrompoly.com/og/statements/2026-05-31-weekly.png",
+		);
+		expect(meta.twitter["twitter:image"]).toBe(meta.og["og:image"]);
+		expect(meta.twitter["twitter:card"]).toBe("summary_large_image");
+	});
+
+	it("passes an already-absolute image URL through untouched (off-origin CDN)", () => {
+		const meta = buildPageMeta({
+			site: SITE,
+			path: "/",
+			title: "Home",
+			description: "Landing page.",
+			image: "https://cdn.example.com/card.png",
+		});
+
+		expect(meta.og["og:image"]).toBe("https://cdn.example.com/card.png");
+		expect(meta.twitter["twitter:image"]).toBe("https://cdn.example.com/card.png");
+	});
+
+	it("emits no image tags and keeps the plain summary card when no image is given", () => {
+		const meta = buildPageMeta({
+			site: SITE,
+			path: "/",
+			title: "Home",
+			description: "Landing page.",
+		});
+
+		expect(meta.og["og:image"]).toBeUndefined();
+		expect(meta.og["og:image:width"]).toBeUndefined();
+		expect(meta.og["og:image:height"]).toBeUndefined();
+		expect(meta.twitter["twitter:image"]).toBeUndefined();
+		expect(meta.twitter["twitter:card"]).toBe("summary");
+	});
 });

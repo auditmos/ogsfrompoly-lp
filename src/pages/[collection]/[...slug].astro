@@ -2,6 +2,7 @@
 import type { CollectionKey } from "astro:content";
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
+import { ogImagePathForStatement } from "@/lib/og/paths";
 import { bucketUsdToNearest, formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
 import { formatCategoryList } from "@/lib/statement-format/categories";
 import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
@@ -56,9 +57,19 @@ const eyebrow = statement
 	? `${statement.type} · ${formatPeriodLabel(statement.period_start, statement.period_end, statement.type)}`
 	: null;
 const pnlClass = statement && statement.hypothetical_pnl_usd < 0 ? "text-loss" : "text-accent";
+
+// Statements get their own build-time social card; any other collection served
+// by this catch-all falls back to the static brand default in Layout.
+const ogImage =
+	collection === "statements" && statement ? ogImagePathForStatement(slug) : undefined;
 ---
 
-<Layout title={`${title} · ogsfrompoly`} description={summary ?? undefined} ogType="article">
+<Layout
+	title={`${title} · ogsfrompoly`}
+	description={summary ?? undefined}
+	ogType="article"
+	ogImage={ogImage}
+>
 	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
 		<article class="long-form-article">
 			{
