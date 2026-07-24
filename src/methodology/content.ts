@@ -34,13 +34,12 @@ trade ideas, open-position details, or wallet leaderboards.
 
 ## Current scope
 
-The public track record currently covers two Polymarket areas:
+The public track record currently covers a single Polymarket area:
 
-- **Politics** - political and geopolitical markets.
 - **Macro/Finance** - macro, rates, economic data, FOMC, earnings, and
   finance-labeled Polymarket markets.
 
-This narrower scope is deliberate. The goal is not broad category coverage.
+This narrow scope is deliberate. The goal is not broad category coverage.
 The goal is a clean audit trail: skilled wallets, retrospective alerts, and
 published outcomes that a reader can check later.
 
@@ -116,9 +115,9 @@ Weekly statements score the period after the fact. They report:
 Monthly statements add the business side of the project: revenue, operating
 expense, net result, and runway.
 
-The published categories are **politics** and **macro-finance**. Anything
-outside the current public scope is dropped from the landing-page statement
-surface instead of being merged into another category.
+The published category is **macro-finance**. Anything outside the current
+public scope is dropped from the landing-page statement surface instead of
+being merged into another category.
 
 Every statement is retrospective. The site publishes whether historical
 signals worked. It does not publish instructions for trades in flight.

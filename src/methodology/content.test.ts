@@ -56,14 +56,13 @@ describe("methodologyMarkdown", () => {
 	describe("current public coverage", () => {
 		const body = methodologyMarkdown.toLowerCase();
 
-		it("states the current published categories", () => {
-			expect(body).toContain("politics");
+		it("states the current published category", () => {
 			expect(body).toContain("macro-finance");
 		});
 
-		it("does not describe crypto as part of the current public track record", () => {
+		it("does not describe politics or crypto as part of the current public track record", () => {
+			expect(body).not.toContain("politic");
 			expect(body).not.toContain("crypto");
-			expect(body).not.toMatch(/track three categories.*crypto/s);
 		});
 	});
 
