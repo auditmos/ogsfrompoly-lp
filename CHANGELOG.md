@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.15.0...v1.16.0) (2026-07-24)
+
+
+### Features
+
+* **statements:** enforce recurring opex floor + no-address-leak; add July draft ([45d98c0](https://github.com/auditmos/ogsfrompoly-lp/commit/45d98c03d9613e38c0635e8bac079242b1a59802))
+
 # [1.15.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.14.2...v1.15.0) (2026-07-10)
 
 
