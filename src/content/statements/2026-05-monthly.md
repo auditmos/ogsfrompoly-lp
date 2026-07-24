@@ -3,7 +3,7 @@ schema_version: 1
 type: monthly
 draft: false
 title: May 2026
-summary: poly-track monthly statement — 1128 alerts, hit rate 0.71.
+summary: ogsfrompoly monthly statement — 1128 alerts, hit rate 0.71.
 period_start: '2026-05-01'
 period_end: '2026-05-31'
 bankroll_usd: 10000.0

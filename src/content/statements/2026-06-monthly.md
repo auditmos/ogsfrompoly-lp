@@ -3,7 +3,7 @@ schema_version: 1
 type: monthly
 draft: false
 title: June 2026
-summary: poly-track monthly statement — 17903 alerts, hit rate 0.48.
+summary: ogsfrompoly monthly statement — 17903 alerts, hit rate 0.48.
 period_start: '2026-06-01'
 period_end: '2026-06-30'
 bankroll_usd: 10000.0
@@ -38,7 +38,7 @@ pnl:
 
 ## Strategy track record (2026-06-01 → 2026-06-30)
 
-Generated from the poly-track warehouse for the monthly window 2026-06-01 → 2026-06-30. 17903 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived.
+Generated from the ogsfrompoly warehouse for the monthly window 2026-06-01 → 2026-06-30. 17903 alerts emitted in this window across the LP-public categories (politics, macro-finance). Numbers in the frontmatter are mechanically derived.
 
 **Resolution coverage.** As of 2026-07-08, 1,653 of the 4,747 distinct markets flagged this month have settled (35%). The hit rate above reflects only markets that have settled so far and will firm up as the remaining markets resolve.
 
