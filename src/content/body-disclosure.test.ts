@@ -1,4 +1,8 @@
-import { findFullWalletAddresses, findScaffoldingPhrases } from "./body-disclosure";
+import {
+	findFullWalletAddresses,
+	findRawWalletHex,
+	findScaffoldingPhrases,
+} from "./body-disclosure";
 
 describe("findFullWalletAddresses", () => {
 	it("returns an empty array when the body contains no addresses", () => {
@@ -28,6 +32,40 @@ describe("findFullWalletAddresses", () => {
 	it("does not flag 39-char strings that fall short of the EVM length", () => {
 		const body = "Almost-address 0x111111111111111111111111111111111111111 — too short.";
 		expect(findFullWalletAddresses(body)).toEqual([]);
+	});
+});
+
+describe("findRawWalletHex", () => {
+	it("returns an empty array for prose with no 0x hex", () => {
+		expect(findRawWalletHex("Top performer: `wallet_a3f8` swept $120 to the ledger.")).toEqual([]);
+	});
+
+	it("does not flag truncated wallet IDs (the sanctioned form)", () => {
+		expect(findRawWalletHex("Pool wallet `wallet_1214`; gains to `wallet_c3fb`.")).toEqual([]);
+	});
+
+	it("flags a full EVM address", () => {
+		const addr = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0";
+		expect(findRawWalletHex(`Inspect ${addr}.`)).toEqual([addr]);
+	});
+
+	it.each([
+		["0x1214a9A2", "8-hex leading fragment"],
+		["0xC3fb801B", "collection-style leading fragment"],
+		["0x1214", "4-hex minimal truncation"],
+	])("flags a truncated address fragment: %s (%s)", (fragment) => {
+		expect(findRawWalletHex(`Sent to ${fragment}… on chain.`)).toContain(fragment);
+	});
+
+	it("catches a fragment even when the full address regex would miss it", () => {
+		// 12 hex — a real partial leak that `findFullWalletAddresses` (needs 40) ignores.
+		const body = "Execution wallet 0x1214a9A229ed… runs the copytrades.";
+		expect(findFullWalletAddresses(body)).toEqual([]);
+		expect(findRawWalletHex(body)).toHaveLength(1);
+	});
+
+	it("does not flag a bare 0x with fewer than 4 hex", () => {
+		expect(findRawWalletHex("The 0x prefix, or 0xFF as a byte, is not an address.")).toEqual([]);
 	});
 });
 

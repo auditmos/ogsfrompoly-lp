@@ -1,7 +1,11 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import YAML from "yaml";
-import { findFullWalletAddresses, findScaffoldingPhrases } from "./body-disclosure";
+import {
+	findFullWalletAddresses,
+	findRawWalletHex,
+	findScaffoldingPhrases,
+} from "./body-disclosure";
 import { findPublishedInconsistencies, type StatementSanityInput } from "./statement-sanity";
 
 const STATEMENTS_DIR = new URL("./statements/", import.meta.url).pathname;
@@ -41,6 +45,13 @@ describe("statement markdown bodies", () => {
 
 	it.each(statements)("$file contains no full EVM addresses (disclosure invariant)", ({ raw }) => {
 		expect(findFullWalletAddresses(raw)).toEqual([]);
+	});
+
+	// Broader than the full-address check: catches truncated address fragments
+	// too (e.g. `0x1214a9A2…`). The copytrading wallets must never appear in any
+	// form; the site's only sanctioned reference is a `wallet_XXXX` truncated ID.
+	it.each(statements)("$file contains no raw 0x wallet hex, full or truncated", ({ raw }) => {
+		expect(findRawWalletHex(raw)).toEqual([]);
 	});
 
 	// Draft entries are exempt: they are never served (see statement-format/published.ts).

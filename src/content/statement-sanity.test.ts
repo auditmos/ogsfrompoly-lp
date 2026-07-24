@@ -1,4 +1,8 @@
-import { findDataInconsistencies, findPublishedInconsistencies } from "./statement-sanity";
+import {
+	findDataInconsistencies,
+	findPublishedInconsistencies,
+	RECURRING_MONTHLY_OPEX_USD,
+} from "./statement-sanity";
 
 describe("findDataInconsistencies", () => {
 	const clean = {
@@ -62,6 +66,78 @@ describe("findDataInconsistencies", () => {
 	it("flags a monthly P&L where net != revenue - opex", () => {
 		expect(
 			findDataInconsistencies({ ...monthly, pnl: { revenue_usd: 100, opex_usd: 30, net_usd: 0 } }),
+		).not.toHaveLength(0);
+	});
+
+	// Recurring-opex floor — the standing polynode cost must be booked every month
+	// from 2026-07 onward, so the P&L values are enforced, not remembered.
+	const julyMonthly = {
+		...monthly,
+		period_start: "2026-07-01",
+		pnl: { revenue_usd: 0, opex_usd: 50, net_usd: -50, runway_months: 12 },
+	} satisfies import("./statement-sanity").StatementSanityInput;
+
+	it("pins the recurring monthly opex floor at $50", () => {
+		expect(RECURRING_MONTHLY_OPEX_USD).toBe(50);
+	});
+
+	it("passes a July+ monthly that books the recurring opex floor", () => {
+		expect(findDataInconsistencies(julyMonthly)).toEqual([]);
+	});
+
+	it("flags a July+ monthly that drops below the recurring opex floor", () => {
+		expect(
+			findDataInconsistencies({
+				...julyMonthly,
+				pnl: { revenue_usd: 0, opex_usd: 0, net_usd: 0, runway_months: null },
+			}),
+		).not.toHaveLength(0);
+	});
+
+	it("exempts pre-July monthlies (May/June genuinely $0 opex) from the floor", () => {
+		expect(
+			findDataInconsistencies({
+				...monthly,
+				period_start: "2026-06-01",
+				pnl: { revenue_usd: 0, opex_usd: 0, net_usd: 0, runway_months: null },
+			}),
+		).toEqual([]);
+	});
+
+	// Runway must agree with net: "covered" (null) only when net >= 0.
+	it("flags 'covered' (null runway) when net is negative (a real burn)", () => {
+		expect(
+			findDataInconsistencies({
+				...julyMonthly,
+				pnl: { revenue_usd: 0, opex_usd: 50, net_usd: -50, runway_months: null },
+			}),
+		).not.toHaveLength(0);
+	});
+
+	it("flags a finite runway when net is non-negative (should be 'covered')", () => {
+		expect(
+			findDataInconsistencies({
+				...julyMonthly,
+				pnl: { revenue_usd: 200, opex_usd: 50, net_usd: 150, runway_months: 12 },
+			}),
+		).not.toHaveLength(0);
+	});
+
+	it("passes 'covered' (null runway) when revenue meets opex (net >= 0)", () => {
+		expect(
+			findDataInconsistencies({
+				...julyMonthly,
+				pnl: { revenue_usd: 50, opex_usd: 50, net_usd: 0, runway_months: null },
+			}),
+		).toEqual([]);
+	});
+
+	it("flags a non-positive finite runway", () => {
+		expect(
+			findDataInconsistencies({
+				...julyMonthly,
+				pnl: { revenue_usd: 0, opex_usd: 50, net_usd: -50, runway_months: 0 },
+			}),
 		).not.toHaveLength(0);
 	});
 

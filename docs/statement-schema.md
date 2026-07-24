@@ -82,6 +82,17 @@ Weekly statements add no extra top-level fields beyond the shared set.
 | --- | --- | --- |
 | `pnl` | `{ revenue_usd, opex_usd, net_usd, runway_months }` | Project P&L for the period. `runway_months` is `number \| null` (null = revenue covers opex). |
 
+### Monthly P&L invariants (consumer-side lint, `statement-sanity.ts`)
+
+These are enforced at flip-time over **published** (non-draft) statements — they are *not* in the Zod contract, so they never force a `SCHEMA_VERSION` bump:
+
+- **Balance:** `net_usd == revenue_usd - opex_usd`. `opex_usd` is a **positive magnitude**.
+- **Recurring-opex floor:** from `period_start >= 2026-07-01`, `opex_usd >= 50` (`RECURRING_MONTHLY_OPEX_USD` — the standing ogsfrompoly polynode, $50/mo, cash-basis). This keeps the recurring cost in every month's numbers by construction rather than by memory. Pre-July months (genuinely $0 opex) are exempt. Raise the floor here if standing costs change.
+- **Revenue** is realized only — the value swept from the copytrading pool to the collection wallet during the period, booked to the operator ledger (not the trading warehouse, not open-position marks).
+- **Runway agrees with net:** `runway_months: null` renders "covered" and is valid only when `net_usd >= 0`; a net burn (`net_usd < 0`) requires a finite, **positive** `runway_months` against the opex reserve (an operator judgment, distinct from `bankroll_usd`).
+
+> **Disclosure:** the copytrading execution and collection wallet addresses must **never** appear in any statement — not frontmatter, body, `.md`, RSS, or `llms.txt`. The corpus lint rejects any raw `0x…` hex token (full or truncated); the only sanctioned wallet reference is a `wallet_XXXX` truncated ID.
+
 ## `Category` enum
 
 Fixed enum — adding a value is a breaking change.
