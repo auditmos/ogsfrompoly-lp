@@ -70,9 +70,33 @@
 	text-wrap: balance;
 }
 
+.long-form-article h3 {
+	margin: 2.5rem 0 0.75rem;
+	color: var(--color-ink-8);
+	font-size: 1.125rem;
+	font-weight: 650;
+	letter-spacing: 0;
+	line-height: 1.3;
+	text-wrap: balance;
+}
+
 .long-form-article p,
 .long-form-article ul {
 	margin: 0 0 1rem;
+}
+
+/* Preflight resets links to `color: inherit; text-decoration: inherit`, so
+   markdown-authored links are invisible without this. */
+.long-form-article a {
+	color: var(--color-ink-8);
+	text-decoration: underline;
+	text-decoration-color: var(--color-accent-dim);
+	text-underline-offset: 0.25em;
+}
+
+.long-form-article a:hover {
+	color: var(--color-accent);
+	text-decoration-color: var(--color-accent);
 }
 
 .long-form-article h1 + p {

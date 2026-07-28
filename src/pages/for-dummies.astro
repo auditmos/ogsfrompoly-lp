@@ -1,0 +1,31 @@
+---
+import { marked } from "marked";
+import CopyTradeSimulator from "@/components/brand/CopyTradeSimulator.astro";
+import {
+	copyTradeClosingMarkdown,
+	copyTradeDescription,
+	copyTradeIntroMarkdown,
+	copyTradeStoryMarkdown,
+	copyTradeTitle,
+} from "@/copy-trade/content";
+import Layout from "@/layouts/Layout.astro";
+
+const intro = marked.parse(copyTradeIntroMarkdown, { async: false }) as string;
+const story = marked.parse(copyTradeStoryMarkdown, { async: false }) as string;
+const closing = marked.parse(copyTradeClosingMarkdown, { async: false }) as string;
+---
+
+<Layout title={`${copyTradeTitle} · ogsfrompoly`} description={copyTradeDescription}>
+	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
+		{/* The simulator sits outside the 44rem prose column on purpose — it needs
+		    the full page width to split into two panels. */}
+		<article class="long-form-article">
+			<Fragment set:html={intro} />
+		</article>
+		<CopyTradeSimulator />
+		<article class="long-form-article">
+			<Fragment set:html={story} />
+			<Fragment set:html={closing} />
+		</article>
+	</main>
+</Layout>

@@ -14,6 +14,7 @@ const fixture: FeedInput = {
 		{ path: "/", lastmod: "2026-05-31" },
 		{ path: "/statements", lastmod: "2026-05-31" },
 		{ path: "/methodology" },
+		{ path: "/for-dummies" },
 	],
 	entries: [
 		{
@@ -131,6 +132,10 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 
 			- [Methodology](https://ogsfrompoly.com/methodology.md): How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.
 
+			## Copy trade
+
+			- [Copy trade for dummies](https://ogsfrompoly.com/for-dummies.md): Plain-English walkthrough of the ogsfrompoly copy-trade bot — when it buys, when it skips, when it sells, and which numbers you can actually turn.
+
 			## articles
 
 			- [Build log 01: warehouse](https://ogsfrompoly.com/articles/build-log-01.md): How we provisioned the warehouse.
@@ -156,6 +161,9 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 			</url>
 			<url>
 			<loc>https://ogsfrompoly.com/methodology</loc>
+			</url>
+			<url>
+			<loc>https://ogsfrompoly.com/for-dummies</loc>
 			</url>
 			<url>
 			<loc>https://ogsfrompoly.com/statements/2026-05-31-monthly</loc>

@@ -16,14 +16,15 @@ export async function collectFeedInput(): Promise<FeedInput> {
 	}));
 
 	// The homepage and the statements index both reflect the newest published
-	// entry, so we date them by it; the methodology page is content-stable so it
-	// carries no lastmod. Deriving from entry data (not build time) keeps the
-	// sitemap byte-deterministic — see determinism.test.ts.
+	// entry, so we date them by it; the methodology and for-dummies pages are
+	// content-stable so they carry no lastmod. Deriving from entry data (not build
+	// time) keeps the sitemap byte-deterministic — see determinism.test.ts.
 	const newest = sortEntries(entries)[0]?.date;
 	const staticPages: StaticPage[] = [
 		{ path: "/", lastmod: newest },
 		{ path: "/statements", lastmod: newest },
 		{ path: "/methodology" },
+		{ path: "/for-dummies" },
 	];
 
 	return {

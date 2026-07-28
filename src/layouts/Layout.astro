@@ -41,6 +41,7 @@ const CONTACT_EMAIL = "hi@ogsfrompoly.com";
 const navLinks = [
 	{ href: "/statements", label: "Statements" },
 	{ href: "/methodology", label: "Methodology" },
+	{ href: "/for-dummies", label: "For dummies" },
 	{ href: "/rss.xml", label: "RSS" },
 	{ href: "/llms.txt", label: "llms.txt" },
 ] as const;
@@ -69,7 +70,7 @@ const navLinks = [
 				ogsfrompoly
 			</a>
 			<nav aria-label="Primary">
-				<ul class="flex items-center gap-6 font-mono text-eyebrow uppercase tracking-wider text-ink-6">
+				<ul class="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 font-mono text-eyebrow uppercase tracking-wider text-ink-6 sm:gap-x-6">
 					{
 						navLinks.map((link) => (
 							<li>
@@ -93,9 +94,10 @@ const navLinks = [
 						{CONTACT_EMAIL}
 					</a>
 				</p>
-				<ul class="flex items-center gap-4">
+				<ul class="flex flex-wrap items-center gap-x-4 gap-y-1">
 					<li><a class="hover:text-accent" href="/statements">Statements</a></li>
 					<li><a class="hover:text-accent" href="/methodology">Methodology</a></li>
+					<li><a class="hover:text-accent" href="/for-dummies">For dummies</a></li>
 					<li><a class="hover:text-accent" href="/rss.xml">RSS</a></li>
 					<li><a class="hover:text-accent" href="/llms.txt">llms.txt</a></li>
 					<li><a class="hover:text-accent" href="/sitemap.xml">Sitemap</a></li>

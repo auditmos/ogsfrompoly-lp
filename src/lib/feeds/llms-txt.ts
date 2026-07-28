@@ -1,23 +1,62 @@
+import { copyTradeDescription, copyTradeTitle } from "@/copy-trade/content";
+import { methodologyDescription, methodologyTitle } from "@/methodology/content";
 import { sortEntries } from "./sort";
 import type { FeedEntry, FeedInput } from "./types";
 
-const METHODOLOGY_SUMMARY =
-	"How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.";
+/**
+ * Hand-authored pages that are not content-collection entries but still have a
+ * `.md` twin worth advertising to agents. Titles and summaries are imported from
+ * the page modules rather than restated here, so a rewritten page description
+ * cannot silently drift away from what `llms.txt` promises.
+ *
+ * Section order is declaration order, and all of them render ahead of the
+ * per-collection sections.
+ */
+interface StaticDoc {
+	readonly section: string;
+	readonly title: string;
+	/** Path of the `.md` twin, relative to the site root. */
+	readonly path: string;
+	readonly summary: string;
+}
 
-const STATEMENTS_INDEX_SUMMARY =
-	"Index of every published statement — weekly track record and monthly project P&L, newest first.";
+const STATIC_DOCS: readonly StaticDoc[] = [
+	{
+		section: "Browse all",
+		title: "All statements",
+		path: "/statements.md",
+		summary:
+			"Index of every published statement — weekly track record and monthly project P&L, newest first.",
+	},
+	{
+		section: "Methodology",
+		title: methodologyTitle,
+		path: "/methodology.md",
+		summary: methodologyDescription,
+	},
+	{
+		section: "Copy trade",
+		title: copyTradeTitle,
+		path: "/for-dummies.md",
+		summary: copyTradeDescription,
+	},
+];
 
 function renderLine(entry: FeedEntry, siteUrl: string): string {
 	const url = `${siteUrl}/${entry.collection}/${entry.slug}.md`;
 	return `- [${entry.title}](${url}): ${entry.summary}`;
 }
 
-function renderMethodologyLine(siteUrl: string): string {
-	return `- [Methodology](${siteUrl}/methodology.md): ${METHODOLOGY_SUMMARY}`;
-}
-
-function renderStatementsIndexLine(siteUrl: string): string {
-	return `- [All statements](${siteUrl}/statements.md): ${STATEMENTS_INDEX_SUMMARY}`;
+function renderStaticSections(siteUrl: string): string[] {
+	const sections = [...new Set(STATIC_DOCS.map((doc) => doc.section))];
+	return sections.flatMap((section) => [
+		`## ${section}`,
+		"",
+		...STATIC_DOCS.filter((doc) => doc.section === section).map(
+			(doc) => `- [${doc.title}](${siteUrl}${doc.path}): ${doc.summary}`,
+		),
+		"",
+	]);
 }
 
 export function generateLlmsTxt(input: FeedInput): string {
@@ -36,14 +75,7 @@ export function generateLlmsTxt(input: FeedInput): string {
 		"",
 		`> ${input.siteDescription}`,
 		"",
-		"## Browse all",
-		"",
-		renderStatementsIndexLine(input.siteUrl),
-		"",
-		"## Methodology",
-		"",
-		renderMethodologyLine(input.siteUrl),
-		"",
+		...renderStaticSections(input.siteUrl),
 		...sections,
 		"",
 	].join("\n");
