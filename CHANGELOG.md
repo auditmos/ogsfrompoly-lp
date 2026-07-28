@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.16.0...v1.17.0) (2026-07-28)
+
+
+### Features
+
+* **for-dummies:** add semi-interactive copy-trade explainer page ([9a1708e](https://github.com/auditmos/ogsfrompoly-lp/commit/9a1708ef381c06becf0b79b3ecd50124cdb83f1a))
+
 # [1.16.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.15.0...v1.16.0) (2026-07-24)
 
 
