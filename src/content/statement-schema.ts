@@ -56,6 +56,22 @@ const sharedFields = {
 	bankroll_usd: z.number().positive(),
 	alert_count: z.number().int().nonnegative(),
 	hit_rate: z.number().min(0).max(1),
+	/**
+	 * How many of `alert_count` had a resolved outcome by publication — the
+	 * denominator behind `hit_rate`.
+	 *
+	 * OPTIONAL, which per `docs/statement-schema.md` is explicitly not a version
+	 * bump. Statements published before this field existed omit it and stay
+	 * valid; the consumer-side lint treats absent as "unknown", never as zero.
+	 *
+	 * Without it, `hit_rate: 0` is ambiguous between "0 of 240 went our way" and
+	 * "0 of 0 have settled" — and for Macro-only statements the second is the
+	 * norm, because those markets resolve months after the alert fires. That
+	 * ambiguity made a truthful statement for an unresolved window unpublishable:
+	 * the sanity lint could not clear it without also retiring the check that
+	 * catches a genuine `0/0 → 0` collapse. See auditmos/ogsfrompoly#236.
+	 */
+	resolved_count: z.number().int().nonnegative().optional(),
 	hypothetical_pnl_usd: z.number(),
 	categories: z
 		.array(category)

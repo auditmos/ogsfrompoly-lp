@@ -38,6 +38,12 @@ export interface StatementSanityInput {
 	period_start?: string;
 	alert_count: number;
 	hit_rate: number;
+	/**
+	 * How many of `alert_count` had a resolved outcome — the denominator behind
+	 * `hit_rate`. Optional: every statement published before the field existed
+	 * omits it, and absent is treated as "unknown", never as zero.
+	 */
+	resolved_count?: number;
 	hypothetical_pnl_usd: number;
 	bankroll_usd: number;
 	top_wallets?: ReadonlyArray<{ hypothetical_pnl_usd?: number }>;
@@ -51,18 +57,8 @@ export interface StatementSanityInput {
 export function findDataInconsistencies(data: StatementSanityInput): string[] {
 	const issues: string[] = [];
 
-	// A 0 hit rate over resolved alerts cannot coexist with positive PnL under the
-	// mirror-every-alert model — the tell of a `0/0 → 0` resolution collapse.
-	if (data.alert_count > 0 && data.hit_rate === 0 && data.hypothetical_pnl_usd > 0) {
-		issues.push(
-			`alert_count=${data.alert_count} with hit_rate=0 but hypothetical_pnl_usd=${data.hypothetical_pnl_usd} > 0 (0 resolved alerts collapsing 0/0 → 0?)`,
-		);
-	}
-
-	// A non-zero hit rate is undefined without alerts to have hit.
-	if (data.hit_rate > 0 && data.alert_count === 0) {
-		issues.push(`hit_rate=${data.hit_rate} with alert_count=0 (a rate over no alerts)`);
-	}
+	// Hit-rate cross-field checks (the 0/0 collapse and its mirrors).
+	issues.push(...findHitRateInconsistencies(data));
 
 	// Monthly P&L cross-field checks (balance, recurring-opex floor, runway).
 	if (data.pnl) {
@@ -81,6 +77,62 @@ export function findDataInconsistencies(data: StatementSanityInput): string[] {
 				`top_wallets entry hypothetical_pnl_usd=${wallet.hypothetical_pnl_usd} exceeds bankroll_usd=${data.bankroll_usd}`,
 			);
 		}
+	}
+
+	return issues;
+}
+
+/**
+ * Cross-field checks tying `hit_rate` to its denominator. Empty array = consistent.
+ *
+ * `hit_rate` is `in_favor / resolved` over alerts **emitted** in the period, so a
+ * market alerted on Monday that settles in December counts toward `alert_count`
+ * now and toward `hit_rate` months later. `hit_rate: 0` is therefore ambiguous
+ * on its own between "240 settled, none in favour" and "nothing has settled yet".
+ * `resolved_count` is what separates them.
+ */
+function findHitRateInconsistencies(data: StatementSanityInput): string[] {
+	const issues: string[] = [];
+	const { alert_count, hit_rate, hypothetical_pnl_usd, resolved_count } = data;
+	const resolvedKnown = resolved_count !== undefined;
+
+	// A 0 hit rate over resolved alerts cannot coexist with positive PnL under the
+	// mirror-every-alert model — the tell of a `0/0 → 0` resolution collapse.
+	//
+	// An explicit `resolved_count === 0` exempts it: the rate is vacuous rather
+	// than a 0% success rate, while the PnL is still real, because hypothetical
+	// PnL marks to price, not to resolution. That is the normal shape of a
+	// Macro-only statement, whose markets resolve months after the alert fires
+	// (auditmos/ogsfrompoly#236).
+	//
+	// Absent stays suspect. Every statement published before the field existed
+	// omits it, and treating absent as zero would silently retire this guard for
+	// the whole back catalogue — including the ogsfrompoly-lp#30 case it exists for.
+	if (alert_count > 0 && hit_rate === 0 && hypothetical_pnl_usd > 0 && resolved_count !== 0) {
+		const denominator = resolvedKnown ? ` over ${resolved_count} resolved` : "";
+		issues.push(
+			`alert_count=${alert_count} with hit_rate=0${denominator} but hypothetical_pnl_usd=${hypothetical_pnl_usd} > 0 (0 resolved alerts collapsing 0/0 → 0?)`,
+		);
+	}
+
+	// A non-zero hit rate is undefined without alerts to have hit.
+	if (hit_rate > 0 && alert_count === 0) {
+		issues.push(`hit_rate=${hit_rate} with alert_count=0 (a rate over no alerts)`);
+	}
+
+	// ...and equally undefined without outcomes to have hit. The mirror of the
+	// exemption above: claiming a rate while declaring an empty denominator is the
+	// same collapse pointing the other way.
+	if (resolved_count === 0 && hit_rate > 0) {
+		issues.push(`hit_rate=${hit_rate} with resolved_count=0 (a rate over no resolved outcomes)`);
+	}
+
+	// More resolved outcomes than alerts means the resolution join fanned out —
+	// one alert matching several markets, or duplicate rows counted twice.
+	if (resolvedKnown && resolved_count > alert_count) {
+		issues.push(
+			`resolved_count=${resolved_count} exceeds alert_count=${alert_count} (resolution join fanned out?)`,
+		);
 	}
 
 	return issues;
