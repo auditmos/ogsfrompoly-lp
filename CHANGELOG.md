@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.17.1...v1.18.0) (2026-07-30)
+
+
+### Features
+
+* **schema:** add optional resolved_count so hit_rate 0 can be read ([#59](https://github.com/auditmos/ogsfrompoly-lp/issues/59)) ([a50bfb5](https://github.com/auditmos/ogsfrompoly-lp/commit/a50bfb512f59f2d5c635ce3f5736f2e99e90a13b)), closes [ogsfrompoly-lp#30](https://github.com/ogsfrompoly-lp/issues/30) [auditmos/ogsfrompoly#236](https://github.com/auditmos/ogsfrompoly/issues/236) [auditmos/ogsfrompoly#234](https://github.com/auditmos/ogsfrompoly/issues/234)
+
 ## [1.17.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.17.0...v1.17.1) (2026-07-29)
 
 
