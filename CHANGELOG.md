@@ -1,3 +1,10 @@
+## [1.18.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.18.0...v1.18.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* **statements:** republish the 2026-07-28 weekly, and render the denominator ([#60](https://github.com/auditmos/ogsfrompoly-lp/issues/60)) ([792ecdd](https://github.com/auditmos/ogsfrompoly-lp/commit/792ecddc215df3108c5060ab746368b9fde381bb)), closes [#58](https://github.com/auditmos/ogsfrompoly-lp/issues/58) [auditmos/ogsfrompoly#236](https://github.com/auditmos/ogsfrompoly/issues/236) [auditmos/ogsfrompoly#236](https://github.com/auditmos/ogsfrompoly/issues/236)
+
 # [1.18.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.17.1...v1.18.0) (2026-07-30)
 
 
