@@ -6,7 +6,7 @@ import { ogImagePathForStatement } from "@/lib/og/paths";
 import { bucketUsdToNearest, formatBucketedUsd } from "@/lib/statement-format/bucketed-usd";
 import { formatCategoryList } from "@/lib/statement-format/categories";
 import { formatContributionPercent } from "@/lib/statement-format/contribution-percent";
-import { formatPercent } from "@/lib/statement-format/percent";
+import { describeHitRate, formatHitRate } from "@/lib/statement-format/hit-rate";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { monthlyPnlRows, type PnlTone } from "@/lib/statement-format/monthly-pnl";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
@@ -86,10 +86,11 @@ const ogImage =
 					<dl class="not-prose mt-2 mb-10 grid grid-cols-2 gap-6 border-y border-ink-3 py-6 font-mono text-sm sm:grid-cols-4">
 						<div class="flex flex-col gap-1.5">
 							<dt class="text-eyebrow uppercase tracking-wider text-ink-5">Hit rate</dt>
-							<dd class="text-lg text-ink-8">{formatPercent(statement.hit_rate)}</dd>
+							<dd class="text-lg text-ink-8">
+								{formatHitRate(statement.hit_rate, statement.resolved_count)}
+							</dd>
 							<p class="font-sans text-xs leading-snug text-ink-5">
-								Share of resolved alerts that hit the predicted side.
-								{" "}0.50 ≈ a coin flip; above 0.50 is signal.
+								{describeHitRate(statement.alert_count, statement.resolved_count)}
 							</p>
 						</div>
 						<div class="flex flex-col gap-1.5">

@@ -1,7 +1,7 @@
 ---
 import { formatCategoryList, type Category } from "@/lib/statement-format/categories";
 import { statementHref } from "@/lib/statement-format/href";
-import { formatPercent } from "@/lib/statement-format/percent";
+import { formatHitRate } from "@/lib/statement-format/hit-rate";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
 
@@ -13,6 +13,8 @@ interface Props {
 	periodStart: string;
 	periodEnd: string;
 	hitRate: number;
+	/** Denominator behind `hitRate`. Absent means unknown, never zero. */
+	resolvedCount?: number;
 	alertCount: number;
 	hypotheticalPnlUsd: number;
 	categories: ReadonlyArray<Category>;
@@ -36,7 +38,7 @@ const href = statementHref(props.slug);
 	<dl class="mt-2 grid grid-cols-3 gap-4 font-mono text-sm">
 		<div class="flex flex-col">
 			<dt class="text-eyebrow uppercase text-ink-5">Hit rate</dt>
-			<dd class="text-ink-8">{formatPercent(props.hitRate)}</dd>
+			<dd class="text-ink-8">{formatHitRate(props.hitRate, props.resolvedCount)}</dd>
 		</div>
 		<div class="flex flex-col">
 			<dt class="text-eyebrow uppercase text-ink-5">Alerts</dt>
