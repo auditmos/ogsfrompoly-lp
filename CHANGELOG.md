@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.18.1...v1.19.0) (2026-07-30)
+
+
+### Features
+
+* **for-dummies:** track the live config, and simulate the rails it really uses ([ed88d81](https://github.com/auditmos/ogsfrompoly-lp/commit/ed88d81c402cf1ea8d4c86825310f18bc735ca89))
+
 ## [1.18.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.18.0...v1.18.1) (2026-07-30)
 
 
