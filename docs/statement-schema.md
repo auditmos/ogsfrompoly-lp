@@ -66,11 +66,37 @@ legitimate producer could ever have emitted it — are *not* breaking and do
 | `period_end`           | ISO date `YYYY-MM-DD`                    | Inclusive. Must be ≥ `period_start`. Must be a **real calendar day**. |
 | `bankroll_usd`         | number, > 0                              | All `*_pnl_usd` claims reference this single bankroll.         |
 | `alert_count`          | non-negative integer                     | Total alerts emitted in the period.                            |
-| `hit_rate`             | number in `[0, 1]`                       | Fraction. `0.58` means 58 %.                                   |
+| `hit_rate`             | number in `[0, 1]`                       | Fraction. `0.58` means 58 %. Not interpretable without `resolved_count` — see below. |
+| `resolved_count`       | non-negative integer, **optional**       | How many of `alert_count` had resolved by publication: the denominator behind `hit_rate`. |
 | `hypothetical_pnl_usd` | number (signed)                          | Hypothetical PnL on `bankroll_usd`.                            |
 | `categories`           | non-empty array of category enum, **no duplicates** | See `Category` below.                               |
 | `top_wallets`          | array of `{ truncated_id, category }`    | See `TopWallets` below.                                        |
 | `draft`                | boolean, optional, defaults `false`      | When `true`, the entry is excluded from feeds, the homepage teaser, and both dual-format routes (HTML + `.md`). Used for skeletons before publication. |
+
+### `hit_rate` and `resolved_count`
+
+`hit_rate` is `in_favor / resolved`, over alerts **emitted** in the period. A
+market that fires an alert on Monday and settles in December contributes to
+`alert_count` immediately and to `hit_rate` months later.
+
+That makes `hit_rate: 0` ambiguous on its own between two very different weeks:
+
+| | `hit_rate` | `resolved_count` | meaning |
+|---|---:|---:|---|
+| genuinely bad week | `0` | `240` | 240 outcomes settled, none went our way |
+| nothing settled yet | `0` | `0` | the rate is vacuous — no outcomes to score |
+
+Macro-only statements are almost always the second case, because those markets
+resolve months after the alert. Publishing a bare `0.00` for one of them reads as
+a 0 % success rate, which is why `2026-07-28-weekly.md` was unpublished
+(auditmos/ogsfrompoly#236).
+
+`resolved_count` is optional because every statement published before it existed
+omits it — adding an optional field is deliberately **not** a version bump, per
+the rules above. Absent means *unknown*, never zero: the sanity lint
+(`statement-sanity.ts`) keeps flagging `hit_rate: 0` with positive PnL when the
+field is missing, so adding it does not retire that check for the back catalogue.
+Producers should emit it on every new statement.
 
 ## Weekly-only
 

@@ -41,6 +41,76 @@ describe("findDataInconsistencies", () => {
 		);
 	});
 
+	// --- resolved_count: telling "0 of 0" apart from "0 of 240" ---------------
+	//
+	// Without a denominator the 0/0 collapse and a genuine all-miss week are the
+	// same two numbers, so the guard above had to treat both as suspect. That made
+	// a truthful statement for an unresolved window unpublishable — see
+	// auditmos/ogsfrompoly#236, and ogsfrompoly-lp#30 before it.
+
+	it("does not flag hit_rate 0 with positive PnL when resolved_count is explicitly 0", () => {
+		// Macro markets resolve months out, so a 7-day window routinely resolves
+		// nothing. hit_rate is then vacuous rather than a 0% success rate, and the
+		// PnL is real: hypothetical PnL marks to price, not to resolution.
+		expect(
+			findDataInconsistencies({
+				...clean,
+				alert_count: 263,
+				hit_rate: 0,
+				hypothetical_pnl_usd: 199.11,
+				resolved_count: 0,
+			}),
+		).toEqual([]);
+	});
+
+	it("still flags hit_rate 0 with positive PnL when outcomes DID resolve", () => {
+		// The original 0/0 collapse must stay caught: 240 alerts resolved, not one
+		// went in favour, yet PnL is positive. That is the upstream join bug.
+		expect(
+			findDataInconsistencies({
+				...clean,
+				alert_count: 263,
+				hit_rate: 0,
+				hypothetical_pnl_usd: 199.11,
+				resolved_count: 240,
+			}),
+		).not.toHaveLength(0);
+	});
+
+	it("keeps flagging hit_rate 0 with positive PnL when resolved_count is absent", () => {
+		// Every statement published before this field existed omits it. Absent must
+		// stay suspect, or adding the field would silently retire the guard for the
+		// whole back catalogue.
+		expect(
+			findDataInconsistencies({
+				...clean,
+				alert_count: 263,
+				hit_rate: 0,
+				hypothetical_pnl_usd: 199.11,
+			}),
+		).not.toHaveLength(0);
+	});
+
+	it("flags a non-zero hit_rate that claims zero resolved outcomes", () => {
+		// A rate needs a denominator: 0 resolved cannot yield 0.47.
+		expect(
+			findDataInconsistencies({ ...clean, hit_rate: 0.47, resolved_count: 0 }),
+		).not.toHaveLength(0);
+	});
+
+	it("flags resolved_count exceeding alert_count", () => {
+		// More outcomes than alerts means the join fanned out.
+		expect(
+			findDataInconsistencies({ ...clean, alert_count: 263, resolved_count: 264 }),
+		).not.toHaveLength(0);
+	});
+
+	it("passes a healthy statement carrying its denominator", () => {
+		expect(findDataInconsistencies({ ...clean, alert_count: 2453, resolved_count: 1200 })).toEqual(
+			[],
+		);
+	});
+
 	it("flags a positive hit_rate reported with zero alerts", () => {
 		expect(findDataInconsistencies({ ...clean, alert_count: 0, hit_rate: 0.5 })).not.toHaveLength(
 			0,
