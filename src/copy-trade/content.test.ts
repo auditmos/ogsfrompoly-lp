@@ -65,6 +65,13 @@ describe("copyTradeMarkdown", () => {
 		expect(copyTradeMarkdown).toContain("## In one sentence");
 		expect(copyTradeMarkdown).toContain("3+ skilled wallets");
 	});
+
+	it("states the limits of its own numbers rather than only the mechanism", () => {
+		// The bot's ledger currently records intended cost, not achieved cost, so
+		// the page must not read as if its profit figures were settled facts.
+		expect(copyTradeMarkdown).toContain("## What we are not claiming yet");
+		expect(copyTradeMarkdown).toContain("no performance figure");
+	});
 });
 
 describe("example signals", () => {

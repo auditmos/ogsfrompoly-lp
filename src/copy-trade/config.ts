@@ -8,24 +8,27 @@
  *
  * Disclosure note: only *thresholds* live here. `profit_destination` and
  * `destination_allowlist` are named in the prose as keys and never carry a
- * value — publishing either address would leak the copytrading wallets.
+ * value — publishing either address would leak the copytrading wallets. The
+ * example signals below are invented, and so are their balances.
  */
 
 /** The market whose live config the defaults reflect. */
 export const CONFIG_MARKET = "Macro";
 /** When those defaults were last read off the running executor. */
-export const CONFIG_AS_OF = "2026-07-27";
+export const CONFIG_AS_OF = "2026-07-30";
 
 export type KnobKey =
 	| "cluster_threshold"
 	| "min_liquidity_usdc"
 	| "min_seconds_to_resolution"
 	| "staleness_pct"
+	| "staleness_min_ticks"
 	| "trade_size_usdc"
 	| "exposure_cap_usdc"
 	| "working_capital_floor_usdc"
 	| "gas_reserve_pol"
-	| "slippage_pct";
+	| "slippage_pct"
+	| "slippage_min_ticks";
 
 export type KnobValues = Record<KnobKey, number>;
 
@@ -38,14 +41,16 @@ export const LIVE_CONFIG: KnobValues = {
 	min_liquidity_usdc: 1000,
 	min_seconds_to_resolution: 3600,
 	staleness_pct: 3,
-	trade_size_usdc: 1,
-	exposure_cap_usdc: 5,
-	working_capital_floor_usdc: 20,
+	staleness_min_ticks: 2,
+	trade_size_usdc: 5,
+	exposure_cap_usdc: 20,
+	working_capital_floor_usdc: 5,
 	gas_reserve_pol: 2,
 	slippage_pct: 1,
+	slippage_min_ticks: 2,
 };
 
-export type KnobUnit = "usdc" | "pct" | "count" | "seconds" | "pol";
+export type KnobUnit = "usdc" | "pct" | "count" | "seconds" | "pol" | "steps";
 export type KnobGroup = "gate" | "size" | "execution";
 
 export interface Knob {
@@ -106,6 +111,15 @@ export const KNOBS = [
 		step: 0.5,
 	},
 	{
+		key: "staleness_min_ticks",
+		group: "gate",
+		label: "…but treat a move smaller than this as noise",
+		unit: "steps",
+		min: 0,
+		max: 6,
+		step: 1,
+	},
+	{
 		key: "trade_size_usdc",
 		group: "size",
 		label: "Size of one bet",
@@ -126,7 +140,7 @@ export const KNOBS = [
 	{
 		key: "working_capital_floor_usdc",
 		group: "size",
-		label: "Never let the balance drop below",
+		label: "Never let the spendable balance drop below",
 		unit: "usdc",
 		min: 0,
 		max: 200,
@@ -135,7 +149,7 @@ export const KNOBS = [
 	{
 		key: "gas_reserve_pol",
 		group: "size",
-		label: "Park this much for network gas",
+		label: "Keep this much gas before any payout",
 		unit: "pol",
 		min: 0,
 		max: 20,
@@ -150,29 +164,45 @@ export const KNOBS = [
 		max: 10,
 		step: 0.1,
 	},
+	{
+		key: "slippage_min_ticks",
+		group: "execution",
+		label: "…but always give the order at least this much room",
+		unit: "steps",
+		min: 0,
+		max: 6,
+		step: 1,
+	},
 ] as const satisfies readonly Knob[];
 
 /**
  * One made-up signal arriving at the bot. Every field is invented for the
- * walkthrough — these are illustrative shapes, never real alerts or real
- * positions (see the disclosure policy on the methodology page).
+ * walkthrough — these are illustrative shapes, never real alerts, real
+ * positions or real balances (see the disclosure policy on the methodology
+ * page).
  */
 export interface Scenario {
 	readonly id: string;
 	/** Short tab label. */
 	readonly label: string;
-	/** The made-up market the crowd bought into. */
+	/** The made-up market the crowd traded. */
 	readonly market: string;
+	/** What the crowd did. A sale is copied by buying the *other* outcome. */
+	readonly crowdSide: "bought" | "sold";
 	readonly smartWallets: number;
+	/** Price of the outcome the crowd traded, at the moment they traded it. */
+	readonly crowdPrice: number;
+	/** Price of that same outcome right now. */
+	readonly currentPrice: number;
+	/** Smallest price step this market quotes on. */
+	readonly tickSize: number;
+	/** Fewest shares the venue accepts in one order. */
+	readonly minShares: number;
 	readonly liquidityUsdc: number;
 	readonly secondsToResolution: number;
-	/** How far the price moved since the crowd bought. */
-	readonly priceDriftPct: number;
-	/** What the order book is asking above fair price, right now. */
-	readonly quotedSlippagePct: number;
 	/** Value the bot already has open elsewhere. */
 	readonly openExposureUsdc: number;
-	/** Free balance in the copy-trade pool. */
+	/** Spendable balance in the copy-trade pool. */
 	readonly balanceUsdc: number;
 }
 
@@ -186,73 +216,136 @@ export const SCENARIOS = [
 		id: "textbook",
 		label: "Textbook buy",
 		market: "Fed cuts rates at the September meeting",
+		crowdSide: "bought",
 		smartWallets: 4,
+		crowdPrice: 0.36,
+		currentPrice: 0.361,
+		tickSize: 0.001,
+		minShares: 5,
 		liquidityUsdc: 4200,
 		secondsToResolution: 21600,
-		priceDriftPct: 1.1,
-		quotedSlippagePct: 0.4,
-		openExposureUsdc: 2,
-		balanceUsdc: 28.4,
+		openExposureUsdc: 5,
+		balanceUsdc: 28.5,
+	},
+	{
+		id: "mirror",
+		label: "Crowd is selling",
+		market: "Bank of Japan hikes before December",
+		crowdSide: "sold",
+		smartWallets: 4,
+		crowdPrice: 0.9,
+		currentPrice: 0.905,
+		tickSize: 0.01,
+		minShares: 5,
+		liquidityUsdc: 6100,
+		secondsToResolution: 172800,
+		openExposureUsdc: 10,
+		balanceUsdc: 21,
+	},
+	{
+		id: "coarse",
+		label: "Coarse grid",
+		market: "Recession called before the next election",
+		crowdSide: "bought",
+		smartWallets: 4,
+		crowdPrice: 0.1,
+		currentPrice: 0.115,
+		tickSize: 0.01,
+		minShares: 5,
+		liquidityUsdc: 3300,
+		secondsToResolution: 86400,
+		openExposureUsdc: 5,
+		balanceUsdc: 19,
+	},
+	{
+		id: "pricey",
+		label: "Pricey outcome",
+		market: "Core inflation stays above target this year",
+		crowdSide: "bought",
+		smartWallets: 5,
+		crowdPrice: 0.94,
+		currentPrice: 0.945,
+		tickSize: 0.01,
+		minShares: 5,
+		liquidityUsdc: 5200,
+		secondsToResolution: 43200,
+		openExposureUsdc: 0,
+		balanceUsdc: 12,
 	},
 	{
 		id: "ends-soon",
 		label: "Ends too soon",
 		market: "CPI print comes in above forecast",
+		crowdSide: "bought",
 		smartWallets: 4,
+		crowdPrice: 0.55,
+		currentPrice: 0.552,
+		tickSize: 0.001,
+		minShares: 5,
 		liquidityUsdc: 6800,
 		secondsToResolution: 1320,
-		priceDriftPct: 0.9,
-		quotedSlippagePct: 0.3,
-		openExposureUsdc: 1,
-		balanceUsdc: 27.1,
+		openExposureUsdc: 5,
+		balanceUsdc: 24,
 	},
 	{
 		id: "thin",
 		label: "Thin market",
 		market: "Regional bank index closes green this quarter",
+		crowdSide: "bought",
 		smartWallets: 5,
+		crowdPrice: 0.3,
+		currentPrice: 0.33,
+		tickSize: 0.001,
+		minShares: 5,
 		liquidityUsdc: 380,
 		secondsToResolution: 259200,
-		priceDriftPct: 1.4,
-		quotedSlippagePct: 2.6,
 		openExposureUsdc: 0,
 		balanceUsdc: 26,
 	},
 	{
 		id: "chased",
-		label: "Price already ran",
+		label: "Price ran away",
 		market: "Unemployment rate ticks up next release",
+		crowdSide: "bought",
 		smartWallets: 6,
+		crowdPrice: 0.42,
+		currentPrice: 0.45,
+		tickSize: 0.001,
+		minShares: 5,
 		liquidityUsdc: 12400,
 		secondsToResolution: 172800,
-		priceDriftPct: 5.8,
-		quotedSlippagePct: 0.5,
-		openExposureUsdc: 1,
-		balanceUsdc: 25.8,
-	},
-	{
-		id: "lonely",
-		label: "No crowd",
-		market: "ECB holds through year end",
-		smartWallets: 1,
-		liquidityUsdc: 9100,
-		secondsToResolution: 345600,
-		priceDriftPct: 0.4,
-		quotedSlippagePct: 0.4,
-		openExposureUsdc: 0,
-		balanceUsdc: 26,
+		openExposureUsdc: 5,
+		balanceUsdc: 25.5,
 	},
 	{
 		id: "full",
 		label: "No room left",
 		market: "Treasury 10y yield above 4.5% at month end",
+		crowdSide: "bought",
 		smartWallets: 4,
+		crowdPrice: 0.61,
+		currentPrice: 0.612,
+		tickSize: 0.001,
+		minShares: 5,
 		liquidityUsdc: 5500,
 		secondsToResolution: 28800,
-		priceDriftPct: 1.2,
-		quotedSlippagePct: 0.6,
-		openExposureUsdc: 5,
+		openExposureUsdc: 20,
 		balanceUsdc: 31,
+	},
+	{
+		id: "broke",
+		label: "No cash left",
+		market: "ECB holds through year end",
+		crowdSide: "bought",
+		smartWallets: 4,
+		crowdPrice: 0.48,
+		currentPrice: 0.481,
+		tickSize: 0.001,
+		minShares: 5,
+		liquidityUsdc: 7400,
+		secondsToResolution: 64800,
+		openExposureUsdc: 5,
+		balanceUsdc: 8.5,
 	},
 ] as const satisfies readonly Scenario[];
 
@@ -272,6 +365,25 @@ export function formatUsd(value: number): string {
 	return `${sign}$${body}`;
 }
 
+/**
+ * An outcome price, which needs finer resolution than money: markets quote on
+ * steps as small as `0.001`, so `formatUsd` would round two different limits
+ * onto the same string. Trailing zeros are trimmed back to two decimals, so a
+ * `0.01`-step market reads `$0.12` and a `0.001`-step one reads `$0.363`.
+ */
+export function formatPrice(value: number): string {
+	const rounded = Math.round(value * 1000) / 1000;
+	const text = rounded.toFixed(3).replace(/0$/, "");
+	return `$${text}`;
+}
+
+/** `13.774` → `"13.8 shares"`, `5` → `"5 shares"`, `1.04` → `"1 share"`. */
+export function formatShares(value: number): string {
+	const rounded = Math.round(value * 10) / 10;
+	const text = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+	return `${text} ${rounded === 1 ? "share" : "shares"}`;
+}
+
 /** `3` → `"3%"`, `1.5` → `"1.5%"`. */
 export function formatPct(value: number): string {
 	const rounded = Math.round(value * 10) / 10;
@@ -288,6 +400,12 @@ export function formatDuration(seconds: number): string {
 	return `${Number.isInteger(days) ? days : days.toFixed(1)}d`;
 }
 
+/** `2` → `"2 steps"`, `1` → `"1 step"`, `0` → `"off"`. */
+export function formatSteps(value: number): string {
+	if (value <= 0) return "off";
+	return `${value} ${value === 1 ? "step" : "steps"}`;
+}
+
 export function formatKnobValue(unit: KnobUnit, value: number): string {
 	switch (unit) {
 		case "usdc":
@@ -298,6 +416,8 @@ export function formatKnobValue(unit: KnobUnit, value: number): string {
 			return formatDuration(value);
 		case "pol":
 			return `${value} POL`;
+		case "steps":
+			return formatSteps(value);
 		case "count":
 			return String(value);
 	}

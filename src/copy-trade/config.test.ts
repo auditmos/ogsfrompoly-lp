@@ -2,6 +2,9 @@ import {
 	formatDuration,
 	formatKnobValue,
 	formatPct,
+	formatPrice,
+	formatShares,
+	formatSteps,
 	formatUsd,
 	formatWalletCount,
 	isKnobKey,
@@ -9,6 +12,7 @@ import {
 	KNOBS,
 	knobsInGroup,
 	LIVE_CONFIG,
+	SCENARIOS,
 } from "./config";
 
 describe("formatUsd", () => {
@@ -55,12 +59,51 @@ describe("formatDuration", () => {
 	});
 });
 
+describe("formatPrice", () => {
+	it.each([
+		// Outcome prices need three decimals: a 0.001-step market quotes them, and
+		// `formatUsd` would round two different limits onto one string.
+		[0.363, "$0.363"],
+		[0.36, "$0.36"],
+		[0.1, "$0.10"],
+		[0.12, "$0.12"],
+		[0.9, "$0.90"],
+		// Float noise from `1 - 0.905` must not leak into the readout.
+		[0.09499999999999997, "$0.095"],
+	])("formats %p as %p", (input, expected) => {
+		expect(formatPrice(input)).toBe(expected);
+	});
+});
+
+describe("formatShares", () => {
+	it.each([
+		[5, "5 shares"],
+		// Written as the division the panel actually performs: $5 at a $0.363 limit.
+		[5 / 0.363, "13.8 shares"],
+		[1 / 0.96, "1 share"],
+	])("formats %p as %p", (input, expected) => {
+		expect(formatShares(input)).toBe(expected);
+	});
+});
+
+describe("formatSteps", () => {
+	it.each([
+		[0, "off"],
+		[1, "1 step"],
+		[2, "2 steps"],
+		[1.5, "1.5 steps"],
+	])("formats %p as %p", (input, expected) => {
+		expect(formatSteps(input)).toBe(expected);
+	});
+});
+
 describe("formatKnobValue", () => {
 	it("renders each unit in the notation the panel shows", () => {
 		expect(formatKnobValue("usdc", 1000)).toBe("$1,000");
 		expect(formatKnobValue("pct", 1)).toBe("1%");
 		expect(formatKnobValue("seconds", 3600)).toBe("1h");
 		expect(formatKnobValue("pol", 2)).toBe("2 POL");
+		expect(formatKnobValue("steps", 2)).toBe("2 steps");
 		expect(formatKnobValue("count", 3)).toBe("3");
 	});
 });
@@ -115,11 +158,41 @@ describe("knob definitions", () => {
 			min_liquidity_usdc: 1000,
 			min_seconds_to_resolution: 3600,
 			staleness_pct: 3,
-			trade_size_usdc: 1,
-			exposure_cap_usdc: 5,
-			working_capital_floor_usdc: 20,
+			staleness_min_ticks: 2,
+			trade_size_usdc: 5,
+			exposure_cap_usdc: 20,
+			working_capital_floor_usdc: 5,
 			gas_reserve_pol: 2,
 			slippage_pct: 1,
+			slippage_min_ticks: 2,
 		});
+	});
+});
+
+describe("example signals", () => {
+	it("prices every outcome inside the venue's own bounds", () => {
+		for (const scenario of SCENARIOS) {
+			for (const price of [scenario.crowdPrice, scenario.currentPrice]) {
+				expect(price).toBeGreaterThan(0);
+				expect(price).toBeLessThan(1);
+			}
+		}
+	});
+
+	it("puts the crowd's own price on its market's quoting grid", () => {
+		// The crowd's price came from a real order, and the exchange only accepts
+		// order prices that sit exactly on the grid — an off-grid one here would
+		// teach limit arithmetic that cannot happen. The *current* price is a live
+		// quote and may sit between steps, which is the whole reason the staleness
+		// rail carries a floor measured in steps.
+		for (const scenario of SCENARIOS) {
+			const steps = scenario.crowdPrice / scenario.tickSize;
+			expect(Math.abs(steps - Math.round(steps))).toBeLessThan(1e-6);
+		}
+	});
+
+	it("covers both a buying and a selling crowd", () => {
+		const sides = new Set(SCENARIOS.map((scenario) => scenario.crowdSide));
+		expect(sides).toEqual(new Set(["bought", "sold"]));
 	});
 });

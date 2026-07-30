@@ -13,17 +13,17 @@ import {
 	CONFIG_AS_OF,
 	CONFIG_MARKET,
 	formatKnobValue,
-	formatWalletCount,
 	KNOB_GROUP_LABELS,
 	KNOB_GROUP_ORDER,
 	knobsInGroup,
 	LIVE_CONFIG,
 	SCENARIOS,
 } from "@/copy-trade/config";
-import { evaluateSignal, summarySentence } from "@/copy-trade/simulator";
+import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/simulator";
 
 const initialScenario = SCENARIOS[0];
 const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
+const initialLine = signalLine(initialScenario);
 ---
 
 <section
@@ -110,9 +110,11 @@ const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
 			</div>
 
 			<p class="font-sans text-sm leading-snug text-ink-7">
-				<span data-signal-wallets>{formatWalletCount(initialScenario.smartWallets)}</span>
-				{" bought "}
-				<span class="text-ink-8" data-signal-market>&ldquo;{initialScenario.market}&rdquo;</span>
+				<span data-signal-lead>{initialLine.lead}</span>
+				{" "}
+				<span class="text-ink-8" data-signal-market>&ldquo;{initialLine.market}&rdquo;</span>
+				{" "}
+				<span data-signal-trail>{initialLine.trail}</span>
 			</p>
 
 			<ul class="flex flex-col font-mono text-sm">
@@ -172,7 +174,10 @@ const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
 
 			<p class="font-sans text-xs leading-snug text-ink-5">
 				The real executor short-circuits at the first ✗ and moves on. Every check is scored here
-				so you can see what each knob does.
+				so you can see what each knob does. Prices are always the ones on the side the bot would
+				really buy — for a selling crowd, that is the opposite outcome. The last two checks are
+				the exchange's own rules: the limit has to be reachable, and the order has to be big
+				enough.
 			</p>
 			<noscript>
 				<p class="font-sans text-xs leading-snug text-warn">
@@ -194,14 +199,13 @@ const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
 <script>
 	import {
 		formatKnobValue,
-		formatWalletCount,
 		isKnobKey,
 		KNOBS,
 		type KnobValues,
 		LIVE_CONFIG,
 		SCENARIOS,
 	} from "@/copy-trade/config";
-	import { evaluateSignal, summarySentence } from "@/copy-trade/simulator";
+	import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/simulator";
 
 	const root = document.querySelector<HTMLElement>("[data-copy-trade-sim]");
 
@@ -229,8 +233,10 @@ const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
 				);
 			});
 
-			setText("[data-signal-wallets]", formatWalletCount(scenario.smartWallets));
-			setText("[data-signal-market]", `“${scenario.market}”`);
+			const line = signalLine(scenario);
+			setText("[data-signal-lead]", line.lead);
+			setText("[data-signal-market]", `“${line.market}”`);
+			setText("[data-signal-trail]", line.trail);
 
 			for (const gate of verdict.gates) {
 				const row = root.querySelector<HTMLElement>(`[data-gate="${gate.id}"]`);
