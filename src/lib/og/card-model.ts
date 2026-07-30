@@ -1,5 +1,5 @@
 import { SITE_TITLE, SITE_URL } from "@/lib/site/config";
-import { formatPercent } from "@/lib/statement-format/percent";
+import { formatHitRate } from "@/lib/statement-format/hit-rate";
 import { formatPeriodLabel } from "@/lib/statement-format/period";
 import { formatSignedUsd } from "@/lib/statement-format/signed-usd";
 import type { Statement } from "@/lib/statement-format/statement-data";
@@ -61,7 +61,11 @@ export function buildStatementCardModel(statement: Statement): CardModel {
 		)}`,
 		title: statement.title,
 		stats: [
-			{ label: "Hit rate", value: formatPercent(statement.hit_rate), tone: "default" },
+			{
+				label: "Hit rate",
+				value: formatHitRate(statement.hit_rate, statement.resolved_count),
+				tone: "default",
+			},
 			{
 				label: "Hypo. PnL",
 				value: formatSignedUsd(statement.hypothetical_pnl_usd),
