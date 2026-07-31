@@ -98,10 +98,28 @@ describe("findDataInconsistencies", () => {
 		).not.toHaveLength(0);
 	});
 
-	it("flags resolved_count exceeding alert_count", () => {
-		// More outcomes than alerts means the join fanned out.
+	// --- the resolved-in-window definition (auditmos/ogsfrompoly#241) ---------
+	//
+	// `resolved_count` used to be a subset of `alert_count`: both counted the
+	// alerts emitted in the period, so more outcomes than alerts could only mean
+	// the resolution join had fanned out. From #241 the hit rate scores the
+	// markets that *settled* in the period, drawn from the producer's all-time
+	// alert pool, while `alert_count` still counts the alerts emitted in it.
+	// Two different populations, so comparing them no longer says anything.
+
+	it("does not flag resolved_count exceeding alert_count", () => {
+		// A quiet alert week that settles a dozen older markets is the shape #241
+		// exists to report, not a fan-out. The fan-out check still runs, but
+		// producer-side against the pool actually scored — the only place that
+		// pool size is known, since it is deliberately not published.
+		expect(findDataInconsistencies({ ...clean, alert_count: 3, resolved_count: 12 })).toEqual([]);
+	});
+
+	it("still flags a rate claiming outcomes with no denominator", () => {
+		// What survives the dropped check: `resolved_count` is the published
+		// denominator, and a rate over zero of it is still undefined.
 		expect(
-			findDataInconsistencies({ ...clean, alert_count: 263, resolved_count: 264 }),
+			findDataInconsistencies({ ...clean, alert_count: 3, hit_rate: 0.5, resolved_count: 0 }),
 		).not.toHaveLength(0);
 	});
 
@@ -111,10 +129,21 @@ describe("findDataInconsistencies", () => {
 		);
 	});
 
-	it("flags a positive hit_rate reported with zero alerts", () => {
+	it("flags a positive hit_rate with zero alerts when no denominator is published", () => {
+		// The back catalogue omits `resolved_count`, so `alert_count` is the only
+		// denominator proxy available and the guard has to keep using it.
 		expect(findDataInconsistencies({ ...clean, alert_count: 0, hit_rate: 0.5 })).not.toHaveLength(
 			0,
 		);
+	});
+
+	it("does not flag a positive hit_rate with zero alerts when outcomes did resolve", () => {
+		// A week that fired nothing but settled two March alerts has a real rate
+		// over a real denominator (#241). Only reachable once `resolved_count` is
+		// published, which is why the guard above stays for statements without it.
+		expect(
+			findDataInconsistencies({ ...clean, alert_count: 0, hit_rate: 0.5, resolved_count: 2 }),
+		).toEqual([]);
 	});
 
 	const monthly = {

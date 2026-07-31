@@ -39,9 +39,15 @@ export interface StatementSanityInput {
 	alert_count: number;
 	hit_rate: number;
 	/**
-	 * How many of `alert_count` had a resolved outcome — the denominator behind
-	 * `hit_rate`. Optional: every statement published before the field existed
-	 * omits it, and absent is treated as "unknown", never as zero.
+	 * The denominator behind `hit_rate` — how many outcomes it was scored over.
+	 *
+	 * Not a subset of `alert_count`. Up to 2026-07-31 it was: both counted the
+	 * alerts emitted in the period. From auditmos/ogsfrompoly#241 it counts the
+	 * markets that *settled* in the period whenever they were alerted, so the two
+	 * numbers are independent and either may be the larger.
+	 *
+	 * Optional: every statement published before the field existed omits it, and
+	 * absent is treated as "unknown", never as zero.
 	 */
 	resolved_count?: number;
 	hypothetical_pnl_usd: number;
@@ -85,11 +91,20 @@ export function findDataInconsistencies(data: StatementSanityInput): string[] {
 /**
  * Cross-field checks tying `hit_rate` to its denominator. Empty array = consistent.
  *
- * `hit_rate` is `in_favor / resolved` over alerts **emitted** in the period, so a
- * market alerted on Monday that settles in December counts toward `alert_count`
- * now and toward `hit_rate` months later. `hit_rate: 0` is therefore ambiguous
- * on its own between "240 settled, none in favour" and "nothing has settled yet".
- * `resolved_count` is what separates them.
+ * `hit_rate` is `in_favor / resolved` over the markets that **resolved** in the
+ * period, whenever they were alerted (auditmos/ogsfrompoly#241). A market alerted
+ * in March that settles in December counts toward `alert_count` in March and
+ * toward `hit_rate` in December — so the two are independent, and a period can
+ * report more resolved outcomes than alerts.
+ *
+ * Statements up to 2026-07-31 scored the alerts *emitted* in the period instead.
+ * Both are called "hit rate" and neither is wrong, but they measure different
+ * populations, so the two series are not continuous. The checks below are
+ * therefore written to hold under both: nothing here may assume `resolved_count`
+ * is a subset of `alert_count`.
+ *
+ * `hit_rate: 0` is ambiguous on its own between "240 settled, none in favour"
+ * and "nothing has settled yet". `resolved_count` is what separates them.
  */
 function findHitRateInconsistencies(data: StatementSanityInput): string[] {
 	const issues: string[] = [];
@@ -115,8 +130,19 @@ function findHitRateInconsistencies(data: StatementSanityInput): string[] {
 		);
 	}
 
-	// A non-zero hit rate is undefined without alerts to have hit.
-	if (hit_rate > 0 && alert_count === 0) {
+	// A non-zero hit rate is undefined without alerts to have hit — but *which*
+	// alerts depends on the definition. Up to 2026-07-31 the rate scored the
+	// alerts emitted in the period, so `alert_count === 0` meant there was
+	// nothing to have hit. From auditmos/ogsfrompoly#241 it scores the markets
+	// that settled in the period, drawn from the producer's all-time alert pool,
+	// so a week can fire nothing and still report a real rate over alerts placed
+	// months earlier.
+	//
+	// `resolved_count` is the denominator that actually backs the rate, and the
+	// check below already rejects a rate over zero of it. So this guard is kept
+	// only for statements that publish no denominator — the back catalogue —
+	// where `alert_count` is the sole proxy available.
+	if (hit_rate > 0 && alert_count === 0 && !resolvedKnown) {
 		issues.push(`hit_rate=${hit_rate} with alert_count=0 (a rate over no alerts)`);
 	}
 
@@ -127,13 +153,21 @@ function findHitRateInconsistencies(data: StatementSanityInput): string[] {
 		issues.push(`hit_rate=${hit_rate} with resolved_count=0 (a rate over no resolved outcomes)`);
 	}
 
-	// More resolved outcomes than alerts means the resolution join fanned out —
-	// one alert matching several markets, or duplicate rows counted twice.
-	if (resolvedKnown && resolved_count > alert_count) {
-		issues.push(
-			`resolved_count=${resolved_count} exceeds alert_count=${alert_count} (resolution join fanned out?)`,
-		);
-	}
+	// The fan-out check that used to live here — `resolved_count > alert_count`
+	// means one alert matched several markets — was retired by
+	// auditmos/ogsfrompoly#241 rather than moved.
+	//
+	// It was valid only while both counts were drawn from the same population:
+	// the alerts emitted in the period. The resolved-in-window definition scores
+	// the producer's all-time alert pool, so a quiet week that settles a dozen
+	// older markets legitimately reports more outcomes than alerts. Reinstating
+	// the comparison would reject exactly the statements #241 exists to produce.
+	//
+	// The pathology is still checked, on the producer side, against the pool that
+	// was actually scored — `find_hit_rate_inconsistencies(..., scored_pool_count=)`
+	// in `poly_track/report/public_statement.py`. That is the only place the pool
+	// size is known: it is deliberately not published, being a fact about how the
+	// number was computed rather than part of the statement.
 
 	return issues;
 }
