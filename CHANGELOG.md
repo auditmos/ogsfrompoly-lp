@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.19.0...v1.19.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **statements:** stop the sanity gate rejecting a resolved-in-window hit rate ([032347d](https://github.com/auditmos/ogsfrompoly-lp/commit/032347d3dc4bf3b66b02e13845d70a19464f00b8)), closes [auditmos/ogsfrompoly#241](https://github.com/auditmos/ogsfrompoly/issues/241) [#241](https://github.com/auditmos/ogsfrompoly-lp/issues/241)
+
 # [1.19.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.18.1...v1.19.0) (2026-07-30)
 
 
