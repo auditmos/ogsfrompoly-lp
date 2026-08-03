@@ -3,17 +3,27 @@ schema_version: 1
 type: monthly
 draft: true
 title: July 2026
-summary: ogsfrompoly monthly statement — DRAFT, numbers pending month close.
+summary: ogsfrompoly monthly statement — 612 alerts, hit rate 0.51 (80 markets resolved
+  in this period).
 period_start: '2026-07-01'
 period_end: '2026-07-31'
 bankroll_usd: 10000.0
-alert_count: 0
-hit_rate: 0.0
-hypothetical_pnl_usd: 0.0
+alert_count: 612
+hit_rate: 0.5125
+resolved_count: 80
+hypothetical_pnl_usd: 850.1100000000004
 categories:
-- politics
 - macro-finance
-top_wallets: []
+top_wallets:
+- truncated_id: wallet_83f9
+  category: macro-finance
+  hypothetical_pnl_usd: -41.099999999999994
+- truncated_id: wallet_0f59
+  category: macro-finance
+  hypothetical_pnl_usd: -85.95
+- truncated_id: wallet_5abe
+  category: macro-finance
+  hypothetical_pnl_usd: 8.499999999999996
 pnl:
   revenue_usd: 0.0
   opex_usd: 50.0
@@ -23,20 +33,16 @@ pnl:
 
 ## Strategy track record (2026-07-01 → 2026-07-31)
 
-**DRAFT — regenerate this section from the ogsfrompoly warehouse at month close (2026-08-01).** The frontmatter above carries placeholder zeros for `alert_count`, `hit_rate`, `hypothetical_pnl_usd`, and an empty `top_wallets`; these are mechanically derived and must be filled before flipping `draft: false`.
+Generated from ogsfrompoly warehouse for the monthly window 2026-07-01 → 2026-07-31. 612 alerts emitted in this window across the LP-public category (macro-finance). Numbers in the frontmatter are mechanically derived.
 
-Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_pnl_usd`, when present, is the $100-notional alert-model PnL for that wallet in this same window; it is an annotation, not the ranking key. Wallet IDs are truncated to their last four hex characters; no on-chain lookup is possible from this page.
+Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_pnl_usd`, when present, is the $100-notional alert-model PnL for that wallet in this same window; it is an annotation, not the ranking key.
 
 ## Project P&L
 
-Revenue, opex, net, and runway are sourced from the operator's ledger (not the trading warehouse); the `pnl` block above holds the canonical numbers.
-
-**Operating expenses** begin this month: the ogsfrompoly polynode is **$50/mo**, first charge posting in July, booked cash-basis in the month the charge lands. This is the sole line item — no other cash costs (domain, Cloudflare, data) are billed against the project ledger yet.
-
-**Revenue** is the realized copytrading income booked to the operator ledger for the period — settled gains only, not mark-to-market on open positions. The copytrading pool went live on 2026-07-24, seeded with **100 USDC and 225 POL** and run as its own capital base — separate from both the $10,000 hypothetical bankroll the strategy track record references and the opex reserve. July therefore reflects roughly one week of activity. Revenue is measured as the value **swept from the pool to the collection wallet** during the period — not open-position marks. **DRAFT placeholder: $0** — replace with the actual swept total at month close.
-
-**Net** is revenue minus opex. **Runway** reads `covered` (`null`) only when revenue meets or exceeds opex; otherwise it is a finite months-of-runway figure against the cash reserve earmarked for opex (distinct from the $10,000 trading bankroll the strategy claims reference). With the placeholder $0 revenue against $50 opex, net is **−$50** and runway is provisional pending the realized revenue figure and, if net stays negative, the operator's opex reserve.
+Revenue was **$0** for 2026-07-01 → 2026-07-31. Operating expenses were **$50** (aggregate ledger total; no line-item breakdown was supplied). Net was **-$50**. Runway is unquantified (`null`): the operating reserve behind it is a ledger figure outside this warehouse-generated aggregate.
 
 ## Methodology reminder
 
 See [/methodology](/methodology) for the sign-randomization skill test and the disclosure policy. All wallet references on this page are truncated IDs; no on-chain lookup is possible from this page alone.
+
+The hit rate scores the markets that **resolved** during this period, whenever they were alerted. Statements published before 2026-07-31 scored the alerts *emitted* in the period instead, so the two series are **not comparable** and should not be read as one track record.
