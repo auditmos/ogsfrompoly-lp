@@ -16,6 +16,13 @@
  *   slippage and staleness rails carry a floor in grid steps — a percentage of a
  *   cheap outcome can be smaller than the smallest move the venue can quote.
  *
+ * Two pipelines are modelled, and the distinction is load-bearing rather than
+ * cosmetic. The crowd threshold belongs to the **tracker**, which simply does not
+ * emit an alert below it; every other check belongs to the **executor's** risk
+ * gate, judging an alert that already exists. A crowd too small is therefore not
+ * a trade the bot refused — it is a trade it was never told about, which is why
+ * that outcome is `no-signal` and not `skip`.
+ *
  * The real executor short-circuits at the first failing check. Here every check
  * is evaluated so that moving *any* slider gives feedback; the check the real
  * bot would have stopped at is marked `blocker`.
@@ -52,8 +59,17 @@ type GateId =
 	| "fill"
 	| "size";
 
+/**
+ * Which pipeline enforces a check. `"alert"` is the tracker deciding whether a
+ * signal exists at all; `"executor"` is the copy-trade risk gate deciding what
+ * to do with one that does. Stated per check so a new one cannot be added
+ * without answering the question.
+ */
+type GateStage = "alert" | "executor";
+
 interface GateResult {
 	readonly id: GateId;
+	readonly stage: GateStage;
 	/** The question the bot is asking itself, in reader language. */
 	readonly question: string;
 	/** The knob that moves this check. */
@@ -69,7 +85,12 @@ interface GateResult {
 	readonly because: string;
 }
 
-type VerdictAction = "buy" | "skip";
+/**
+ * `"no-signal"` is not a third flavour of refusal. It is the absence of a
+ * decision: the alert the executor would have judged was never emitted, so
+ * there is no skip card, no log line and no rail to point at.
+ */
+type VerdictAction = "buy" | "skip" | "no-signal";
 
 interface Verdict {
 	readonly action: VerdictAction;
@@ -233,7 +254,19 @@ function reversalBecause(values: KnobValues, signal: Scenario): string {
 	return `Setting aside the ${flip.wallets} that flipped ${when} leaves only ${formatWalletCount(clean)} — under the ${values.cluster_threshold} it takes to be a crowd, so the flip was carrying this signal.`;
 }
 
-/** Order matters: it is the order the executor asks the questions in. */
+/**
+ * Order matters from the second entry on: that is the order the executor asks
+ * its own questions in, ending with the two the venue asks for it. The first
+ * entry is not part of that sequence at all — it is the tracker's own bar for
+ * raising an alert, and it is listed here so its slider can move the two rails
+ * downstream that read the same number as a survivor count.
+ *
+ * Between the two stages the executor runs seven further terminal checks this
+ * page deliberately omits: unconfigured category, missing cluster id, a position
+ * already open, re-entry into a crowd it has closed, the kill switch, a missing
+ * token id, and no opposite outcome to mirror onto. Each is bookkeeping rather
+ * than risk and none is a knob, so listing them would bury the ones that are.
+ */
 function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateCheck[] {
 	const wouldOpen = signal.openExposureUsdc + values.trade_size_usdc;
 	const wouldLeave = signal.balanceUsdc - values.trade_size_usdc;
@@ -242,15 +275,17 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 	return [
 		{
 			id: "crowd",
+			stage: "alert",
 			question: "Is a crowd agreeing, not just one trader?",
 			knob: "cluster_threshold",
 			actual: `${signal.smartWallets} ${signal.smartWallets === 1 ? "wallet" : "wallets"}`,
 			rule: `≥ ${values.cluster_threshold}`,
 			passed: signal.smartWallets >= values.cluster_threshold,
-			because: `Only ${formatWalletCount(signal.smartWallets)} traded it; the bot waits for ${values.cluster_threshold}.`,
+			because: `Only ${formatWalletCount(signal.smartWallets)} traded it, under the ${values.cluster_threshold} it takes to be a crowd — so no alert is raised, the executor is never handed anything, and nothing is recorded about it.`,
 		},
 		{
 			id: "room",
+			stage: "executor",
 			question: "Do I have room under my cap?",
 			knob: "exposure_cap_usdc",
 			actual: `${formatUsd(signal.openExposureUsdc)} open + ${formatUsd(values.trade_size_usdc)}`,
@@ -260,6 +295,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "liquidity",
+			stage: "executor",
 			question: "Is there anyone here to trade with?",
 			knob: "min_liquidity_usdc",
 			actual: formatUsd(signal.liquidityUsdc),
@@ -269,6 +305,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "timing",
+			stage: "executor",
 			question: "Is this market about to end?",
 			knob: "min_seconds_to_resolution",
 			actual: formatDuration(signal.secondsToResolution),
@@ -278,6 +315,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "freshness",
+			stage: "executor",
 			question: "Has the price already run away?",
 			knob: "staleness_pct",
 			actual: driftReadout(plan),
@@ -287,6 +325,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "reversal",
+			stage: "executor",
 			question: "Were any of them just on the other side?",
 			knob: "reversal_lookback_s",
 			actual:
@@ -302,6 +341,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "price",
+			stage: "executor",
 			question: "Is a share too dear to be worth the downside?",
 			knob: "max_entry_price",
 			actual: formatPrice(plan.entryPrice),
@@ -311,6 +351,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "fee",
+			stage: "executor",
 			question: "Does the fee eat too much of the ticket?",
 			knob: "max_entry_fee_pct",
 			actual: formatFraction(entryFeeFraction(plan.entryPrice)),
@@ -322,6 +363,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "floor",
+			stage: "executor",
 			question: "Will this take me below my floor?",
 			knob: "working_capital_floor_usdc",
 			actual: `${formatUsd(signal.balanceUsdc)} → ${formatUsd(wouldLeave)}`,
@@ -331,6 +373,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "fill",
+			stage: "executor",
 			question: "Can I buy inside my own price limit?",
 			knob: "slippage_pct",
 			actual: `asks ${formatPrice(plan.livePrice)}`,
@@ -340,6 +383,7 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 		},
 		{
 			id: "size",
+			stage: "executor",
 			question: "Is the order big enough for the venue?",
 			knob: "trade_size_usdc",
 			actual: formatShares(plan.shares),
@@ -375,6 +419,17 @@ export function evaluateSignal(values: KnobValues, signal: Scenario): Verdict {
 			gates,
 			headline: `BUY ${formatUsd(values.trade_size_usdc)}`,
 			detail: buyDetail(values, plan),
+		};
+	}
+
+	// A failure upstream of the executor is not a refusal it made. The alert never
+	// existed, so there is nothing for it to have refused.
+	if (firstFailure.stage === "alert") {
+		return {
+			action: "no-signal",
+			gates,
+			headline: "NO SIGNAL",
+			detail: firstFailure.because,
 		};
 	}
 

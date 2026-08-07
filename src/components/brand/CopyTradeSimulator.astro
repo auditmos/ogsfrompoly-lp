@@ -24,6 +24,24 @@ import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/simula
 const initialScenario = SCENARIOS[0];
 const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
 const initialLine = signalLine(initialScenario);
+
+/* Read off the verdict rather than imported: `simulator.ts` keeps its result
+   shapes private on purpose, and a `Record` keyed on this stays exhaustive. */
+type GateStage = (typeof initial.gates)[number]["stage"];
+
+const GATE_STAGE_ORDER = ["alert", "executor"] as const satisfies readonly GateStage[];
+
+const GATE_STAGE_LABELS: Record<GateStage, string> = {
+	alert: "First, upstream — is there an alert at all?",
+	executor: "Then the bot's own rails, in order",
+};
+
+/* What a ✗ on this row actually means. An upstream ✗ is not a refusal: the alert
+   is never raised, so there is no decision, no skip card and no log line. */
+const GATE_STAGE_FLAGS: Record<GateStage, string> = {
+	alert: "no alert is raised — the bot is never asked",
+	executor: "the real bot stops here",
+};
 ---
 
 <section
@@ -117,53 +135,73 @@ const initialLine = signalLine(initialScenario);
 				<span data-signal-trail>{initialLine.trail}</span>
 			</p>
 
-			<ul class="flex flex-col font-mono text-sm">
-				{
-					initial.gates.map((gate) => (
-						<li
-							data-gate={gate.id}
-							class="grid grid-cols-[1rem_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-1 border-b border-ink-3 py-2.5 last:border-b-0 @md:grid-cols-[1rem_minmax(0,1fr)_auto_auto]"
-						>
-							<span data-gate-mark class:list={[gate.passed ? "text-accent" : "text-loss"]}>
-								{gate.passed ? "✓" : "✗"}
-							</span>
-							<span class="col-span-2 font-sans text-ink-7 @md:col-span-1">{gate.question}</span>
-							<span
-								data-gate-actual
-								class="col-start-2 justify-self-end tabular-nums text-ink-8 @md:col-start-3"
-							>
-								{gate.actual}
-							</span>
-							<span
-								data-gate-rule
-								class="col-start-3 justify-self-end tabular-nums text-ink-5 @md:col-start-4"
-							>
-								{gate.rule}
-							</span>
-							<span
-								data-gate-flag
-								class:list={[
-									// col-start/col-end longhands, not col-span: `col-span-*` compiles to
-									// the `grid-column` shorthand, which would reset the start back to auto.
-									"col-start-2 col-end-4 font-sans text-xs text-loss @md:col-end-5",
-									!gate.blocker && "hidden",
-								]}
-							>
-								the real bot stops here
-							</span>
-						</li>
-					))
-				}
-			</ul>
+			{
+				/* Two lists, not one, because the first check is enforced somewhere else
+				   entirely: below `cluster_threshold` the tracker emits no alert, so the
+				   executor is never handed anything to refuse. Rendering it as rail #1
+				   advertised a skip card that is never sent. */
+				GATE_STAGE_ORDER.map((stage) => (
+					<div class="flex flex-col gap-1.5">
+						<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							{GATE_STAGE_LABELS[stage]}
+						</p>
+						<ul class="flex flex-col font-mono text-sm">
+							{initial.gates
+								.filter((gate) => gate.stage === stage)
+								.map((gate) => (
+									<li
+										data-gate={gate.id}
+										class="grid grid-cols-[1rem_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-1 border-b border-ink-3 py-2.5 last:border-b-0 @md:grid-cols-[1rem_minmax(0,1fr)_auto_auto]"
+									>
+										<span data-gate-mark class:list={[gate.passed ? "text-accent" : "text-loss"]}>
+											{gate.passed ? "✓" : "✗"}
+										</span>
+										<span class="col-span-2 font-sans text-ink-7 @md:col-span-1">
+											{gate.question}
+										</span>
+										<span
+											data-gate-actual
+											class="col-start-2 justify-self-end tabular-nums text-ink-8 @md:col-start-3"
+										>
+											{gate.actual}
+										</span>
+										<span
+											data-gate-rule
+											class="col-start-3 justify-self-end tabular-nums text-ink-5 @md:col-start-4"
+										>
+											{gate.rule}
+										</span>
+										{/* Static per row rather than rewritten by the script: a check's
+										    stage never changes, so only its visibility has to. */}
+										<span
+											data-gate-flag
+											class:list={[
+												// col-start/col-end longhands, not col-span: `col-span-*` compiles to
+												// the `grid-column` shorthand, which would reset the start back to auto.
+												"col-start-2 col-end-4 font-sans text-xs text-loss @md:col-end-5",
+												!gate.blocker && "hidden",
+											]}
+										>
+											{GATE_STAGE_FLAGS[gate.stage]}
+										</span>
+									</li>
+								))}
+						</ul>
+					</div>
+				))
+			}
 
+			{/* Three states, not two. `no-signal` is deliberately the quietest of the
+			    three — nothing happened, and warn-coloured chrome would dress the
+			    absence of a decision up as a refusal. */}
 			<div
 				data-verdict
 				data-action={initial.action}
-				class="group flex flex-col gap-1.5 rounded-card border border-warn/40 bg-warn/5 px-4 py-3 data-[action=buy]:border-accent/40 data-[action=buy]:bg-accent/5"
+				class="group flex flex-col gap-1.5 rounded-card border border-warn/40 bg-warn/5 px-4 py-3 data-[action=buy]:border-accent/40 data-[action=buy]:bg-accent/5 data-[action=no-signal]:border-ink-3 data-[action=no-signal]:bg-transparent"
 			>
 				<p
 					data-verdict-headline
-					class="font-mono text-sm font-semibold uppercase tracking-wider text-warn group-data-[action=buy]:text-accent"
+					class="font-mono text-sm font-semibold uppercase tracking-wider text-warn group-data-[action=buy]:text-accent group-data-[action=no-signal]:text-ink-5"
 				>
 					{initial.headline}
 				</p>
@@ -173,11 +211,13 @@ const initialLine = signalLine(initialScenario);
 			</div>
 
 			<p class="font-sans text-xs leading-snug text-ink-5">
-				The real executor short-circuits at the first ✗ and moves on. Every check is scored here
-				so you can see what each knob does. Prices are always the ones on the side the bot would
-				really buy — for a selling crowd, that is the opposite outcome. The last two checks are
-				the exchange's own rules: the limit has to be reachable, and the order has to be big
-				enough.
+				The real executor short-circuits at the first ✗ in the second list and moves on. Every
+				check is scored here so you can see what each knob does. Prices are always the ones on
+				the side the bot would really buy — for a selling crowd, that is the opposite outcome.
+				The last two checks are the exchange's own rules: the limit has to be reachable, and the
+				order has to be big enough. Between the two lists the executor also runs a handful of
+				bookkeeping checks — is this crowd already open, is the kill switch on — that are left
+				out here because none of them is a number you can turn.
 			</p>
 			<noscript>
 				<p class="font-sans text-xs leading-snug text-warn">

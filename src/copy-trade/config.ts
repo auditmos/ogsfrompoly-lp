@@ -71,7 +71,15 @@ export const LIVE_CONFIG: KnobValues = {
  *
  * 5% is what Polymarket served on every fee-bearing market sampled 2026-07-30;
  * one market quoted 4%, and half served no fee at all. One rate is enough for
- * the walkthrough — the executor reads each market's own curve.
+ * the walkthrough — the executor reads each market's own curve when it can.
+ *
+ * When it cannot, it does not stand the rail down: `CopyConfig.fee_fallback`
+ * supplies an assumed curve, and the live Macro config declares no `fee_fallback`
+ * block, so its default 5% is what the rail judges against. That is deliberate —
+ * a zero would be indistinguishable from a genuinely free market — but it means a
+ * market that truly charges nothing can still be refused by `max_entry_fee_pct`.
+ * It also means the executor's `fee_unavailable` skip cannot fire on the live
+ * config, which is why this page does not show it as a rail.
  */
 export const VENUE_FEE_RATE = 0.05;
 

@@ -9,7 +9,10 @@ function withKnobs(overrides: Partial<KnobValues>): KnobValues {
 	return { ...LIVE_CONFIG, ...overrides };
 }
 
-/** The executor's own order of questions, ending with the two the venue asks. */
+/**
+ * The tracker's bar first, then the executor's own order of questions, ending
+ * with the two the venue asks.
+ */
 const GATE_ORDER = [
 	"crowd",
 	"room",
@@ -38,11 +41,24 @@ describe("evaluateSignal", () => {
 		expect(verdict.gates.some((entry) => entry.blocker)).toBe(false);
 	});
 
-	it("asks every question in executor order, whatever the outcome", () => {
+	it("asks every question in pipeline order, whatever the outcome", () => {
 		for (const scenario of SCENARIOS) {
 			const verdict = evaluateSignal(LIVE_CONFIG, scenario);
 			expect(verdict.gates.map((entry) => entry.id)).toEqual(GATE_ORDER);
 		}
+	});
+
+	it("names the pipeline that enforces each check", () => {
+		// The crowd threshold is the tracker's, not the executor's: `ClusterTrigger`
+		// refuses to emit an alert at all below it, so the executor is never asked.
+		// Everything after it is a rail the risk gate really runs.
+		const stages = evaluateSignal(LIVE_CONFIG, textbook).gates.map((entry) => [
+			entry.id,
+			entry.stage,
+		]);
+
+		expect(stages[0]).toEqual(["crowd", "alert"]);
+		expect(stages.slice(1).every(([, stage]) => stage === "executor")).toBe(true);
 	});
 
 	it("points every check at a knob the panel actually ships", () => {
@@ -106,10 +122,33 @@ describe("evaluateSignal", () => {
 		expect(gate(LIVE_CONFIG, textbook, "crowd")?.rule).toBe("≥ 3");
 	});
 
-	it("turns a crowd skip into a buy when the threshold drops to one wallet", () => {
+	it("reports a sub-threshold crowd as no signal at all, never as a skip", () => {
+		// The correction #63 asked for: below `cluster_threshold` the tracker emits
+		// no alert, so the executor is never asked and no skip card is ever sent.
+		// Calling it a SKIP would advertise a refusal the bot does not make.
 		const lonely = { ...textbook, smartWallets: 1 };
-		expect(evaluateSignal(LIVE_CONFIG, lonely).action).toBe("skip");
+		const verdict = evaluateSignal(LIVE_CONFIG, lonely);
+
+		expect(verdict.action).toBe("no-signal");
+		expect(verdict.headline).toBe("NO SIGNAL");
 		expect(gate(LIVE_CONFIG, lonely, "crowd")?.actual).toBe("1 wallet");
+	});
+
+	it("explains a sub-threshold crowd as an alert never raised, not a rail refusing", () => {
+		const lonely = { ...textbook, smartWallets: 1 };
+		const verdict = evaluateSignal(LIVE_CONFIG, lonely);
+		const crowd = gate(LIVE_CONFIG, lonely, "crowd");
+
+		expect(crowd?.because).toContain("1 skilled wallet");
+		expect(crowd?.because).toContain("no alert");
+		expect(verdict.detail).toBe(crowd?.because);
+		// The old copy said the bot "waits for 3", which describes something it saw
+		// and declined. It saw nothing, and sent no skip card about it.
+		expect(crowd?.because).not.toMatch(/skips?\b|waits for/i);
+	});
+
+	it("hands the same crowd to the executor once the threshold drops to one wallet", () => {
+		const lonely = { ...textbook, smartWallets: 1 };
 		expect(evaluateSignal(withKnobs({ cluster_threshold: 1 }), lonely).action).toBe("buy");
 	});
 });
