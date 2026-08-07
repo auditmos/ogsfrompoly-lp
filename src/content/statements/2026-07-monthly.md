@@ -1,7 +1,7 @@
 ---
 schema_version: 1
 type: monthly
-draft: true
+draft: false
 title: July 2026
 summary: ogsfrompoly monthly statement — 612 alerts, hit rate 0.51 (80 markets resolved
   in this period).
