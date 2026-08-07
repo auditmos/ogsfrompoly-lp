@@ -200,14 +200,37 @@ function maxGain(values: KnobValues, plan: OrderPlan): number {
 }
 
 /**
- * Did one of the same wallets sit on the opposite side of this market inside the
+ * Did the same wallets sit on the opposite side of this market inside the
  * window? `null` evidence stands the rail down — nobody flipped is a measurement,
  * but an unmeasured lookback is not, and the executor refuses to guess either way.
+ *
+ * Two arms, either sufficient, exactly as the executor enforces them:
+ *
+ * - **too many flipped** — more than `max_reversed_wallets`. At the live `0`
+ *   that is the strict reading: one flipper refuses the crowd.
+ * - **not enough left** — drop the flippers and fewer than `cluster_threshold`
+ *   clean wallets remain, i.e. the flip was carrying the crowd. This catches a
+ *   crowd the count arm lets through once the tolerance is raised.
  */
 function hasJustFlipped(values: KnobValues, signal: Scenario): boolean {
-	if (values.reversal_lookback_s <= 0) return false;
-	if (signal.secondsSinceCrowdFlipped === null) return false;
-	return signal.secondsSinceCrowdFlipped <= values.reversal_lookback_s;
+	const flip = signal.crowdFlip;
+	if (values.reversal_lookback_s <= 0 || flip === null) return false;
+	if (flip.secondsAgo > values.reversal_lookback_s) return false;
+	const clean = signal.smartWallets - flip.wallets;
+	return flip.wallets > values.max_reversed_wallets || clean < values.cluster_threshold;
+}
+
+/** Which of the two arms refused, said in one sentence. */
+function reversalBecause(values: KnobValues, signal: Scenario): string {
+	const flip = signal.crowdFlip;
+	if (flip === null) return "";
+	const when = `${formatDuration(flip.secondsAgo)} ago, inside the ${formatDuration(values.reversal_lookback_s)} window`;
+	if (flip.wallets > values.max_reversed_wallets) {
+		const plural = flip.wallets === 1 ? "wallet" : "wallets";
+		return `${flip.wallets} of these ${plural} held the opposite view of this market ${when} — they are not a crowd agreeing, they are a wallet changing its mind in public.`;
+	}
+	const clean = signal.smartWallets - flip.wallets;
+	return `Setting aside the ${flip.wallets} that flipped ${when} leaves only ${formatWalletCount(clean)} — under the ${values.cluster_threshold} it takes to be a crowd, so the flip was carrying this signal.`;
 }
 
 /** Order matters: it is the order the executor asks the questions in. */
@@ -267,15 +290,15 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 			question: "Were any of them just on the other side?",
 			knob: "reversal_lookback_s",
 			actual:
-				signal.secondsSinceCrowdFlipped === null
+				signal.crowdFlip === null
 					? "none flipped"
-					: `${formatDuration(signal.secondsSinceCrowdFlipped)} ago`,
+					: `${signal.crowdFlip.wallets} of ${signal.smartWallets}, ${formatDuration(signal.crowdFlip.secondsAgo)} ago`,
 			rule:
 				values.reversal_lookback_s <= 0
 					? "off"
-					: `none within ${formatDuration(values.reversal_lookback_s)}`,
+					: `≤ ${values.max_reversed_wallets} within ${formatDuration(values.reversal_lookback_s)}`,
 			passed: !hasJustFlipped(values, signal),
-			because: `One of these wallets held the opposite view of this market ${formatDuration(signal.secondsSinceCrowdFlipped ?? 0)} ago — inside the ${formatDuration(values.reversal_lookback_s)} window, so the crowd is arguing with itself rather than agreeing.`,
+			because: reversalBecause(values, signal),
 		},
 		{
 			id: "price",

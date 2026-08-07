@@ -160,6 +160,7 @@ describe("knob definitions", () => {
 			staleness_pct: 3,
 			staleness_min_ticks: 2,
 			reversal_lookback_s: 600,
+			max_reversed_wallets: 0,
 			max_entry_fee_pct: 0.02,
 			max_entry_price: 0.95,
 			trade_size_usdc: 5,
@@ -200,12 +201,22 @@ describe("example signals", () => {
 	});
 
 	it("covers a crowd that had just been on the other side, and crowds that had not", () => {
-		// `null` and a number are different facts, not a missing value and a
-		// present one: `null` is "we looked and nobody flipped", which the rail is
-		// entitled to act on. Both shapes have to reach the simulator.
-		const flipped = SCENARIOS.map((scenario) => scenario.secondsSinceCrowdFlipped);
+		// `null` and a flip are different facts, not a missing value and a present
+		// one: `null` is "we looked and nobody flipped", which the rail is entitled
+		// to act on. Both shapes have to reach the simulator.
+		const flips = SCENARIOS.map((scenario) => scenario.crowdFlip);
 
-		expect(flipped).toContain(null);
-		expect(flipped.some((seconds) => typeof seconds === "number")).toBe(true);
+		expect(flips).toContain(null);
+		expect(flips.some((flip) => flip !== null)).toBe(true);
+	});
+
+	it("never claims a flip by nobody, or a flip with no crowd behind it", () => {
+		// The pair is one object precisely so these cannot drift apart.
+		for (const scenario of SCENARIOS) {
+			if (scenario.crowdFlip === null) continue;
+			expect(scenario.crowdFlip.wallets).toBeGreaterThan(0);
+			expect(scenario.crowdFlip.wallets).toBeLessThanOrEqual(scenario.smartWallets);
+			expect(scenario.crowdFlip.secondsAgo).toBeGreaterThan(0);
+		}
 	});
 });

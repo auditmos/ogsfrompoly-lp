@@ -24,6 +24,7 @@ export type KnobKey =
 	| "staleness_pct"
 	| "staleness_min_ticks"
 	| "reversal_lookback_s"
+	| "max_reversed_wallets"
 	| "max_entry_fee_pct"
 	| "max_entry_price"
 	| "trade_size_usdc"
@@ -46,6 +47,10 @@ export const LIVE_CONFIG: KnobValues = {
 	staleness_pct: 3,
 	staleness_min_ticks: 2,
 	reversal_lookback_s: 600,
+	// `0` is the STRICTEST setting here, not the disabled one — any contributing
+	// wallet that flipped inside the window refuses the whole crowd. The rail is
+	// switched off by `reversal_lookback_s: 0` instead.
+	max_reversed_wallets: 0,
 	// A *fraction* of the ticket, not a percentage, because that is how the YAML
 	// carries it. Rendered as "2%" by the `fraction` unit.
 	max_entry_fee_pct: 0.02,
@@ -157,6 +162,17 @@ export const KNOBS = [
 		step: 60,
 	},
 	{
+		key: "max_reversed_wallets",
+		group: "gate",
+		// Reads as a tolerance, and at its live value it is none at all. Worth a
+		// slider precisely because "0" looks like "off" and is the opposite.
+		label: "…tolerating at most this many of them having flipped",
+		unit: "count",
+		min: 0,
+		max: 3,
+		step: 1,
+	},
+	{
 		key: "max_entry_fee_pct",
 		group: "gate",
 		label: "Skip if the entry fee eats more of the ticket than",
@@ -260,14 +276,22 @@ export interface Scenario {
 	/** Spendable balance in the copy-trade pool. */
 	readonly balanceUsdc: number;
 	/**
-	 * How long ago one of these same wallets was on the *opposite* side of this
-	 * market, or `null` when none of them was.
+	 * The same wallets caught on the *opposite* side of this market recently, or
+	 * `null` when none of them was.
 	 *
 	 * `null` is "we looked and nobody flipped", which is a fact the rail may act
 	 * on — not "we did not look". The executor draws the same distinction, and
 	 * stands the rail down entirely when nothing measured it.
+	 *
+	 * One nullable object rather than a count beside a timestamp, so a row can
+	 * never claim two wallets flipped and no flip happened.
 	 */
-	readonly secondsSinceCrowdFlipped: number | null;
+	readonly crowdFlip: {
+		/** How many of `smartWallets` were on the other side. */
+		readonly wallets: number;
+		/** The tightest of those flips — the number to read the window against. */
+		readonly secondsAgo: number;
+	} | null;
 }
 
 /**
@@ -294,7 +318,7 @@ export const SCENARIOS = [
 		secondsToResolution: 21600,
 		openExposureUsdc: 5,
 		balanceUsdc: 28.5,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		// The crowd sells a *cheap* outcome, so our side is the dear one. Selling
@@ -313,7 +337,7 @@ export const SCENARIOS = [
 		secondsToResolution: 172800,
 		openExposureUsdc: 10,
 		balanceUsdc: 21,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "coarse",
@@ -329,7 +353,7 @@ export const SCENARIOS = [
 		secondsToResolution: 86400,
 		openExposureUsdc: 5,
 		balanceUsdc: 19,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "pricey",
@@ -345,7 +369,7 @@ export const SCENARIOS = [
 		secondsToResolution: 43200,
 		openExposureUsdc: 0,
 		balanceUsdc: 12,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "too-dear",
@@ -361,7 +385,7 @@ export const SCENARIOS = [
 		secondsToResolution: 86400,
 		openExposureUsdc: 5,
 		balanceUsdc: 26,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "flipped",
@@ -377,8 +401,9 @@ export const SCENARIOS = [
 		secondsToResolution: 86400,
 		openExposureUsdc: 5,
 		balanceUsdc: 27,
-		// 121 s: the middle of the three flips actually recorded (3 s, 121 s, 7 min).
-		secondsSinceCrowdFlipped: 121,
+		// Two of the four flipped, 121 s ago — the middle of the three flips
+		// actually recorded (3 s, 121 s, 7 min), and the shape of the live one.
+		crowdFlip: { wallets: 2, secondsAgo: 121 },
 	},
 	{
 		id: "ends-soon",
@@ -394,7 +419,7 @@ export const SCENARIOS = [
 		secondsToResolution: 1320,
 		openExposureUsdc: 5,
 		balanceUsdc: 24,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "thin",
@@ -410,7 +435,7 @@ export const SCENARIOS = [
 		secondsToResolution: 259200,
 		openExposureUsdc: 0,
 		balanceUsdc: 26,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "chased",
@@ -426,7 +451,7 @@ export const SCENARIOS = [
 		secondsToResolution: 172800,
 		openExposureUsdc: 5,
 		balanceUsdc: 25.5,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		id: "full",
@@ -442,7 +467,7 @@ export const SCENARIOS = [
 		secondsToResolution: 28800,
 		openExposureUsdc: 20,
 		balanceUsdc: 31,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 	{
 		// $0.66 rather than $0.48: the spendable floor is asked *after* the fee
@@ -461,7 +486,7 @@ export const SCENARIOS = [
 		secondsToResolution: 64800,
 		openExposureUsdc: 5,
 		balanceUsdc: 8.5,
-		secondsSinceCrowdFlipped: null,
+		crowdFlip: null,
 	},
 ] as const satisfies readonly Scenario[];
 

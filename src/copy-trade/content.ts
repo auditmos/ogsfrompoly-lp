@@ -79,6 +79,17 @@ The window is not a guess. The flips actually recorded ran **121 to 457 seconds*
 apart, and then nothing until 915 seconds; 600 sits in that gap, which buys the
 whole benefit with the least collateral damage.
 
+There is a second number here, and it is the most misleading one on the page.
+\`max_reversed_wallets\` is set to **0**, which looks like a switched-off rail and
+is the exact opposite: it means **no** flipper is tolerated, so a single one
+refuses the whole crowd. Raising it is what loosens the rule. The rail is turned
+off by setting the *window* to zero, not this.
+
+It also refuses from the other direction. If setting the flippers aside leaves
+fewer than 3 wallets still standing, the signal goes too — not because too many
+changed their mind, but because the ones who did were the reason it looked like a
+crowd at all.
+
 One trap worth naming, because getting it wrong was worse than not having the
 rule. On a two-outcome market, buying "yes" and selling "no" are the *same*
 trade, and the exchange reports both. Comparing the words "bought" and "sold"

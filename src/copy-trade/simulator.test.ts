@@ -218,12 +218,12 @@ describe("the rails added since the first live run", () => {
 		const reversal = gate(LIVE_CONFIG, flipped, "reversal");
 
 		expect(reversal?.passed).toBe(false);
-		expect(reversal?.actual).toBe("2m ago");
-		expect(reversal?.rule).toBe("none within 10m");
+		expect(reversal?.actual).toBe("2 of 4, 2m ago");
+		expect(reversal?.rule).toBe("≤ 0 within 10m");
 	});
 
 	it("takes the same signal once the flip is older than the window", () => {
-		const stale = { ...flipped, secondsSinceCrowdFlipped: 1800 };
+		const stale = { ...flipped, crowdFlip: { wallets: 2, secondsAgo: 1800 } };
 
 		expect(evaluateSignal(LIVE_CONFIG, stale).action).toBe("buy");
 	});
@@ -233,6 +233,30 @@ describe("the rails added since the first live run", () => {
 
 		expect(evaluateSignal(off, flipped).action).toBe("buy");
 		expect(gate(off, flipped, "reversal")?.rule).toBe("off");
+	});
+
+	it("treats a tolerance of zero as the strictest setting, not as off", () => {
+		// The trap the knob exists to make visible: `max_reversed_wallets: 0` reads
+		// like a disabled rail and is the opposite. Raising it is what loosens.
+		expect(LIVE_CONFIG.max_reversed_wallets).toBe(0);
+		expect(evaluateSignal(LIVE_CONFIG, flipped).action).toBe("skip");
+
+		const oneFlipper = { ...flipped, smartWallets: 5, crowdFlip: { wallets: 1, secondsAgo: 121 } };
+		expect(evaluateSignal(LIVE_CONFIG, oneFlipper).action).toBe("skip");
+		expect(evaluateSignal(withKnobs({ max_reversed_wallets: 1 }), oneFlipper).action).toBe("buy");
+	});
+
+	it("still refuses when dropping the flippers leaves too few to be a crowd", () => {
+		// The second arm. Tolerating two flippers does not help when only two clean
+		// wallets remain and it takes three to be a crowd — the flip was carrying
+		// the signal, which is a different failure from "too many flipped".
+		const carried = withKnobs({ max_reversed_wallets: 2 });
+		const verdict = evaluateSignal(carried, flipped);
+
+		expect(verdict.action).toBe("skip");
+		expect(verdict.gates.find((entry) => entry.blocker)?.id).toBe("reversal");
+		expect(verdict.detail).toContain("2 skilled wallets");
+		expect(verdict.detail).toContain("under the 3");
 	});
 
 	it("refuses a share too dear to be worth its own downside", () => {
