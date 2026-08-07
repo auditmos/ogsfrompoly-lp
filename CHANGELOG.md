@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.21.0...v1.21.1) (2026-08-07)
+
+
+### Bug Fixes
+
+* **for-dummies:** check 1 is the tracker's bar, not a rail the executor runs ([c13cf48](https://github.com/auditmos/ogsfrompoly-lp/commit/c13cf48cde5b0dda82f43a9fd605df0b9d3148bb)), closes [#1](https://github.com/auditmos/ogsfrompoly-lp/issues/1) [#63](https://github.com/auditmos/ogsfrompoly-lp/issues/63)
+
 # [1.21.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.20.0...v1.21.0) (2026-08-07)
 
 
