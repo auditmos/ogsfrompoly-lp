@@ -23,6 +23,7 @@
 
 import {
 	formatDuration,
+	formatFraction,
 	formatPct,
 	formatPrice,
 	formatShares,
@@ -32,12 +33,24 @@ import {
 	type KnobKey,
 	type KnobValues,
 	type Scenario,
+	VENUE_FEE_RATE,
 } from "./config";
 
 // The verdict shapes stay module-private: every consumer (the Astro page, the
 // client script, the tests) reads them off `evaluateSignal`'s inferred return
 // type, so exporting them would widen the interface for nobody.
-type GateId = "crowd" | "room" | "liquidity" | "timing" | "freshness" | "floor" | "fill" | "size";
+type GateId =
+	| "crowd"
+	| "room"
+	| "liquidity"
+	| "timing"
+	| "freshness"
+	| "reversal"
+	| "price"
+	| "fee"
+	| "floor"
+	| "fill"
+	| "size";
 
 interface GateResult {
 	readonly id: GateId;
@@ -156,6 +169,47 @@ function freshnessRule(values: KnobValues): string {
 	return `${pct} or < ${formatSteps(values.staleness_min_ticks)}`;
 }
 
+/**
+ * The entry fee as a share of the ticket. The venue charges per *share* and
+ * scales by `p * (1 - p)`, so substituting `shares = size / p` collapses the
+ * whole thing to `rate * (1 - p)` — the size cancels out entirely.
+ *
+ * That is why raising the bet cannot fix a fee problem, and why this rail is a
+ * minimum-price gate wearing different units: at a 5% venue rate a 2% ceiling is
+ * exactly "never pay under $0.60".
+ */
+function entryFeeFraction(entryPrice: number): number {
+	return VENUE_FEE_RATE * (1 - entryPrice);
+}
+
+/** The cheapest outcome a fee ceiling still allows, or `null` when it is off. */
+function impliedMinimumPrice(maxEntryFee: number): number | null {
+	if (maxEntryFee <= 0 || maxEntryFee >= VENUE_FEE_RATE) return null;
+	return roundTo(1 - maxEntryFee / VENUE_FEE_RATE, 4);
+}
+
+/**
+ * The most a winning ticket can return, which is what the price ceiling is
+ * really about: a share bought at `p` pays $1, so the upside is `size * (1-p)/p`
+ * against a downside of the whole ticket. At $0.95 that is 19:1 against; at
+ * $0.998 it is 500:1, and a single adverse resolution erases hundreds of wins.
+ */
+function maxGain(values: KnobValues, plan: OrderPlan): number {
+	if (plan.entryPrice <= 0) return 0;
+	return (values.trade_size_usdc * (1 - plan.entryPrice)) / plan.entryPrice;
+}
+
+/**
+ * Did one of the same wallets sit on the opposite side of this market inside the
+ * window? `null` evidence stands the rail down — nobody flipped is a measurement,
+ * but an unmeasured lookback is not, and the executor refuses to guess either way.
+ */
+function hasJustFlipped(values: KnobValues, signal: Scenario): boolean {
+	if (values.reversal_lookback_s <= 0) return false;
+	if (signal.secondsSinceCrowdFlipped === null) return false;
+	return signal.secondsSinceCrowdFlipped <= values.reversal_lookback_s;
+}
+
 /** Order matters: it is the order the executor asks the questions in. */
 function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateCheck[] {
 	const wouldOpen = signal.openExposureUsdc + values.trade_size_usdc;
@@ -207,6 +261,41 @@ function checks(values: KnobValues, signal: Scenario, plan: OrderPlan): GateChec
 			rule: freshnessRule(values),
 			passed: !ranAway,
 			because: `The price moved ${formatPct(plan.driftPct)} against us (${formatPrice(plan.entryPrice)} → ${formatPrice(plan.livePrice)}), past the ${formatPct(values.staleness_pct)} limit and past the ${formatSteps(values.staleness_min_ticks)} noise floor — the move already happened.`,
+		},
+		{
+			id: "reversal",
+			question: "Were any of them just on the other side?",
+			knob: "reversal_lookback_s",
+			actual:
+				signal.secondsSinceCrowdFlipped === null
+					? "none flipped"
+					: `${formatDuration(signal.secondsSinceCrowdFlipped)} ago`,
+			rule:
+				values.reversal_lookback_s <= 0
+					? "off"
+					: `none within ${formatDuration(values.reversal_lookback_s)}`,
+			passed: !hasJustFlipped(values, signal),
+			because: `One of these wallets held the opposite view of this market ${formatDuration(signal.secondsSinceCrowdFlipped ?? 0)} ago — inside the ${formatDuration(values.reversal_lookback_s)} window, so the crowd is arguing with itself rather than agreeing.`,
+		},
+		{
+			id: "price",
+			question: "Is a share too dear to be worth the downside?",
+			knob: "max_entry_price",
+			actual: formatPrice(plan.entryPrice),
+			rule: values.max_entry_price <= 0 ? "off" : `≤ ${formatPrice(values.max_entry_price)}`,
+			passed: values.max_entry_price <= 0 || plan.entryPrice <= values.max_entry_price,
+			because: `A share costs ${formatPrice(plan.entryPrice)}, over the ${formatPrice(values.max_entry_price)} ceiling — it can win at most ${formatUsd(maxGain(values, plan))} while still risking the whole ${formatUsd(values.trade_size_usdc)}.`,
+		},
+		{
+			id: "fee",
+			question: "Does the fee eat too much of the ticket?",
+			knob: "max_entry_fee_pct",
+			actual: formatFraction(entryFeeFraction(plan.entryPrice)),
+			rule: values.max_entry_fee_pct <= 0 ? "off" : `≤ ${formatFraction(values.max_entry_fee_pct)}`,
+			passed:
+				values.max_entry_fee_pct <= 0 ||
+				entryFeeFraction(plan.entryPrice) <= values.max_entry_fee_pct,
+			because: `Entering a ${formatPrice(plan.entryPrice)} outcome costs ${formatFraction(entryFeeFraction(plan.entryPrice))} of the ticket in fees, over the ${formatFraction(values.max_entry_fee_pct)} ceiling — the fee is charged per share, so a cheap outcome is the expensive one to trade.`,
 		},
 		{
 			id: "floor",
@@ -296,14 +385,23 @@ export function signalLine(signal: Scenario): {
  * The "in one sentence" summary, rewritten from whatever the knobs currently say.
  */
 export function summarySentence(values: KnobValues): string {
+	const floor = impliedMinimumPrice(values.max_entry_fee_pct);
+	const priceBand =
+		floor === null
+			? `pays at most ${formatPrice(values.max_entry_price)} a share,`
+			: `pays between ${formatPrice(floor)} and ${formatPrice(values.max_entry_price)} a share,`;
 	return [
 		`When ${values.cluster_threshold}+ skilled wallets agree,`,
+		"none of them having been on the other side of it",
+		`in the last ${formatDuration(values.reversal_lookback_s)},`,
 		`and the market holds at least ${formatUsd(values.min_liquidity_usdc)} of liquidity,`,
 		`has more than ${formatDuration(values.min_seconds_to_resolution)} left to run,`,
 		`and has not moved more than ${formatPct(values.staleness_pct)} against them`,
 		`→ the bot buys ${formatUsd(values.trade_size_usdc)} of what they bought`,
 		"(or of the opposite outcome, if they were selling),",
-		`without paying more than ${formatPct(values.slippage_pct)} over the price they got,`,
+		priceBand,
+		`gives away no more than ${formatFraction(values.max_entry_fee_pct)} of the ticket in fees,`,
+		`does not pay more than ${formatPct(values.slippage_pct)} over the price they got,`,
 		"holds until the first of them reverses,",
 		`keeps ${formatUsd(values.working_capital_floor_usdc)} spendable and ${values.gas_reserve_pol} POL back for gas,`,
 		`and repeats with never more than ${formatUsd(values.exposure_cap_usdc)} in play at once.`,

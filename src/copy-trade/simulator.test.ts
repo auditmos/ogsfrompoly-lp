@@ -2,14 +2,27 @@ import { isKnobKey, type KnobValues, LIVE_CONFIG, SCENARIOS, type Scenario } fro
 import { evaluateSignal, signalLine, summarySentence } from "./simulator";
 
 // Destructuring the tuple keeps each fixture exactly typed — no array-access guard.
-const [textbook, mirror, coarse, pricey, endsSoon, thin, chased, full, broke] = SCENARIOS;
+const [textbook, mirror, coarse, pricey, tooDear, flipped, endsSoon, thin, chased, full, broke] =
+	SCENARIOS;
 
 function withKnobs(overrides: Partial<KnobValues>): KnobValues {
 	return { ...LIVE_CONFIG, ...overrides };
 }
 
 /** The executor's own order of questions, ending with the two the venue asks. */
-const GATE_ORDER = ["crowd", "room", "liquidity", "timing", "freshness", "floor", "fill", "size"];
+const GATE_ORDER = [
+	"crowd",
+	"room",
+	"liquidity",
+	"timing",
+	"freshness",
+	"reversal",
+	"price",
+	"fee",
+	"floor",
+	"fill",
+	"size",
+];
 
 function gate(values: KnobValues, scenario: Scenario, id: string) {
 	return evaluateSignal(values, scenario).gates.find((entry) => entry.id === id);
@@ -44,6 +57,9 @@ describe("evaluateSignal", () => {
 		{ scenario: chased, blocker: "freshness" },
 		{ scenario: full, blocker: "room" },
 		{ scenario: broke, blocker: "floor" },
+		{ scenario: tooDear, blocker: "price" },
+		{ scenario: flipped, blocker: "reversal" },
+		{ scenario: coarse, blocker: "fee" },
 	])("skips $scenario.label on the check it was written to trip", ({ scenario, blocker }) => {
 		const verdict = evaluateSignal(LIVE_CONFIG, scenario);
 
@@ -53,12 +69,13 @@ describe("evaluateSignal", () => {
 	});
 
 	it("marks only the first failing check as the blocker", () => {
-		// The thin market fails liquidity, freshness AND the limit; the real
-		// executor never reaches the later ones, so only liquidity may be flagged.
+		// The thin market fails liquidity, freshness, the fee AND the limit; the
+		// real executor never reaches the later ones, so only liquidity may be
+		// flagged.
 		const verdict = evaluateSignal(LIVE_CONFIG, thin);
 		const failed = verdict.gates.filter((entry) => !entry.passed).map((entry) => entry.id);
 
-		expect(failed).toEqual(["liquidity", "freshness", "fill"]);
+		expect(failed).toEqual(["liquidity", "freshness", "fee", "fill"]);
 		expect(verdict.gates.filter((entry) => entry.blocker).map((entry) => entry.id)).toEqual([
 			"liquidity",
 		]);
@@ -78,9 +95,10 @@ describe("evaluateSignal", () => {
 	});
 
 	it("reports the trade size actually configured in the buy headline", () => {
-		expect(evaluateSignal(withKnobs({ trade_size_usdc: 2.5 }), textbook).headline).toBe(
-			"BUY $2.50",
-		);
+		// $10 rather than $2.50: with the fee rail forcing entries at $0.60+, a
+		// $2.50 ticket buys under the venue's 5-share minimum and the size check
+		// blocks before a headline is ever produced.
+		expect(evaluateSignal(withKnobs({ trade_size_usdc: 10 }), textbook).headline).toBe("BUY $10");
 	});
 
 	it("shows each check's live measurement against its rule", () => {
@@ -101,17 +119,24 @@ describe("copying a selling crowd", () => {
 		const verdict = evaluateSignal(LIVE_CONFIG, mirror);
 
 		expect(verdict.action).toBe("buy");
-		// They sold at $0.90, so our side is $0.10 and the limit is two 0.01 steps
-		// above it — the percentage arm (1% of $0.10) is worth a tenth of a step.
+		// They sold at $0.30, so our side is $0.70 and the limit is two 0.01 steps
+		// above it — the percentage arm (1% of $0.70) is under one step.
 		expect(verdict.detail).toContain("The crowd was selling");
-		expect(verdict.detail).toContain("$0.10");
-		expect(gate(LIVE_CONFIG, mirror, "fill")?.rule).toBe("≤ $0.12");
+		expect(verdict.detail).toContain("$0.70");
+		expect(gate(LIVE_CONFIG, mirror, "fill")?.rule).toBe("≤ $0.72");
 		expect(verdict.detail).toContain("buys back what they sold");
 	});
 
 	it("measures the drift on the side it would really trade", () => {
-		// Their outcome drifted up (0.90 → 0.905), which makes ours cheaper.
+		// Their outcome drifted up (0.30 → 0.305), which makes ours cheaper.
 		expect(gate(LIVE_CONFIG, mirror, "freshness")?.actual).toBe("moved in our favour");
+	});
+
+	it("judges the fee on our side too, which is what makes a dear mirror possible", () => {
+		// The rail is not symmetric in `p <-> 1-p`: their 30¢ side would cost 3.5%
+		// of the ticket to enter, ours costs 1.5%. Judging the crowd's side would
+		// refuse the very mirrors that work.
+		expect(gate(LIVE_CONFIG, mirror, "fee")?.actual).toBe("1.5%");
 	});
 });
 
@@ -125,7 +150,17 @@ describe("the staleness floor in grid steps", () => {
 		expect(freshness?.passed).toBe(true);
 		expect(freshness?.actual).toBe("15% (1.5 steps)");
 		expect(freshness?.rule).toBe("≤ 3% or < 2 steps");
-		expect(evaluateSignal(LIVE_CONFIG, coarse).action).toBe("buy");
+	});
+
+	it("still refuses the cheap outcome the staleness floor let through", () => {
+		// The lesson the fee rail added: passing the freshness check no longer
+		// means the trade happens. A 10¢ outcome surrenders 4.5% of the ticket in
+		// fees, and that is where the live book's real losses came from.
+		const verdict = evaluateSignal(LIVE_CONFIG, coarse);
+
+		expect(verdict.action).toBe("skip");
+		expect(verdict.gates.find((entry) => entry.blocker)?.id).toBe("fee");
+		expect(gate(LIVE_CONFIG, coarse, "fee")?.actual).toBe("4.5%");
 	});
 
 	it("lets the percentage bind again once the floor is dialled down", () => {
@@ -166,7 +201,7 @@ describe("signalLine", () => {
 		expect(signalLine(textbook)).toEqual({
 			lead: "4 skilled wallets bought",
 			market: textbook.market,
-			trail: "at $0.36.",
+			trail: "at $0.64.",
 		});
 	});
 
@@ -174,7 +209,53 @@ describe("signalLine", () => {
 		const line = signalLine(mirror);
 
 		expect(line.lead).toBe("4 skilled wallets sold");
-		expect(line.trail).toBe("at $0.90 — so the bot would buy the opposite outcome at $0.10.");
+		expect(line.trail).toBe("at $0.30 — so the bot would buy the opposite outcome at $0.70.");
+	});
+});
+
+describe("the rails added since the first live run", () => {
+	it("refuses a crowd that was on the other side minutes ago", () => {
+		const reversal = gate(LIVE_CONFIG, flipped, "reversal");
+
+		expect(reversal?.passed).toBe(false);
+		expect(reversal?.actual).toBe("2m ago");
+		expect(reversal?.rule).toBe("none within 10m");
+	});
+
+	it("takes the same signal once the flip is older than the window", () => {
+		const stale = { ...flipped, secondsSinceCrowdFlipped: 1800 };
+
+		expect(evaluateSignal(LIVE_CONFIG, stale).action).toBe("buy");
+	});
+
+	it("stands the reversal rail down when the window is switched off", () => {
+		const off = withKnobs({ reversal_lookback_s: 0 });
+
+		expect(evaluateSignal(off, flipped).action).toBe("buy");
+		expect(gate(off, flipped, "reversal")?.rule).toBe("off");
+	});
+
+	it("refuses a share too dear to be worth its own downside", () => {
+		const price = gate(LIVE_CONFIG, tooDear, "price");
+
+		expect(price?.passed).toBe(false);
+		expect(price?.actual).toBe("$0.97");
+		expect(price?.rule).toBe("≤ $0.95");
+		// 97¢ to win 3¢ against a $5 downside — the asymmetry the rail exists for.
+		expect(price?.because).toContain("$0.15");
+	});
+
+	it("turns the fee ceiling into the minimum price it really is", () => {
+		// `rate * (1 - p) <= 2%` at a 5% venue rate is exactly `p >= $0.60`, which
+		// is why the summary states a band rather than a ceiling.
+		expect(summarySentence(LIVE_CONFIG)).toContain("between $0.60 and $0.95");
+	});
+
+	it("lets the cheap end back in when the fee ceiling is switched off", () => {
+		const off = withKnobs({ max_entry_fee_pct: 0 });
+
+		expect(evaluateSignal(off, coarse).action).toBe("buy");
+		expect(gate(off, coarse, "fee")?.rule).toBe("off");
 	});
 });
 

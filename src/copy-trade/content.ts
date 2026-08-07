@@ -40,6 +40,19 @@ It does not move because a single wallet bought something. Only when at least
 **3 skilled wallets** trade the same thing at once (\`cluster_threshold\`) does it
 say: that is a quorum, worth a look.
 
+"The same thing at once" turned out to be three separate requirements, and for a
+long time it was only really checking one of them. A crowd now has to be three
+wallets that each **took** the price on offer rather than posting a quote and
+waiting; that each landed on the **same side of the same bet**, not merely the
+same market; and that each arrived in a **separate transaction**. Two wallets
+filled by one trade are one decision wearing two names, and a market maker whose
+quote happened to get hit never had an opinion at all.
+
+Tightening that took a month of alerts from **263 down to 14** — and, replayed
+over the positions actually opened, **32 of 38** would never have been taken.
+None of the three rules was redundant: alone, they caught 14%, 48% and 25% of the
+bad crowds respectively.
+
 ### 2. If the crowd is selling, it buys the other side
 
 You can only sell something you already own, and a fresh position owns nothing.
@@ -55,7 +68,26 @@ Positions opened that way are **mirrors**. The bot remembers both sides — the 
 it holds and the one the crowd trades — because it needs the second one to know
 when to get out.
 
-### 3. Three safety checks before it will buy anything
+### 3. Is the crowd even still of that opinion?
+
+A crowd can agree at 3pm and be arguing with itself by 3:02. If any of the same
+wallets was on the **opposite** side of this same market within the last
+**10 minutes** (\`reversal_lookback_s\`), the signal is refused — they are not a
+crowd, they are a wallet changing its mind in public.
+
+The window is not a guess. The flips actually recorded ran **121 to 457 seconds**
+apart, and then nothing until 915 seconds; 600 sits in that gap, which buys the
+whole benefit with the least collateral damage.
+
+One trap worth naming, because getting it wrong was worse than not having the
+rule. On a two-outcome market, buying "yes" and selling "no" are the *same*
+trade, and the exchange reports both. Comparing the words "bought" and "sold"
+therefore found **82 flips that never happened** out of 263 alerts — the same
+trade, seen twice — and would have thrown away real winning positions, including
+the best one on the book. Direction has to be worked out against the outcome
+being held, never read off the label.
+
+### 4. Three safety checks before it will buy anything
 
 - **"Is there anyone here to trade with?"** — if the market holds less than
   **$1,000** of liquidity (\`min_liquidity_usdc\`), it skips. Getting in is easy;
@@ -82,7 +114,38 @@ buys. The same move is 5.4% on a 24¢ outcome and 1.7% on its 76¢ twin; measuri
 the wrong one would throw away exactly the cheap outcomes that selling crowds
 favour.
 
-### 4. It checks its own wallet
+### 5. What the outcome costs, and what the fee takes
+
+Two checks that between them decide which prices the bot will trade at all.
+
+**The fee.** The exchange charges its fee **per share**, not per dollar. Buy a
+cheap outcome and $5 buys a lot of shares, so the same $5 hands over far more in
+fees: as a share of the ticket the fee works out to \`5% × (1 − price)\`. It is
+**4.5% on a 10¢ outcome and 0.3% on a 94¢ one**. Capping that at **2%**
+(\`max_entry_fee_pct\`) is therefore not really a fee rule — it is a **minimum
+price of $0.60**, written in the units that matter.
+
+This was worth doing. Across the first eight closed positions the price moved
+against us by $0.46 in total while the fees came to **$1.58** — the fee was
+**77%** of everything lost, and 3.4× the market's own contribution. In one
+position the price moved *in our favour* and the trade still lost money.
+
+Raising the bet does not help, and it is worth seeing why: the fee and the
+winnings both scale with the number of shares, so the ratio never changes.
+Doubling the ticket doubles the loss.
+
+**The price.** Separately, it will not pay more than **$0.95** a share
+(\`max_entry_price\`). At 95¢ a $5 ticket can win 26¢ and lose $5 — about 19 to 1
+against. At 99.8¢ it stakes $5 to win a single cent, 500 to 1, where one bad
+resolution erases several hundred wins.
+
+The fee is not the argument up here — as a share of the *available* gain it is
+roughly constant at any high price. The exchange's own **price grid** is. Markets
+quote in steps of a tenth of a cent, and one step is 2% of everything a 95¢
+ticket can make, but **half** of everything a 99.8¢ one can. Above that the
+smallest move the market is capable of showing is most of the prize.
+
+### 6. It checks its own wallet
 
 *"Do I have room?"* — it holds at most **$20** open at any one moment
 (\`exposure_cap_usdc\`), which is four $5 tickets.
@@ -91,7 +154,7 @@ favour.
 drop below **$5** (\`working_capital_floor_usdc\`). In practice that floor is what
 stops it long before the cap does.
 
-### 5. It buys small, and refuses to overpay
+### 7. It buys small, and refuses to overpay
 
 If everything lines up it buys **$5** (\`trade_size_usdc\`), all-or-nothing: the
 order either fills completely or it is thrown away. The price limit is **1%**
@@ -108,7 +171,7 @@ sending, rather than finding out from the exchange — a refusal for this reason
 ambiguous, and an ambiguous refusal ties up part of the cap for a position that
 does not exist.
 
-### 6. Where the money actually sits
+### 8. Where the money actually sits
 
 Since Polymarket's exchange upgrade, a plain wallet is no longer accepted as the
 party placing an order. So the cash sits in a Polymarket deposit wallet, and the
@@ -120,7 +183,7 @@ an afternoon when buying worked all day and every sale bounced off a missing
 permission. The pre-flight check now reads both straight off the chain instead of
 trusting the config to be right about them.
 
-### 7. It holds, and leaves at the first reversal
+### 9. It holds, and leaves at the first reversal
 
 Then it watches the same wallets, and leaves as soon as the **first** of them
 turns around. It does not wait for the others to agree.
@@ -134,7 +197,7 @@ Riding to resolution is only the fallback, for when nobody reverses first.
 
 *This one is hard-wired. There is no setting for it.*
 
-### 8. A failed exit is retried, not forgotten
+### 10. A failed exit is retried, not forgotten
 
 An exit order can be refused just like an entry, and it used to vanish with one
 line in a log. Now the event is kept: **three attempts**, roughly a minute apart
@@ -142,7 +205,7 @@ and widening, each one reported. If the third fails it says so loudly rather tha
 going quiet. Replaying is safe — if the position closed in the meantime, the
 retry does nothing at all.
 
-### 9. Nothing disappears quietly
+### 11. Nothing disappears quietly
 
 Every skip and every refusal is written down with its numbers: the limit the bot
 asked for, the price after grid rounding, the best price on the book, and how
@@ -150,13 +213,13 @@ much size was actually sitting at our limit. Without those, "my limit was too
 tight" and "the book was too thin" look identical — and their fixes are
 opposites.
 
-### 10. It goes around again
+### 12. It goes around again
 
 Sold, cash back, room free, next signal. One position per crowd, never two, and a
 crowd it has already closed is never re-entered. On a first-ever start it begins
 at the newest alert rather than replaying the entire history into a live wallet.
 
-### 11. Once a week it sweeps the profit
+### 13. Once a week it sweeps the profit
 
 It counts the profit it booked and sends the surplus above the **$5** floor to
 the payout address (\`profit_destination\`) — but only if that address is on the
@@ -166,7 +229,7 @@ of gas is left (\`gas_reserve_pol\`). With no gas it could not close a position,
 the payout is the thing that gives way. A losing week pays out nothing at all.
 The first payout ever made needs a human to say yes.
 
-### 12. The big red button
+### 14. The big red button
 
 At any moment the kill switch (\`kill_switch\`) stops the bot **buying** anything
 new — while it keeps watching and closing whatever is already open. It stops
@@ -197,19 +260,25 @@ careless line of YAML cannot quietly derail the strategy.
 Three limits worth knowing, because they change how the bot's own numbers should
 be read.
 
-- **Its bookkeeping does not capture every cost yet.** Checked against the
-  settlement records on chain, the bot paid a little more than it wrote down: the
-  exchange's own fee and the network gas were both booked as zero, which makes
-  every closed position look better than it really was. The fee has since been
-  worked out and is being wired in; gas is still recorded as zero. Until that is
-  finished, no performance figure is published from it.
+- **The bookkeeping now captures the exchange's fee, and it changed the
+  picture.** Every closed position used to record a fee of zero, which made all
+  of them look better than they were; reconciled against the settlement records
+  on chain, the missing cost was **entirely** that fee, and it is now computed
+  from each market's own published curve and recorded per fill. Network gas is
+  still written down as zero, and that one is correct rather than pending — on
+  this exchange the settlement transaction is paid for by a relayer, not by us.
 - **The "price already run" rule is weaker than 3% on coarse markets** — see the
-  two-step floor in step 3. Roughly one market in twenty quotes in whole cents,
+  two-step floor in step 4. Roughly one market in twenty quotes in whole cents,
   and on those the effective rule is far more permissive than the setting reads.
-- **It watches the price, not the crowd's mind.** A wallet can join a buying
-  crowd and start selling minutes later; the entry checks measure how far the
-  *price* moved, so they will not notice. It has cost us a position that opened
-  and closed within seconds.
+- **The rails are young, and mostly unexercised.** The crowd-independence rule
+  cut the signal count by roughly 95%, so the ones added after it — the reversal
+  window, the price ceiling — have had very little live traffic to prove
+  themselves against. They are argued from measurements taken *before* they were
+  armed, and the honest position is that we do not yet know how often they fire.
+- **The price ceiling is not justified by money recovered.** The four positions
+  it would have refused are worth about **5 cents** between them. It is bought as
+  insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a
+  measured loss, and it should not be read as one.
 
 ## What this page is not
 

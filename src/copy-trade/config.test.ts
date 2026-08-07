@@ -159,6 +159,9 @@ describe("knob definitions", () => {
 			min_seconds_to_resolution: 3600,
 			staleness_pct: 3,
 			staleness_min_ticks: 2,
+			reversal_lookback_s: 600,
+			max_entry_fee_pct: 0.02,
+			max_entry_price: 0.95,
 			trade_size_usdc: 5,
 			exposure_cap_usdc: 20,
 			working_capital_floor_usdc: 5,
@@ -194,5 +197,15 @@ describe("example signals", () => {
 	it("covers both a buying and a selling crowd", () => {
 		const sides = new Set(SCENARIOS.map((scenario) => scenario.crowdSide));
 		expect(sides).toEqual(new Set(["bought", "sold"]));
+	});
+
+	it("covers a crowd that had just been on the other side, and crowds that had not", () => {
+		// `null` and a number are different facts, not a missing value and a
+		// present one: `null` is "we looked and nobody flipped", which the rail is
+		// entitled to act on. Both shapes have to reach the simulator.
+		const flipped = SCENARIOS.map((scenario) => scenario.secondsSinceCrowdFlipped);
+
+		expect(flipped).toContain(null);
+		expect(flipped.some((seconds) => typeof seconds === "number")).toBe(true);
 	});
 });

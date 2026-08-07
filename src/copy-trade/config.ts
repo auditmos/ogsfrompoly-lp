@@ -15,7 +15,7 @@
 /** The market whose live config the defaults reflect. */
 export const CONFIG_MARKET = "Macro";
 /** When those defaults were last read off the running executor. */
-export const CONFIG_AS_OF = "2026-07-30";
+export const CONFIG_AS_OF = "2026-08-07";
 
 export type KnobKey =
 	| "cluster_threshold"
@@ -23,6 +23,9 @@ export type KnobKey =
 	| "min_seconds_to_resolution"
 	| "staleness_pct"
 	| "staleness_min_ticks"
+	| "reversal_lookback_s"
+	| "max_entry_fee_pct"
+	| "max_entry_price"
 	| "trade_size_usdc"
 	| "exposure_cap_usdc"
 	| "working_capital_floor_usdc"
@@ -42,6 +45,11 @@ export const LIVE_CONFIG: KnobValues = {
 	min_seconds_to_resolution: 3600,
 	staleness_pct: 3,
 	staleness_min_ticks: 2,
+	reversal_lookback_s: 600,
+	// A *fraction* of the ticket, not a percentage, because that is how the YAML
+	// carries it. Rendered as "2%" by the `fraction` unit.
+	max_entry_fee_pct: 0.02,
+	max_entry_price: 0.95,
 	trade_size_usdc: 5,
 	exposure_cap_usdc: 20,
 	working_capital_floor_usdc: 5,
@@ -50,7 +58,27 @@ export const LIVE_CONFIG: KnobValues = {
 	slippage_min_ticks: 2,
 };
 
-export type KnobUnit = "usdc" | "pct" | "count" | "seconds" | "pol" | "steps";
+/**
+ * The venue's platform-fee rate. The fee is charged **per share** and scaled by
+ * `price * (1 - price)`, so as a share of the *ticket* it collapses to
+ * `rate * (1 - price)` — monotonically decreasing in price. A cheap outcome is
+ * the expensive one to trade, because $5 buys proportionally more shares.
+ *
+ * 5% is what Polymarket served on every fee-bearing market sampled 2026-07-30;
+ * one market quoted 4%, and half served no fee at all. One rate is enough for
+ * the walkthrough — the executor reads each market's own curve.
+ */
+export const VENUE_FEE_RATE = 0.05;
+
+export type KnobUnit =
+	| "usdc"
+	| "pct"
+	| "fraction"
+	| "price"
+	| "count"
+	| "seconds"
+	| "pol"
+	| "steps";
 export type KnobGroup = "gate" | "size" | "execution";
 
 export interface Knob {
@@ -118,6 +146,33 @@ export const KNOBS = [
 		min: 0,
 		max: 6,
 		step: 1,
+	},
+	{
+		key: "reversal_lookback_s",
+		group: "gate",
+		label: "Skip if one of them was on the other side within",
+		unit: "seconds",
+		min: 0,
+		max: 3600,
+		step: 60,
+	},
+	{
+		key: "max_entry_fee_pct",
+		group: "gate",
+		label: "Skip if the entry fee eats more of the ticket than",
+		unit: "fraction",
+		min: 0,
+		max: 0.05,
+		step: 0.005,
+	},
+	{
+		key: "max_entry_price",
+		group: "gate",
+		label: "Never pay more per share than",
+		unit: "price",
+		min: 0,
+		max: 1,
+		step: 0.01,
 	},
 	{
 		key: "trade_size_usdc",
@@ -204,6 +259,15 @@ export interface Scenario {
 	readonly openExposureUsdc: number;
 	/** Spendable balance in the copy-trade pool. */
 	readonly balanceUsdc: number;
+	/**
+	 * How long ago one of these same wallets was on the *opposite* side of this
+	 * market, or `null` when none of them was.
+	 *
+	 * `null` is "we looked and nobody flipped", which is a fact the rail may act
+	 * on — not "we did not look". The executor draws the same distinction, and
+	 * stands the rail down entirely when nothing measured it.
+	 */
+	readonly secondsSinceCrowdFlipped: number | null;
 }
 
 /**
@@ -214,33 +278,42 @@ export interface Scenario {
 export const SCENARIOS = [
 	{
 		id: "textbook",
+		// $0.64, not the $0.36 this example used to carry. The fee rail is a
+		// minimum-price gate in disguise — `rate * (1 - price)` is under 2% only
+		// at or above $0.60 — so a 36¢ ticket is a trade the live bot refuses, and
+		// an example that bought one would teach a decision it cannot make.
 		label: "Textbook buy",
 		market: "Fed cuts rates at the September meeting",
 		crowdSide: "bought",
 		smartWallets: 4,
-		crowdPrice: 0.36,
-		currentPrice: 0.361,
+		crowdPrice: 0.64,
+		currentPrice: 0.641,
 		tickSize: 0.001,
 		minShares: 5,
 		liquidityUsdc: 4200,
 		secondsToResolution: 21600,
 		openExposureUsdc: 5,
 		balanceUsdc: 28.5,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
+		// The crowd sells a *cheap* outcome, so our side is the dear one. Selling
+		// a 90¢ outcome would land us on a 10¢ ticket, which the fee rail refuses
+		// outright — the mirror only survives when their side is under 40¢.
 		id: "mirror",
 		label: "Crowd is selling",
 		market: "Bank of Japan hikes before December",
 		crowdSide: "sold",
 		smartWallets: 4,
-		crowdPrice: 0.9,
-		currentPrice: 0.905,
+		crowdPrice: 0.3,
+		currentPrice: 0.305,
 		tickSize: 0.01,
 		minShares: 5,
 		liquidityUsdc: 6100,
 		secondsToResolution: 172800,
 		openExposureUsdc: 10,
 		balanceUsdc: 21,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
 		id: "coarse",
@@ -256,6 +329,7 @@ export const SCENARIOS = [
 		secondsToResolution: 86400,
 		openExposureUsdc: 5,
 		balanceUsdc: 19,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
 		id: "pricey",
@@ -271,6 +345,40 @@ export const SCENARIOS = [
 		secondsToResolution: 43200,
 		openExposureUsdc: 0,
 		balanceUsdc: 12,
+		secondsSinceCrowdFlipped: null,
+	},
+	{
+		id: "too-dear",
+		label: "Too dear",
+		market: "Bank of Japan holds rates this meeting",
+		crowdSide: "bought",
+		smartWallets: 4,
+		crowdPrice: 0.97,
+		currentPrice: 0.971,
+		tickSize: 0.001,
+		minShares: 5,
+		liquidityUsdc: 9100,
+		secondsToResolution: 86400,
+		openExposureUsdc: 5,
+		balanceUsdc: 26,
+		secondsSinceCrowdFlipped: null,
+	},
+	{
+		id: "flipped",
+		label: "Crowd just flipped",
+		market: "Fed hikes at the next meeting",
+		crowdSide: "bought",
+		smartWallets: 4,
+		crowdPrice: 0.64,
+		currentPrice: 0.641,
+		tickSize: 0.001,
+		minShares: 5,
+		liquidityUsdc: 7300,
+		secondsToResolution: 86400,
+		openExposureUsdc: 5,
+		balanceUsdc: 27,
+		// 121 s: the middle of the three flips actually recorded (3 s, 121 s, 7 min).
+		secondsSinceCrowdFlipped: 121,
 	},
 	{
 		id: "ends-soon",
@@ -286,6 +394,7 @@ export const SCENARIOS = [
 		secondsToResolution: 1320,
 		openExposureUsdc: 5,
 		balanceUsdc: 24,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
 		id: "thin",
@@ -301,6 +410,7 @@ export const SCENARIOS = [
 		secondsToResolution: 259200,
 		openExposureUsdc: 0,
 		balanceUsdc: 26,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
 		id: "chased",
@@ -316,6 +426,7 @@ export const SCENARIOS = [
 		secondsToResolution: 172800,
 		openExposureUsdc: 5,
 		balanceUsdc: 25.5,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
 		id: "full",
@@ -331,21 +442,26 @@ export const SCENARIOS = [
 		secondsToResolution: 28800,
 		openExposureUsdc: 20,
 		balanceUsdc: 31,
+		secondsSinceCrowdFlipped: null,
 	},
 	{
+		// $0.66 rather than $0.48: the spendable floor is asked *after* the fee
+		// rail, so a 48¢ ticket would now be refused for its fee and never reach
+		// the check this example exists to show.
 		id: "broke",
 		label: "No cash left",
 		market: "ECB holds through year end",
 		crowdSide: "bought",
 		smartWallets: 4,
-		crowdPrice: 0.48,
-		currentPrice: 0.481,
+		crowdPrice: 0.66,
+		currentPrice: 0.661,
 		tickSize: 0.001,
 		minShares: 5,
 		liquidityUsdc: 7400,
 		secondsToResolution: 64800,
 		openExposureUsdc: 5,
 		balanceUsdc: 8.5,
+		secondsSinceCrowdFlipped: null,
 	},
 ] as const satisfies readonly Scenario[];
 
@@ -406,12 +522,33 @@ export function formatSteps(value: number): string {
 	return `${value} ${value === 1 ? "step" : "steps"}`;
 }
 
+/**
+ * A threshold the YAML carries as a fraction of the ticket (`0.02`) but a reader
+ * wants as a percentage (`"2%"`). Kept as a distinct unit rather than storing
+ * `2` in {@link LIVE_CONFIG}, so the module keeps mirroring `copy_trade.yml`
+ * literally — a value here can be diffed against the file it came from.
+ */
+export function formatFraction(value: number): string {
+	if (value <= 0) return "off";
+	return formatPct(value * 100);
+}
+
+/** A price ceiling, where `0` means the rail is switched off rather than free. */
+function formatPriceLimit(value: number): string {
+	if (value <= 0) return "off";
+	return formatPrice(value);
+}
+
 export function formatKnobValue(unit: KnobUnit, value: number): string {
 	switch (unit) {
 		case "usdc":
 			return formatUsd(value);
 		case "pct":
 			return formatPct(value);
+		case "fraction":
+			return formatFraction(value);
+		case "price":
+			return formatPriceLimit(value);
 		case "seconds":
 			return formatDuration(value);
 		case "pol":

@@ -67,10 +67,21 @@ describe("copyTradeMarkdown", () => {
 	});
 
 	it("states the limits of its own numbers rather than only the mechanism", () => {
-		// The bot's ledger currently records intended cost, not achieved cost, so
-		// the page must not read as if its profit figures were settled facts.
+		// The section has to survive, and it has to carry the limits that are
+		// *currently* true. It used to say the ledger's missing fee meant no
+		// performance figure was published; that fee is now recorded per fill, so
+		// repeating it would be a stale disclaimer — which reads as candour while
+		// misdescribing the thing. What is unproven now is the rails' youth.
 		expect(copyTradeMarkdown).toContain("## What we are not claiming yet");
-		expect(copyTradeMarkdown).toContain("no performance figure");
+		expect(copyTradeMarkdown).toContain("mostly unexercised");
+		expect(copyTradeMarkdown).toContain("not justified by money recovered");
+	});
+
+	it("does not still claim the exchange fee is unrecorded", () => {
+		// A guard against the specific regression this page just had: the fee was
+		// described as "being wired in" for a week after it had been wired in.
+		expect(copyTradeMarkdown).not.toContain("is being wired in");
+		expect(copyTradeMarkdown).not.toContain("no performance figure");
 	});
 });
 
