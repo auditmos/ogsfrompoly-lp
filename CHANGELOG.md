@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.19.1...v1.20.0) (2026-08-07)
+
+
+### Features
+
+* **for-dummies:** the three rails armed since July, and two claims that stopped being true ([4a013e7](https://github.com/auditmos/ogsfrompoly-lp/commit/4a013e776cfe5c1ef763c05af290862f5e1f13a0)), closes [#247](https://github.com/auditmos/ogsfrompoly-lp/issues/247) [#292](https://github.com/auditmos/ogsfrompoly-lp/issues/292) [#293](https://github.com/auditmos/ogsfrompoly-lp/issues/293) [#239](https://github.com/auditmos/ogsfrompoly-lp/issues/239)
+
 ## [1.19.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.19.0...v1.19.1) (2026-07-31)
 
 
