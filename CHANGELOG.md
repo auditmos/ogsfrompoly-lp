@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.20.0...v1.21.0) (2026-08-07)
+
+
+### Features
+
+* **for-dummies:** carry max_reversed_wallets, the last live value the page was missing ([4b29d70](https://github.com/auditmos/ogsfrompoly-lp/commit/4b29d707353c0803f6a8635b4e6d7afb03e6251c))
+
 # [1.20.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.19.1...v1.20.0) (2026-08-07)
 
 
