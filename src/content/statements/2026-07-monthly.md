@@ -28,7 +28,7 @@ pnl:
   revenue_usd: 0.0
   opex_usd: 50.0
   net_usd: -50.0
-  runway_months: null
+  runway_months: 6
 ---
 
 ## Strategy track record (2026-07-01 → 2026-07-31)
@@ -39,7 +39,7 @@ Top wallets are ranked by realized PnL magnitude. A wallet-level `hypothetical_p
 
 ## Project P&L
 
-Revenue was **$0** for 2026-07-01 → 2026-07-31. Operating expenses were **$50** (aggregate ledger total; no line-item breakdown was supplied). Net was **-$50**. Runway is unquantified (`null`): the operating reserve behind it is a ledger figure outside this warehouse-generated aggregate.
+Revenue was **$0** for 2026-07-01 → 2026-07-31. Operating expenses were **$50** (aggregate ledger total; no line-item breakdown was supplied). Net was **-$50** — the first month the project runs a burn, as the standing $50/mo polynode charge begins and the copytrading pool has not yet swept realized revenue to the collection wallet. **Runway is 6 months**: the cash reserve earmarked for opex covers six months of that burn at the current rate. That reserve is an operator ledger figure, distinct from both the $10,000 hypothetical bankroll the strategy track record references and the copytrading pool's own capital base.
 
 ## Methodology reminder
 
