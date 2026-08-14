@@ -1,5 +1,5 @@
 /**
- * Reader-facing prose for `/for-dummies`.
+ * Reader-facing prose for `/for-dummies/copy-cluster`.
  *
  * Split into three markdown blocks so the HTML page can slot the interactive
  * simulator between them, while `copyTradeMarkdown` stitches the same prose into
@@ -11,17 +11,22 @@
 import { CONFIG_AS_OF, CONFIG_MARKET, formatKnobValue, KNOBS, LIVE_CONFIG } from "./config";
 import { summarySentence } from "./simulator";
 
-export const copyTradeTitle = "Copy trade for dummies";
+export const copyTradeTitle = "Cluster copy for dummies";
 export const copyTradeDescription =
-	"Plain-English walkthrough of the ogsfrompoly copy-trade bot — when it buys, when it skips, when it sells, and which numbers you can actually turn.";
+	"Plain-English walkthrough of the ogsfrompoly cluster-copy bot — the one that follows a crowd of skilled wallets: when it buys, when it skips, when it sells, and which numbers you can actually turn.";
 
 export const copyTradeIntroMarkdown = `# ${copyTradeTitle}
 
 ${copyTradeDescription}
 
 Alongside the published track record, a small bot mirrors the wallets our skill
-test flags. This page is the whole mechanism in plain language: what it does,
-step by step, and which numbers are knobs versus rules welded into the code.
+test flags — but only when several of them agree at once. This page is the whole
+mechanism in plain language: what it does, step by step, and which numbers are
+knobs versus rules welded into the code.
+
+It is one of two bots. The other one, [wallet copy](/for-dummies/copy-wallet),
+follows two named traders instead of waiting for a crowd — if you are not sure
+which page you want, start from [the chooser](/for-dummies).
 
 Think of it as a **very cautious impersonator** standing in the market, watching
 traders who have already proven themselves. It is deliberately timid. The money

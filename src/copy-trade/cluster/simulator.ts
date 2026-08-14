@@ -36,6 +36,9 @@ import {
 	formatShares,
 	formatSteps,
 	formatUsd,
+} from "../format";
+import { complement, roundTo, snapDown } from "../market-math";
+import {
 	formatWalletCount,
 	type KnobKey,
 	type KnobValues,
@@ -101,28 +104,6 @@ interface Verdict {
 
 /** Same shape as {@link GateResult} minus the fields the ordering pass fills in. */
 type GateCheck = Omit<GateResult, "blocker">;
-
-function roundTo(value: number, decimals: number): number {
-	const factor = 10 ** decimals;
-	return Math.round(value * factor) / factor;
-}
-
-/** The other outcome's price. Rounded because `1 - 0.905` is `0.09499…`. */
-function complement(price: number): number {
-	return roundTo(1 - price, 4);
-}
-
-/**
- * Round a limit down onto the market's price grid, then keep it inside the
- * venue's own bounds. Down, not nearest: rounding up would let a fill land
- * outside the slippage the operator configured.
- */
-function snapDown(price: number, tick: number): number {
-	if (tick <= 0) return price;
-	const steps = Math.floor(roundTo(price / tick, 6));
-	const snapped = roundTo(steps * tick, 4);
-	return Math.min(Math.max(snapped, tick), complement(tick));
-}
 
 /** The order the bot would actually place, after translating the crowd's side. */
 interface OrderPlan {

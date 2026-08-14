@@ -80,12 +80,18 @@ describe("generateLlmsTxt", () => {
 		);
 	});
 
-	it("links to the copy-trade explainer markdown endpoint for LLM consumers", () => {
+	it("links every copy-trade explainer markdown endpoint for LLM consumers", () => {
 		const txt = generateLlmsTxt(baseInput);
 
 		expect(txt).toContain("## Copy trade");
 		expect(txt).toContain(
-			"- [Copy trade for dummies](https://ogsfrompoly.com/for-dummies.md): Plain-English walkthrough of the ogsfrompoly copy-trade bot",
+			"- [Copy trading for dummies](https://ogsfrompoly.com/for-dummies.md): Two small bots",
+		);
+		expect(txt).toContain(
+			"- [Cluster copy for dummies](https://ogsfrompoly.com/for-dummies/copy-cluster.md): Plain-English walkthrough of the ogsfrompoly cluster-copy bot",
+		);
+		expect(txt).toContain(
+			"- [Wallet copy for dummies](https://ogsfrompoly.com/for-dummies/copy-wallet.md): Plain-English walkthrough of the ogsfrompoly wallet-copy bot",
 		);
 	});
 

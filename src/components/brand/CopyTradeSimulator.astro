@@ -18,8 +18,8 @@ import {
 	knobsInGroup,
 	LIVE_CONFIG,
 	SCENARIOS,
-} from "@/copy-trade/config";
-import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/simulator";
+} from "@/copy-trade/cluster/config";
+import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/cluster/simulator";
 
 const initialScenario = SCENARIOS[0];
 const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
@@ -244,8 +244,8 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		type KnobValues,
 		LIVE_CONFIG,
 		SCENARIOS,
-	} from "@/copy-trade/config";
-	import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/simulator";
+	} from "@/copy-trade/cluster/config";
+	import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/cluster/simulator";
 
 	const root = document.querySelector<HTMLElement>("[data-copy-trade-sim]");
 

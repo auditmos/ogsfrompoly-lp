@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { copyTradeMarkdown } from "@/copy-trade/content";
+import { forDummiesMarkdown } from "@/copy-trade/hub-content";
 import { markdownResponse } from "@/lib/dual-format/markdown-response";
 
-export const GET: APIRoute = () => markdownResponse({ body: copyTradeMarkdown });
+export const GET: APIRoute = () => markdownResponse({ body: forDummiesMarkdown });

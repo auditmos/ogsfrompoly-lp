@@ -25,6 +25,8 @@ export async function collectFeedInput(): Promise<FeedInput> {
 		{ path: "/statements", lastmod: newest },
 		{ path: "/methodology" },
 		{ path: "/for-dummies" },
+		{ path: "/for-dummies/copy-cluster" },
+		{ path: "/for-dummies/copy-wallet" },
 	];
 
 	return {

@@ -1,31 +1,92 @@
 ---
-import { marked } from "marked";
-import CopyTradeSimulator from "@/components/brand/CopyTradeSimulator.astro";
+import DisplayHeading from "@/components/brand/DisplayHeading.astro";
 import {
-	copyTradeClosingMarkdown,
-	copyTradeDescription,
-	copyTradeIntroMarkdown,
-	copyTradeStoryMarkdown,
-	copyTradeTitle,
-} from "@/copy-trade/content";
+	BOT_CARDS,
+	COMPARE_ROWS,
+	forDummiesDescription,
+	forDummiesSharedNote,
+	forDummiesTitle,
+} from "@/copy-trade/hub-content";
 import Layout from "@/layouts/Layout.astro";
-
-const intro = marked.parse(copyTradeIntroMarkdown, { async: false }) as string;
-const story = marked.parse(copyTradeStoryMarkdown, { async: false }) as string;
-const closing = marked.parse(copyTradeClosingMarkdown, { async: false }) as string;
 ---
 
-<Layout title={`${copyTradeTitle} · ogsfrompoly`} description={copyTradeDescription}>
-	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
-		{/* The simulator sits outside the 44rem prose column on purpose — it needs
-		    the full page width to split into two panels. */}
-		<article class="long-form-article">
-			<Fragment set:html={intro} />
-		</article>
-		<CopyTradeSimulator />
-		<article class="long-form-article">
-			<Fragment set:html={story} />
-			<Fragment set:html={closing} />
-		</article>
+<Layout title={`${forDummiesTitle} · ogsfrompoly`} description={forDummiesDescription}>
+	<main class="mx-auto flex max-w-4xl flex-col gap-16 px-gutter py-16 sm:py-24">
+		<section class="flex flex-col gap-6">
+			<DisplayHeading eyebrow="for dummies">Two bots. Two questions.</DisplayHeading>
+			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
+				{forDummiesDescription}
+			</p>
+		</section>
+
+		<section class="grid gap-4 sm:grid-cols-2" aria-label="Choose a walkthrough">
+			{
+				BOT_CARDS.map((card) => (
+					<article class="flex flex-col gap-4 rounded-terminal border border-terminal-border bg-terminal-bg p-6 transition-colors hover:border-ink-4">
+						<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">{card.eyebrow}</p>
+						<h2 class="text-2xl font-bold leading-tight text-ink-8 [text-wrap:balance]">
+							<a class="hover:text-accent" href={card.href}>
+								{card.name}
+							</a>
+						</h2>
+						<p class="text-base leading-relaxed text-ink-6 [text-wrap:pretty]">{card.tagline}</p>
+						<dl class="mt-auto flex flex-col border-t border-ink-3 pt-3 font-mono text-[0.8rem]">
+							{card.facts.map((fact) => (
+								<div class="flex items-baseline justify-between gap-4 border-b border-ink-2 py-1.5 last:border-b-0">
+									<dt class="shrink-0 uppercase tracking-wider text-ink-5">{fact.label}</dt>
+									<dd class="text-right text-ink-7">{fact.value}</dd>
+								</div>
+							))}
+						</dl>
+						<p class="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-eyebrow uppercase tracking-wider">
+							<a class="text-accent hover:text-ink-8" href={card.href}>
+								Read the walkthrough →
+							</a>
+							<a class="text-ink-5 hover:text-accent" href={card.mdHref}>
+								.md
+							</a>
+						</p>
+					</article>
+				))
+			}
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">Side by side</p>
+			<div class="overflow-x-auto rounded-terminal border border-terminal-border bg-terminal-bg">
+				<table class="w-full min-w-[36rem] border-collapse text-left font-sans text-sm">
+					<thead>
+						<tr class="border-b border-terminal-border font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							<th scope="col" class="px-4 py-3 font-medium"></th>
+							<th scope="col" class="px-4 py-3 font-medium">Cluster copy</th>
+							<th scope="col" class="px-4 py-3 font-medium">Wallet copy</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							COMPARE_ROWS.map((row) => (
+								<tr class="border-b border-ink-2 align-top last:border-b-0">
+									<th
+										scope="row"
+										class="whitespace-nowrap px-4 py-3 font-mono text-[0.7rem] font-medium uppercase tracking-wider text-ink-5"
+									>
+										{row.label}
+									</th>
+									<td class="px-4 py-3 leading-snug text-ink-7">{row.cluster}</td>
+									<td class="px-4 py-3 leading-snug text-ink-7">{row.wallet}</td>
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
+			<p class="max-w-prose text-sm leading-relaxed text-ink-6 [text-wrap:pretty]">
+				{forDummiesSharedNote}
+			</p>
+			<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+				Neither page is advice, and no wallet is ever published —
+				<a class="text-ink-7 hover:text-accent" href="/methodology">methodology &amp; disclosure</a>
+			</p>
+		</section>
 	</main>
 </Layout>

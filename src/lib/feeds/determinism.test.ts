@@ -15,6 +15,8 @@ const fixture: FeedInput = {
 		{ path: "/statements", lastmod: "2026-05-31" },
 		{ path: "/methodology" },
 		{ path: "/for-dummies" },
+		{ path: "/for-dummies/copy-cluster" },
+		{ path: "/for-dummies/copy-wallet" },
 	],
 	entries: [
 		{
@@ -134,7 +136,9 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 
 			## Copy trade
 
-			- [Copy trade for dummies](https://ogsfrompoly.com/for-dummies.md): Plain-English walkthrough of the ogsfrompoly copy-trade bot — when it buys, when it skips, when it sells, and which numbers you can actually turn.
+			- [Copy trading for dummies](https://ogsfrompoly.com/for-dummies.md): Two small bots trade tiny, real money alongside the published track record — one follows a crowd of skilled wallets, the other mirrors two hand-picked traders. Pick your walkthrough; each explains every rule in plain English and lets you play with the live settings.
+			- [Cluster copy for dummies](https://ogsfrompoly.com/for-dummies/copy-cluster.md): Plain-English walkthrough of the ogsfrompoly cluster-copy bot — the one that follows a crowd of skilled wallets: when it buys, when it skips, when it sells, and which numbers you can actually turn.
+			- [Wallet copy for dummies](https://ogsfrompoly.com/for-dummies/copy-wallet.md): Plain-English walkthrough of the ogsfrompoly wallet-copy bot — the one that mirrors two hand-picked skilled traders: when it copies, when it refuses, when it leaves, and which numbers you can actually turn.
 
 			## articles
 
@@ -164,6 +168,12 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 			</url>
 			<url>
 			<loc>https://ogsfrompoly.com/for-dummies</loc>
+			</url>
+			<url>
+			<loc>https://ogsfrompoly.com/for-dummies/copy-cluster</loc>
+			</url>
+			<url>
+			<loc>https://ogsfrompoly.com/for-dummies/copy-wallet</loc>
 			</url>
 			<url>
 			<loc>https://ogsfrompoly.com/statements/2026-05-31-monthly</loc>

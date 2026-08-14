@@ -1,0 +1,31 @@
+---
+import { marked } from "marked";
+import WalletCopySimulator from "@/components/brand/WalletCopySimulator.astro";
+import {
+	walletCopyClosingMarkdown,
+	walletCopyDescription,
+	walletCopyIntroMarkdown,
+	walletCopyStoryMarkdown,
+	walletCopyTitle,
+} from "@/copy-trade/wallet/content";
+import Layout from "@/layouts/Layout.astro";
+
+const intro = marked.parse(walletCopyIntroMarkdown, { async: false }) as string;
+const story = marked.parse(walletCopyStoryMarkdown, { async: false }) as string;
+const closing = marked.parse(walletCopyClosingMarkdown, { async: false }) as string;
+---
+
+<Layout title={`${walletCopyTitle} · ogsfrompoly`} description={walletCopyDescription}>
+	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
+		{/* The simulator sits outside the 44rem prose column on purpose — it needs
+		    the full page width to split into two panels. */}
+		<article class="long-form-article">
+			<Fragment set:html={intro} />
+		</article>
+		<WalletCopySimulator />
+		<article class="long-form-article">
+			<Fragment set:html={story} />
+			<Fragment set:html={closing} />
+		</article>
+	</main>
+</Layout>

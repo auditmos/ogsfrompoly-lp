@@ -1,4 +1,6 @@
-import { copyTradeDescription, copyTradeTitle } from "@/copy-trade/content";
+import { copyTradeDescription, copyTradeTitle } from "@/copy-trade/cluster/content";
+import { forDummiesDescription, forDummiesTitle } from "@/copy-trade/hub-content";
+import { walletCopyDescription, walletCopyTitle } from "@/copy-trade/wallet/content";
 import { methodologyDescription, methodologyTitle } from "@/methodology/content";
 import { sortEntries } from "./sort";
 import type { FeedEntry, FeedInput } from "./types";
@@ -36,9 +38,21 @@ const STATIC_DOCS: readonly StaticDoc[] = [
 	},
 	{
 		section: "Copy trade",
-		title: copyTradeTitle,
+		title: forDummiesTitle,
 		path: "/for-dummies.md",
+		summary: forDummiesDescription,
+	},
+	{
+		section: "Copy trade",
+		title: copyTradeTitle,
+		path: "/for-dummies/copy-cluster.md",
 		summary: copyTradeDescription,
+	},
+	{
+		section: "Copy trade",
+		title: walletCopyTitle,
+		path: "/for-dummies/copy-wallet.md",
+		summary: walletCopyDescription,
 	},
 ];
 

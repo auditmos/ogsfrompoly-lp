@@ -1,0 +1,496 @@
+---
+/**
+ * The semi-interactive panels on `/for-dummies/copy-wallet`: drag the
+ * executor's knobs, pick an incoming leader signal, watch the copy/skip
+ * decision change — and below it, the exit rule as its own little widget.
+ *
+ * The initial paint is server-rendered from the same evaluate functions the
+ * client script calls, so the page is fully readable without JavaScript — it
+ * just shows the live config against the first example signal. The gate list
+ * is a fixed set of rows in a fixed order, so the script only rewrites text
+ * and toggles classes; there is no second markup renderer to drift.
+ */
+import {
+	formatWalletKnobValue,
+	WALLET_CONFIG_AS_OF,
+	WALLET_CONFIG_MARKET,
+	WALLET_ENTRY_GROUP_ORDER,
+	WALLET_KNOB_GROUP_LABELS,
+	WALLET_LIVE_CONFIG,
+	WALLET_SCENARIOS,
+	walletKnobsInGroup,
+} from "@/copy-trade/wallet/config";
+import {
+	evaluateLeaderSignal,
+	evaluateTrim,
+	leaderSignalLine,
+	walletSummarySentence,
+} from "@/copy-trade/wallet/simulator";
+
+const initialScenario = WALLET_SCENARIOS[0];
+const initial = evaluateLeaderSignal(WALLET_LIVE_CONFIG, initialScenario);
+const initialLine = leaderSignalLine(initialScenario);
+
+/** The exit widget's scenario-side input: how much of the peak the leader sold. */
+const INITIAL_SOLD_PCT = 30;
+const initialTrim = evaluateTrim(WALLET_LIVE_CONFIG, INITIAL_SOLD_PCT);
+
+const trimKnob = walletKnobsInGroup("exit")[0];
+
+/* Read off the verdict rather than imported: `simulator.ts` keeps its result
+   shapes private on purpose, and a `Record` keyed on this stays exhaustive. */
+type GateStage = (typeof initial.gates)[number]["stage"];
+
+const GATE_STAGE_ORDER = ["boot", "alert", "executor"] as const satisfies readonly GateStage[];
+
+const GATE_STAGE_LABELS: Record<GateStage, string> = {
+	boot: "First — would the service even start?",
+	alert: "Then upstream — does the tracker raise a signal at all?",
+	executor: "Then the bot's own rails, in order",
+};
+
+/* What a ✗ on this row actually means. A boot ✗ is a service that never ran;
+   an upstream ✗ is a signal never emitted. Neither is a refusal. */
+const GATE_STAGE_FLAGS: Record<GateStage, string> = {
+	boot: "the service refuses to start — no signal is ever read",
+	alert: "no signal is emitted — the bot is never asked",
+	executor: "the real bot stops here",
+};
+---
+
+<section
+	class="@container not-prose my-12 overflow-hidden rounded-terminal border border-terminal-border bg-terminal-bg"
+	data-wallet-copy-sim
+	aria-label="Wallet-copy decision simulator"
+>
+	<header
+		class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-terminal-border px-5 py-4"
+	>
+		<h2 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
+			Try it — the bot's decision, live
+		</h2>
+		<p class="font-mono text-[0.7rem] text-ink-5">
+			defaults = {WALLET_CONFIG_MARKET} config, {WALLET_CONFIG_AS_OF}
+		</p>
+	</header>
+
+	<!-- Container query, not a viewport breakpoint: the panel sits in a wider
+	     column than the surrounding prose, so it should split on its own width. -->
+	<div class="grid gap-px bg-terminal-border @3xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+		<div class="flex flex-col gap-6 bg-terminal-bg p-5">
+			{
+				WALLET_ENTRY_GROUP_ORDER.map((group) => (
+					<fieldset class="flex flex-col gap-4 border-0 p-0">
+						<legend class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							{WALLET_KNOB_GROUP_LABELS[group]}
+						</legend>
+						{walletKnobsInGroup(group).map((knob) => (
+							<label class="flex flex-col gap-1">
+								<span class="flex items-baseline justify-between gap-3">
+									<span class="font-sans text-sm leading-snug text-ink-7">{knob.label}</span>
+									<output
+										data-knob-value={knob.key}
+										class="shrink-0 font-mono text-sm tabular-nums text-accent"
+									>
+										{formatWalletKnobValue(knob.unit, WALLET_LIVE_CONFIG[knob.key])}
+									</output>
+								</span>
+								<input
+									type="range"
+									data-knob={knob.key}
+									min={knob.min}
+									max={knob.max}
+									step={knob.step}
+									value={WALLET_LIVE_CONFIG[knob.key]}
+									aria-label={knob.label}
+									class="w-full accent-accent"
+								/>
+								<span class="font-mono text-[0.7rem] text-ink-5">{knob.yamlKey}</span>
+							</label>
+						))}
+					</fieldset>
+				))
+			}
+			<button
+				type="button"
+				data-reset
+				class="self-start rounded-card border border-ink-3 px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-accent-dim hover:text-accent"
+			>
+				Reset to our live config
+			</button>
+		</div>
+
+		<!-- Nested container: the gate rows go inline-or-stacked on THIS column's
+		     width, which is roughly half the panel once the split kicks in. -->
+		<div class="@container flex flex-col gap-4 bg-terminal-bg p-5">
+			<div class="flex flex-col gap-2">
+				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">Incoming signal</p>
+				<div class="flex flex-wrap gap-1.5">
+					{
+						WALLET_SCENARIOS.map((scenario) => (
+							<button
+								type="button"
+								data-scenario={scenario.id}
+								aria-pressed={scenario.id === initialScenario.id ? "true" : "false"}
+								class="rounded-card border border-ink-3 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-ink-4 hover:text-ink-7 aria-pressed:border-accent-dim aria-pressed:text-accent"
+							>
+								{scenario.label}
+							</button>
+						))
+					}
+				</div>
+			</div>
+
+			<p class="font-sans text-sm leading-snug text-ink-7">
+				<span data-signal-lead>{initialLine.lead}</span>
+				{" "}
+				<span class="text-ink-8" data-signal-market>&ldquo;{initialLine.market}&rdquo;</span>
+				{" "}
+				<span data-signal-trail>{initialLine.trail}</span>
+			</p>
+
+			{
+				/* Three lists, not one, because the first two checks are enforced
+				   somewhere else entirely: a ticket under the boot minimum means the
+				   service never starts, and a stake under the conviction bar means the
+				   tracker never emits — neither ever reaches the executor's rails. */
+				GATE_STAGE_ORDER.map((stage) => (
+					<div class="flex flex-col gap-1.5">
+						<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							{GATE_STAGE_LABELS[stage]}
+						</p>
+						<ul class="flex flex-col font-mono text-sm">
+							{initial.gates
+								.filter((gate) => gate.stage === stage)
+								.map((gate) => (
+									<li
+										data-gate={gate.id}
+										class="grid grid-cols-[1rem_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-1 border-b border-ink-3 py-2.5 last:border-b-0 @md:grid-cols-[1rem_minmax(0,1fr)_auto_auto]"
+									>
+										<span data-gate-mark class:list={[gate.passed ? "text-accent" : "text-loss"]}>
+											{gate.passed ? "✓" : "✗"}
+										</span>
+										<span
+											data-gate-question
+											class="col-span-2 font-sans text-ink-7 @md:col-span-1"
+										>
+											{gate.question}
+										</span>
+										<span
+											data-gate-actual
+											class="col-start-2 justify-self-end tabular-nums text-ink-8 @md:col-start-3"
+										>
+											{gate.actual}
+										</span>
+										<span
+											data-gate-rule
+											class="col-start-3 justify-self-end tabular-nums text-ink-5 @md:col-start-4"
+										>
+											{gate.rule}
+										</span>
+										{/* Static per row rather than rewritten by the script: a check's
+										    stage never changes, so only its visibility has to. */}
+										<span
+											data-gate-flag
+											class:list={[
+												// col-start/col-end longhands, not col-span: `col-span-*` compiles to
+												// the `grid-column` shorthand, which would reset the start back to auto.
+												"col-start-2 col-end-4 font-sans text-xs text-loss @md:col-end-5",
+												!gate.blocker && "hidden",
+											]}
+										>
+											{GATE_STAGE_FLAGS[gate.stage]}
+										</span>
+									</li>
+								))}
+						</ul>
+					</div>
+				))
+			}
+
+			{/* Four states. `no-signal` stays the quietest — nothing happened, and
+			    warn-coloured chrome would dress the absence of a decision up as a
+			    refusal. `no-boot` is the loudest: the whole service stands down. */}
+			<div
+				data-verdict
+				data-action={initial.action}
+				class="group flex flex-col gap-1.5 rounded-card border border-warn/40 bg-warn/5 px-4 py-3 data-[action=copy]:border-accent/40 data-[action=copy]:bg-accent/5 data-[action=no-signal]:border-ink-3 data-[action=no-signal]:bg-transparent data-[action=no-boot]:border-loss/40 data-[action=no-boot]:bg-loss/5"
+			>
+				<p
+					data-verdict-headline
+					class="font-mono text-sm font-semibold uppercase tracking-wider text-warn group-data-[action=copy]:text-accent group-data-[action=no-signal]:text-ink-5 group-data-[action=no-boot]:text-loss"
+				>
+					{initial.headline}
+				</p>
+				<p data-verdict-detail class="font-sans text-sm leading-snug text-ink-6">
+					{initial.detail}
+				</p>
+			</div>
+
+			<p class="font-sans text-xs leading-snug text-ink-5">
+				The real executor short-circuits at the first ✗ in the last list and moves on. Every
+				check is scored here so you can see what each knob does. Prices are always on the
+				outcome the leader actually holds — a position built by selling one side is a position
+				in the other. The engine also runs a row of bookkeeping refusals left out here — is
+				this bet already copied, is the market in scope, is the kill switch on — because none
+				of them is a number you can turn.
+			</p>
+			<noscript>
+				<p class="font-sans text-xs leading-snug text-warn">
+					With JavaScript off this shows our live config against the first example signal. The
+					sliders and signal buttons need JavaScript to recompute.
+				</p>
+			</noscript>
+		</div>
+	</div>
+
+	<!-- The exit rule as its own widget: one scenario slider, one knob, one bar. -->
+	<div class="border-t border-terminal-border">
+		<div class="flex flex-col gap-4 p-5">
+			<h3 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
+				And when does it leave? Drag the leader's selling
+			</h3>
+			<div class="grid gap-6 @3xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+				<div class="flex flex-col gap-4">
+					<label class="flex flex-col gap-1">
+						<span class="flex items-baseline justify-between gap-3">
+							<span class="font-sans text-sm leading-snug text-ink-7">
+								The leader has sold this much of their peak position
+							</span>
+							<output data-sold-value class="shrink-0 font-mono text-sm tabular-nums text-accent">
+								{INITIAL_SOLD_PCT}%
+							</output>
+						</span>
+						<input
+							type="range"
+							data-sold
+							min="0"
+							max="100"
+							step="5"
+							value={INITIAL_SOLD_PCT}
+							aria-label="How much of their peak position the leader has sold"
+							class="w-full accent-accent"
+						/>
+						<span class="font-mono text-[0.7rem] text-ink-5">the signal, not a setting</span>
+					</label>
+					{
+						trimKnob && (
+							<label class="flex flex-col gap-1">
+								<span class="flex items-baseline justify-between gap-3">
+									<span class="font-sans text-sm leading-snug text-ink-7">{trimKnob.label}</span>
+									<output
+										data-knob-value={trimKnob.key}
+										class="shrink-0 font-mono text-sm tabular-nums text-accent"
+									>
+										{formatWalletKnobValue(trimKnob.unit, WALLET_LIVE_CONFIG[trimKnob.key])}
+									</output>
+								</span>
+								<input
+									type="range"
+									data-knob={trimKnob.key}
+									min={trimKnob.min}
+									max={trimKnob.max}
+									step={trimKnob.step}
+									value={WALLET_LIVE_CONFIG[trimKnob.key]}
+									aria-label={trimKnob.label}
+									class="w-full accent-accent"
+								/>
+								<span class="font-mono text-[0.7rem] text-ink-5">{trimKnob.yamlKey}</span>
+							</label>
+						)
+					}
+				</div>
+				<div class="flex flex-col gap-3">
+					<div class="flex flex-col gap-1.5">
+						<div
+							class="relative h-3 overflow-hidden rounded-card border border-ink-3 bg-ink-1"
+							aria-hidden="true"
+						>
+							<div
+								data-trim-fill
+								class="h-full bg-ink-4 data-[state=close]:bg-warn"
+								data-state={initialTrim.action === "close" ? "close" : "hold"}
+								style={`width: ${INITIAL_SOLD_PCT}%`}
+							>
+							</div>
+							<div
+								data-trim-marker
+								class="absolute inset-y-0 w-0.5 bg-accent"
+								style={`left: ${WALLET_LIVE_CONFIG.trim_close_fraction * 100}%`}
+							>
+							</div>
+						</div>
+						<div class="flex justify-between font-mono text-[0.7rem] text-ink-5">
+							<span>their peak position</span>
+							<span class="text-accent">close line</span>
+						</div>
+					</div>
+					<div
+						data-trim-verdict
+						data-action={initialTrim.action}
+						class="group flex flex-col gap-1.5 rounded-card border border-ink-3 px-4 py-3 data-[action=close]:border-warn/40 data-[action=close]:bg-warn/5"
+					>
+						<p
+							data-trim-headline
+							class="font-mono text-sm font-semibold uppercase tracking-wider text-ink-6 group-data-[action=close]:text-warn"
+						>
+							{initialTrim.headline}
+						</p>
+						<p data-trim-detail class="font-sans text-sm leading-snug text-ink-6">
+							{initialTrim.detail}
+						</p>
+					</div>
+					<p class="font-sans text-xs leading-snug text-ink-5">
+						A flip to the other side, a close to zero, a leader removed from the config, or the
+						market resolving — each of those closes the leg whatever this slider says. Only the
+						trim line is a setting.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="border-t border-terminal-border px-5 py-4">
+		<p class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">In one sentence</p>
+		<p data-summary class="font-sans text-sm leading-relaxed text-ink-7">
+			{walletSummarySentence(WALLET_LIVE_CONFIG)}
+		</p>
+	</footer>
+</section>
+
+<script>
+	import {
+		formatWalletKnobValue,
+		isWalletKnobKey,
+		WALLET_KNOBS,
+		type WalletKnobValues,
+		WALLET_LIVE_CONFIG,
+		WALLET_SCENARIOS,
+	} from "@/copy-trade/wallet/config";
+	import {
+		evaluateLeaderSignal,
+		evaluateTrim,
+		leaderSignalLine,
+		walletSummarySentence,
+	} from "@/copy-trade/wallet/simulator";
+
+	const root = document.querySelector<HTMLElement>("[data-wallet-copy-sim]");
+
+	if (root) {
+		const values: WalletKnobValues = { ...WALLET_LIVE_CONFIG };
+		let scenarioId: string = WALLET_SCENARIOS[0].id;
+		let soldPct = 30;
+
+		const setText = (selector: string, text: string): void => {
+			const element = root.querySelector(selector);
+			if (element) element.textContent = text;
+		};
+
+		const render = (): void => {
+			const scenario =
+				WALLET_SCENARIOS.find((entry) => entry.id === scenarioId) ?? WALLET_SCENARIOS[0];
+			const verdict = evaluateLeaderSignal(values, scenario);
+			const trim = evaluateTrim(values, soldPct);
+
+			for (const knob of WALLET_KNOBS) {
+				setText(
+					`[data-knob-value="${knob.key}"]`,
+					formatWalletKnobValue(knob.unit, values[knob.key]),
+				);
+			}
+
+			root.querySelectorAll<HTMLElement>("[data-scenario]").forEach((button) => {
+				button.setAttribute(
+					"aria-pressed",
+					button.dataset.scenario === scenario.id ? "true" : "false",
+				);
+			});
+
+			const line = leaderSignalLine(scenario);
+			setText("[data-signal-lead]", line.lead);
+			setText("[data-signal-market]", `“${line.market}”`);
+			setText("[data-signal-trail]", line.trail);
+
+			for (const gate of verdict.gates) {
+				const row = root.querySelector<HTMLElement>(`[data-gate="${gate.id}"]`);
+				if (!row) continue;
+
+				const mark = row.querySelector<HTMLElement>("[data-gate-mark]");
+				if (mark) {
+					mark.textContent = gate.passed ? "✓" : "✗";
+					mark.classList.toggle("text-accent", gate.passed);
+					mark.classList.toggle("text-loss", !gate.passed);
+				}
+
+				// The conviction question names the scenario's leader, so unlike the
+				// cluster panel the question text is rewritten too.
+				const question = row.querySelector<HTMLElement>("[data-gate-question]");
+				if (question) question.textContent = gate.question;
+
+				const actual = row.querySelector<HTMLElement>("[data-gate-actual]");
+				if (actual) actual.textContent = gate.actual;
+
+				const rule = row.querySelector<HTMLElement>("[data-gate-rule]");
+				if (rule) rule.textContent = gate.rule;
+
+				const flag = row.querySelector<HTMLElement>("[data-gate-flag]");
+				if (flag) flag.classList.toggle("hidden", !gate.blocker);
+			}
+
+			const verdictBox = root.querySelector<HTMLElement>("[data-verdict]");
+			if (verdictBox) verdictBox.dataset.action = verdict.action;
+			setText("[data-verdict-headline]", verdict.headline);
+			setText("[data-verdict-detail]", verdict.detail);
+
+			setText("[data-sold-value]", `${soldPct}%`);
+			const fill = root.querySelector<HTMLElement>("[data-trim-fill]");
+			if (fill) {
+				fill.style.width = `${soldPct}%`;
+				fill.dataset.state = trim.action;
+			}
+			const marker = root.querySelector<HTMLElement>("[data-trim-marker]");
+			if (marker) marker.style.left = `${Math.min(values.trim_close_fraction * 100, 100)}%`;
+			const trimBox = root.querySelector<HTMLElement>("[data-trim-verdict]");
+			if (trimBox) trimBox.dataset.action = trim.action;
+			setText("[data-trim-headline]", trim.headline);
+			setText("[data-trim-detail]", trim.detail);
+
+			setText("[data-summary]", walletSummarySentence(values));
+		};
+
+		root.addEventListener("input", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLInputElement)) return;
+			if (target.dataset.sold !== undefined) {
+				soldPct = Number(target.value);
+				render();
+				return;
+			}
+			const key = target.dataset.knob;
+			if (!isWalletKnobKey(key)) return;
+			values[key] = Number(target.value);
+			render();
+		});
+
+		root.addEventListener("click", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) return;
+
+			const scenarioButton = target.closest<HTMLElement>("[data-scenario]");
+			if (scenarioButton?.dataset.scenario !== undefined) {
+				scenarioId = scenarioButton.dataset.scenario;
+				render();
+				return;
+			}
+
+			if (target.closest("[data-reset]")) {
+				Object.assign(values, WALLET_LIVE_CONFIG);
+				root.querySelectorAll<HTMLInputElement>("[data-knob]").forEach((slider) => {
+					const key = slider.dataset.knob;
+					if (isWalletKnobKey(key)) slider.value = String(values[key]);
+				});
+				render();
+			}
+		});
+	}
+</script>

@@ -1,0 +1,5 @@
+import type { APIRoute } from "astro";
+import { walletCopyMarkdown } from "@/copy-trade/wallet/content";
+import { markdownResponse } from "@/lib/dual-format/markdown-response";
+
+export const GET: APIRoute = () => markdownResponse({ body: walletCopyMarkdown });
