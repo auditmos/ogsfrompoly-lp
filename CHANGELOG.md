@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.22.0...v1.23.0) (2026-08-14)
+
+
+### Features
+
+* **methodology:** the policy catches up with the bots it was cited for ([685004b](https://github.com/auditmos/ogsfrompoly-lp/commit/685004bd8a19d546ea15406aa65df364e681854b))
+
 # [1.22.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.21.1...v1.22.0) (2026-08-14)
 
 
