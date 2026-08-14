@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.21.1...v1.22.0) (2026-08-14)
+
+
+### Features
+
+* **for-dummies:** a chooser and two bots — wallet copy gets its own page ([fd31d44](https://github.com/auditmos/ogsfrompoly-lp/commit/fd31d44e8ea18d9cc942a630c592be3dea1ff1d6))
+
 ## [1.21.1](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.21.0...v1.21.1) (2026-08-07)
 
 
