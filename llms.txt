@@ -19,7 +19,8 @@ This file is the **developer / agent index for the repository itself**. The publ
 - **Content schema = cross-repo contract**: Zod frontmatter is the stable interface between this repo and the future poly-track CLI producer. Breaking changes require a `SCHEMA_VERSION` bump.
 - **Dual-format invariant**: every content entry must resolve at both `/<collection>/<slug>` (HTML) and `/<collection>/<slug>.md` (`text/markdown`). No per-route boilerplate.
 - **Distribution model**: RSS + `.md` feed only. No email capture, no newsletter, no comments.
-- **Disclosure policy**: methodology + aggregate results only. Wallets appear only as truncated/hashed IDs (e.g. `wallet_a3f…`). Live alpha never published.
+- **For-dummies bot pages**: `src/copy-trade/` holds the hub content plus one submodule per live bot (`cluster/`, `wallet/`); each simulator is a pure decision function shared by the SSR paint and the client recompute, and each page's `.md` twin is stitched from the same prose. Knob values mirror the upstream repo's `config/copy_trade.yml` / `config/wallet_copy.yml` by hand.
+- **Disclosure policy**: methodology + aggregate results only. Wallets appear only as truncated/hashed IDs (e.g. `wallet_a3f…`). Live alpha never published; the copy bots' own wallets and the mirrored leader wallets are never named (leaders are `leader-a` / `leader-b` only).
 - **Hosting**: `ogsfrompoly.com` via Cloudflare custom domain (zone already active); cookie-less Cloudflare Web Analytics.
 
 ## Rules (auto-activated by file context)

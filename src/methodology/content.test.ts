@@ -66,6 +66,28 @@ describe("methodologyMarkdown", () => {
 		});
 	});
 
+	describe("live copy bots", () => {
+		it("discloses that real money runs behind the signals", () => {
+			expect(methodologyMarkdown).toContain("## Skin in the game");
+			expect(methodologyMarkdown).toContain("$5");
+		});
+
+		it("names both bots with their go-live framing", () => {
+			expect(methodologyMarkdown).toContain("Cluster copy");
+			expect(methodologyMarkdown).toContain("Wallet copy");
+		});
+
+		it("links the for-dummies walkthroughs as the full documentation", () => {
+			expect(methodologyMarkdown).toContain("(/for-dummies)");
+		});
+
+		it("states how bot results reach the monthly statements", () => {
+			// Cash-basis: swept realized profit only — never marks on open positions.
+			expect(methodologyMarkdown.toLowerCase()).toContain("swept");
+			expect(methodologyMarkdown.toLowerCase()).toMatch(/while that position is open/);
+		});
+	});
+
 	describe("disclosure policy section", () => {
 		const body = methodologyMarkdown.toLowerCase();
 
@@ -88,6 +110,14 @@ describe("methodologyMarkdown", () => {
 
 		it("scopes results to methodology and aggregates only", () => {
 			expect(body).toMatch(/aggregate/);
+		});
+
+		it("extends the policy to the bots' own wallets and the mirrored leaders", () => {
+			// The for-dummies pages cite this page as the policy that keeps bot
+			// wallets unwatchable — the policy has to actually say so.
+			expect(body).toContain("leader-a");
+			expect(body).toContain("payout address");
+			expect(body).toMatch(/open bot position is never named/);
 		});
 	});
 });

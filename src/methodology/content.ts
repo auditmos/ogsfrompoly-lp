@@ -122,6 +122,24 @@ being merged into another category.
 Every statement is retrospective. The site publishes whether historical
 signals worked. It does not publish instructions for trades in flight.
 
+## Skin in the game: two small live bots
+
+The scorecard is retrospective, but the project also puts a small amount of
+real money behind its own signals. Two bots trade live, with deliberately tiny
+**$5** tickets:
+
+- **Cluster copy** (live since July 2026) buys only when several skilled
+  wallets land on the same side of the same market at once, in separate
+  trades.
+- **Wallet copy** (live since August 2026) mirrors two individual wallets from
+  the skilled roster, each published only under an opaque label.
+
+Both are documented in plain English — every rule, every live setting, and a
+simulator you can drag — at [copy trading for dummies](/for-dummies). Their
+realized results reach the monthly statements as cash: profit is swept weekly
+to a collection wallet and counted as revenue only once it lands there.
+Nothing about a bot position is published while that position is open.
+
 ## Academic foundation
 
 The methodology is grounded in two 2026 papers on prediction-market skill,
@@ -155,6 +173,11 @@ These rules apply to the rendered HTML page, the raw \`.md\` feed, RSS, and
 - **No raw warehouse exports.** Aggregate counts, hit rates, and category
   distributions only — never anything that could reconstruct an individual
   wallet's history.
+- **No bot or leader addresses.** The live copy bots trade from their own
+  wallets, and watching those wallets in real time would expose open
+  positions — so their trading accounts, payout addresses, and the mirrored
+  leader wallets are never published. Leaders appear only as opaque labels
+  (e.g. \`leader-a\`), and the market of an open bot position is never named.
 
 When a published number sits close to the line, we delay by 30+ days or
 anonymize the category before publishing. When in doubt, we don't publish.

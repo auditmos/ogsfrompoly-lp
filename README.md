@@ -4,9 +4,9 @@
 
 Source for **ogsfrompoly.com** — the public-facing landing page for [poly-track](../ogsfrompoly), a Polymarket skilled-trader detection project grounded in the 2026 papers by Gomez-Cram et al. and Akey et al.
 
-The site publishes methodology, aggregate results, and open-book "financial statements" (strategy track record + project P&L) at a regular weekly + monthly cadence. Distribution is RSS plus per-page raw markdown (`/<slug>.md`) for LLM agents. No email capture, no signup, no comments.
+The site publishes methodology, aggregate results, and open-book "financial statements" (strategy track record + project P&L) at a regular weekly + monthly cadence — plus plain-English walkthroughs of the two live copy-trade bots (a chooser at `/for-dummies`, one page per bot, each with an interactive simulator). Distribution is RSS plus per-page raw markdown (`/<slug>.md`) for LLM agents. No email capture, no signup, no comments.
 
-> **Disclosure policy (load-bearing):** methodology + aggregate results only. Wallet references appear only as truncated / hashed IDs (e.g. `wallet_a3f…`). Live alpha is never published. See `/methodology` on the deployed site and `docs/` for the authoritative version.
+> **Disclosure policy (load-bearing):** methodology + aggregate results only. Wallet references appear only as truncated / hashed IDs (e.g. `wallet_a3f…`). Live alpha is never published, and the copy bots' own wallets — trading accounts, payout address, mirrored leaders — are never named. The authoritative version is the disclosure section of `/methodology` on the deployed site (source: `src/methodology/content.ts`).
 
 ## Status
 
@@ -46,8 +46,12 @@ No CMS, no submodule, no runtime fetch from upstream — content lives as markdo
 
 ```
 src/
-├── pages/              # File-based routes (.astro, .md, .ts for endpoints)
+├── pages/              # File-based routes (.astro, .md.ts twins, .ts for endpoints)
 ├── content/            # Astro content collections (statement, future: article)
+├── copy-trade/         # For-dummies content + simulators — shared format/market-math,
+│                       # hub-content, and one submodule per bot (cluster/, wallet/)
+├── methodology/        # Methodology page content + citations
+├── lib/                # Feeds (rss/llms.txt/sitemap), dual-format .md serving, site meta
 ├── layouts/            # Shared HTML shells
 ├── components/         # Reusable Astro components
 ├── styles/globals.css  # Tailwind v4 entry (@import "tailwindcss";)

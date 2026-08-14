@@ -8,6 +8,7 @@ Source for **ogsfrompoly.com** — the public landing page for the [poly-track](
 
 - Publishes weekly + monthly "financial statements" — strategy track record (alerts → outcomes) plus monthly project P&L (revenue, opex, runway).
 - Publishes a single methodology page citing the source papers (Gomez-Cram et al. 2026; Akey et al. 2026) and the disclosure policy.
+- Publishes plain-English walkthroughs of the two live copy-trade bots: a chooser at `/for-dummies`, plus `/for-dummies/copy-cluster` (crowd-following bot) and `/for-dummies/copy-wallet` (per-leader mirror), each with an interactive simulator and a `.md` twin. Knob values mirror the upstream repo's `config/copy_trade.yml` / `config/wallet_copy.yml` by hand.
 - Serves every content entry at both `/<collection>/<slug>` (HTML) and `/<collection>/<slug>.md` (raw markdown) so LLM agents can subscribe via `llms.txt` + RSS.
 - No email capture, no signup, no comments, no newsletter. Distribution is RSS + `.md` feeds.
 
@@ -35,6 +36,9 @@ Source for **ogsfrompoly.com** — the public landing page for the [poly-track](
 - `src/pages/` — file-based routes (`.astro`, `.md`, or `.ts` for endpoints)
 - `src/pages/api/` — Astro API endpoints, one file per route or `[...slug].ts` for catch-all
 - `src/content/` — Astro content collections (`statement` for v1; future `article` in v2)
+- `src/copy-trade/` — for-dummies content + simulators: shared `format.ts` / `market-math.ts` / `hub-content.ts`, one submodule per bot (`cluster/`, `wallet/`), each with `config.ts` (knobs mirroring upstream YAML), `simulator.ts` (pure decision function) and `content.ts` (prose + `.md` twin)
+- `src/methodology/` — methodology page content + citations
+- `src/lib/` — feed generators (`rss.xml`, `llms.txt`, `sitemap.xml`), dual-format `.md` serving, site meta/http helpers
 - `src/layouts/` — shared layouts wrapping page slots
 - `src/components/` — reusable Astro components (organize by feature folder when groups emerge)
 - `src/styles/globals.css` — Tailwind v4 entry (`@import "tailwindcss";`)
@@ -137,12 +141,22 @@ Run manually before declaring done:
 **Disclosure policy is load-bearing.** Violating it leaks alpha or breaks the credibility play that the entire site exists to support.
 
 - **Never publish full wallet addresses.** Always use truncated / hashed IDs (e.g. `wallet_a3f…`). Applies to HTML output, `.md` output, RSS feeds, and any quoted SQL or screenshot.
+- **Never publish the copy bots' own wallets or the wallets they mirror.** The cluster-copy and wallet-copy trading accounts, payout / allowlist addresses, and the two leader wallets are never named — leaders appear only as their anonymous config labels (`leader-a`, `leader-b`). Watching any of these wallets live would expose open positions.
+- **Never name the market of an open bot position** — not even without a size or price.
 - **Never publish live alerts.** Publish only aggregate, retrospective, or methodology-level results.
 - **Never publish anything that could front-run a still-open position.** When in doubt, delay by 30+ days or anonymize the category.
 - **Never publish raw warehouse exports** that could be used to reconstruct individual wallet histories.
-- The authoritative version of this policy lives in `docs/disclosure-policy.md` (or in the upstream poly-track repo once written). The methodology page on the deployed site cites it.
+- The authoritative published version of this policy is the "Disclosure policy" section of the methodology page (source: `src/methodology/content.ts`); no separate `docs/disclosure-policy.md` exists yet — if one is written, keep the two in sync.
 
 If you are tempted to publish a number, name, or address that feels close to the line — stop and ask the stakeholder before merging.
+</important>
+
+<important if="you are editing the for-dummies copy-trade pages or simulators">
+- `LIVE_CONFIG` (cluster) and `WALLET_LIVE_CONFIG` (wallet) mirror the upstream YAMLs literally — re-read `../ogsfrompoly/config/copy_trade.yml` / `config/wallet_copy.yml` and refresh `CONFIG_AS_OF` / `WALLET_CONFIG_AS_OF` when values change
+- Upstream status docs can be stale (the `wallet_copy.yml` header still said "NOT LIVE" after go-live) — verify live status against upstream issues and the ledger, never config comments
+- Example signals/scenarios are invented — never copy a real market, alert, or balance into them
+- The `evaluate*` functions in `simulator.ts` are the single source of truth for both the SSR paint and the client recompute; page markup only rewrites text and toggles classes
+- Each page's `.md` twin is stitched in `content.ts` from the same prose blocks plus a generated knob table — the two surfaces must never be able to disagree
 </important>
 
 <important if="you are editing or designing the statement content collection schema">
