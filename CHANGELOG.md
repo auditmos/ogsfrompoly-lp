@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.24.0...v1.25.0) (2026-08-16)
+
+
+### Features
+
+* **i18n:** the translator gets a handoff the catalog writes itself ([ac63f68](https://github.com/auditmos/ogsfrompoly-lp/commit/ac63f68da03fe292cf66af06fe8fde4a0e4be777)), closes [#68](https://github.com/auditmos/ogsfrompoly-lp/issues/68)
+
 # [1.24.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.23.0...v1.24.0) (2026-08-16)
 
 
