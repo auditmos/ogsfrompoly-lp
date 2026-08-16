@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.23.0...v1.24.0) (2026-08-16)
+
+
+### Features
+
+* **i18n:** the tracer — /pl proves the catalog end to end ([541036e](https://github.com/auditmos/ogsfrompoly-lp/commit/541036e38b1647d96d7c2f4a8bdbcdfaabb2ed84)), closes [#67](https://github.com/auditmos/ogsfrompoly-lp/issues/67)
+
 # [1.23.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.22.0...v1.23.0) (2026-08-14)
 
 
