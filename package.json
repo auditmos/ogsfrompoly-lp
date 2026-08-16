@@ -19,6 +19,7 @@
 		"deploy:staging": "CLOUDFLARE_ENV=staging pnpm run build && wrangler deploy",
 		"deploy:production": "CLOUDFLARE_ENV=production pnpm run build && wrangler deploy",
 		"cf-typegen": "wrangler types",
+		"i18n:extract": "tsx scripts/extract-translations.ts",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",

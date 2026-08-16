@@ -1,4 +1,12 @@
-import { hashSource, resolveHomeProse, resolveProse, type TranslationOverlay } from "./catalog";
+import {
+	catalogEntries,
+	hashSource,
+	localeOverlay,
+	proseEntries,
+	resolveHomeProse,
+	resolveProse,
+	type TranslationOverlay,
+} from "./catalog";
 import { HOME_EN } from "./home-en";
 
 const FIXTURE_EN = {
@@ -94,5 +102,23 @@ describe("resolveHomeProse", () => {
 
 		expect(resolved.install.eyebrow).toBe(HOME_EN.install.eyebrow);
 		expect(resolved.skin.eyebrow).toBe(HOME_EN.skin.eyebrow);
+	});
+});
+
+describe("catalogEntries", () => {
+	it("walks every registered English key with its current source text", () => {
+		const entries = catalogEntries();
+
+		expect(entries.map((entry) => entry.key)).toEqual(
+			proseEntries(HOME_EN).map((entry) => entry.key),
+		);
+		expect(entries.find((entry) => entry.key === "hero.heading")?.text).toBe(HOME_EN.hero.heading);
+	});
+});
+
+describe("localeOverlay", () => {
+	it("returns the delivered pl overlay and an empty es overlay", () => {
+		expect(Object.keys(localeOverlay("pl")).length).toBeGreaterThan(0);
+		expect(localeOverlay("es")).toEqual({});
 	});
 });

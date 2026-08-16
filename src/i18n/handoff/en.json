@@ -1,0 +1,38 @@
+{
+	"hero.heading": {
+		"text": "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
+		"sourceHash": "983ff027"
+	},
+	"hero.intro": {
+		"text": "Open-book strategy track record and project P&L. Aggregate-only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
+		"sourceHash": "b7febce4"
+	},
+	"install.caption": {
+		"text": "Pipes the project's llms.txt into your agent's context",
+		"sourceHash": "eb382b81"
+	},
+	"install.eyebrow": {
+		"text": "Install for your LLM agent",
+		"sourceHash": "591ebb40"
+	},
+	"latest.eyebrow": {
+		"text": "Latest statement",
+		"sourceHash": "4d09725b"
+	},
+	"latest.viewAll": {
+		"text": "View all statements →",
+		"sourceHash": "b0171481"
+	},
+	"skin.body": {
+		"text": "Two small bots trade real money alongside the record — one follows a crowd of skilled wallets, one mirrors two hand-picked traders. Every rule and every live setting, explained in plain English with a simulator you can drag.",
+		"sourceHash": "a0b370cc"
+	},
+	"skin.cta": {
+		"text": "Copy trading for dummies →",
+		"sourceHash": "c4f9add0"
+	},
+	"skin.eyebrow": {
+		"text": "Skin in the game",
+		"sourceHash": "7f81645e"
+	}
+}

@@ -61,6 +61,35 @@ export function resolveProse<T extends ProseNode>(en: T, overlay: TranslationOve
 	return resolveNode(en, overlay, "") as T;
 }
 
+/** One catalog key with its current English source, as handed to translators. */
+export interface CatalogEntry {
+	key: string;
+	text: string;
+	sourceHash: string;
+}
+
+function collectEntries(node: ProseNode, prefix: string, out: CatalogEntry[]): void {
+	for (const [key, value] of Object.entries(node)) {
+		const path = prefix === "" ? key : `${prefix}.${key}`;
+		if (typeof value === "string") {
+			out.push({ key: path, text: value, sourceHash: hashSource(value) });
+		} else {
+			collectEntries(value, path, out);
+		}
+	}
+}
+
+/**
+ * Flattened key/source/hash entries of a prose object, sorted by key — the
+ * extraction view of the catalog the translator handoff reads.
+ */
+export function proseEntries(prose: ProseNode): CatalogEntry[] {
+	const out: CatalogEntry[] = [];
+	collectEntries(prose, "", out);
+	// Codepoint order, not localeCompare — collation must not vary by environment.
+	return out.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+}
+
 export type Locale = "en" | "pl";
 
 // Overlays are repo-internal JSON, but hand-edited by a translator — validate
@@ -76,4 +105,29 @@ const PL_OVERLAY: TranslationOverlay = OverlaySchema.parse(plOverlayJson);
 /** Home-page prose resolved for a locale — the same shape as `HOME_EN`. */
 export function resolveHomeProse(locale: Locale): HomeProse {
 	return locale === "en" ? HOME_EN : resolveProse(HOME_EN, PL_OVERLAY);
+}
+
+/** Locales translations are delivered for — the extractor reports on each. */
+export type TranslatedLocale = "pl" | "es";
+
+export const TRANSLATED_LOCALES: readonly TranslatedLocale[] = ["pl", "es"];
+
+// Spanish has no delivered overlay yet (Phase 3) — it reports as all-missing.
+const OVERLAYS: Record<TranslatedLocale, TranslationOverlay> = {
+	pl: PL_OVERLAY,
+	es: {},
+};
+
+/** The delivered overlay for a locale — empty until a delivery lands. */
+export function localeOverlay(locale: TranslatedLocale): TranslationOverlay {
+	return OVERLAYS[locale];
+}
+
+/**
+ * Every English key currently registered in the catalog, flattened and sorted.
+ * The translator handoff reads keys only through this boundary; prose modules
+ * added by later phases join the registry here and appear automatically.
+ */
+export function catalogEntries(): CatalogEntry[] {
+	return proseEntries(HOME_EN);
 }
