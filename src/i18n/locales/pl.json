@@ -1,0 +1,14 @@
+{
+	"hero.heading": {
+		"translation": "Mierzymy, kto na Polymarkecie faktycznie ma skilla — i co tydzień pokazujemy nasze wyliczenia.",
+		"sourceHash": "983ff027"
+	},
+	"hero.intro": {
+		"translation": "Otwarta księga: track record strategii i P&L projektu. Wyłącznie zagregowane dane, skrócone identyfikatory portfeli. Zero żywej alfy, zapisów i newslettera — tylko RSS i markdownowy feed, który przeczyta twój agent.",
+		"sourceHash": "b7febce4"
+	},
+	"skin.eyebrow": {
+		"translation": "Gramy własnymi pieniędzmi",
+		"sourceHash": "00000000"
+	}
+}
