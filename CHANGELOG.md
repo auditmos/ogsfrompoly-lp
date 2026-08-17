@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.32.0...v1.33.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** the prose speaks plainly, and the bots become agents ([829c6de](https://github.com/auditmos/ogsfrompoly-lp/commit/829c6de452e098c6d54c7047d3a9fbe1d2d4cc77))
+
 # [1.32.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.31.0...v1.32.0) (2026-08-17)
 
 
