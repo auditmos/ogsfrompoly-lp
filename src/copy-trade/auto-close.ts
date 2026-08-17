@@ -8,7 +8,11 @@
  * system would not make.
  */
 
+import type { Locale } from "@/i18n/catalog";
+import { AUTO_CLOSE_SIM_EN, type AutoCloseSimStrings } from "./auto-close-prose-en";
+import { fillTemplate, formattersFor } from "./locale-format";
 import { platformFeeUsdc } from "./market-math";
+import { SIM_UNITS_EN, type SimUnits } from "./sim-units-en";
 
 /** The three figures the rail reads off an executor's close plan. */
 export interface ClosePlan {
@@ -244,4 +248,122 @@ export function autoCloseReadings(scenario: AutoCloseScenario): (ClosePlan | nul
 	return scenario.bids.map((bid) =>
 		bid === null ? null : planAtBid({ shares, entryPrice: scenario.entryPrice, bid }),
 	);
+}
+
+/**
+ * Everything one locale needs to read the rail out loud: the locale tag
+ * (number conventions), the shared unit templates and the rail's own strings.
+ * Plain data end to end, so the SSR page can hand it to the client script as
+ * JSON and both sides recompute the identical strings.
+ */
+export interface AutoCloseSimLocale {
+	readonly locale: Locale;
+	readonly units: SimUnits;
+	readonly strings: AutoCloseSimStrings;
+}
+
+const EN_SIM: AutoCloseSimLocale = {
+	locale: "en",
+	units: SIM_UNITS_EN,
+	strings: AUTO_CLOSE_SIM_EN,
+};
+
+/**
+ * `"disarmed"` is not a fourth outcome the rail produced — it is the rail
+ * standing down, which is what the shipped config asks for. Kept distinct from
+ * `"held"` so the panel can say "this never runs" rather than "this ran and
+ * decided nothing".
+ */
+type AutoCloseAction = "disarmed" | "held" | "stop_loss" | "take_profit";
+
+function stateWord(
+	tick: { quotable: boolean; decision: AutoCloseDecision; streakTicks: number },
+	strings: AutoCloseSimStrings,
+): string {
+	if (!tick.quotable) return strings.stateNoBid;
+	if (tick.decision !== "none") return strings.stateClosed;
+	return tick.streakTicks > 0 ? strings.stateArmed : strings.stateQuiet;
+}
+
+/**
+ * The rail walked over one scenario, in one locale's words — the whole
+ * interface the two walkthrough panels render from.
+ *
+ * The decision path never reads the locale bundle: every locale walks the
+ * identical checks through {@link runAutoClosePath}, and only the words around
+ * the numbers change.
+ */
+export function describeAutoClose(
+	thresholds: AutoCloseThresholds,
+	scenario: AutoCloseScenario,
+	sim: AutoCloseSimLocale = EN_SIM,
+): {
+	action: AutoCloseAction;
+	rows: readonly {
+		tick: string;
+		reading: string;
+		state: string;
+		quotable: boolean;
+		closed: boolean;
+	}[];
+	headline: string;
+	detail: string;
+	position: string;
+} {
+	const fmt = formattersFor(sim.locale, sim.units);
+	const strings = sim.strings;
+	const armed = thresholds.lossPct > 0 || thresholds.profitPct > 0;
+	const path = runAutoClosePath(autoCloseReadings(scenario), thresholds);
+
+	const rows = path.ticks.map((tick) => ({
+		tick: fillTemplate(strings.tick, { n: String(tick.tick) }),
+		reading: tick.netPct === null ? sim.units.off : fmt.pct(tick.netPct),
+		state: stateWord(tick, strings),
+		quotable: tick.quotable,
+		closed: tick.decision !== "none",
+	}));
+
+	const position = fillTemplate(strings.position, {
+		size: fmt.usd(scenario.sizeUsdc),
+		entry: fmt.price(scenario.entryPrice),
+		shares: fmt.shares(scenarioShares(scenario)),
+	});
+
+	if (!armed) {
+		return {
+			action: "disarmed",
+			rows,
+			headline: strings.verdict.disarmedHeadline,
+			detail: strings.verdict.disarmedDetail,
+			position,
+		};
+	}
+
+	if (path.decision === "none") {
+		return {
+			action: "held",
+			rows,
+			headline: strings.verdict.heldHeadline,
+			detail: fillTemplate(strings.verdict.heldDetail, {
+				pct: path.netPct === null ? sim.units.off : fmt.pct(path.netPct),
+			}),
+			position,
+		};
+	}
+
+	const stopped = path.decision === "stop_loss";
+	const verdict = strings.verdict;
+	return {
+		action: path.decision,
+		rows,
+		headline: stopped ? verdict.stopHeadline : verdict.profitHeadline,
+		detail: fillTemplate(stopped ? verdict.stopDetail : verdict.profitDetail, {
+			// The reader is watching a loss; printing it signed as well as calling it
+			// "down" would say the same minus twice.
+			pct: fmt.pct(Math.abs(path.netPct ?? 0)),
+			threshold: fmt.pct(stopped ? thresholds.lossPct : thresholds.profitPct),
+			tick: fillTemplate(strings.tick, { n: String(path.closeTick ?? 0) }),
+		}),
+		position,
+	};
 }

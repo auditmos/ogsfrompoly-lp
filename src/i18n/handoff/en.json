@@ -1,4 +1,108 @@
 {
+	"autoClose.ariaLabel": {
+		"text": "Auto-close rail simulator",
+		"sourceHash": "026ee6f3"
+	},
+	"autoClose.blurb": {
+		"text": "Both sliders start where the running config has them: off. Arm either side and\nwatch the same position play out — the rail reads the book about once a minute\nand wants the same answer twice before it does anything.",
+		"sourceHash": "d0c9c607"
+	},
+	"autoClose.columnReading": {
+		"text": "what a close would realize",
+		"sourceHash": "8bdc1b1f"
+	},
+	"autoClose.columnState": {
+		"text": "rail",
+		"sourceHash": "8ba3b8f9"
+	},
+	"autoClose.heading": {
+		"text": "And when does it sell on its own numbers? Arm the rail",
+		"sourceHash": "373c807d"
+	},
+	"autoClose.noscript": {
+		"text": "The sliders and the path buttons need JavaScript to recompute.",
+		"sourceHash": "e7805706"
+	},
+	"autoClose.note": {
+		"text": "The rail is deployed on both agents and armed on neither. When we do arm it we\nwill not publish the numbers: a threshold is something a reader could trade\nagainst while a position is still open. Everything on this page is the rule, not\nour settings.",
+		"sourceHash": "e224757e"
+	},
+	"autoClose.pathLabel": {
+		"text": "Price path",
+		"sourceHash": "8594ecf5"
+	},
+	"autoClose.paths.book-gap": {
+		"text": "Book goes dark",
+		"sourceHash": "a3f625f6"
+	},
+	"autoClose.paths.drifts-down": {
+		"text": "Drifts down",
+		"sourceHash": "a2ae80fb"
+	},
+	"autoClose.paths.runs-up": {
+		"text": "Runs up",
+		"sourceHash": "e0175424"
+	},
+	"autoClose.paths.whipsaw": {
+		"text": "Crosses and comes back",
+		"sourceHash": "18f26602"
+	},
+	"autoClose.position": {
+		"text": "{size} bought at {entry} — {shares}, fees included both ways.",
+		"sourceHash": "bd881050"
+	},
+	"autoClose.stateArmed": {
+		"text": "past the line — 1 of 2",
+		"sourceHash": "8c80b8d2"
+	},
+	"autoClose.stateClosed": {
+		"text": "sold",
+		"sourceHash": "e0633d1f"
+	},
+	"autoClose.stateNoBid": {
+		"text": "no bid — skipped, streak forgotten",
+		"sourceHash": "2966d255"
+	},
+	"autoClose.stateQuiet": {
+		"text": "inside both lines",
+		"sourceHash": "8a052d6f"
+	},
+	"autoClose.tick": {
+		"text": "min {n}",
+		"sourceHash": "efeda523"
+	},
+	"autoClose.verdict.disarmedDetail": {
+		"text": "Neither threshold is set, which is what the live config says, so this rail never\nfires. The position leaves the way it always has — when the exit rule above says\nso, or at resolution.",
+		"sourceHash": "d4561be2"
+	},
+	"autoClose.verdict.disarmedHeadline": {
+		"text": "Disarmed",
+		"sourceHash": "f9a7e3b6"
+	},
+	"autoClose.verdict.heldDetail": {
+		"text": "Nothing here breached twice in a row, so the rail never fired. The position is\nstill open at {pct}.",
+		"sourceHash": "50f51525"
+	},
+	"autoClose.verdict.heldHeadline": {
+		"text": "Held",
+		"sourceHash": "a49dd09e"
+	},
+	"autoClose.verdict.profitDetail": {
+		"text": "Up {pct} on the second consecutive reading past {threshold}, so the whole\nposition went at {tick}, booked as a take-profit.",
+		"sourceHash": "8f99f662"
+	},
+	"autoClose.verdict.profitHeadline": {
+		"text": "Took profit",
+		"sourceHash": "07b20db0"
+	},
+	"autoClose.verdict.stopDetail": {
+		"text": "Down {pct} on the second consecutive reading past {threshold}, so the whole\nposition went at {tick}, booked as a stop-loss.",
+		"sourceHash": "4a091885"
+	},
+	"autoClose.verdict.stopHeadline": {
+		"text": "Stopped out",
+		"sourceHash": "57b50abe"
+	},
 	"cluster.page.description": {
 		"text": "Plain-English walkthrough of the ogsfrompoly cluster-copy agent, the one that follows a crowd of skilled wallets. When it buys. When it skips. When it sells. And which numbers you can turn.",
 		"sourceHash": "3bdfb5c6"
@@ -7,6 +111,10 @@
 		"text": "How do I get filled?",
 		"sourceHash": "f7277e44"
 	},
+	"cluster.page.knobGroups.exit": {
+		"text": "When do I get out on my own numbers?",
+		"sourceHash": "dad4f6ff"
+	},
 	"cluster.page.knobGroups.gate": {
 		"text": "Should I touch this at all?",
 		"sourceHash": "46be91ad"
@@ -14,6 +122,14 @@
 	"cluster.page.knobGroups.size": {
 		"text": "How much can I put at risk?",
 		"sourceHash": "0cf0295f"
+	},
+	"cluster.page.knobs.auto_close_loss_pct": {
+		"text": "Sell if the position is down more than",
+		"sourceHash": "6c5b4c0e"
+	},
+	"cluster.page.knobs.auto_close_profit_pct": {
+		"text": "Sell if it is up more than",
+		"sourceHash": "e19132bc"
 	},
 	"cluster.page.knobs.cluster_threshold": {
 		"text": "How many skilled wallets count as a crowd",
@@ -156,16 +272,16 @@
 		"sourceHash": "563569d3"
 	},
 	"cluster.page.sections.hardWired": {
-		"text": "## What is hard-wired, and not a setting\n\n- **\"First skilled wallet reverses → we are out.\"** Fixed logic, with resolution\n  as the backstop. There is no take-profit and no stop-loss to tune.\n- **Selling is copied by buying the other outcome.** Whether and how a selling\n  crowd gets mirrored is fixed; there is no \"only copy buys\" switch.\n- **One position per crowd**, and no re-entry into a crowd already closed.\n- **Entry is an all-or-nothing order priced on the exchange's grid.** *How* it\n  enters is fixed. You only tune the thresholds around it — slippage, staleness,\n  liquidity.\n- **The 5-share minimum order is the exchange's rule**, not ours. The agent only\n  respects it.\n\n**Why split it that way?** How much, when to skip, how much at once, how much to\nleave behind — all of that is a number, and numbers are safe to expose. How it\nbuys and when it sells — the whole copying logic — lives in code. One careless\nline of YAML must never derail the strategy.",
-		"sourceHash": "24ff4d45"
+		"text": "## What is hard-wired, and not a setting\n\n- **\"First skilled wallet reverses → we are out.\"** Fixed logic, with resolution\n  as the backstop. The stop-loss and take-profit thresholds are numbers you can\n  turn; that they confirm over two readings, sell the whole position and ignore\n  the kill switch is not.\n- **Selling is copied by buying the other outcome.** Whether and how a selling\n  crowd gets mirrored is fixed; there is no \"only copy buys\" switch.\n- **One position per crowd**, and no re-entry into a crowd already closed.\n- **Entry is an all-or-nothing order priced on the exchange's grid.** *How* it\n  enters is fixed. You only tune the thresholds around it — slippage, staleness,\n  liquidity.\n- **The 5-share minimum order is the exchange's rule**, not ours. The agent only\n  respects it.\n\n**Why split it that way?** How much, when to skip, how much at once, how much to\nleave behind — all of that is a number, and numbers are safe to expose. How it\nbuys and when it sells — the whole copying logic — lives in code. One careless\nline of YAML must never derail the strategy.",
+		"sourceHash": "b8f5cb0a"
 	},
 	"cluster.page.sections.intro": {
 		"text": "A small agent runs next to the published track record. It mirrors the wallets our\nskill test flags, but only when several of them agree at once. This page is the\nwhole mechanism in plain language: what it does, step by step, and which numbers\nare knobs versus rules welded into the code.\n\nIt is one of two agents. The other one, [wallet copy]({walletHref}), follows two\nnamed traders instead of waiting for a crowd. Not sure which page you want?\nStart from [the chooser]({hubHref}).\n\nThink of a **very cautious impersonator** standing in the market, watching\ntraders who have already proven themselves. It is timid on purpose. The money is\nreal. The position sizes below are tiny by design — the point of the first live\nrun is to be right, not to be big.\n\nEvery number on this page is the live setting for the **{market}** market\nas of **{asOf}**, read from `config/copy_trade.yml`.",
 		"sourceHash": "7d5c842b"
 	},
 	"cluster.page.sections.notClaiming": {
-		"text": "## What we are not claiming yet\n\nFour limits worth knowing. They change how you should read the agent's own\nnumbers.\n\n- **The bookkeeping now captures the exchange's fee, and it changed the\n  picture.** Every closed position used to record a fee of zero, which made all\n  of them look better than they were. Reconciled against the on-chain settlement\n  records, the missing cost was **entirely** that fee. We now compute it from\n  each market's own published curve and record it per fill. We still write\n  network gas down as zero, and that one is correct rather than pending — on this\n  exchange a relayer pays for the settlement transaction, not us.\n- **The \"price already run\" rule is weaker than 3% on coarse markets** — see the\n  two-step floor in step 4. Roughly one market in twenty quotes in whole cents,\n  and on those the effective rule is far more permissive than the setting reads.\n- **The rails are young, and mostly unexercised.** The crowd-independence rule\n  cut the signal count by roughly 95%, so the ones added after it — the reversal\n  window, the price ceiling — have had very little live traffic to prove\n  themselves against. We argue them from measurements taken *before* they were\n  armed. The honest position: we do not yet know how often they fire.\n- **Money recovered does not justify the price ceiling.** The four positions it\n  would have refused are worth about **5 cents** between them. We buy it as\n  insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a\n  measured loss. Do not read it as one.",
-		"sourceHash": "f3e1a2b3"
+		"text": "## What we are not claiming yet\n\nFour limits worth knowing. They change how you should read the agent's own\nnumbers.\n\n- **The bookkeeping now captures the exchange's fee, and it changed the\n  picture.** Every closed position used to record a fee of zero, which made all\n  of them look better than they were. Reconciled against the on-chain settlement\n  records, the missing cost was **entirely** that fee. We now compute it from\n  each market's own published curve and record it per fill. We still write\n  network gas down as zero, and that one is correct rather than pending — on this\n  exchange a relayer pays for the settlement transaction, not us.\n- **The \"price already run\" rule is weaker than 3% on coarse markets** — see the\n  two-step floor in step 4. Roughly one market in twenty quotes in whole cents,\n  and on those the effective rule is far more permissive than the setting reads.\n- **The rails are young, and mostly unexercised.** The crowd-independence rule\n  cut the signal count by roughly 95%, so the ones added after it — the reversal\n  window, the price ceiling — have had very little live traffic to prove\n  themselves against. We argue them from measurements taken *before* they were\n  armed. The honest position: we do not yet know how often they fire.\n- **Money recovered does not justify the price ceiling.** The four positions it\n  would have refused are worth about **5 cents** between them. We buy it as\n  insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a\n  measured loss. Do not read it as one.\n- **The auto-close rail has never fired.** It shipped disarmed on purpose, so\n  step 10 describes a mechanism with a live record of exactly nothing. Its\n  arithmetic is tested against the same evaluator the agent runs, which is a\n  different claim from knowing how it behaves against real books.",
+		"sourceHash": "c8e698f2"
 	},
 	"cluster.page.sections.notThis": {
 		"text": "## What this page is not\n\nThese are operating parameters for our own small agent, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled wallets will keep working.\n\nWe never publish the agent's wallet addresses anywhere on this site. Watch the\nexecution wallet in real time and you see open positions, which is exactly what\nthe [disclosure policy]({methodologyHref}) exists to prevent.",
@@ -176,24 +292,28 @@
 		"sourceHash": "33ba9497"
 	},
 	"cluster.page.sections.step10": {
-		"text": "### 10. A failed exit is retried, not forgotten\n\nAn exit order can be refused just like an entry, and it used to vanish with one\nline in a log. Now we keep the event: **three attempts**, roughly a minute apart\nand widening, each one reported. If the third fails the agent says so loudly\ninstead of going quiet. Replaying is safe. If the position closed in the\nmeantime, the retry does nothing.",
-		"sourceHash": "8724cddd"
+		"text": "### 10. It also sells on its own numbers\n\nFor its first months this agent had exactly two ways out: the crowd turns\naround, or the market resolves. There is now a third, and it does not ask the\ncrowd anything.\n\nAbout once a minute it prices a full exit of every open position — what the best\nbid would actually pay, minus the exit fee, against what the ticket cost\nincluding the fee it paid going in. That reading is the whole rule. Down more\nthan `auto_close_loss_pct` and it sells. Up more than `auto_close_profit_pct`\nand it sells.\n\nReading it net of fees rather than off the price is the point. A $5 ticket that\npaid 15¢ to get in and would pay about that again to get out starts life roughly\n**6% down**. \"How much of what I put in would I get back\" is the question an\noperator actually has. \"How far has the mid moved\" is not.\n\nFour details make it a rail rather than a hair trigger:\n\n- **It wants the same answer twice.** One reading past the line arms it; the\n  next consecutive reading past the same line fires it. A single flickering\n  quote closes nothing.\n- **An unreadable book is not a reading.** No resting bid means no price a sale\n  could honestly happen at, so it skips that position for the minute and forgets\n  the breach it was holding. An auto-close is an order, not a screen row.\n- **It sells the whole position**, through the same exit path as everything\n  else, booking the reason as a stop-loss or a take-profit so the closes feed\n  can tell the two apart.\n- **The kill switch does not gate it.** Halting entries must never strand an\n  open position, so exits always flow.\n\nBoth numbers are read at boot, which makes arming them an edit and a restart.\nEither one at `0` — or simply absent, which is how they parse — stands that\nside down.\n\n**Today both are absent.** The rail is deployed and armed on nothing; no\nposition has ever closed this way. When we do arm it, the values stay\nunpublished. A live threshold is a number someone could trade against while the\nposition is still open, which is exactly what the disclosure policy exists to\nprevent.\n\nOne sharp edge, because arming is not a neutral act: a position already past a\nthreshold when the service restarts closes within about two minutes. The\nprocedure is to read the open book first.",
+		"sourceHash": "6bb8266b"
 	},
 	"cluster.page.sections.step11": {
-		"text": "### 11. Nothing disappears quietly\n\nWe write down every skip and every refusal with its numbers: the limit the agent\nasked for, the price after grid rounding, the best price on the book, and how\nmuch size was sitting at our limit. Without those, \"my limit was too tight\" and\n\"the book was too thin\" look identical — and their fixes are opposites.",
-		"sourceHash": "d620e461"
+		"text": "### 11. A failed exit is retried, not forgotten\n\nAn exit order can be refused just like an entry, and it used to vanish with one\nline in a log. Now we keep the event: **three attempts**, roughly a minute apart\nand widening, each one reported. If the third fails the agent says so loudly\ninstead of going quiet. Replaying is safe. If the position closed in the\nmeantime, the retry does nothing.",
+		"sourceHash": "16d05fa0"
 	},
 	"cluster.page.sections.step12": {
-		"text": "### 12. It goes around again\n\nSold, cash back, room free, next signal. One position per crowd, never two, and\nit never re-enters a crowd it has already closed. On a first-ever start it\nbegins at the newest alert instead of replaying the whole history into a live\nwallet.",
-		"sourceHash": "5912bb08"
+		"text": "### 12. Nothing disappears quietly\n\nWe write down every skip and every refusal with its numbers: the limit the agent\nasked for, the price after grid rounding, the best price on the book, and how\nmuch size was sitting at our limit. Without those, \"my limit was too tight\" and\n\"the book was too thin\" look identical — and their fixes are opposites.",
+		"sourceHash": "5feb4914"
 	},
 	"cluster.page.sections.step13": {
-		"text": "### 13. Once a week it sweeps the profit\n\nIt counts the profit it booked and sends the surplus above the **$5** floor to\nthe payout address (`profit_destination`). It pays only if that address is on\nthe allowlist (`destination_allowlist`, the safety catch), only if the amount\nclears the **$1** dust threshold (`dust_threshold_usdc`), and only if at least\n**2 POL** of gas is left (`gas_reserve_pol`). With no gas it could not close a\nposition, so the payout is the thing that gives way. A losing week pays out\nnothing. The first payout ever made needs a human to say yes.",
-		"sourceHash": "f42855d7"
+		"text": "### 13. It goes around again\n\nSold, cash back, room free, next signal. One position per crowd, never two, and\nit never re-enters a crowd it has already closed. On a first-ever start it\nbegins at the newest alert instead of replaying the whole history into a live\nwallet.",
+		"sourceHash": "97258ae3"
 	},
 	"cluster.page.sections.step14": {
-		"text": "### 14. The big red button\n\nAt any moment the kill switch (`kill_switch`) stops the agent **buying** anything\nnew — while it keeps watching and closing whatever is already open. It stops\ntaking risk; it does not abandon it. A shadow mode decides exactly as normal but\nwrites each would-be order to a file instead of sending it.",
-		"sourceHash": "c7db6b75"
+		"text": "### 14. Once a week it sweeps the profit\n\nIt counts the profit it booked and sends the surplus above the **$5** floor to\nthe payout address (`profit_destination`). It pays only if that address is on\nthe allowlist (`destination_allowlist`, the safety catch), only if the amount\nclears the **$1** dust threshold (`dust_threshold_usdc`), and only if at least\n**2 POL** of gas is left (`gas_reserve_pol`). With no gas it could not close a\nposition, so the payout is the thing that gives way. A losing week pays out\nnothing. The first payout ever made needs a human to say yes.",
+		"sourceHash": "e764dc1a"
+	},
+	"cluster.page.sections.step15": {
+		"text": "### 15. The big red button\n\nAt any moment the kill switch (`kill_switch`) stops the agent **buying** anything\nnew — while it keeps watching and closing whatever is already open. It stops\ntaking risk; it does not abandon it. A shadow mode decides exactly as normal but\nwrites each would-be order to a file instead of sending it.",
+		"sourceHash": "e53505d4"
 	},
 	"cluster.page.sections.step2": {
 		"text": "### 2. If the crowd is selling, it buys the other side\n\nYou can only sell what you already own, and a fresh position owns nothing. So\nfor a long time every \"the crowd is selling\" signal bounced off the exchange.\nThat is roughly **40%** of the signals we get.\n\nThe way around it is the shape of the market. A market with two outcomes prices\nthem to add up to $1, and exactly one of them ends up worth $1. Selling \"yes\" at\n90¢ and buying \"no\" at 10¢ are the same opinion. The second one is an ordinary\npurchase the agent can make.\n\nPositions opened that way are **mirrors**. The agent remembers both sides — the\none it holds and the one the crowd trades — because it needs the second one to\nknow when to get out.",
@@ -224,8 +344,8 @@
 		"sourceHash": "6bd0eae9"
 	},
 	"cluster.page.sections.step9": {
-		"text": "### 9. It holds, and leaves at the first reversal\n\nThen it watches the same wallets, and leaves as soon as the **first** of them\nturns around. It does not wait for the others to agree.\n\n- On a normal position it holds what they hold, so **their sale** is the exit.\n- On a mirror they hold the outcome they sold, so **their buy-back** is the exit.\n  Them selling *more* of it is doubling down — the same opinion again, not a\n  reversal — so it does not close us.\n\nRiding to resolution is only the fallback, for when nobody reverses first.\n\n*This one is hard-wired. There is no setting for it.*",
-		"sourceHash": "b0c3f917"
+		"text": "### 9. It holds, and leaves at the first reversal\n\nThen it watches the same wallets, and leaves as soon as the **first** of them\nturns around. It does not wait for the others to agree.\n\n- On a normal position it holds what they hold, so **their sale** is the exit.\n- On a mirror they hold the outcome they sold, so **their buy-back** is the exit.\n  Them selling *more* of it is doubling down — the same opinion again, not a\n  reversal — so it does not close us.\n\nRiding to resolution is the fallback, for when nobody reverses first.\n\n*The reversal rule itself is hard-wired. There is no setting for it — but since\nthe next step landed, it is no longer the only way out.*",
+		"sourceHash": "2d854a8d"
 	},
 	"cluster.page.sections.storyHeading": {
 		"text": "## The whole story, one step at a time",
@@ -847,6 +967,14 @@
 		"text": "How much can I put at risk?",
 		"sourceHash": "0cf0295f"
 	},
+	"wallet.page.knobs.auto_close_loss_pct": {
+		"text": "Sell if the position is down more than",
+		"sourceHash": "6c5b4c0e"
+	},
+	"wallet.page.knobs.auto_close_profit_pct": {
+		"text": "Sell if it is up more than",
+		"sourceHash": "e19132bc"
+	},
 	"wallet.page.knobs.exposure_cap_usdc": {
 		"text": "Never hold more open than",
 		"sourceHash": "eee65c54"
@@ -1000,16 +1128,16 @@
 		"sourceHash": "ec619559"
 	},
 	"wallet.page.sections.hardWired": {
-		"text": "## What is hard-wired, and not a setting\n\n- **The conviction bar fires once per fresh bet.** Scale-ins never re-trigger;\n  only a full close or a flip resets it.\n- **The agent counts positions in the held outcome.** Buying one side and selling\n  the other are the same opinion, normalised before any rule looks at them.\n- **Exits close the whole leg, always** — at the trim threshold, on a flip, on\n  a close-out, on config removal, or at resolution. There is no partial close,\n  no take-profit and no stop-loss to tune.\n- **One leg per bet per leader.** The same market copied from both leaders is\n  two independent legs.\n- **Entry is a fill-or-kill order priced on the exchange's grid**, and the\n  venue's 5-share minimum is enforced at boot, not per order.\n- **Macro markets only**, qualified against the same catalog as everything\n  else on this site.\n- **The kill switch spares exits.** Only entries can be halted.\n\n**Why split it that way?** The same reason as on the cluster page: thresholds\nare numbers, and numbers are safe to expose. The copying logic itself — what\ncounts as conviction, how exits work — lives in code. One careless line of YAML\nmust never derail the strategy.",
-		"sourceHash": "4fd74a46"
+		"text": "## What is hard-wired, and not a setting\n\n- **The conviction bar fires once per fresh bet.** Scale-ins never re-trigger;\n  only a full close or a flip resets it.\n- **The agent counts positions in the held outcome.** Buying one side and selling\n  the other are the same opinion, normalised before any rule looks at them.\n- **Exits close the whole leg, always** — at the trim threshold, on a flip, on\n  a close-out, on config removal, at resolution, or when the auto-close rail\n  fires. There is no partial close. The rail's two thresholds are numbers you\n  can turn; the two-reading confirmation and the whole-leg close are not.\n- **One leg per bet per leader.** The same market copied from both leaders is\n  two independent legs.\n- **Entry is a fill-or-kill order priced on the exchange's grid**, and the\n  venue's 5-share minimum is enforced at boot, not per order.\n- **Macro markets only**, qualified against the same catalog as everything\n  else on this site.\n- **The kill switch spares exits.** Only entries can be halted.\n\n**Why split it that way?** The same reason as on the cluster page: thresholds\nare numbers, and numbers are safe to expose. The copying logic itself — what\ncounts as conviction, how exits work — lives in code. One careless line of YAML\nmust never derail the strategy.",
+		"sourceHash": "d31d1d28"
 	},
 	"wallet.page.sections.intro": {
 		"text": "A second small agent runs next to the published track record. It mirrors two\nindividual traders — wallets our skill test already flagged, promoted from the\nsame leaderboard the weekly statements are built on. Where\n[cluster copy]({clusterHref}) waits for a *crowd* of skilled wallets to agree,\nthis one asks a different question: **what does one proven trader do when they\nreally mean it?**\n\nThink of a **very patient apprentice** shadowing two masters. It ignores almost\neverything they do. Then one of them commits serious money to a fresh bet, and\nit places one small copy of its own — $5, on its own separate account, behind\nits own kill switch.\n\nEvery number on this page is the live setting for the **{market}**\nmarkets as of **{asOf}**, read from `config/wallet_copy.yml`.\nNot sure which of the two agents you wanted? [The chooser]({hubHref}) compares\nthem side by side.",
 		"sourceHash": "66dee6aa"
 	},
 	"wallet.page.sections.notClaiming": {
-		"text": "## What we are not claiming yet\n\n- **The live history is days old.** The feature went live on 2026-08-11 and\n  has opened a single-digit number of positions. We argue every rail on this\n  page from measurements taken *before* it was armed. Almost none has a\n  meaningful record of firing in production.\n- **There is no fee rail, and that is a bet, not a proof.** The cluster agent's\n  fee lesson (77% of its early losses) has no guard here. If the leaders'\n  conviction does not filter cheap outcomes the way we expect, this page will\n  say so — after the books do.\n- **The two-sided rail's early evidence was thin.** Most of its first readings\n  were zeros over empty measurement windows. The payload now separates\n  \"measured clean\" from \"nothing to weigh\", but the rail has yet to prove its\n  threshold against real traffic.\n- **Redemption is not automatic.** A resolved win sits in the books as closed\n  but explicitly *unpaid* until it is redeemed — the books refuse to count\n  money that has not arrived.",
-		"sourceHash": "9466c665"
+		"text": "## What we are not claiming yet\n\n- **The live history is days old.** The feature went live on 2026-08-11 and\n  has opened a single-digit number of positions. We argue every rail on this\n  page from measurements taken *before* it was armed. Almost none has a\n  meaningful record of firing in production.\n- **There is no fee rail, and that is a bet, not a proof.** The cluster agent's\n  fee lesson (77% of its early losses) has no guard here. If the leaders'\n  conviction does not filter cheap outcomes the way we expect, this page will\n  say so — after the books do.\n- **The two-sided rail's early evidence was thin.** Most of its first readings\n  were zeros over empty measurement windows. The payload now separates\n  \"measured clean\" from \"nothing to weigh\", but the rail has yet to prove its\n  threshold against real traffic.\n- **Redemption is not automatic.** A resolved win sits in the books as closed\n  but explicitly *unpaid* until it is redeemed — the books refuse to count\n  money that has not arrived.\n- **The auto-close rail has never fired.** It shipped disarmed on both agents,\n  so step 9 describes a mechanism with no live record at all. Its arithmetic is\n  pinned to the same evaluator the agent runs, which is a different claim from\n  knowing how it behaves against real books.",
+		"sourceHash": "f8e4a4d8"
 	},
 	"wallet.page.sections.notThis": {
 		"text": "## What this page is not\n\nThese are the operating parameters of our own small agent, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled traders will keep working.\n\nWe never publish any of the wallets involved — the two leaders, the agent's own\ntrading account, or the payout address. Watch any of them in real time and you\nsee open positions, which is exactly what the\n[disclosure policy]({methodologyHref}) exists to prevent.",
@@ -1020,16 +1148,20 @@
 		"sourceHash": "f4dca315"
 	},
 	"wallet.page.sections.step10": {
-		"text": "### 10. The kill switch stops buying, never selling\n\nAt any moment the kill switch halts new entries **while exits, retries and\nsettlements keep working** — so a halt can never strand an open position. It\nstops taking risk; it does not abandon it.",
-		"sourceHash": "eaa6c38d"
+		"text": "### 10. A failed exit is queued, not forgotten\n\nAn exit order can die just like an entry. Each one gets **three attempts**,\ntracked per position in a durable queue — one stuck leg cannot block the\nothers — and if the third fails the agent says so loudly instead of going quiet.\nA market that resolved but is not redeemed yet sits in the books as **unpaid**.\nThe books never count cash they do not have.",
+		"sourceHash": "dbe46b81"
 	},
 	"wallet.page.sections.step11": {
-		"text": "### 11. Its money cannot touch the other agent's\n\nWallet copy trades a **separate account with its own key**, its own books, its\nown alert channel, its own kill switch and its own service. A wallet-copy bug\ncan spend only wallet-copy money. Neither agent can even read the other's\nrecords. The one thing they share, on purpose, is the destination of the\nweekly profit sweep — named in the config as `profit_destination` behind a\n`destination_allowlist`, with a **$1** dust threshold (`dust_threshold_usdc`).\nWe never publish the addresses themselves.",
-		"sourceHash": "d5001446"
+		"text": "### 11. The kill switch stops buying, never selling\n\nAt any moment the kill switch halts new entries **while exits, retries and\nsettlements keep working** — so a halt can never strand an open position. It\nstops taking risk; it does not abandon it.",
+		"sourceHash": "e1857fa0"
 	},
 	"wallet.page.sections.step12": {
-		"text": "### 12. Where it is today\n\nThe feature went live on **2026-08-11**. It spent its first days correctly\ncopying **nothing**. With bars this high, silence is the expected state, and the\noperations tooling exists to prove that silence is health rather than breakage.\nIts first real position followed within days. That is the entire live history so\nfar. Read every number on this page as a version 1: argued from measurement,\nbarely exercised in production.",
-		"sourceHash": "2cf42b80"
+		"text": "### 12. Its money cannot touch the other agent's\n\nWallet copy trades a **separate account with its own key**, its own books, its\nown alert channel, its own kill switch and its own service. A wallet-copy bug\ncan spend only wallet-copy money. Neither agent can even read the other's\nrecords. The one thing they share, on purpose, is the destination of the\nweekly profit sweep — named in the config as `profit_destination` behind a\n`destination_allowlist`, with a **$1** dust threshold (`dust_threshold_usdc`).\nWe never publish the addresses themselves.",
+		"sourceHash": "e745bfdf"
+	},
+	"wallet.page.sections.step13": {
+		"text": "### 13. Where it is today\n\nThe feature went live on **2026-08-11**. It spent its first days correctly\ncopying **nothing**. With bars this high, silence is the expected state, and the\noperations tooling exists to prove that silence is health rather than breakage.\nIts first real position followed within days. That is the entire live history so\nfar. Read every number on this page as a version 1: argued from measurement,\nbarely exercised in production.",
+		"sourceHash": "cc831823"
 	},
 	"wallet.page.sections.step2": {
 		"text": "### 2. It only moves when the leader really means it\n\nEach leader has a **conviction bar** (`min_leader_notional_usdc`). The agent\ncopies a bet only once that leader's own position on it reaches the bar. The\nbar sits *per leader*, against that leader's own history, because the same\ndollar figure does not mean the same thing twice.\n\nMeasured over 90 days: leader-a's positions have a **median of $285** and a\n90th percentile of $1,729. A **$500** bar selects their most convinced third,\nand our $5 copy is about 1% of what they stake. leader-b's median is **$5**. At\na $500 bar this rail would fire roughly once a quarter while reading as an armed\nleader, so their bar is **$100**. A knob that looks armed and never fires is\nworse than no knob.\n\nThe bar fires **once per fresh bet**, at the moment it is first crossed.\nScale-ins never re-trigger it. A bet becomes fresh again only after the leader\ncloses it in full — or flips sides.",
@@ -1056,12 +1188,12 @@
 		"sourceHash": "e0a7b8b8"
 	},
 	"wallet.page.sections.step8": {
-		"text": "### 8. It holds through trims, and leaves at half\n\nExits are where this agent most differs from its sibling. The cluster agent leaves\nat the *first* sale by anyone in the crowd. This one is harder to shake out on\npurpose:\n\n- A leader **trimming** their position is information, not an exit. The agent\n  records it and holds.\n- Once the leader's cumulative selling reaches **50% of their peak position**\n  (`trim_close_fraction`), the agent closes its **whole** leg at once. Measured\n  against the peak, not per fill — a leader bleeding out 20% at a time would\n  never trip a per-fill rule. And always the whole leg, never a slice: a\n  proportional sliver can drop under the venue's 5-share minimum and become\n  unsellable.\n- A leader going to **zero**, or **flipping** to the other side, closes the leg\n  immediately. A flip also starts a fresh bet — the agent can close and re-enter\n  on the other side in the same breath, exactly as the leader did.\n- Remove or disable a leader in the config and the agent closes their legs within\n  a minute. When a market **resolves**, the agent redeems it.\n\n*The shape of this is hard-wired. The only exit number you can turn is the\ntrim threshold.*",
-		"sourceHash": "4d3ff191"
+		"text": "### 8. It holds through trims, and leaves at half\n\nExits are where this agent most differs from its sibling. The cluster agent leaves\nat the *first* sale by anyone in the crowd. This one is harder to shake out on\npurpose:\n\n- A leader **trimming** their position is information, not an exit. The agent\n  records it and holds.\n- Once the leader's cumulative selling reaches **50% of their peak position**\n  (`trim_close_fraction`), the agent closes its **whole** leg at once. Measured\n  against the peak, not per fill — a leader bleeding out 20% at a time would\n  never trip a per-fill rule. And always the whole leg, never a slice: a\n  proportional sliver can drop under the venue's 5-share minimum and become\n  unsellable.\n- A leader going to **zero**, or **flipping** to the other side, closes the leg\n  immediately. A flip also starts a fresh bet — the agent can close and re-enter\n  on the other side in the same breath, exactly as the leader did.\n- Remove or disable a leader in the config and the agent closes their legs within\n  a minute. When a market **resolves**, the agent redeems it.\n\n*The shape of this is hard-wired. The trim threshold is the one number in it you\ncan turn — the next step adds two more, and they do not watch the leader at\nall.*",
+		"sourceHash": "846334ba"
 	},
 	"wallet.page.sections.step9": {
-		"text": "### 9. A failed exit is queued, not forgotten\n\nAn exit order can die just like an entry. Each one gets **three attempts**,\ntracked per position in a durable queue — one stuck leg cannot block the\nothers — and if the third fails the agent says so loudly instead of going quiet.\nA market that resolved but is not redeemed yet sits in the books as **unpaid**.\nThe books never count cash they do not have.",
-		"sourceHash": "e9852a0b"
+		"text": "### 9. And a stop-loss and a take-profit, on its own numbers\n\nStep 8 is entirely about the leader. This is not. About once a minute the agent\nprices a full exit of every open leg — what the best bid would pay, minus the\nexit fee, against what the leg cost including the fee it paid going in — and\ncloses it if that reading is down more than `auto_close_loss_pct` or up more\nthan `auto_close_profit_pct`.\n\nIt matters more here than on the sibling agent. This one has no fee ceiling at\nentry (step 6), so a cheap outcome the cluster agent would refuse outright can\nbe copied — and a cheap outcome is exactly where the per-share fee bites\nhardest. A rail that measures what would really come back, rather than where the\nprice is, is the guard that absence leaves room for.\n\nThe mechanism is shared code with the cluster agent, so it behaves identically\non both: two consecutive readings past the same line before anything happens; an\nunreadable book skips the leg for that minute and forgets the breach it was\nholding; the whole leg goes at once, never a slice; and the kill switch does not\ngate it, because halting entries must never strand an open position.\n\nBoth numbers are read at boot, and `0` — or an absent key, which parses the\nsame way — stands that side down. **Both are absent today.** The rail is\ndeployed on this agent and armed on neither side, so nothing has ever closed\nthis way, and the values we eventually arm will not be published. A live\nthreshold is something a reader could trade against while the leg is still\nopen.",
+		"sourceHash": "3ef4d57c"
 	},
 	"wallet.page.sections.storyHeading": {
 		"text": "## The whole story, one step at a time",

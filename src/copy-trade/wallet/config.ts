@@ -45,7 +45,9 @@ export type WalletKnobKey =
 	| "working_capital_floor_usdc"
 	| "slippage_pct"
 	| "slippage_min_ticks"
-	| "trim_close_fraction";
+	| "trim_close_fraction"
+	| "auto_close_loss_pct"
+	| "auto_close_profit_pct";
 
 export type WalletKnobValues = Record<WalletKnobKey, number>;
 
@@ -75,6 +77,11 @@ export const WALLET_LIVE_CONFIG: WalletKnobValues = {
 	slippage_min_ticks: 2,
 	// A *fraction of the leader's peak position*, cumulative — not per fill.
 	trim_close_fraction: 0.5,
+	// Both `0` because `config/wallet_copy.yml` carries neither key: the
+	// auto-close rail is deployed and deliberately disarmed. The values an
+	// operator would arm are never published.
+	auto_close_loss_pct: 0,
+	auto_close_profit_pct: 0,
 };
 
 /** The knob a given leader's conviction bar lives under. */
@@ -85,6 +92,8 @@ export function leaderKnobKey(leader: LeaderId): WalletKnobKey {
 export type WalletKnobUnit =
 	| "usdc"
 	| "pct"
+	/** A percentage that can be stood down, where `0` reads as off. */
+	| "pct_limit"
 	| "fraction"
 	| "price"
 	| "count"
@@ -278,6 +287,30 @@ export const WALLET_KNOBS = [
 		min: 0.05,
 		max: 1,
 		step: 0.05,
+	},
+	{
+		key: "auto_close_loss_pct",
+		group: "exit",
+		label: "Sell if the position is down more than",
+		yamlKey: "auto_close_loss_pct",
+		unit: "pct_limit",
+		min: 0,
+		// The executor refuses to boot above 100: a position cannot lose more
+		// than the ticket, so a larger number is a threshold nothing can reach.
+		max: 100,
+		step: 5,
+	},
+	{
+		key: "auto_close_profit_pct",
+		group: "exit",
+		label: "Sell if it is up more than",
+		yamlKey: "auto_close_profit_pct",
+		unit: "pct_limit",
+		min: 0,
+		// No upper bound upstream — a cheap outcome can multiply many times over.
+		// 200 is where the slider stops being useful, not where the rule does.
+		max: 200,
+		step: 5,
 	},
 ] as const satisfies readonly WalletKnob[];
 
@@ -594,6 +627,8 @@ export function formatWalletKnobValue(
 			return fmt.usd(value);
 		case "pct":
 			return fmt.pct(value);
+		case "pct_limit":
+			return fmt.pctLimit(value);
 		case "fraction":
 			return fmt.fraction(value);
 		case "price":

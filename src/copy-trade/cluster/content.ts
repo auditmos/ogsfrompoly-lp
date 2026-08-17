@@ -64,6 +64,7 @@ export function clusterContentFor(locale: Locale): ClusterContent {
 		sections.step12,
 		sections.step13,
 		sections.step14,
+		sections.step15,
 	].join("\n\n");
 	const closing = [
 		sections.hardWired,

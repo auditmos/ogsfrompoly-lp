@@ -34,6 +34,7 @@ export type WalletPageProse = {
 		step10: string;
 		step11: string;
 		step12: string;
+		step13: string;
 		hardWired: string;
 		notClaiming: string;
 		notThis: string;
@@ -229,21 +230,48 @@ purpose:
 - Remove or disable a leader in the config and the agent closes their legs within
   a minute. When a market **resolves**, the agent redeems it.
 
-*The shape of this is hard-wired. The only exit number you can turn is the
-trim threshold.*`,
-		step9: `### 9. A failed exit is queued, not forgotten
+*The shape of this is hard-wired. The trim threshold is the one number in it you
+can turn — the next step adds two more, and they do not watch the leader at
+all.*`,
+		step9: `### 9. And a stop-loss and a take-profit, on its own numbers
+
+Step 8 is entirely about the leader. This is not. About once a minute the agent
+prices a full exit of every open leg — what the best bid would pay, minus the
+exit fee, against what the leg cost including the fee it paid going in — and
+closes it if that reading is down more than \`auto_close_loss_pct\` or up more
+than \`auto_close_profit_pct\`.
+
+It matters more here than on the sibling agent. This one has no fee ceiling at
+entry (step 6), so a cheap outcome the cluster agent would refuse outright can
+be copied — and a cheap outcome is exactly where the per-share fee bites
+hardest. A rail that measures what would really come back, rather than where the
+price is, is the guard that absence leaves room for.
+
+The mechanism is shared code with the cluster agent, so it behaves identically
+on both: two consecutive readings past the same line before anything happens; an
+unreadable book skips the leg for that minute and forgets the breach it was
+holding; the whole leg goes at once, never a slice; and the kill switch does not
+gate it, because halting entries must never strand an open position.
+
+Both numbers are read at boot, and \`0\` — or an absent key, which parses the
+same way — stands that side down. **Both are absent today.** The rail is
+deployed on this agent and armed on neither side, so nothing has ever closed
+this way, and the values we eventually arm will not be published. A live
+threshold is something a reader could trade against while the leg is still
+open.`,
+		step10: `### 10. A failed exit is queued, not forgotten
 
 An exit order can die just like an entry. Each one gets **three attempts**,
 tracked per position in a durable queue — one stuck leg cannot block the
 others — and if the third fails the agent says so loudly instead of going quiet.
 A market that resolved but is not redeemed yet sits in the books as **unpaid**.
 The books never count cash they do not have.`,
-		step10: `### 10. The kill switch stops buying, never selling
+		step11: `### 11. The kill switch stops buying, never selling
 
 At any moment the kill switch halts new entries **while exits, retries and
 settlements keep working** — so a halt can never strand an open position. It
 stops taking risk; it does not abandon it.`,
-		step11: `### 11. Its money cannot touch the other agent's
+		step12: `### 12. Its money cannot touch the other agent's
 
 Wallet copy trades a **separate account with its own key**, its own books, its
 own alert channel, its own kill switch and its own service. A wallet-copy bug
@@ -252,7 +280,7 @@ records. The one thing they share, on purpose, is the destination of the
 weekly profit sweep — named in the config as \`profit_destination\` behind a
 \`destination_allowlist\`, with a **$1** dust threshold (\`dust_threshold_usdc\`).
 We never publish the addresses themselves.`,
-		step12: `### 12. Where it is today
+		step13: `### 13. Where it is today
 
 The feature went live on **2026-08-11**. It spent its first days correctly
 copying **nothing**. With bars this high, silence is the expected state, and the
@@ -267,8 +295,9 @@ barely exercised in production.`,
 - **The agent counts positions in the held outcome.** Buying one side and selling
   the other are the same opinion, normalised before any rule looks at them.
 - **Exits close the whole leg, always** — at the trim threshold, on a flip, on
-  a close-out, on config removal, or at resolution. There is no partial close,
-  no take-profit and no stop-loss to tune.
+  a close-out, on config removal, at resolution, or when the auto-close rail
+  fires. There is no partial close. The rail's two thresholds are numbers you
+  can turn; the two-reading confirmation and the whole-leg close are not.
 - **One leg per bet per leader.** The same market copied from both leaders is
   two independent legs.
 - **Entry is a fill-or-kill order priced on the exchange's grid**, and the
@@ -297,7 +326,11 @@ must never derail the strategy.`,
   threshold against real traffic.
 - **Redemption is not automatic.** A resolved win sits in the books as closed
   but explicitly *unpaid* until it is redeemed — the books refuse to count
-  money that has not arrived.`,
+  money that has not arrived.
+- **The auto-close rail has never fired.** It shipped disarmed on both agents,
+  so step 9 describes a mechanism with no live record at all. Its arithmetic is
+  pinned to the same evaluator the agent runs, which is a different claim from
+  knowing how it behaves against real books.`,
 		notThis: `## What this page is not
 
 These are the operating parameters of our own small agent, published in the same

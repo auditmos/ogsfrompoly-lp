@@ -1,4 +1,5 @@
 import {
+	EXIT_GROUP_ORDER,
 	formatKnobValue,
 	isKnobKey,
 	KNOB_GROUP_ORDER,
@@ -45,12 +46,24 @@ describe("knob definitions", () => {
 		}
 	});
 
-	it("places every knob in a group the panel renders", () => {
-		const grouped = KNOB_GROUP_ORDER.flatMap((group) => knobsInGroup(group));
+	it("places every knob in a group one of the two panels renders", () => {
+		const grouped = [...KNOB_GROUP_ORDER, ...EXIT_GROUP_ORDER].flatMap((group) =>
+			knobsInGroup(group),
+		);
 		expect(grouped).toHaveLength(KNOBS.length);
 		expect(new Set(grouped.map((knob) => knob.key))).toEqual(
 			new Set(KNOBS.map((knob) => knob.key)),
 		);
+	});
+
+	it("keeps the exit knobs out of the entry panel", () => {
+		// The entry panel answers "would it buy this?". The auto-close thresholds
+		// answer a different question and belong to the widget that asks it.
+		const entryKeys = KNOB_GROUP_ORDER.flatMap((group) => knobsInGroup(group)).map(
+			(knob) => knob.key,
+		);
+		expect(entryKeys).not.toContain("auto_close_loss_pct");
+		expect(entryKeys).not.toContain("auto_close_profit_pct");
 	});
 
 	it("locks the documented live config so a silent edit fails the build", () => {
@@ -70,7 +83,49 @@ describe("knob definitions", () => {
 			gas_reserve_pol: 2,
 			slippage_pct: 1,
 			slippage_min_ticks: 2,
+			auto_close_loss_pct: 0,
+			auto_close_profit_pct: 0,
 		});
+	});
+});
+
+/**
+ * Disclosure: the rail is live and the running config arms neither side, so
+ * `0` is what the YAML actually says. It is also the only value that can be
+ * published — an armed threshold is a number a reader could trade against.
+ */
+describe("auto-close thresholds", () => {
+	it("ships disarmed, mirroring a YAML that carries neither key", () => {
+		expect(LIVE_CONFIG.auto_close_loss_pct).toBe(0);
+		expect(LIVE_CONFIG.auto_close_profit_pct).toBe(0);
+	});
+
+	it("renders a disarmed side as off rather than as a threshold of zero", () => {
+		// "0%" would read as "close the moment it moves". The rail is not set.
+		expect(formatKnobValue("pct_limit", LIVE_CONFIG.auto_close_loss_pct)).toBe("off");
+		expect(formatKnobValue("pct_limit", LIVE_CONFIG.auto_close_profit_pct)).toBe("off");
+		expect(formatKnobValue("pct_limit", 25)).toBe("25%");
+	});
+
+	it("gives both thresholds the unit that can say off", () => {
+		for (const key of ["auto_close_loss_pct", "auto_close_profit_pct"] as const) {
+			expect(KNOBS.find((entry) => entry.key === key)?.unit).toBe("pct_limit");
+		}
+	});
+
+	it("lets the reader arm either side from the panel", () => {
+		for (const key of ["auto_close_loss_pct", "auto_close_profit_pct"] as const) {
+			const knob = KNOBS.find((entry) => entry.key === key);
+			expect(knob).toBeDefined();
+			expect(knob?.min).toBe(0);
+			expect(knob?.max).toBeGreaterThan(0);
+		}
+	});
+
+	it("keeps the loss side inside the bound the executor validates", () => {
+		// Upstream refuses to boot above 100: you cannot lose more than the ticket.
+		const loss = KNOBS.find((entry) => entry.key === "auto_close_loss_pct");
+		expect(loss?.max).toBeLessThanOrEqual(100);
 	});
 });
 

@@ -9,6 +9,7 @@
  */
 
 import { z } from "zod";
+import { AUTO_CLOSE_SIM_EN, type AutoCloseSimStrings } from "@/copy-trade/auto-close-prose-en";
 import { CLUSTER_PAGE_EN, type ClusterPageProse } from "@/copy-trade/cluster/page-prose-en";
 import { CLUSTER_SIM_EN, type ClusterSimStrings } from "@/copy-trade/cluster/sim-prose-en";
 import { HUB_EN, type HubProse } from "@/copy-trade/hub-prose-en";
@@ -134,6 +135,15 @@ export function resolveSimUnits(locale: Locale): SimUnits {
 	return resolveProse({ sim: SIM_UNITS_EN }, OVERLAYS[locale]).sim;
 }
 
+/**
+ * Auto-close rail strings resolved for a locale. Shared by both walkthroughs:
+ * the rail is one implementation on both bots, so it gets one set of words.
+ */
+export function resolveAutoCloseSim(locale: Locale): AutoCloseSimStrings {
+	if (locale === "en") return AUTO_CLOSE_SIM_EN;
+	return resolveProse({ autoClose: AUTO_CLOSE_SIM_EN }, OVERLAYS[locale]).autoClose;
+}
+
 /** Cluster-simulator decision strings resolved for a locale. */
 export function resolveClusterSim(locale: Locale): ClusterSimStrings {
 	if (locale === "en") return CLUSTER_SIM_EN;
@@ -186,6 +196,7 @@ export function catalogEntries(): CatalogEntry[] {
 		methodology: METHODOLOGY_EN,
 		hub: HUB_EN,
 		sim: SIM_UNITS_EN,
+		autoClose: AUTO_CLOSE_SIM_EN,
 		cluster: { sim: CLUSTER_SIM_EN, page: CLUSTER_PAGE_EN },
 		wallet: { sim: WALLET_SIM_EN, page: WALLET_PAGE_EN },
 	});

@@ -38,6 +38,7 @@ export type ClusterPageProse = {
 		step12: string;
 		step13: string;
 		step14: string;
+		step15: string;
 		hardWired: string;
 		notClaiming: string;
 		notThis: string;
@@ -251,29 +252,74 @@ turns around. It does not wait for the others to agree.
   Them selling *more* of it is doubling down — the same opinion again, not a
   reversal — so it does not close us.
 
-Riding to resolution is only the fallback, for when nobody reverses first.
+Riding to resolution is the fallback, for when nobody reverses first.
 
-*This one is hard-wired. There is no setting for it.*`,
-		step10: `### 10. A failed exit is retried, not forgotten
+*The reversal rule itself is hard-wired. There is no setting for it — but since
+the next step landed, it is no longer the only way out.*`,
+		step10: `### 10. It also sells on its own numbers
+
+For its first months this agent had exactly two ways out: the crowd turns
+around, or the market resolves. There is now a third, and it does not ask the
+crowd anything.
+
+About once a minute it prices a full exit of every open position — what the best
+bid would actually pay, minus the exit fee, against what the ticket cost
+including the fee it paid going in. That reading is the whole rule. Down more
+than \`auto_close_loss_pct\` and it sells. Up more than \`auto_close_profit_pct\`
+and it sells.
+
+Reading it net of fees rather than off the price is the point. A $5 ticket that
+paid 15¢ to get in and would pay about that again to get out starts life roughly
+**6% down**. "How much of what I put in would I get back" is the question an
+operator actually has. "How far has the mid moved" is not.
+
+Four details make it a rail rather than a hair trigger:
+
+- **It wants the same answer twice.** One reading past the line arms it; the
+  next consecutive reading past the same line fires it. A single flickering
+  quote closes nothing.
+- **An unreadable book is not a reading.** No resting bid means no price a sale
+  could honestly happen at, so it skips that position for the minute and forgets
+  the breach it was holding. An auto-close is an order, not a screen row.
+- **It sells the whole position**, through the same exit path as everything
+  else, booking the reason as a stop-loss or a take-profit so the closes feed
+  can tell the two apart.
+- **The kill switch does not gate it.** Halting entries must never strand an
+  open position, so exits always flow.
+
+Both numbers are read at boot, which makes arming them an edit and a restart.
+Either one at \`0\` — or simply absent, which is how they parse — stands that
+side down.
+
+**Today both are absent.** The rail is deployed and armed on nothing; no
+position has ever closed this way. When we do arm it, the values stay
+unpublished. A live threshold is a number someone could trade against while the
+position is still open, which is exactly what the disclosure policy exists to
+prevent.
+
+One sharp edge, because arming is not a neutral act: a position already past a
+threshold when the service restarts closes within about two minutes. The
+procedure is to read the open book first.`,
+		step11: `### 11. A failed exit is retried, not forgotten
 
 An exit order can be refused just like an entry, and it used to vanish with one
 line in a log. Now we keep the event: **three attempts**, roughly a minute apart
 and widening, each one reported. If the third fails the agent says so loudly
 instead of going quiet. Replaying is safe. If the position closed in the
 meantime, the retry does nothing.`,
-		step11: `### 11. Nothing disappears quietly
+		step12: `### 12. Nothing disappears quietly
 
 We write down every skip and every refusal with its numbers: the limit the agent
 asked for, the price after grid rounding, the best price on the book, and how
 much size was sitting at our limit. Without those, "my limit was too tight" and
 "the book was too thin" look identical — and their fixes are opposites.`,
-		step12: `### 12. It goes around again
+		step13: `### 13. It goes around again
 
 Sold, cash back, room free, next signal. One position per crowd, never two, and
 it never re-enters a crowd it has already closed. On a first-ever start it
 begins at the newest alert instead of replaying the whole history into a live
 wallet.`,
-		step13: `### 13. Once a week it sweeps the profit
+		step14: `### 14. Once a week it sweeps the profit
 
 It counts the profit it booked and sends the surplus above the **$5** floor to
 the payout address (\`profit_destination\`). It pays only if that address is on
@@ -282,7 +328,7 @@ clears the **$1** dust threshold (\`dust_threshold_usdc\`), and only if at least
 **2 POL** of gas is left (\`gas_reserve_pol\`). With no gas it could not close a
 position, so the payout is the thing that gives way. A losing week pays out
 nothing. The first payout ever made needs a human to say yes.`,
-		step14: `### 14. The big red button
+		step15: `### 15. The big red button
 
 At any moment the kill switch (\`kill_switch\`) stops the agent **buying** anything
 new — while it keeps watching and closing whatever is already open. It stops
@@ -291,7 +337,9 @@ writes each would-be order to a file instead of sending it.`,
 		hardWired: `## What is hard-wired, and not a setting
 
 - **"First skilled wallet reverses → we are out."** Fixed logic, with resolution
-  as the backstop. There is no take-profit and no stop-loss to tune.
+  as the backstop. The stop-loss and take-profit thresholds are numbers you can
+  turn; that they confirm over two readings, sell the whole position and ignore
+  the kill switch is not.
 - **Selling is copied by buying the other outcome.** Whether and how a selling
   crowd gets mirrored is fixed; there is no "only copy buys" switch.
 - **One position per crowd**, and no re-entry into a crowd already closed.
@@ -328,7 +376,11 @@ numbers.
 - **Money recovered does not justify the price ceiling.** The four positions it
   would have refused are worth about **5 cents** between them. We buy it as
   insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a
-  measured loss. Do not read it as one.`,
+  measured loss. Do not read it as one.
+- **The auto-close rail has never fired.** It shipped disarmed on purpose, so
+  step 10 describes a mechanism with a live record of exactly nothing. Its
+  arithmetic is tested against the same evaluator the agent runs, which is a
+  different claim from knowing how it behaves against real books.`,
 		notThis: `## What this page is not
 
 These are operating parameters for our own small agent, published in the same

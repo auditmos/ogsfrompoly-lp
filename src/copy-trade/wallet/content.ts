@@ -62,6 +62,7 @@ export function walletContentFor(locale: Locale): WalletContent {
 		sections.step10,
 		sections.step11,
 		sections.step12,
+		sections.step13,
 	].join("\n\n");
 	const closing = [
 		sections.hardWired,

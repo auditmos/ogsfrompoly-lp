@@ -97,6 +97,8 @@ describe("knob definitions", () => {
 			slippage_pct: 1,
 			slippage_min_ticks: 2,
 			trim_close_fraction: 0.5,
+			auto_close_loss_pct: 0,
+			auto_close_profit_pct: 0,
 		});
 	});
 
@@ -109,6 +111,40 @@ describe("knob definitions", () => {
 				expect(knob.yamlKey).toBe(knob.key);
 			}
 		}
+	});
+});
+
+/**
+ * The rail is identical on both bots, so this mirrors the cluster suite: it
+ * ships disarmed, `0` reads as off rather than as a threshold, and the two
+ * sliders stay out of the entry panel.
+ */
+describe("auto-close thresholds", () => {
+	it("ships disarmed, mirroring a YAML that carries neither key", () => {
+		expect(WALLET_LIVE_CONFIG.auto_close_loss_pct).toBe(0);
+		expect(WALLET_LIVE_CONFIG.auto_close_profit_pct).toBe(0);
+	});
+
+	it("renders a disarmed side as off rather than as a threshold of zero", () => {
+		expect(formatWalletKnobValue("pct_limit", 0)).toBe("off");
+		expect(formatWalletKnobValue("pct_limit", 25)).toBe("25%");
+	});
+
+	it("groups both thresholds with the other exit knobs", () => {
+		const exitKeys = walletKnobsInGroup("exit").map((knob) => knob.key);
+		expect(exitKeys).toContain("auto_close_loss_pct");
+		expect(exitKeys).toContain("auto_close_profit_pct");
+
+		const entryKeys = WALLET_ENTRY_GROUP_ORDER.flatMap((group) => walletKnobsInGroup(group)).map(
+			(knob) => knob.key,
+		);
+		expect(entryKeys).not.toContain("auto_close_loss_pct");
+		expect(entryKeys).not.toContain("auto_close_profit_pct");
+	});
+
+	it("keeps the loss side inside the bound the executor validates", () => {
+		const loss = WALLET_KNOBS.find((entry) => entry.key === "auto_close_loss_pct");
+		expect(loss?.max).toBeLessThanOrEqual(100);
 	});
 });
 

@@ -20,6 +20,7 @@
  * page prose — each has its own boundary.
  */
 
+import { resolveAutoCloseSim, resolveSimUnits } from "@/i18n/catalog";
 import {
 	AUTO_CLOSE_SCENARIOS,
 	type AutoCloseDecision,
@@ -27,6 +28,7 @@ import {
 	type AutoCloseThresholds,
 	autoCloseReadings,
 	type ClosePlan,
+	describeAutoClose,
 	evaluateAutoClose,
 	FRESH_STREAK,
 	netRealizablePct,
@@ -34,6 +36,7 @@ import {
 	runAutoClosePath,
 } from "./auto-close";
 import fixturesJson from "./auto-close-fixtures.json";
+import { AUTO_CLOSE_SIM_EN } from "./auto-close-prose-en";
 
 interface FixtureTick {
 	tick: number;
@@ -357,6 +360,96 @@ describe("AUTO_CLOSE_SCENARIOS", () => {
 			expect(result.decision).toBe("none");
 			expect(result.closeTick).toBeNull();
 		}
+	});
+});
+
+describe("describeAutoClose", () => {
+	const DRIFTS_DOWN = AUTO_CLOSE_SCENARIOS[0];
+	const RUNS_UP = AUTO_CLOSE_SCENARIOS[1];
+	const WHIPSAW = AUTO_CLOSE_SCENARIOS[2];
+	const BOOK_GAP = AUTO_CLOSE_SCENARIOS[3];
+
+	it("says the rail is disarmed when the live config is what it reads", () => {
+		const view = describeAutoClose({ lossPct: 0, profitPct: 0 }, DRIFTS_DOWN);
+
+		expect(view.action).toBe("disarmed");
+		expect(view.rows.every((row) => !row.closed)).toBe(true);
+	});
+
+	it("prints a row per tick, and stops printing at the close", () => {
+		const view = describeAutoClose({ lossPct: 25, profitPct: 0 }, DRIFTS_DOWN);
+
+		expect(view.action).toBe("stop_loss");
+		expect(view.rows).toHaveLength(4);
+		expect(view.rows.at(-1)?.closed).toBe(true);
+	});
+
+	it("takes profit on the winning path", () => {
+		expect(describeAutoClose({ lossPct: 0, profitPct: 40 }, RUNS_UP).action).toBe("take_profit");
+	});
+
+	it("holds a path that crosses the line once and comes back", () => {
+		const view = describeAutoClose({ lossPct: 25, profitPct: 0 }, WHIPSAW);
+
+		expect(view.action).toBe("held");
+		expect(view.rows.some((row) => row.state === AUTO_CLOSE_SIM_EN.stateArmed)).toBe(true);
+	});
+
+	it("marks an unreadable book as a skip rather than as a reading", () => {
+		const view = describeAutoClose({ lossPct: 25, profitPct: 0 }, BOOK_GAP);
+
+		const gap = view.rows[1];
+		expect(gap?.quotable).toBe(false);
+		expect(gap?.state).toBe(AUTO_CLOSE_SIM_EN.stateNoBid);
+		expect(view.action).toBe("held");
+	});
+
+	it("names the position the reader is watching, fees and all", () => {
+		const view = describeAutoClose({ lossPct: 25, profitPct: 0 }, DRIFTS_DOWN);
+
+		expect(view.position).toContain("$5");
+		expect(view.position).toContain("$0.4");
+		expect(view.position).toContain("12.5 shares");
+	});
+
+	// The decision path never reads the locale bundle — every locale walks the
+	// identical checks, and only the words around the numbers change.
+	it.each([["pl"], ["es"]] as const)("decides identically in %s", (locale) => {
+		const sim = {
+			locale,
+			units: resolveSimUnits(locale),
+			strings: resolveAutoCloseSim(locale),
+		};
+		const thresholds = { lossPct: 25, profitPct: 40 };
+
+		for (const scenario of AUTO_CLOSE_SCENARIOS) {
+			const localized = describeAutoClose(thresholds, scenario, sim);
+			const english = describeAutoClose(thresholds, scenario);
+
+			expect(localized.action).toBe(english.action);
+			expect(localized.rows).toHaveLength(english.rows.length);
+			expect(localized.rows.map((row) => row.closed)).toEqual(
+				english.rows.map((row) => row.closed),
+			);
+		}
+	});
+
+	it.each([["pl"], ["es"]] as const)("speaks %s rather than falling back to English", (locale) => {
+		const sim = {
+			locale,
+			units: resolveSimUnits(locale),
+			strings: resolveAutoCloseSim(locale),
+		};
+
+		const localized = describeAutoClose(
+			{ lossPct: 25, profitPct: 0 },
+			AUTO_CLOSE_SCENARIOS[0],
+			sim,
+		);
+		const english = describeAutoClose({ lossPct: 25, profitPct: 0 }, AUTO_CLOSE_SCENARIOS[0]);
+
+		expect(localized.headline).not.toBe(english.headline);
+		expect(localized.detail).not.toBe(english.detail);
 	});
 });
 

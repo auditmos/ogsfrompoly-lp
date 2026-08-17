@@ -179,3 +179,58 @@ describe("clusterContentFor", () => {
 		expect(md).not.toContain("github.com/auditmos/ogsfrompoly");
 	});
 });
+
+/**
+ * Issue #77: the rail the agent actually runs has to reach the page, in every
+ * locale, without the operator's thresholds reaching it too.
+ */
+describe("auto-close rail", () => {
+	it.each([["en"], ["pl"], ["es"]] as const)("describes the rail in the %s twin", (locale) => {
+		const md = clusterMarkdownFor(locale);
+
+		// YAML keys are never translated, so they identify the section in any locale.
+		expect(md).toContain("`auto_close_loss_pct`");
+		expect(md).toContain("`auto_close_profit_pct`");
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("publishes both thresholds as off in the %s knob table", (locale) => {
+		const md = clusterMarkdownFor(locale);
+		const fmt = formattersFor(locale, resolveSimUnits(locale));
+		const page = resolveClusterPage(locale);
+		const off = resolveSimUnits(locale).off;
+
+		for (const key of ["auto_close_loss_pct", "auto_close_profit_pct"] as const) {
+			expect(md).toContain(`| ${page.knobs[key]} | \`${key}\` | ${off} |`);
+			// Belt and braces: whatever the formatter does, it is not a percentage.
+			expect(md).not.toContain(`| \`${key}\` | ${fmt.pct(30)} |`);
+		}
+	});
+
+	it("no longer claims the agent has no stop-loss or take-profit", () => {
+		// The sentence this page shipped with for months, now false.
+		expect(copyTradeMarkdown).not.toContain("no take-profit and no stop-loss to tune");
+		expect(copyTradeMarkdown).not.toContain("There is no setting for it.*");
+	});
+
+	it("names the rail as deployed and disarmed rather than as a plan", () => {
+		expect(copyTradeMarkdown).toContain("Today both are absent");
+		expect(copyTradeMarkdown).toContain("has ever closed this way");
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("keeps every step heading in order in the %s twin", (locale) => {
+		// Renumbering shifted five steps; a heading left behind would read as a
+		// gap or a duplicate.
+		const md = clusterMarkdownFor(locale);
+		const numbers = [...md.matchAll(/^### (\d+)\./gm)].map((match) => Number(match[1]));
+
+		expect(numbers).toEqual(Array.from({ length: 15 }, (_, index) => index + 1));
+	});
+});

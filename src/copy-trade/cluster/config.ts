@@ -37,7 +37,9 @@ export type KnobKey =
 	| "working_capital_floor_usdc"
 	| "gas_reserve_pol"
 	| "slippage_pct"
-	| "slippage_min_ticks";
+	| "slippage_min_ticks"
+	| "auto_close_loss_pct"
+	| "auto_close_profit_pct";
 
 export type KnobValues = Record<KnobKey, number>;
 
@@ -66,6 +68,12 @@ export const LIVE_CONFIG: KnobValues = {
 	gas_reserve_pol: 2,
 	slippage_pct: 1,
 	slippage_min_ticks: 2,
+	// Both `0` because `config/copy_trade.yml` carries neither key: the
+	// auto-close rail is deployed and deliberately disarmed. Arming it is an
+	// operator act, and the values chosen are never published — see the
+	// disclosure policy on the methodology page.
+	auto_close_loss_pct: 0,
+	auto_close_profit_pct: 0,
 };
 
 /**
@@ -86,13 +94,15 @@ export const LIVE_CONFIG: KnobValues = {
 export type KnobUnit =
 	| "usdc"
 	| "pct"
+	/** A percentage that can be stood down, where `0` reads as off. */
+	| "pct_limit"
 	| "fraction"
 	| "price"
 	| "count"
 	| "seconds"
 	| "pol"
 	| "steps";
-export type KnobGroup = "gate" | "size" | "execution";
+export type KnobGroup = "gate" | "size" | "execution" | "exit";
 
 export interface Knob {
 	readonly key: KnobKey;
@@ -110,9 +120,19 @@ export const KNOB_GROUP_LABELS: Record<KnobGroup, string> = {
 	gate: "Should I touch this at all?",
 	size: "How much can I put at risk?",
 	execution: "How do I get filled?",
+	exit: "When do I get out on my own numbers?",
 };
 
+/** Groups the entry panel renders, in the order the executor asks them. */
 export const KNOB_GROUP_ORDER: readonly KnobGroup[] = ["gate", "size", "execution"];
+
+/**
+ * Groups the exit widget renders. Split from the entry order rather than
+ * appended to it: the auto-close thresholds judge a position the bot already
+ * holds, and putting their sliders among the entry rails would suggest they
+ * have a say in whether it buys.
+ */
+export const EXIT_GROUP_ORDER: readonly KnobGroup[] = ["exit"];
 
 export const KNOBS = [
 	{
@@ -251,6 +271,28 @@ export const KNOBS = [
 		min: 0,
 		max: 6,
 		step: 1,
+	},
+	{
+		key: "auto_close_loss_pct",
+		group: "exit",
+		label: "Sell if the position is down more than",
+		unit: "pct_limit",
+		min: 0,
+		// The executor refuses to boot above 100: a position cannot lose more than
+		// the ticket, so a larger number is a threshold nothing can reach.
+		max: 100,
+		step: 5,
+	},
+	{
+		key: "auto_close_profit_pct",
+		group: "exit",
+		label: "Sell if it is up more than",
+		unit: "pct_limit",
+		min: 0,
+		// No upper bound upstream — a cheap outcome can multiply many times over.
+		// 200 is where the slider stops being useful, not where the rule does.
+		max: 200,
+		step: 5,
 	},
 ] as const satisfies readonly Knob[];
 
@@ -514,6 +556,8 @@ export function formatKnobValue(
 			return fmt.usd(value);
 		case "pct":
 			return fmt.pct(value);
+		case "pct_limit":
+			return fmt.pctLimit(value);
 		case "fraction":
 			return fmt.fraction(value);
 		case "price":

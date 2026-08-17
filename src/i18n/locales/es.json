@@ -1,567 +1,319 @@
 {
-	"meta.title": {
-		"translation": "ogsfrompoly — traders con habilidad real en Polymarket",
-		"sourceHash": "c232326e"
-	},
-	"meta.description": {
-		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
-		"sourceHash": "983ff027"
-	},
-	"hero.heading": {
-		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
-		"sourceHash": "983ff027"
-	},
-	"hero.intro": {
-		"translation": "Mantenemos los libros abiertos. El historial de la estrategia y el P&L del proyecto. Solo números agregados. IDs de carteras truncados. Sin alfa en vivo, sin registro, sin newsletter — solo RSS y un feed en markdown que tu agente puede leer.",
-		"sourceHash": "203956b7"
-	},
-	"install.eyebrow": {
-		"translation": "Instálalo para tu agente LLM",
-		"sourceHash": "591ebb40"
-	},
-	"install.caption": {
-		"translation": "Inyecta el llms.txt del proyecto en el contexto de tu agente",
-		"sourceHash": "eb382b81"
-	},
-	"latest.eyebrow": {
-		"translation": "Último informe",
-		"sourceHash": "4d09725b"
-	},
-	"latest.viewAll": {
-		"translation": "Ver todos los informes →",
-		"sourceHash": "b0171481"
-	},
-	"skin.eyebrow": {
-		"translation": "Nos jugamos nuestro propio dinero",
-		"sourceHash": "7f81645e"
-	},
-	"skin.body": {
-		"translation": "Dos pequeños agentes operan con dinero real junto al registro. Uno sigue a un grupo de carteras hábiles. El otro replica a dos traders elegidos a mano. Cada regla y cada ajuste en vivo en lenguaje llano, con un simulador que puedes arrastrar.",
-		"sourceHash": "afc5b4e8"
-	},
-	"skin.cta": {
-		"translation": "Copy trading para dummies →",
-		"sourceHash": "c4f9add0"
-	},
-	"methodology.title": {
-		"translation": "Metodología",
-		"sourceHash": "7a2321b0"
-	},
-	"methodology.description": {
-		"translation": "Cómo ogsfrompoly separa la habilidad de la suerte en Polymarket. Cómo puntúa las alertas pasadas. Cómo decide qué es seguro publicar.",
-		"sourceHash": "5f9e0cfd"
-	},
-	"methodology.note": {
-		"translation": "Esta página es una traducción. Si algo difiere, manda el original en inglés, incluida su política de divulgación.",
-		"sourceHash": "e1322d27"
-	},
-	"methodology.sections.intro": {
-		"translation": "ogsfrompoly plantea una pregunta estrecha:\n\n> **¿Qué carteras de Polymarket siguen pareciendo hábiles cuando le quitas la\n> suerte — y siguen funcionando sus movimientos cuando los puntuamos después?**\n\nPublicamos la respuesta a posteriori, como un marcador. No publicamos ideas de\ntrading en vivo, ni posiciones abiertas, ni rankings de carteras.",
-		"sourceHash": "1442e11c"
-	},
-	"methodology.sections.scope": {
-		"translation": "## Alcance actual\n\nEl historial público cubre un área de Polymarket:\n\n- **Macro/Finanzas** - macro, tipos de interés, datos económicos, FOMC,\n  resultados empresariales y mercados de Polymarket con etiqueta financiera.\n\nLa estrechez es a propósito. No perseguimos cobertura de categorías.\nConstruimos un rastro de auditoría limpio: carteras hábiles, alertas puntuadas\na posteriori y resultados que el lector puede verificar más tarde.",
-		"sourceHash": "ae1ea60f"
-	},
-	"methodology.sections.qualify": {
-		"translation": "## Cómo se califica una cartera\n\nUna cartera necesita suficiente historial resuelto para poder someterla a\nprueba. Aquí un **evento** es una pregunta del mundo real que Polymarket\nliquida. Una pregunta puede llevar muchos mercados, resultados, ejecuciones o\nposiciones sueltas en tokens, y aun así cuenta una vez. El listón son al menos 20\neventos resueltos dentro del período de medición.\n\nSolo cuentan los mercados resueltos. Ignoramos las posiciones abiertas. Para\ncada cartera elegible construimos una serie de **only-realized PnL**: un número\nde pérdidas y ganancias por evento resuelto.\n\nAgrupamos a nivel de evento porque una predicción puede abarcar muchas\nejecuciones o mercados. Cuenta cada ejecución como su propia decisión y una\nposición empieza a parecer una docena de apuestas independientes. Agrupar\nmantiene la prueba en lo que nos importa: ¿eligió esta cartera el lado\ncorrecto, una y otra vez, en preguntas que ya se liquidaron?",
-		"sourceHash": "7078b298"
-	},
-	"methodology.sections.skillTest": {
-		"translation": "## La prueba de habilidad\n\nMedimos la habilidad con una prueba de **aleatorización de signos** a nivel de\nevento.\n\nPara cada cartera elegible, las entradas son:\n\n- `n` = número de eventos resueltos de la cartera.\n- `x_i` = el PnL realizado de la cartera en el evento `i`.\n- `A = sum(x_i)` = el PnL total realizado real de la cartera.\n- `B = 1,000 simulations` = el tamaño de la corrida de aleatorización.\n\nCada simulación conserva el tamaño del resultado de cada evento pero\naleatoriza el signo. En la simulación `j`, cada evento recibe un signo\naleatorio:\n\n`s_{j,i} in {-1, +1}`\n\nEl total simulado sin habilidad es:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nEl p-valor es:\n\n`p = count(T_j >= A) / B`\n\nEn palabras, el p-valor responde:\n\n«Si esta cartera solo estuviera adivinando, ¿con qué frecuencia unos giros de\nsigno aleatorios igualarían o superarían su total real?»\n\nLlamamos hábil a una cartera solo cuando ese p-valor supera el umbral\nprerregistrado: `p <= 0.05`. Un PnL bruto grande no basta.",
-		"sourceHash": "520a92e2"
-	},
-	"methodology.sections.controls": {
-		"translation": "## Controles antes de publicar\n\nEl marcador público mide señal repetible del trader. No debe medir el trasiego\nde direcciones ni artefactos de microestructura de mercado.\n\nAntes de que una cartera llegue al registro publicado, la revisamos. Buscamos\ncarteras que se mueven como una manada coordinada, la misma contraparte al\notro lado una y otra vez, y operaciones que parecen wash trading. Eliminamos o\ndegradamos la señal que no pasa.",
-		"sourceHash": "f6780ef4"
-	},
-	"methodology.sections.scoring": {
-		"translation": "## Cómo puntuamos las alertas\n\nLos informes semanales puntúan el período a posteriori. Reportan:\n\n- total de alertas\n- hit rate de resueltos\n- PnL hipotético\n- mezcla de categorías\n- un pequeño conjunto de IDs opacos de carteras cuando ayuda a la auditoría\n\nLos informes mensuales añaden el lado empresarial del proyecto: ingresos,\ngastos operativos, resultado neto y runway.\n\nLa categoría publicada es **macro-finance**. Todo lo que queda fuera del\nalcance público desaparece de las páginas de informes. Nunca lo fusionamos con\notra categoría.\n\nCada informe mira hacia atrás. Publicamos si las señales pasadas funcionaron.\nNo publicamos nada sobre una operación en curso.",
-		"sourceHash": "be962336"
-	},
-	"methodology.sections.skin": {
-		"translation": "## Skin in the game: dos pequeños agentes en vivo\n\nEl marcador mira hacia atrás. El dinero no. Dos agentes operan en vivo detrás de\nnuestras propias señales, con tickets diminutos de **$5**:\n\n- **Cluster copy** (en vivo desde julio de 2026) compra solo cuando varias\n  carteras hábiles caen del mismo lado del mismo mercado a la vez, en\n  operaciones separadas.\n- **Wallet copy** (en vivo desde agosto de 2026) replica dos carteras\n  individuales del roster hábil, cada una publicada solo bajo una etiqueta\n  opaca.\n\nDocumentamos ambos en lenguaje llano en [copy trading para dummies](/for-dummies):\ncada regla, cada ajuste en vivo y un simulador que puedes arrastrar. Sus\nresultados realizados llegan a los informes mensuales como efectivo. Cada\nsemana barremos el beneficio a una cartera de recolección y lo contamos como\ningreso cuando aterriza. No publicamos nada de una posición de agente mientras esa\nposición está abierta.",
-		"sourceHash": "34cab2e2"
-	},
-	"methodology.sections.academicIntro": {
-		"translation": "## Fundamento académico\n\nLa metodología se apoya en dos artículos de 2026 sobre habilidad, persistencia\nde los traders y resultados en mercados de predicción:",
-		"sourceHash": "c4e7c014"
-	},
-	"methodology.sections.academicOutro": {
-		"translation": "Ambos artículos apuntan a la misma lección. El PnL realizado a corto plazo es\nun proxy débil de la habilidad. Una cartera puede tener suerte. Una cartera con\nsuerte puede dejar de ganar.\n\nPor eso ogsfrompoly empieza con una prueba estadística de habilidad. Luego\npublica, en el historial abierto, si esas señales funcionaron.",
-		"sourceHash": "ba5eeddc"
-	},
-	"methodology.sections.disclosure": {
-		"translation": "## Política de divulgación\n\nSomos abiertos sobre la metodología y los resultados agregados. Somos cerrados\nsobre cualquier cosa que permita hacer front-running a una posición o exponer a\nun trader concreto.\n\nEstas reglas aplican a la página HTML renderizada, al feed `.md` en crudo, al\nRSS y a `llms.txt`.\n\n- **Las carteras aparecen solo como IDs truncados y opacos** — p. ej.\n  `wallet_a3f8`. Nunca publicamos una dirección EVM completa. Los IDs\n  truncados no llevan de vuelta a una identidad on-chain, por diseño.\n- **Nada de alfa en vivo. Nunca.** Jamás publicamos una alerta en vivo, una\n  posición aún abierta ni nada que un lector pueda usar para adelantarse a una\n  operación en curso. Publicamos los resultados a posteriori y agregados.\n- **Sin leaderboards.** Nunca clasificamos carteras nombradas entre sí.\n  Publicamos la cohorte de estrategia, no la dirección.\n- **Sin exportes crudos del almacén.** Solo conteos agregados, hit rates y\n  distribuciones de categorías — nunca nada que permita reconstruir el\n  historial de una cartera individual.\n- **Sin direcciones de agentes ni de líderes.** Los agentes de copia operan desde sus\n  propias carteras. Míralas en tiempo real y verás nuestras posiciones\n  abiertas. Por eso nunca publicamos sus cuentas de trading, sus direcciones de\n  cobro ni las carteras líder que replican. Los líderes aparecen solo bajo\n  etiquetas opacas (p. ej. `leader-a`). Nunca nombramos el mercado de una\n  posición abierta de un agente.\n\nCuando una cifra publicada roza el límite, la retrasamos 30+ días o\nanonimizamos la categoría. Ante la duda, no publicamos.",
-		"sourceHash": "9152e47c"
-	},
-	"methodology.sections.notThis": {
-		"translation": "## Qué no es esto\n\nogsfrompoly no es una recomendación de inversión, un servicio de señales de\ntrading ni una promesa de que alguna cartera seguirá ganando.\n\nEs un rastro de auditoría de un método. Encuentra carteras cuyo historial\nresuelto no parezca signos aleatorios. Puntúa sus alertas a posteriori, en las\ncategorías que publicamos. Muestra los resultados.",
-		"sourceHash": "83829217"
-	},
-	"hub.title": {
-		"translation": "Copy trading para dummies",
-		"sourceHash": "a4ab9276"
-	},
-	"hub.description": {
-		"translation": "Dos pequeños agentes operan con cantidades diminutas de dinero real junto al historial publicado. Uno sigue a un grupo de carteras hábiles. El otro replica a dos traders elegidos a mano. Elige una guía. Cada una explica todas las reglas en lenguaje llano y te deja jugar con los ajustes en vivo.",
-		"sourceHash": "98946f99"
-	},
-	"hub.eyebrow": {
-		"translation": "para dummies",
-		"sourceHash": "0f509a28"
-	},
-	"hub.heading": {
-		"translation": "Dos agentes. Dos preguntas.",
-		"sourceHash": "0d2b5c4c"
-	},
-	"hub.choose": {
-		"translation": "Elige una guía",
-		"sourceHash": "f1d9fb75"
-	},
-	"hub.read": {
-		"translation": "Lee la guía →",
-		"sourceHash": "533033e2"
-	},
-	"hub.sideBySide": {
-		"translation": "Lado a lado",
-		"sourceHash": "6f659592"
-	},
-	"hub.sharedNote": {
-		"translation": "Todo lo demás es ADN compartido. Solo mercados Macro. Tickets de $5 todo-o-nada sobre la propia rejilla de precios del exchange. Los mismos raíles de liquidez y tiempo. El mismo raíl para un precio que ya corrió. Un suelo de gasto de $5. Interruptores de emergencia que detienen las compras pero nunca las ventas. Un barrido semanal de beneficios. Cada descarte anotado con sus números.",
-		"sourceHash": "eab18a80"
-	},
-	"hub.mdRead": {
-		"translation": "Lee la guía completa en {href} — o como markdown en {mdHref}.",
-		"sourceHash": "2e3e3ba2"
-	},
-	"hub.advice.lead": {
-		"translation": "Ninguna página es un consejo. Nunca publicamos ninguna cartera —",
-		"sourceHash": "d0c290f1"
-	},
-	"hub.advice.link": {
-		"translation": "metodología y divulgación",
-		"sourceHash": "b3a8abdb"
-	},
-	"hub.advice.md": {
-		"translation": "Ninguna página es un consejo ni un servicio de señales. Nunca publicamos ninguna\ncartera involucrada en cualquiera de los agentes. Ver la [metodología y política de divulgación]({methodologyHref}).",
-		"sourceHash": "88b6b844"
-	},
-	"hub.facts.follows": {
-		"translation": "sigue a",
-		"sourceHash": "ee8061b9"
-	},
-	"hub.facts.fires": {
-		"translation": "dispara cuando",
-		"sourceHash": "75b99b42"
-	},
-	"hub.facts.leaves": {
-		"translation": "sale cuando",
-		"sourceHash": "fedbb877"
-	},
-	"hub.facts.ticket": {
-		"translation": "ticket",
-		"sourceHash": "6517b3e5"
-	},
-	"hub.cluster.name": {
-		"translation": "Copia a la multitud",
-		"sourceHash": "673a1776"
-	},
-	"hub.cluster.tagline": {
-		"translation": "Espera al menos tres carteras hábiles del mismo lado de la misma apuesta, en operaciones separadas. Entonces compra $5. Una cartera es una opinión. Tres llegando por separado son información.",
-		"sourceHash": "6a08f349"
-	},
-	"hub.cluster.follows": {
-		"translation": "cualquier multitud de nuestro roster hábil",
-		"sourceHash": "92b63225"
-	},
-	"hub.cluster.fires": {
-		"translation": "3+ carteras coinciden a la vez",
-		"sourceHash": "ae369683"
-	},
-	"hub.cluster.leaves": {
-		"translation": "la primera de ellas se da la vuelta",
-		"sourceHash": "abd7061e"
-	},
-	"hub.cluster.ticket": {
-		"translation": "$5, todo o nada",
-		"sourceHash": "a8fd269d"
-	},
-	"hub.wallet.name": {
-		"translation": "Copia al trader",
-		"sourceHash": "7002ce19"
-	},
-	"hub.wallet.tagline": {
-		"translation": "Sigue como una sombra a dos traders hábiles elegidos a mano e ignora casi todo lo que hacen. Entonces uno compromete dinero serio en una apuesta nueva. Coloca una pequeña copia en su propia cuenta separada.",
-		"sourceHash": "a12415f7"
-	},
-	"hub.wallet.follows": {
-		"translation": "dos líderes con nombre, anonimizados",
-		"sourceHash": "68309c83"
-	},
-	"hub.wallet.fires": {
-		"translation": "un líder apuesta por encima de su propio listón",
-		"sourceHash": "e8f30341"
-	},
-	"hub.wallet.leaves": {
-		"translation": "el líder deshace la mitad, se gira o cierra",
-		"sourceHash": "e63fb7ce"
-	},
-	"hub.wallet.ticket": {
-		"translation": "$5, todo o nada",
-		"sourceHash": "a8fd269d"
-	},
-	"hub.compare.signal.label": {
-		"translation": "Una señal es",
-		"sourceHash": "0e71a388"
-	},
-	"hub.compare.signal.cluster": {
-		"translation": "3+ carteras hábiles del mismo lado, en operaciones separadas",
-		"sourceHash": "56811e67"
-	},
-	"hub.compare.signal.wallet": {
-		"translation": "una apuesta nueva de un líder cruzando su propio listón de convicción ($500 / $100)",
-		"sourceHash": "e59af184"
-	},
-	"hub.compare.guard.label": {
-		"translation": "Su guarda extra",
-		"sourceHash": "b9c2e81e"
-	},
-	"hub.compare.guard.cluster": {
-		"translation": "un miembro de la multitud en el otro lado dentro de 10 minutos anula la multitud",
-		"sourceHash": "0a5b3984"
-	},
-	"hub.compare.guard.wallet": {
-		"translation": "un líder operando ambos lados de la apuesta en 48 horas queda descartado",
-		"sourceHash": "9a7cce52"
-	},
-	"hub.compare.fees.label": {
-		"translation": "Raíl de comisiones",
-		"sourceHash": "0848e675"
-	},
-	"hub.compare.fees.cluster": {
-		"translation": "sí — en la práctica un precio mínimo de $0.60",
-		"sourceHash": "c8450f4a"
-	},
-	"hub.compare.fees.wallet": {
-		"translation": "ninguno, y su página lo dice claramente",
-		"sourceHash": "30315294"
-	},
-	"hub.compare.exit.label": {
-		"translation": "Sale cuando",
-		"sourceHash": "e8f7f617"
-	},
-	"hub.compare.exit.cluster": {
-		"translation": "la primera cartera de la multitud se da la vuelta",
-		"sourceHash": "67d5abd9"
-	},
-	"hub.compare.exit.wallet": {
-		"translation": "el líder deshace la mitad de su pico, se gira o cierra",
-		"sourceHash": "ebc73c5e"
-	},
-	"hub.compare.money.label": {
-		"translation": "Dinero",
-		"sourceHash": "b34b4bef"
-	},
-	"hub.compare.money.cluster": {
-		"translation": "su propio fondo, como máximo $20 abiertos",
-		"sourceHash": "4eb6bfab"
-	},
-	"hub.compare.money.wallet": {
-		"translation": "su propia cuenta separada, como máximo $20 abiertos",
-		"sourceHash": "c524835f"
-	},
-	"hub.compare.liveSince.label": {
-		"translation": "En vivo desde",
-		"sourceHash": "982b96a5"
-	},
-	"hub.compare.liveSince.cluster": {
-		"translation": "julio de 2026",
-		"sourceHash": "b3a0905b"
-	},
-	"hub.compare.liveSince.wallet": {
-		"translation": "11 de agosto de 2026",
-		"sourceHash": "ddf6ecac"
-	},
-	"sim.usd": {
-		"translation": "${n}",
-		"sourceHash": "aa0612ed"
-	},
-	"sim.pct": {
-		"translation": "{n} %",
-		"sourceHash": "592614a2"
-	},
-	"sim.share.one": {
-		"translation": "{n} participación",
-		"sourceHash": "5b70c06c"
-	},
-	"sim.share.few": {
-		"translation": "{n} participaciones",
-		"sourceHash": "117e70cd"
-	},
-	"sim.share.many": {
-		"translation": "{n} participaciones",
-		"sourceHash": "117e70cd"
-	},
-	"sim.step.one": {
-		"translation": "{n} paso",
-		"sourceHash": "5e2d7873"
-	},
-	"sim.step.few": {
-		"translation": "{n} pasos",
-		"sourceHash": "4193e800"
-	},
-	"sim.step.many": {
-		"translation": "{n} pasos",
-		"sourceHash": "4193e800"
-	},
-	"sim.wallet.one": {
-		"translation": "{n} cartera",
-		"sourceHash": "4f85c1a8"
-	},
-	"sim.wallet.few": {
-		"translation": "{n} carteras",
-		"sourceHash": "0a902bc1"
-	},
-	"sim.wallet.many": {
-		"translation": "{n} carteras",
-		"sourceHash": "0a902bc1"
-	},
-	"sim.skilledWallet.one": {
-		"translation": "{n} cartera hábil",
-		"sourceHash": "2f907098"
-	},
-	"sim.skilledWallet.few": {
-		"translation": "{n} carteras hábiles",
-		"sourceHash": "cb61c1f1"
-	},
-	"sim.skilledWallet.many": {
-		"translation": "{n} carteras hábiles",
-		"sourceHash": "cb61c1f1"
-	},
-	"sim.minutes": {
-		"translation": "{n} min",
-		"sourceHash": "a12685fa"
-	},
-	"sim.hours": {
-		"translation": "{n} h",
-		"sourceHash": "9e268141"
-	},
-	"sim.days": {
-		"translation": "{n} d",
-		"sourceHash": "9a267af5"
-	},
-	"sim.off": {
-		"translation": "desact.",
-		"sourceHash": "ab3a8a0a"
-	},
-	"cluster.sim.gates.crowd.question": {
-		"translation": "¿Está de acuerdo un grupo, y no un solo trader?",
-		"sourceHash": "490475d1"
-	},
-	"cluster.sim.gates.crowd.because": {
-		"translation": "Solo lo operaron {wallets}, por debajo de las {threshold} que hacen falta para ser un grupo — así que no salta ninguna alerta, el ejecutor no lo ve y nada queda registrado.",
-		"sourceHash": "55b773b9"
-	},
-	"cluster.sim.gates.room.question": {
-		"translation": "¿Tengo sitio bajo mi tope?",
-		"sourceHash": "ca2c72ff"
-	},
-	"cluster.sim.gates.room.actual": {
-		"translation": "{open} abiertos + {size}",
-		"sourceHash": "511d479d"
-	},
-	"cluster.sim.gates.room.because": {
-		"translation": "Ya hay {open} abiertos; otro ticket de {size} rompería el tope de {cap}.",
-		"sourceHash": "863f03f3"
-	},
-	"cluster.sim.gates.liquidity.question": {
-		"translation": "¿Hay alguien aquí con quien operar?",
-		"sourceHash": "61d03dbb"
-	},
-	"cluster.sim.gates.liquidity.because": {
-		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
-		"sourceHash": "4f2ea6bd"
-	},
-	"cluster.sim.gates.timing.question": {
-		"translation": "¿Está este mercado a punto de terminar?",
-		"sourceHash": "d23cb86d"
-	},
-	"cluster.sim.gates.timing.because": {
-		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
-		"sourceHash": "5dbf4e29"
-	},
-	"cluster.sim.gates.freshness.question": {
-		"translation": "¿Se ha escapado ya el precio?",
-		"sourceHash": "89e4be4b"
-	},
-	"cluster.sim.gates.freshness.rulePctOnly": {
-		"translation": "≤ {pct}",
-		"sourceHash": "364242d8"
-	},
-	"cluster.sim.gates.freshness.ruleWithFloor": {
-		"translation": "≤ {pct} o < {steps}",
-		"sourceHash": "1e33b50a"
-	},
-	"cluster.sim.gates.freshness.because": {
-		"translation": "El precio se movió {drift} en nuestra contra ({entry} → {live}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
-		"sourceHash": "b4b909fd"
-	},
-	"cluster.sim.gates.reversal.question": {
-		"translation": "¿Alguno de ellos estaba justo en el otro lado?",
-		"sourceHash": "a830c52d"
-	},
-	"cluster.sim.gates.reversal.actualNone": {
-		"translation": "nadie se dio la vuelta",
-		"sourceHash": "1b597df7"
-	},
-	"cluster.sim.gates.reversal.actualSome": {
-		"translation": "{flipped} de {total}, hace {ago}",
-		"sourceHash": "8bb3752e"
-	},
-	"cluster.sim.gates.reversal.rule": {
-		"translation": "≤ {tolerated} en {window}",
-		"sourceHash": "260023e0"
-	},
-	"cluster.sim.gates.reversal.when": {
-		"translation": "hace {ago}, dentro de la ventana de {window}",
-		"sourceHash": "e0f78510"
-	},
-	"cluster.sim.gates.reversal.becauseTooMany.one": {
-		"translation": "{n} de estas carteras sostenía la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, es una cartera cambiando de opinión en público.",
-		"sourceHash": "a72959bf"
-	},
-	"cluster.sim.gates.reversal.becauseTooMany.few": {
-		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
-		"sourceHash": "fc114698"
-	},
-	"cluster.sim.gates.reversal.becauseTooMany.many": {
-		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
-		"sourceHash": "fc114698"
-	},
-	"cluster.sim.gates.reversal.becauseTooFew": {
-		"translation": "Descontando las {flipped} que se dieron la vuelta {when} quedan solo {clean} — por debajo de las {threshold} que hacen falta para ser un grupo, así que el giro era lo que sostenía esta señal.",
-		"sourceHash": "e351cae3"
-	},
-	"cluster.sim.gates.price.question": {
-		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
-		"sourceHash": "e1dc3057"
-	},
-	"cluster.sim.gates.price.because": {
-		"translation": "Una participación cuesta {entry}, por encima del techo de {ceiling} — puede ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
-		"sourceHash": "d4ba5735"
-	},
-	"cluster.sim.gates.fee.question": {
-		"translation": "¿Se come la comisión demasiada parte del ticket?",
-		"sourceHash": "6a570d5f"
-	},
-	"cluster.sim.gates.fee.because": {
-		"translation": "Entrar en un resultado a {entry} cuesta {fraction} del ticket en comisiones, por encima del techo de {ceiling} — la comisión se cobra por participación, así que el resultado barato es el caro de operar.",
-		"sourceHash": "cd2719b5"
-	},
-	"cluster.sim.gates.floor.question": {
-		"translation": "¿Me dejará esto por debajo de mi suelo?",
-		"sourceHash": "d32b7df4"
-	},
-	"cluster.sim.gates.floor.because": {
-		"translation": "Un ticket de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
-		"sourceHash": "26916049"
-	},
-	"cluster.sim.gates.fill.question": {
-		"translation": "¿Puedo comprar dentro de mi propio límite de precio?",
-		"sourceHash": "27f6269b"
-	},
-	"cluster.sim.gates.fill.actual": {
-		"translation": "pide {price}",
-		"sourceHash": "5ee4868e"
-	},
-	"cluster.sim.gates.fill.because": {
-		"translation": "La oferta más barata es {ask} y el límite del agente es {limit} — una orden todo-o-nada con ese límite simplemente muere.",
-		"sourceHash": "f19e81be"
-	},
-	"cluster.sim.gates.size.question": {
-		"translation": "¿Es la orden lo bastante grande para la casa?",
-		"sourceHash": "70628828"
-	},
-	"cluster.sim.gates.size.because": {
-		"translation": "{size} con un límite de {limit} compra solo {shares}, y esta casa rechaza cualquier orden por debajo de {min}.",
-		"sourceHash": "347a3d87"
-	},
-	"cluster.sim.drift.favour": {
-		"translation": "se movió a nuestro favor",
-		"sourceHash": "c2bcc77a"
-	},
-	"cluster.sim.verdict.buy": {
-		"translation": "COMPRA {size}",
-		"sourceHash": "43b83066"
-	},
-	"cluster.sim.verdict.skip": {
-		"translation": "PASA",
-		"sourceHash": "7ebdb0c2"
-	},
-	"cluster.sim.verdict.noSignal": {
-		"translation": "SIN SEÑAL",
-		"sourceHash": "9d7aa6e6"
-	},
-	"cluster.sim.detail.order": {
-		"translation": "Compra {size} con un límite de {limit} — unas {shares} — todo o nada, o nada en absoluto.",
-		"sourceHash": "e6edcb23"
-	},
-	"cluster.sim.detail.buy": {
-		"translation": "Todos los controles pasaron. {order} Mantiene hasta que la primera de esas carteras venda.",
-		"sourceHash": "46df4f65"
-	},
-	"cluster.sim.detail.buyMirror": {
-		"translation": "El grupo estaba vendiendo, así que el agente compra el resultado contrario a {entry}. {order} Mantiene hasta que la primera de esas carteras recompre lo que vendió.",
-		"sourceHash": "d58ca380"
-	},
-	"cluster.sim.signal.leadBought": {
-		"translation": "{wallets} en el lado comprador",
-		"sourceHash": "e0e5b41e"
-	},
-	"cluster.sim.signal.leadSold": {
-		"translation": "{wallets} en el lado vendedor",
-		"sourceHash": "01a318df"
-	},
-	"cluster.sim.signal.trailBought": {
-		"translation": "a {price}.",
-		"sourceHash": "b5e1ded5"
-	},
-	"cluster.sim.signal.trailSold": {
-		"translation": "a {price} — así que el agente compraría el resultado contrario a {mirror}.",
-		"sourceHash": "bc516db6"
-	},
-	"cluster.sim.summary.sentence": {
-		"translation": "Cuando {threshold}+ carteras hábiles están de acuerdo, sin que ninguna haya estado en el otro lado en los últimos {lookback}, y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no se les ha movido más de {staleness} en contra → el agente compra {size} de lo que ellas compraron (o del resultado contrario, si estaban vendiendo), {priceBand} cede como mucho {fee} del ticket en comisiones, no paga más de {slippage} por encima del precio que ellas consiguieron, mantiene hasta que la primera se dé la vuelta, conserva {floor} gastables y {gas} POL para gas, y repite sin tener nunca más de {cap} en juego a la vez.",
-		"sourceHash": "2beb618b"
-	},
-	"cluster.sim.summary.priceCapOnly": {
-		"translation": "paga como mucho {max} por participación,",
-		"sourceHash": "d5832e42"
-	},
-	"cluster.sim.summary.priceBand": {
-		"translation": "paga entre {min} y {max} por participación,",
-		"sourceHash": "c19f7a73"
-	},
-	"cluster.page.title": {
-		"translation": "Cluster copy para dummies",
-		"sourceHash": "1c6f5829"
+	"autoClose.ariaLabel": {
+		"translation": "Simulador del raíl de cierre automático",
+		"sourceHash": "026ee6f3"
+	},
+	"autoClose.blurb": {
+		"translation": "Ambos deslizadores arrancan donde los tiene la configuración en marcha:\napagados. Arma cualquiera de los dos lados y mira cómo se desarrolla la misma\nposición — el raíl consulta el libro más o menos una vez por minuto y quiere ver\nla misma respuesta dos veces antes de hacer nada.",
+		"sourceHash": "d0c9c607"
+	},
+	"autoClose.columnReading": {
+		"translation": "lo que dejaría cerrar ahora",
+		"sourceHash": "8bdc1b1f"
+	},
+	"autoClose.columnState": {
+		"translation": "raíl",
+		"sourceHash": "8ba3b8f9"
+	},
+	"autoClose.heading": {
+		"translation": "¿Y cuándo vende con sus propios números? Arma el raíl",
+		"sourceHash": "373c807d"
+	},
+	"autoClose.noscript": {
+		"translation": "Los deslizadores y los botones de trayectoria necesitan JavaScript para recalcular.",
+		"sourceHash": "e7805706"
+	},
+	"autoClose.note": {
+		"translation": "El raíl está desplegado en ambos agentes y armado en ninguno. Cuando lo armemos\nno publicaremos los números: un umbral es algo contra lo que un lector podría\noperar mientras una posición sigue abierta. Todo lo de esta página es la regla,\nno nuestros ajustes.",
+		"sourceHash": "e224757e"
+	},
+	"autoClose.pathLabel": {
+		"translation": "Trayectoria del precio",
+		"sourceHash": "8594ecf5"
+	},
+	"autoClose.paths.book-gap": {
+		"translation": "El libro se apaga",
+		"sourceHash": "a3f625f6"
+	},
+	"autoClose.paths.drifts-down": {
+		"translation": "Se desliza a la baja",
+		"sourceHash": "a2ae80fb"
+	},
+	"autoClose.paths.runs-up": {
+		"translation": "Sube con fuerza",
+		"sourceHash": "e0175424"
+	},
+	"autoClose.paths.whipsaw": {
+		"translation": "Cruza y vuelve",
+		"sourceHash": "18f26602"
+	},
+	"autoClose.position": {
+		"translation": "{size} comprados a {entry} — {shares}, con comisiones de ida y vuelta incluidas.",
+		"sourceHash": "bd881050"
+	},
+	"autoClose.stateArmed": {
+		"translation": "pasada la línea — 1 de 2",
+		"sourceHash": "8c80b8d2"
+	},
+	"autoClose.stateClosed": {
+		"translation": "vendida",
+		"sourceHash": "e0633d1f"
+	},
+	"autoClose.stateNoBid": {
+		"translation": "sin puja — omitida, la racha se olvida",
+		"sourceHash": "2966d255"
+	},
+	"autoClose.stateQuiet": {
+		"translation": "dentro de ambas líneas",
+		"sourceHash": "8a052d6f"
+	},
+	"autoClose.tick": {
+		"translation": "min {n}",
+		"sourceHash": "efeda523"
+	},
+	"autoClose.verdict.disarmedDetail": {
+		"translation": "Ningún umbral está puesto, que es lo que dice la configuración en marcha, así\nque este raíl nunca dispara. La posición sale como siempre: cuando lo dice la\nregla de salida de arriba, o en la resolución.",
+		"sourceHash": "d4561be2"
+	},
+	"autoClose.verdict.disarmedHeadline": {
+		"translation": "Desarmado",
+		"sourceHash": "f9a7e3b6"
+	},
+	"autoClose.verdict.heldDetail": {
+		"translation": "Aquí nada rebasó el umbral dos veces seguidas, así que el raíl no disparó. La\nposición sigue abierta en {pct}.",
+		"sourceHash": "50f51525"
+	},
+	"autoClose.verdict.heldHeadline": {
+		"translation": "Mantenida",
+		"sourceHash": "a49dd09e"
+	},
+	"autoClose.verdict.profitDetail": {
+		"translation": "Con {pct} de ganancia en la segunda lectura consecutiva pasado el {threshold},\nla posición entera se fue en el {tick}, anotada como take-profit.",
+		"sourceHash": "8f99f662"
+	},
+	"autoClose.verdict.profitHeadline": {
+		"translation": "Beneficio realizado",
+		"sourceHash": "07b20db0"
+	},
+	"autoClose.verdict.stopDetail": {
+		"translation": "Con {pct} de pérdida en la segunda lectura consecutiva pasado el {threshold},\nla posición entera se fue en el {tick}, anotada como stop-loss.",
+		"sourceHash": "4a091885"
+	},
+	"autoClose.verdict.stopHeadline": {
+		"translation": "Cerrada por stop-loss",
+		"sourceHash": "57b50abe"
 	},
 	"cluster.page.description": {
 		"translation": "Guía en lenguaje llano del agente cluster-copy de ogsfrompoly, el que sigue a un grupo de carteras hábiles. Cuándo compra. Cuándo pasa. Cuándo vende. Y qué números puedes girar.",
 		"sourceHash": "3bdfb5c6"
 	},
+	"cluster.page.knobGroups.execution": {
+		"translation": "¿Cómo consigo llenarme?",
+		"sourceHash": "f7277e44"
+	},
+	"cluster.page.knobGroups.exit": {
+		"translation": "¿Cuándo salgo con mis propios números?",
+		"sourceHash": "dad4f6ff"
+	},
+	"cluster.page.knobGroups.gate": {
+		"translation": "¿Debería tocar esto siquiera?",
+		"sourceHash": "46be91ad"
+	},
+	"cluster.page.knobGroups.size": {
+		"translation": "¿Cuánto puedo poner en riesgo?",
+		"sourceHash": "0cf0295f"
+	},
+	"cluster.page.knobs.auto_close_loss_pct": {
+		"translation": "Vender si la posición pierde más de",
+		"sourceHash": "6c5b4c0e"
+	},
+	"cluster.page.knobs.auto_close_profit_pct": {
+		"translation": "Vender si gana más de",
+		"sourceHash": "e19132bc"
+	},
+	"cluster.page.knobs.cluster_threshold": {
+		"translation": "Cuántas carteras hábiles cuentan como grupo",
+		"sourceHash": "59c3e605"
+	},
+	"cluster.page.knobs.exposure_cap_usdc": {
+		"translation": "Nunca mantener abierto más de",
+		"sourceHash": "eee65c54"
+	},
+	"cluster.page.knobs.gas_reserve_pol": {
+		"translation": "Guardar este gas antes de cualquier pago",
+		"sourceHash": "8a44ed51"
+	},
+	"cluster.page.knobs.max_entry_fee_pct": {
+		"translation": "Pasar si la comisión de entrada come del ticket más de",
+		"sourceHash": "afcb25ff"
+	},
+	"cluster.page.knobs.max_entry_price": {
+		"translation": "Nunca pagar por participación más de",
+		"sourceHash": "3bb889bf"
+	},
+	"cluster.page.knobs.max_reversed_wallets": {
+		"translation": "…tolerando como mucho este número de giros",
+		"sourceHash": "85684d35"
+	},
+	"cluster.page.knobs.min_liquidity_usdc": {
+		"translation": "Pasar de mercados más finos que",
+		"sourceHash": "212826b6"
+	},
+	"cluster.page.knobs.min_seconds_to_resolution": {
+		"translation": "Pasar de mercados que resuelven dentro de",
+		"sourceHash": "1a7c23d3"
+	},
+	"cluster.page.knobs.reversal_lookback_s": {
+		"translation": "Pasar si uno de ellos estuvo en el otro lado dentro de",
+		"sourceHash": "7de54f81"
+	},
+	"cluster.page.knobs.slippage_min_ticks": {
+		"translation": "…pero dar siempre a la orden al menos este margen",
+		"sourceHash": "b8cca0a1"
+	},
+	"cluster.page.knobs.slippage_pct": {
+		"translation": "Retirarse antes que pagar de más por encima de",
+		"sourceHash": "6446b4b4"
+	},
+	"cluster.page.knobs.staleness_min_ticks": {
+		"translation": "…pero tratar como ruido un movimiento menor que",
+		"sourceHash": "ae4d2d11"
+	},
+	"cluster.page.knobs.staleness_pct": {
+		"translation": "Pasar si el precio ya corrió más de",
+		"sourceHash": "b34be1fa"
+	},
+	"cluster.page.knobs.trade_size_usdc": {
+		"translation": "Tamaño de una apuesta",
+		"sourceHash": "dda01e7e"
+	},
+	"cluster.page.knobs.working_capital_floor_usdc": {
+		"translation": "Nunca dejar caer el saldo gastable por debajo de",
+		"sourceHash": "6ab9f735"
+	},
+	"cluster.page.md.inOneSentence": {
+		"translation": "En una frase",
+		"sourceHash": "7de3e1c3"
+	},
+	"cluster.page.md.killLabel": {
+		"translation": "Parar todo",
+		"sourceHash": "032bf222"
+	},
+	"cluster.page.md.knobsBlurb": {
+		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la decisión\ndel agente cambiar. En markdown son solo la tabla:",
+		"sourceHash": "a0cd6480"
+	},
+	"cluster.page.md.knobsHeading": {
+		"translation": "Las perillas",
+		"sourceHash": "3db32689"
+	},
+	"cluster.page.md.notPublished": {
+		"translation": "no publicado",
+		"sourceHash": "c0bab374"
+	},
+	"cluster.page.md.payoutLabel": {
+		"translation": "Dirección de pago, lista permitida, umbral de polvo",
+		"sourceHash": "af059b4f"
+	},
+	"cluster.page.md.tableKey": {
+		"translation": "Clave",
+		"sourceHash": "cd1ac90c"
+	},
+	"cluster.page.md.tableLive": {
+		"translation": "En vivo ({market})",
+		"sourceHash": "8677d97e"
+	},
+	"cluster.page.md.tableRole": {
+		"translation": "Papel en la historia",
+		"sourceHash": "8bddd4de"
+	},
+	"cluster.page.scenarios.broke": {
+		"translation": "Sin efectivo",
+		"sourceHash": "7f5079da"
+	},
+	"cluster.page.scenarios.chased": {
+		"translation": "El precio se escapó",
+		"sourceHash": "5f414887"
+	},
+	"cluster.page.scenarios.coarse": {
+		"translation": "Parrilla gruesa",
+		"sourceHash": "540e255c"
+	},
+	"cluster.page.scenarios.ends-soon": {
+		"translation": "Termina muy pronto",
+		"sourceHash": "addd7194"
+	},
+	"cluster.page.scenarios.flipped": {
+		"translation": "El grupo acaba de girar",
+		"sourceHash": "e27da688"
+	},
+	"cluster.page.scenarios.full": {
+		"translation": "Sin sitio libre",
+		"sourceHash": "bddb8796"
+	},
+	"cluster.page.scenarios.mirror": {
+		"translation": "El grupo vende",
+		"sourceHash": "6d903646"
+	},
+	"cluster.page.scenarios.pricey": {
+		"translation": "Resultado caro",
+		"sourceHash": "475d8919"
+	},
+	"cluster.page.scenarios.textbook": {
+		"translation": "Compra de manual",
+		"sourceHash": "d8de0eef"
+	},
+	"cluster.page.scenarios.thin": {
+		"translation": "Mercado fino",
+		"sourceHash": "9ba617b6"
+	},
+	"cluster.page.scenarios.too-dear": {
+		"translation": "Demasiado caro",
+		"sourceHash": "563569d3"
+	},
+	"cluster.page.sections.hardWired": {
+		"translation": "## Qué está cableado, y no es un ajuste\n\n- **«La primera cartera hábil gira → estamos fuera.»** Lógica fija, con la\n  resolución como respaldo. Los umbrales de stop-loss y take-profit son números\n  que puedes girar; que confirmen sobre dos lecturas, vendan la posición entera\n  e ignoren el interruptor de emergencia, no.\n- **Vender se copia comprando el otro resultado.** Si un grupo vendedor se\n  replica y cómo — fijo; no hay interruptor de «copiar solo compras».\n- **Una posición por grupo**, y sin reentrada en un grupo ya cerrado.\n- **La entrada es una orden todo-o-nada valorada sobre la parrilla de la\n  casa.** *Cómo* entra es fijo. Solo afinas los umbrales de alrededor —\n  deslizamiento, precio ya movido, liquidez.\n- **El mínimo de 5 participaciones por orden es regla de la casa**, no nuestra.\n  El agente solo la respeta.\n\n**¿Por qué dividirlo así?** Cuánto, cuándo pasar, cuánto a la vez, cuánto dejar\natrás — todo eso es un número, y los números son seguros de exponer. Cómo compra\ny cuándo vende — toda la lógica de copia — vive en código. Una línea descuidada\nde YAML no puede descarrilar la estrategia.",
+		"sourceHash": "b8f5cb0a"
+	},
 	"cluster.page.sections.intro": {
 		"translation": "Junto al historial publicado corre un pequeño agente. Replica las carteras que\nnuestra prueba de habilidad señala, pero solo cuando varias están de acuerdo a\nla vez. Esta página es el mecanismo entero en lenguaje llano: qué hace, paso a\npaso, y qué números son perillas frente a reglas soldadas en el código.\n\nEs uno de dos agentes. El otro, [wallet copy]({walletHref}), sigue a dos traders\nconcretos en lugar de esperar a un grupo. ¿No tienes claro qué página buscas?\nEmpieza por [el selector]({hubHref}).\n\nPiensa en un **imitador muy cauteloso** plantado en el mercado, observando a\ntraders que ya se han demostrado. Es tímido a propósito. El dinero es real. Las\nposiciones de abajo son diminutas adrede — el objetivo de la primera corrida en\nvivo es acertar, no ser grande.\n\nCada número de esta página es el ajuste vivo para el mercado **{market}** a\nfecha de **{asOf}**, leído de `config/copy_trade.yml`.",
 		"sourceHash": "7d5c842b"
 	},
-	"cluster.page.sections.storyHeading": {
-		"translation": "## La historia completa, paso a paso",
-		"sourceHash": "8e715273"
+	"cluster.page.sections.notClaiming": {
+		"translation": "## Lo que aún no afirmamos\n\nCuatro límites que conviene conocer. Cambian cómo deberías leer los números del\npropio agente.\n\n- **La contabilidad ya captura la comisión de la casa, y cambió el panorama.**\n  Cada posición cerrada solía registrar comisión cero, lo que las hacía parecer\n  mejores de lo que eran. Conciliado contra los registros de liquidación\n  on-chain, el coste ausente era **enteramente** esa comisión. Ahora la\n  calculamos de la curva publicada de cada mercado y la registramos por llenado.\n  El gas de red sigue apuntado como cero, y ese sí es correcto y no pendiente —\n  en esta casa la transacción de liquidación la paga un relayer, no nosotros.\n- **La regla de «el precio ya se movió» es más débil que el 3 % en mercados\n  gruesos** — véase el suelo de dos pasos en el paso 4. Aproximadamente uno de\n  cada veinte mercados cotiza en centavos enteros, y en esos la regla efectiva\n  es mucho más permisiva de lo que el ajuste aparenta.\n- **Los raíles son jóvenes, y en su mayoría sin ejercitar.** La regla de\n  independencia del grupo recortó el número de señales cerca de un 95 %, así que\n  los añadidos después — la ventana de giros, el techo de precio — han tenido\n  muy poco tráfico real contra el que probarse. Los argumentamos con mediciones\n  tomadas *antes* de armarlos. La posición honesta: aún no sabemos con qué\n  frecuencia disparan.\n- **El dinero recuperado no justifica el techo de precio.** Las cuatro\n  posiciones que habría rechazado valen unos **5 centavos** entre todas. Lo\n  compramos como seguro contra una apuesta desequilibrada — $5 en juego para\n  ganar un centavo — no como arreglo de una pérdida medida. No lo leas así.\n- **El raíl de cierre automático nunca ha disparado.** Se desplegó desarmado a\n  propósito, así que el paso 10 describe un mecanismo con un historial vivo de\n  exactamente nada. Su aritmética se contrasta contra el mismo evaluador que\n  ejecuta el agente, que es una afirmación distinta de saber cómo se comporta\n  ante libros reales.",
+		"sourceHash": "c8e698f2"
+	},
+	"cluster.page.sections.notThis": {
+		"translation": "## Lo que esta página no es\n\nEstos son parámetros operativos de nuestro propio agente pequeño, publicados con el\nmismo espíritu que el resto del historial. No son consejo, no son un servicio de\nseñales y no son la afirmación de que replicar carteras hábiles seguirá\nfuncionando.\n\nNunca publicamos las direcciones de las carteras del agente en ningún lugar de este\nsitio. Observa la cartera ejecutora en tiempo real y verás posiciones abiertas,\nque es exactamente lo que la [política de divulgación]({methodologyHref}) existe\npara impedir.",
+		"sourceHash": "c801a4b7"
 	},
 	"cluster.page.sections.step1": {
 		"translation": "### 1. Escucha a un grupo, nunca a un solo trader\n\nUna sola cartera comprando algo no mueve nada. Hacen falta al menos\n**3 carteras hábiles** operando lo mismo a la vez (`cluster_threshold`) para que\nel agente lo llame un quórum que merece un vistazo.\n\n«Lo mismo a la vez» resultó ser tres requisitos, y durante mucho tiempo solo\ncomprobábamos uno. Un grupo ahora necesita tres carteras que cada una **tomó**\nel precio ofrecido en vez de publicar una oferta y esperar. Cada una tiene que\ncaer en el **mismo lado de la misma apuesta**, no solo en el mismo mercado. Cada\nuna tiene que llegar en una **transacción separada**. Dos carteras llenadas por\nuna sola operación son una decisión con dos nombres, y un creador de mercado\ncuya oferta fue golpeada nunca tuvo opinión.\n\nApretar eso llevó un mes de alertas de **263 a 14**. Reproducido sobre las\nposiciones que ya habíamos abierto, **32 de 38** nunca se habrían tomado.\nNinguna regla era redundante: por sí solas cazaron el 14 %, el 48 % y el 25 % de\nlos malos grupos.",
 		"sourceHash": "33ba9497"
+	},
+	"cluster.page.sections.step10": {
+		"translation": "### 10. También vende con sus propios números\n\nDurante sus primeros meses este agente tuvo exactamente dos salidas: el grupo se\nda la vuelta, o el mercado resuelve. Ahora hay una tercera, y no le pregunta\nnada al grupo.\n\nMás o menos una vez por minuto valora una salida completa de cada posición\nabierta — lo que pagaría de verdad la mejor puja, menos la comisión de salida,\nfrente a lo que costó el billete incluida la comisión que pagó al entrar. Esa\nlectura es toda la regla. Si pierde más de `auto_close_loss_pct`, vende. Si gana\nmás de `auto_close_profit_pct`, vende.\n\nLeerlo neto de comisiones, y no del precio, es justo el punto. Un billete de $5\nque pagó 15 centavos por entrar y pagará más o menos otro tanto por salir empieza\nla vida alrededor de un **6% por debajo**. «Cuánto de lo que puse recuperaría» es\nla pregunta que un operador tiene de verdad. «Cuánto se ha movido el medio» no lo\nes.\n\nCuatro detalles lo hacen un raíl y no un gatillo nervioso:\n\n- **Quiere la misma respuesta dos veces.** Una lectura pasada la línea lo arma;\n  la siguiente lectura consecutiva pasada la misma línea lo dispara. Un\n  parpadeo suelto de cotización no cierra nada.\n- **Un libro ilegible no es una lectura.** Sin puja en firme no hay precio al que\n  una venta pudiera ocurrir honestamente, así que se salta esa posición ese\n  minuto y olvida el rebase que tenía guardado. Un cierre automático es una\n  orden, no una fila en una pantalla.\n- **Vende la posición entera**, por la misma ruta de salida que todo lo demás, y\n  anota el motivo como stop-loss o take-profit para que el canal de cierres\n  pueda distinguirlos.\n- **El interruptor de emergencia no lo bloquea.** Frenar las entradas no puede\n  dejar tirada una posición abierta, así que las salidas siempre fluyen.\n\nAmbos números se leen al arrancar, de modo que armarlos es editar el fichero y\nreiniciar. Cualquiera de los dos en `0` — o simplemente ausente, que es como se\nparsea — deja ese lado en reposo.\n\n**Hoy ambos están ausentes.** El raíl está desplegado y armado sobre nada;\nninguna posición se ha cerrado nunca así. Cuando lo armemos, los valores\nseguirán sin publicarse. Un umbral vivo es un número contra el que alguien podría\noperar mientras la posición sigue abierta, que es exactamente lo que la política\nde divulgación existe para evitar.\n\nUn filo que conviene nombrar, porque armar no es un gesto neutral: una posición\nque ya está pasada del umbral cuando el servicio reinicia se cierra en unos dos\nminutos. El procedimiento es leer el libro abierto primero.",
+		"sourceHash": "6bb8266b"
+	},
+	"cluster.page.sections.step11": {
+		"translation": "### 11. Una salida fallida se reintenta, no se olvida\n\nUna orden de salida puede rechazarse igual que una entrada, y antes se esfumaba\ncon una línea en un log. Ahora guardamos el evento: **tres intentos**, más o\nmenos a un minuto y ensanchándose, cada uno reportado. Si el tercero falla el\nagente lo dice en voz alta en vez de callarse. Reintentar es seguro. Si la posición\nse cerró entre tanto, el reintento no hace nada.",
+		"sourceHash": "16d05fa0"
+	},
+	"cluster.page.sections.step12": {
+		"translation": "### 12. Nada desaparece en silencio\n\nApuntamos cada pase y cada rechazo con sus números: el límite que el agente pidió,\nel precio tras el redondeo a la parrilla, el mejor precio del libro y cuánto\nvolumen había en nuestro límite. Sin ellos, «mi límite era demasiado apretado» y\n«el libro era demasiado fino» parecen idénticos — y sus arreglos son opuestos.",
+		"sourceHash": "5feb4914"
+	},
+	"cluster.page.sections.step13": {
+		"translation": "### 13. Y vuelta a empezar\n\nVendido, efectivo de vuelta, sitio libre, siguiente señal. Una posición por\ngrupo, nunca dos, y nunca vuelve a entrar en un grupo ya cerrado. En un primer\narranque empieza por la alerta más nueva en vez de reproducir toda la historia\ncontra una cartera viva.",
+		"sourceHash": "97258ae3"
+	},
+	"cluster.page.sections.step14": {
+		"translation": "### 14. Una vez por semana barre el beneficio\n\nCuenta el beneficio contabilizado y envía el excedente por encima del suelo de\n**$5** a la dirección de pago (`profit_destination`). Paga solo si esa dirección\nestá en la lista permitida (`destination_allowlist`, el seguro), solo si la\ncantidad supera el umbral de polvo de **$1** (`dust_threshold_usdc`) y solo si\nquedan al menos **2 POL** de gas (`gas_reserve_pol`). Sin gas no podría cerrar\nuna posición, así que el pago es lo que cede. Una semana perdedora no paga nada.\nEl primer pago de la historia necesita a un humano que diga que sí.",
+		"sourceHash": "e764dc1a"
+	},
+	"cluster.page.sections.step15": {
+		"translation": "### 15. El gran agenteón rojo\n\nEn cualquier momento el interruptor de emergencia (`kill_switch`) impide que el\nagente **compre** nada nuevo — mientras sigue vigilando y cerrando lo que ya está\nabierto. Deja de tomar riesgo; no lo abandona. Un modo sombra decide exactamente\nigual que siempre pero escribe cada orden frustrada a un fichero en vez de\nenviarla.",
+		"sourceHash": "e53505d4"
 	},
 	"cluster.page.sections.step2": {
 		"translation": "### 2. Si el grupo está vendiendo, compra el otro lado\n\nSolo puedes vender lo que ya posees, y una posición nueva no posee nada. Así que\ndurante mucho tiempo cada señal de «el grupo está vendiendo» rebotaba contra la\ncasa. Eso es aproximadamente el **40 %** de las señales que recibimos.\n\nLa salida está en la forma del mercado. Un mercado con dos resultados los valora\npara que sumen $1, y exactamente uno acaba valiendo $1. Vender «sí» a 90¢ y\ncomprar «no» a 10¢ son la misma opinión. Lo segundo es una compra ordinaria que\nel agente sí puede hacer.\n\nLas posiciones abiertas así son **espejos**. El agente recuerda ambos lados — el\nque sostiene y el que opera el grupo — porque necesita el segundo para saber\ncuándo salir.",
@@ -592,100 +344,28 @@
 		"sourceHash": "6bd0eae9"
 	},
 	"cluster.page.sections.step9": {
-		"translation": "### 9. Mantiene, y sale al primer giro\n\nLuego observa a las mismas carteras, y sale en cuanto la **primera** se dé la\nvuelta. No espera a que las demás estén de acuerdo.\n\n- En una posición normal sostiene lo que ellas sostienen, así que **su venta**\n  es la salida.\n- En un espejo ellas sostienen el resultado que vendieron, así que **su\n  recompra** es la salida. Que vendan *más* es doblar la apuesta — la misma\n  opinión otra vez, no un giro — así que no nos cierra.\n\nLlegar hasta la resolución es solo el plan de reserva, para cuando nadie gira\nprimero.\n\n*Esto está cableado. No hay ajuste para ello.*",
-		"sourceHash": "b0c3f917"
+		"translation": "### 9. Mantiene, y sale al primer giro\n\nLuego observa a las mismas carteras, y sale en cuanto la **primera** se dé la\nvuelta. No espera a que las demás estén de acuerdo.\n\n- En una posición normal sostiene lo que ellas sostienen, así que **su venta**\n  es la salida.\n- En un espejo ellas sostienen el resultado que vendieron, así que **su\n  recompra** es la salida. Que vendan *más* es doblar la apuesta — la misma\n  opinión otra vez, no un giro — así que no nos cierra.\n\nLlegar hasta la resolución es el plan de reserva, para cuando nadie gira\nprimero.\n\n*La regla del giro en sí está cableada. No hay ajuste para ella — pero desde que\naterrizó el paso siguiente, ya no es la única salida.*",
+		"sourceHash": "2d854a8d"
 	},
-	"cluster.page.sections.step10": {
-		"translation": "### 10. Una salida fallida se reintenta, no se olvida\n\nUna orden de salida puede rechazarse igual que una entrada, y antes se esfumaba\ncon una línea en un log. Ahora guardamos el evento: **tres intentos**, más o\nmenos a un minuto y ensanchándose, cada uno reportado. Si el tercero falla el\nagente lo dice en voz alta en vez de callarse. Reintentar es seguro. Si la posición\nse cerró entre tanto, el reintento no hace nada.",
-		"sourceHash": "8724cddd"
+	"cluster.page.sections.storyHeading": {
+		"translation": "## La historia completa, paso a paso",
+		"sourceHash": "8e715273"
 	},
-	"cluster.page.sections.step11": {
-		"translation": "### 11. Nada desaparece en silencio\n\nApuntamos cada pase y cada rechazo con sus números: el límite que el agente pidió,\nel precio tras el redondeo a la parrilla, el mejor precio del libro y cuánto\nvolumen había en nuestro límite. Sin ellos, «mi límite era demasiado apretado» y\n«el libro era demasiado fino» parecen idénticos — y sus arreglos son opuestos.",
-		"sourceHash": "d620e461"
+	"cluster.page.title": {
+		"translation": "Cluster copy para dummies",
+		"sourceHash": "1c6f5829"
 	},
-	"cluster.page.sections.step12": {
-		"translation": "### 12. Y vuelta a empezar\n\nVendido, efectivo de vuelta, sitio libre, siguiente señal. Una posición por\ngrupo, nunca dos, y nunca vuelve a entrar en un grupo ya cerrado. En un primer\narranque empieza por la alerta más nueva en vez de reproducir toda la historia\ncontra una cartera viva.",
-		"sourceHash": "5912bb08"
-	},
-	"cluster.page.sections.step13": {
-		"translation": "### 13. Una vez por semana barre el beneficio\n\nCuenta el beneficio contabilizado y envía el excedente por encima del suelo de\n**$5** a la dirección de pago (`profit_destination`). Paga solo si esa dirección\nestá en la lista permitida (`destination_allowlist`, el seguro), solo si la\ncantidad supera el umbral de polvo de **$1** (`dust_threshold_usdc`) y solo si\nquedan al menos **2 POL** de gas (`gas_reserve_pol`). Sin gas no podría cerrar\nuna posición, así que el pago es lo que cede. Una semana perdedora no paga nada.\nEl primer pago de la historia necesita a un humano que diga que sí.",
-		"sourceHash": "f42855d7"
-	},
-	"cluster.page.sections.step14": {
-		"translation": "### 14. El gran agenteón rojo\n\nEn cualquier momento el interruptor de emergencia (`kill_switch`) impide que el\nagente **compre** nada nuevo — mientras sigue vigilando y cerrando lo que ya está\nabierto. Deja de tomar riesgo; no lo abandona. Un modo sombra decide exactamente\nigual que siempre pero escribe cada orden frustrada a un fichero en vez de\nenviarla.",
-		"sourceHash": "c7db6b75"
-	},
-	"cluster.page.sections.hardWired": {
-		"translation": "## Qué está cableado, y no es un ajuste\n\n- **«La primera cartera hábil gira → estamos fuera.»** Lógica fija, con la\n  resolución como respaldo. No hay take-profit ni stop-loss que afinar.\n- **Vender se copia comprando el otro resultado.** Si un grupo vendedor se\n  replica y cómo — fijo; no hay interruptor de «copiar solo compras».\n- **Una posición por grupo**, y sin reentrada en un grupo ya cerrado.\n- **La entrada es una orden todo-o-nada valorada sobre la parrilla de la\n  casa.** *Cómo* entra es fijo. Solo afinas los umbrales de alrededor —\n  deslizamiento, precio ya movido, liquidez.\n- **El mínimo de 5 participaciones por orden es regla de la casa**, no nuestra.\n  El agente solo la respeta.\n\n**¿Por qué dividirlo así?** Cuánto, cuándo pasar, cuánto a la vez, cuánto dejar\natrás — todo eso es un número, y los números son seguros de exponer. Cómo compra\ny cuándo vende — toda la lógica de copia — vive en código. Una línea descuidada\nde YAML no puede descarrilar la estrategia.",
-		"sourceHash": "24ff4d45"
-	},
-	"cluster.page.sections.notClaiming": {
-		"translation": "## Lo que aún no afirmamos\n\nCuatro límites que conviene conocer. Cambian cómo deberías leer los números del\npropio agente.\n\n- **La contabilidad ya captura la comisión de la casa, y cambió el panorama.**\n  Cada posición cerrada solía registrar comisión cero, lo que las hacía parecer\n  mejores de lo que eran. Conciliado contra los registros de liquidación\n  on-chain, el coste ausente era **enteramente** esa comisión. Ahora la\n  calculamos de la curva publicada de cada mercado y la registramos por llenado.\n  El gas de red sigue apuntado como cero, y ese sí es correcto y no pendiente —\n  en esta casa la transacción de liquidación la paga un relayer, no nosotros.\n- **La regla de «el precio ya se movió» es más débil que el 3 % en mercados\n  gruesos** — véase el suelo de dos pasos en el paso 4. Aproximadamente uno de\n  cada veinte mercados cotiza en centavos enteros, y en esos la regla efectiva\n  es mucho más permisiva de lo que el ajuste aparenta.\n- **Los raíles son jóvenes, y en su mayoría sin ejercitar.** La regla de\n  independencia del grupo recortó el número de señales cerca de un 95 %, así que\n  los añadidos después — la ventana de giros, el techo de precio — han tenido\n  muy poco tráfico real contra el que probarse. Los argumentamos con mediciones\n  tomadas *antes* de armarlos. La posición honesta: aún no sabemos con qué\n  frecuencia disparan.\n- **El dinero recuperado no justifica el techo de precio.** Las cuatro\n  posiciones que habría rechazado valen unos **5 centavos** entre todas. Lo\n  compramos como seguro contra una apuesta desequilibrada — $5 en juego para\n  ganar un centavo — no como arreglo de una pérdida medida. No lo leas así.",
-		"sourceHash": "f3e1a2b3"
-	},
-	"cluster.page.sections.notThis": {
-		"translation": "## Lo que esta página no es\n\nEstos son parámetros operativos de nuestro propio agente pequeño, publicados con el\nmismo espíritu que el resto del historial. No son consejo, no son un servicio de\nseñales y no son la afirmación de que replicar carteras hábiles seguirá\nfuncionando.\n\nNunca publicamos las direcciones de las carteras del agente en ningún lugar de este\nsitio. Observa la cartera ejecutora en tiempo real y verás posiciones abiertas,\nque es exactamente lo que la [política de divulgación]({methodologyHref}) existe\npara impedir.",
-		"sourceHash": "c801a4b7"
-	},
-	"cluster.page.md.inOneSentence": {
-		"translation": "En una frase",
-		"sourceHash": "7de3e1c3"
-	},
-	"cluster.page.md.knobsHeading": {
-		"translation": "Las perillas",
-		"sourceHash": "3db32689"
-	},
-	"cluster.page.md.knobsBlurb": {
-		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la decisión\ndel agente cambiar. En markdown son solo la tabla:",
-		"sourceHash": "a0cd6480"
-	},
-	"cluster.page.md.tableRole": {
-		"translation": "Papel en la historia",
-		"sourceHash": "8bddd4de"
-	},
-	"cluster.page.md.tableKey": {
-		"translation": "Clave",
-		"sourceHash": "cd1ac90c"
-	},
-	"cluster.page.md.tableLive": {
-		"translation": "En vivo ({market})",
-		"sourceHash": "8677d97e"
-	},
-	"cluster.page.md.payoutLabel": {
-		"translation": "Dirección de pago, lista permitida, umbral de polvo",
-		"sourceHash": "af059b4f"
-	},
-	"cluster.page.md.notPublished": {
-		"translation": "no publicado",
-		"sourceHash": "c0bab374"
-	},
-	"cluster.page.md.killLabel": {
-		"translation": "Parar todo",
-		"sourceHash": "032bf222"
-	},
-	"cluster.page.ui.tryIt": {
-		"translation": "Pruébalo — la decisión del agente, en vivo",
-		"sourceHash": "9599b5b9"
+	"cluster.page.ui.ariaLabel": {
+		"translation": "Simulador de decisiones de copy-trading",
+		"sourceHash": "a2bae839"
 	},
 	"cluster.page.ui.defaultsNote": {
 		"translation": "por defecto = config {market}, {asOf}",
 		"sourceHash": "7f716bd5"
 	},
-	"cluster.page.ui.reset": {
-		"translation": "Restaurar nuestra config en vivo",
-		"sourceHash": "62792b0b"
-	},
-	"cluster.page.ui.incomingSignal": {
-		"translation": "Señal entrante",
-		"sourceHash": "b6c20e5b"
-	},
-	"cluster.page.ui.stageAlert": {
-		"translation": "Primero, aguas arriba — ¿hay siquiera una alerta?",
-		"sourceHash": "e6227480"
-	},
-	"cluster.page.ui.stageExecutor": {
-		"translation": "Luego los raíles del propio agente, en orden",
-		"sourceHash": "d11485d8"
+	"cluster.page.ui.explainer": {
+		"translation": "El ejecutor real se detiene en el primer ✗ de la segunda lista y sigue adelante. Puntuamos aquí cada control para que veas qué hace cada perilla. Los precios son siempre los del lado que el agente compraría de verdad — para un grupo vendedor, ese es el resultado contrario. Los dos últimos controles son reglas de la propia casa: el límite tiene que ser alcanzable y la orden lo bastante grande. Entre las dos listas el ejecutor corre además un puñado de controles contables — ¿está este grupo ya abierto, está puesto el interruptor de emergencia? Los omitimos aquí porque ninguno es un número que puedas girar.",
+		"sourceHash": "e352f658"
 	},
 	"cluster.page.ui.flagAlert": {
 		"translation": "no se emite alerta — al agente nunca se le pregunta",
@@ -695,345 +375,793 @@
 		"translation": "el agente real se detiene aquí",
 		"sourceHash": "fb529306"
 	},
-	"cluster.page.ui.explainer": {
-		"translation": "El ejecutor real se detiene en el primer ✗ de la segunda lista y sigue adelante. Puntuamos aquí cada control para que veas qué hace cada perilla. Los precios son siempre los del lado que el agente compraría de verdad — para un grupo vendedor, ese es el resultado contrario. Los dos últimos controles son reglas de la propia casa: el límite tiene que ser alcanzable y la orden lo bastante grande. Entre las dos listas el ejecutor corre además un puñado de controles contables — ¿está este grupo ya abierto, está puesto el interruptor de emergencia? Los omitimos aquí porque ninguno es un número que puedas girar.",
-		"sourceHash": "e352f658"
+	"cluster.page.ui.incomingSignal": {
+		"translation": "Señal entrante",
+		"sourceHash": "b6c20e5b"
 	},
 	"cluster.page.ui.noscript": {
 		"translation": "Sin JavaScript esto muestra nuestra config en vivo contra la primera señal de ejemplo. Los deslizadores y los botones de señal necesitan JavaScript para recalcular.",
 		"sourceHash": "abce22be"
 	},
-	"cluster.page.knobs.cluster_threshold": {
-		"translation": "Cuántas carteras hábiles cuentan como grupo",
-		"sourceHash": "59c3e605"
+	"cluster.page.ui.reset": {
+		"translation": "Restaurar nuestra config en vivo",
+		"sourceHash": "62792b0b"
 	},
-	"cluster.page.knobs.min_liquidity_usdc": {
-		"translation": "Pasar de mercados más finos que",
-		"sourceHash": "212826b6"
+	"cluster.page.ui.stageAlert": {
+		"translation": "Primero, aguas arriba — ¿hay siquiera una alerta?",
+		"sourceHash": "e6227480"
 	},
-	"cluster.page.knobs.min_seconds_to_resolution": {
-		"translation": "Pasar de mercados que resuelven dentro de",
-		"sourceHash": "1a7c23d3"
+	"cluster.page.ui.stageExecutor": {
+		"translation": "Luego los raíles del propio agente, en orden",
+		"sourceHash": "d11485d8"
 	},
-	"cluster.page.knobs.staleness_pct": {
-		"translation": "Pasar si el precio ya corrió más de",
-		"sourceHash": "b34be1fa"
+	"cluster.page.ui.tryIt": {
+		"translation": "Pruébalo — la decisión del agente, en vivo",
+		"sourceHash": "9599b5b9"
 	},
-	"cluster.page.knobs.staleness_min_ticks": {
-		"translation": "…pero tratar como ruido un movimiento menor que",
-		"sourceHash": "ae4d2d11"
+	"cluster.sim.detail.buy": {
+		"translation": "Todos los controles pasaron. {order} Mantiene hasta que la primera de esas carteras venda.",
+		"sourceHash": "46df4f65"
 	},
-	"cluster.page.knobs.reversal_lookback_s": {
-		"translation": "Pasar si uno de ellos estuvo en el otro lado dentro de",
-		"sourceHash": "7de54f81"
+	"cluster.sim.detail.buyMirror": {
+		"translation": "El grupo estaba vendiendo, así que el agente compra el resultado contrario a {entry}. {order} Mantiene hasta que la primera de esas carteras recompre lo que vendió.",
+		"sourceHash": "d58ca380"
 	},
-	"cluster.page.knobs.max_reversed_wallets": {
-		"translation": "…tolerando como mucho este número de giros",
-		"sourceHash": "85684d35"
+	"cluster.sim.detail.order": {
+		"translation": "Compra {size} con un límite de {limit} — unas {shares} — todo o nada, o nada en absoluto.",
+		"sourceHash": "e6edcb23"
 	},
-	"cluster.page.knobs.max_entry_fee_pct": {
-		"translation": "Pasar si la comisión de entrada come del ticket más de",
-		"sourceHash": "afcb25ff"
-	},
-	"cluster.page.knobs.max_entry_price": {
-		"translation": "Nunca pagar por participación más de",
-		"sourceHash": "3bb889bf"
-	},
-	"cluster.page.knobs.trade_size_usdc": {
-		"translation": "Tamaño de una apuesta",
-		"sourceHash": "dda01e7e"
-	},
-	"cluster.page.knobs.exposure_cap_usdc": {
-		"translation": "Nunca mantener abierto más de",
-		"sourceHash": "eee65c54"
-	},
-	"cluster.page.knobs.working_capital_floor_usdc": {
-		"translation": "Nunca dejar caer el saldo gastable por debajo de",
-		"sourceHash": "6ab9f735"
-	},
-	"cluster.page.knobs.gas_reserve_pol": {
-		"translation": "Guardar este gas antes de cualquier pago",
-		"sourceHash": "8a44ed51"
-	},
-	"cluster.page.knobs.slippage_pct": {
-		"translation": "Retirarse antes que pagar de más por encima de",
-		"sourceHash": "6446b4b4"
-	},
-	"cluster.page.knobs.slippage_min_ticks": {
-		"translation": "…pero dar siempre a la orden al menos este margen",
-		"sourceHash": "b8cca0a1"
-	},
-	"cluster.page.knobGroups.gate": {
-		"translation": "¿Debería tocar esto siquiera?",
-		"sourceHash": "46be91ad"
-	},
-	"cluster.page.knobGroups.size": {
-		"translation": "¿Cuánto puedo poner en riesgo?",
-		"sourceHash": "0cf0295f"
-	},
-	"cluster.page.knobGroups.execution": {
-		"translation": "¿Cómo consigo llenarme?",
-		"sourceHash": "f7277e44"
-	},
-	"cluster.page.scenarios.textbook": {
-		"translation": "Compra de manual",
-		"sourceHash": "d8de0eef"
-	},
-	"cluster.page.scenarios.mirror": {
-		"translation": "El grupo vende",
-		"sourceHash": "6d903646"
-	},
-	"cluster.page.scenarios.coarse": {
-		"translation": "Parrilla gruesa",
-		"sourceHash": "540e255c"
-	},
-	"cluster.page.scenarios.pricey": {
-		"translation": "Resultado caro",
-		"sourceHash": "475d8919"
-	},
-	"cluster.page.scenarios.too-dear": {
-		"translation": "Demasiado caro",
-		"sourceHash": "563569d3"
-	},
-	"cluster.page.scenarios.flipped": {
-		"translation": "El grupo acaba de girar",
-		"sourceHash": "e27da688"
-	},
-	"cluster.page.scenarios.ends-soon": {
-		"translation": "Termina muy pronto",
-		"sourceHash": "addd7194"
-	},
-	"cluster.page.scenarios.thin": {
-		"translation": "Mercado fino",
-		"sourceHash": "9ba617b6"
-	},
-	"cluster.page.scenarios.chased": {
-		"translation": "El precio se escapó",
-		"sourceHash": "5f414887"
-	},
-	"cluster.page.scenarios.full": {
-		"translation": "Sin sitio libre",
-		"sourceHash": "bddb8796"
-	},
-	"cluster.page.scenarios.broke": {
-		"translation": "Sin efectivo",
-		"sourceHash": "7f5079da"
-	},
-	"cluster.page.ui.ariaLabel": {
-		"translation": "Simulador de decisiones de copy-trading",
-		"sourceHash": "a2bae839"
-	},
-	"wallet.sim.gates.boot.question": {
-		"translation": "¿Puede mi ticket comprar siquiera {min} participaciones al peor precio que permito?",
-		"sourceHash": "44a22d56"
-	},
-	"wallet.sim.gates.boot.actual": {
-		"translation": "{size} → {shares} a {limit}",
-		"sourceHash": "47a2e21a"
-	},
-	"wallet.sim.gates.boot.because": {
-		"translation": "Un ticket de {size} al peor límite que permiten las demás perillas ({limit}) compra menos que el mínimo de {min} participaciones de la casa, así que el servicio se niega a arrancar con esta config en vez de fallar orden a orden.",
-		"sourceHash": "e2d0d0b8"
-	},
-	"wallet.sim.gates.conviction.question": {
-		"translation": "¿Ha apostado {leader} lo bastante como para ir en serio?",
-		"sourceHash": "d9558f67"
-	},
-	"wallet.sim.gates.conviction.actual": {
-		"translation": "{stake} en el pico",
-		"sourceHash": "f53ff873"
-	},
-	"wallet.sim.gates.conviction.because": {
-		"translation": "La posición completa de {leader} en esta apuesta llegó en su pico a {stake}, por debajo de su listón de {bar} — el tracker nunca emite señal de entrada, así que al agente nadie le pregunta y nada queda registrado.",
-		"sourceHash": "5f38054b"
-	},
-	"wallet.sim.gates.cap.question": {
-		"translation": "¿No estoy copiando ya bastante a este líder?",
-		"sourceHash": "3a5223bf"
-	},
-	"wallet.sim.gates.cap.actual": {
-		"translation": "{n} abiertas de {leader}",
-		"sourceHash": "fbb7f495"
-	},
-	"wallet.sim.gates.cap.because.one": {
-		"translation": "{n} copia de {leader} ya está abierta, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
-		"sourceHash": "40e963c8"
-	},
-	"wallet.sim.gates.cap.because.few": {
-		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
-		"sourceHash": "b8c369d6"
-	},
-	"wallet.sim.gates.cap.because.many": {
-		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
-		"sourceHash": "b8c369d6"
-	},
-	"wallet.sim.gates.room.question": {
-		"translation": "¿Tengo sitio bajo mi tope?",
-		"sourceHash": "ca2c72ff"
-	},
-	"wallet.sim.gates.room.actual": {
-		"translation": "{open} abiertos + {size}",
-		"sourceHash": "511d479d"
-	},
-	"wallet.sim.gates.room.because": {
-		"translation": "Ya hay {open} abiertos entre ambos líderes; otra copia de {size} rompería el tope de {cap}.",
-		"sourceHash": "59ec0658"
-	},
-	"wallet.sim.gates.liquidity.question": {
-		"translation": "¿Hay alguien aquí con quien operar?",
-		"sourceHash": "61d03dbb"
-	},
-	"wallet.sim.gates.liquidity.because": {
-		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
-		"sourceHash": "4f2ea6bd"
-	},
-	"wallet.sim.gates.timing.question": {
-		"translation": "¿Está este mercado a punto de terminar?",
-		"sourceHash": "d23cb86d"
-	},
-	"wallet.sim.gates.timing.because": {
-		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
-		"sourceHash": "5dbf4e29"
-	},
-	"wallet.sim.gates.freshness.question": {
-		"translation": "¿Se ha escapado ya el precio del líder?",
-		"sourceHash": "3bcc4f25"
-	},
-	"wallet.sim.gates.freshness.rulePctOnly": {
-		"translation": "≤ {pct}",
-		"sourceHash": "364242d8"
-	},
-	"wallet.sim.gates.freshness.ruleWithFloor": {
-		"translation": "≤ {pct} o < {steps}",
-		"sourceHash": "1e33b50a"
-	},
-	"wallet.sim.gates.freshness.because": {
-		"translation": "El precio de venta está {drift} por encima de la entrada del líder a {entry} (ahora {ask}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
-		"sourceHash": "ed9c0534"
-	},
-	"wallet.sim.gates.flow.question": {
-		"translation": "¿Opera este líder ambos lados de esta apuesta?",
-		"sourceHash": "70153acb"
-	},
-	"wallet.sim.gates.flow.actualNone": {
-		"translation": "nada que pesar",
-		"sourceHash": "20c3264b"
-	},
-	"wallet.sim.gates.flow.because": {
-		"translation": "En las últimas 48 horas el flujo de compra y de venta de este líder en esta apuesta están a {ratio} el uno del otro, más allá del techo de {ceiling} — una cartera que opera ambos lados está haciendo mercado, no expresando una opinión, y cada giro copiado es un viaje de ida y vuelta pagado.",
-		"sourceHash": "26fd4584"
-	},
-	"wallet.sim.gates.price.question": {
-		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
-		"sourceHash": "e1dc3057"
-	},
-	"wallet.sim.gates.price.because": {
-		"translation": "El mercado valora este resultado en {price}, por encima del techo de {ceiling} — una copia podría ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
-		"sourceHash": "8c1e416a"
-	},
-	"wallet.sim.gates.floor.question": {
-		"translation": "¿Me dejará esto por debajo de mi suelo?",
-		"sourceHash": "d32b7df4"
-	},
-	"wallet.sim.gates.floor.because": {
-		"translation": "Una copia de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
-		"sourceHash": "1360d312"
-	},
-	"wallet.sim.drift.favour": {
+	"cluster.sim.drift.favour": {
 		"translation": "se movió a nuestro favor",
 		"sourceHash": "c2bcc77a"
 	},
-	"wallet.sim.verdict.copy": {
-		"translation": "COPIA {size}",
-		"sourceHash": "376968a3"
+	"cluster.sim.gates.crowd.because": {
+		"translation": "Solo lo operaron {wallets}, por debajo de las {threshold} que hacen falta para ser un grupo — así que no salta ninguna alerta, el ejecutor no lo ve y nada queda registrado.",
+		"sourceHash": "55b773b9"
 	},
-	"wallet.sim.verdict.skip": {
-		"translation": "PASA",
-		"sourceHash": "7ebdb0c2"
+	"cluster.sim.gates.crowd.question": {
+		"translation": "¿Está de acuerdo un grupo, y no un solo trader?",
+		"sourceHash": "490475d1"
 	},
-	"wallet.sim.verdict.noSignal": {
+	"cluster.sim.gates.fee.because": {
+		"translation": "Entrar en un resultado a {entry} cuesta {fraction} del ticket en comisiones, por encima del techo de {ceiling} — la comisión se cobra por participación, así que el resultado barato es el caro de operar.",
+		"sourceHash": "cd2719b5"
+	},
+	"cluster.sim.gates.fee.question": {
+		"translation": "¿Se come la comisión demasiada parte del ticket?",
+		"sourceHash": "6a570d5f"
+	},
+	"cluster.sim.gates.fill.actual": {
+		"translation": "pide {price}",
+		"sourceHash": "5ee4868e"
+	},
+	"cluster.sim.gates.fill.because": {
+		"translation": "La oferta más barata es {ask} y el límite del agente es {limit} — una orden todo-o-nada con ese límite simplemente muere.",
+		"sourceHash": "f19e81be"
+	},
+	"cluster.sim.gates.fill.question": {
+		"translation": "¿Puedo comprar dentro de mi propio límite de precio?",
+		"sourceHash": "27f6269b"
+	},
+	"cluster.sim.gates.floor.because": {
+		"translation": "Un ticket de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
+		"sourceHash": "26916049"
+	},
+	"cluster.sim.gates.floor.question": {
+		"translation": "¿Me dejará esto por debajo de mi suelo?",
+		"sourceHash": "d32b7df4"
+	},
+	"cluster.sim.gates.freshness.because": {
+		"translation": "El precio se movió {drift} en nuestra contra ({entry} → {live}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
+		"sourceHash": "b4b909fd"
+	},
+	"cluster.sim.gates.freshness.question": {
+		"translation": "¿Se ha escapado ya el precio?",
+		"sourceHash": "89e4be4b"
+	},
+	"cluster.sim.gates.freshness.rulePctOnly": {
+		"translation": "≤ {pct}",
+		"sourceHash": "364242d8"
+	},
+	"cluster.sim.gates.freshness.ruleWithFloor": {
+		"translation": "≤ {pct} o < {steps}",
+		"sourceHash": "1e33b50a"
+	},
+	"cluster.sim.gates.liquidity.because": {
+		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
+		"sourceHash": "4f2ea6bd"
+	},
+	"cluster.sim.gates.liquidity.question": {
+		"translation": "¿Hay alguien aquí con quien operar?",
+		"sourceHash": "61d03dbb"
+	},
+	"cluster.sim.gates.price.because": {
+		"translation": "Una participación cuesta {entry}, por encima del techo de {ceiling} — puede ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
+		"sourceHash": "d4ba5735"
+	},
+	"cluster.sim.gates.price.question": {
+		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
+		"sourceHash": "e1dc3057"
+	},
+	"cluster.sim.gates.reversal.actualNone": {
+		"translation": "nadie se dio la vuelta",
+		"sourceHash": "1b597df7"
+	},
+	"cluster.sim.gates.reversal.actualSome": {
+		"translation": "{flipped} de {total}, hace {ago}",
+		"sourceHash": "8bb3752e"
+	},
+	"cluster.sim.gates.reversal.becauseTooFew": {
+		"translation": "Descontando las {flipped} que se dieron la vuelta {when} quedan solo {clean} — por debajo de las {threshold} que hacen falta para ser un grupo, así que el giro era lo que sostenía esta señal.",
+		"sourceHash": "e351cae3"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.few": {
+		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
+		"sourceHash": "fc114698"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.many": {
+		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
+		"sourceHash": "fc114698"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.one": {
+		"translation": "{n} de estas carteras sostenía la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, es una cartera cambiando de opinión en público.",
+		"sourceHash": "a72959bf"
+	},
+	"cluster.sim.gates.reversal.question": {
+		"translation": "¿Alguno de ellos estaba justo en el otro lado?",
+		"sourceHash": "a830c52d"
+	},
+	"cluster.sim.gates.reversal.rule": {
+		"translation": "≤ {tolerated} en {window}",
+		"sourceHash": "260023e0"
+	},
+	"cluster.sim.gates.reversal.when": {
+		"translation": "hace {ago}, dentro de la ventana de {window}",
+		"sourceHash": "e0f78510"
+	},
+	"cluster.sim.gates.room.actual": {
+		"translation": "{open} abiertos + {size}",
+		"sourceHash": "511d479d"
+	},
+	"cluster.sim.gates.room.because": {
+		"translation": "Ya hay {open} abiertos; otro ticket de {size} rompería el tope de {cap}.",
+		"sourceHash": "863f03f3"
+	},
+	"cluster.sim.gates.room.question": {
+		"translation": "¿Tengo sitio bajo mi tope?",
+		"sourceHash": "ca2c72ff"
+	},
+	"cluster.sim.gates.size.because": {
+		"translation": "{size} con un límite de {limit} compra solo {shares}, y esta casa rechaza cualquier orden por debajo de {min}.",
+		"sourceHash": "347a3d87"
+	},
+	"cluster.sim.gates.size.question": {
+		"translation": "¿Es la orden lo bastante grande para la casa?",
+		"sourceHash": "70628828"
+	},
+	"cluster.sim.gates.timing.because": {
+		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
+		"sourceHash": "5dbf4e29"
+	},
+	"cluster.sim.gates.timing.question": {
+		"translation": "¿Está este mercado a punto de terminar?",
+		"sourceHash": "d23cb86d"
+	},
+	"cluster.sim.signal.leadBought": {
+		"translation": "{wallets} en el lado comprador",
+		"sourceHash": "e0e5b41e"
+	},
+	"cluster.sim.signal.leadSold": {
+		"translation": "{wallets} en el lado vendedor",
+		"sourceHash": "01a318df"
+	},
+	"cluster.sim.signal.trailBought": {
+		"translation": "a {price}.",
+		"sourceHash": "b5e1ded5"
+	},
+	"cluster.sim.signal.trailSold": {
+		"translation": "a {price} — así que el agente compraría el resultado contrario a {mirror}.",
+		"sourceHash": "bc516db6"
+	},
+	"cluster.sim.summary.priceBand": {
+		"translation": "paga entre {min} y {max} por participación,",
+		"sourceHash": "c19f7a73"
+	},
+	"cluster.sim.summary.priceCapOnly": {
+		"translation": "paga como mucho {max} por participación,",
+		"sourceHash": "d5832e42"
+	},
+	"cluster.sim.summary.sentence": {
+		"translation": "Cuando {threshold}+ carteras hábiles están de acuerdo, sin que ninguna haya estado en el otro lado en los últimos {lookback}, y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no se les ha movido más de {staleness} en contra → el agente compra {size} de lo que ellas compraron (o del resultado contrario, si estaban vendiendo), {priceBand} cede como mucho {fee} del ticket en comisiones, no paga más de {slippage} por encima del precio que ellas consiguieron, mantiene hasta que la primera se dé la vuelta, conserva {floor} gastables y {gas} POL para gas, y repite sin tener nunca más de {cap} en juego a la vez.",
+		"sourceHash": "2beb618b"
+	},
+	"cluster.sim.verdict.buy": {
+		"translation": "COMPRA {size}",
+		"sourceHash": "43b83066"
+	},
+	"cluster.sim.verdict.noSignal": {
 		"translation": "SIN SEÑAL",
 		"sourceHash": "9d7aa6e6"
 	},
-	"wallet.sim.verdict.noBoot": {
-		"translation": "RECHAZADO AL ARRANCAR",
-		"sourceHash": "4e8f8cdc"
+	"cluster.sim.verdict.skip": {
+		"translation": "PASA",
+		"sourceHash": "7ebdb0c2"
 	},
-	"wallet.sim.detail.order": {
-		"translation": "Envía una orden fill-or-kill de {size} con un límite de {limit} — unas {shares} — se llena entera o muere. Una orden cancelada no recibe reintento.",
-		"sourceHash": "0eafb1c8"
+	"hero.heading": {
+		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
+		"sourceHash": "983ff027"
 	},
-	"wallet.sim.detail.hold": {
-		"translation": "Luego aguanta los recortes pequeños y vende la pierna entera en cuanto {leader} haya deshecho {threshold} de su pico — o girado, o cerrado.",
-		"sourceHash": "73c75273"
+	"hero.intro": {
+		"translation": "Mantenemos los libros abiertos. El historial de la estrategia y el P&L del proyecto. Solo números agregados. IDs de carteras truncados. Sin alfa en vivo, sin registro, sin newsletter — solo RSS y un feed en markdown que tu agente puede leer.",
+		"sourceHash": "203956b7"
 	},
-	"wallet.sim.detail.copy": {
-		"translation": "Todos los controles pasaron. {order} {hold}",
-		"sourceHash": "f5cd3133"
+	"hub.advice.lead": {
+		"translation": "Ninguna página es un consejo. Nunca publicamos ninguna cartera —",
+		"sourceHash": "d0c290f1"
 	},
-	"wallet.sim.detail.copyViaSale": {
-		"translation": "El líder construyó esta posición vendiendo el otro lado, así que el agente compra el resultado que realmente sostiene, a {ask}. {order} {hold}",
-		"sourceHash": "2af10d68"
+	"hub.advice.link": {
+		"translation": "metodología y divulgación",
+		"sourceHash": "b3a8abdb"
 	},
-	"wallet.sim.signal.lead": {
-		"translation": "{leader} construyó una posición de {stake} en",
-		"sourceHash": "cbca887f"
+	"hub.advice.md": {
+		"translation": "Ninguna página es un consejo ni un servicio de señales. Nunca publicamos ninguna\ncartera involucrada en cualquiera de los agentes. Ver la [metodología y política de divulgación]({methodologyHref}).",
+		"sourceHash": "88b6b844"
 	},
-	"wallet.sim.signal.trail": {
-		"translation": "a {entry}.",
-		"sourceHash": "4d1306b0"
+	"hub.choose": {
+		"translation": "Elige una guía",
+		"sourceHash": "f1d9fb75"
 	},
-	"wallet.sim.signal.trailViaSale": {
-		"translation": "— vendiendo el otro lado, así que el resultado que realmente sostiene cotiza a {entry}, y eso es lo que compraría el agente.",
-		"sourceHash": "f0e183c4"
+	"hub.cluster.fires": {
+		"translation": "3+ carteras coinciden a la vez",
+		"sourceHash": "ae369683"
 	},
-	"wallet.sim.trim.holdHeadline": {
-		"translation": "MANTIENE",
-		"sourceHash": "ebb64f78"
+	"hub.cluster.follows": {
+		"translation": "cualquier multitud de nuestro roster hábil",
+		"sourceHash": "92b63225"
 	},
-	"wallet.sim.trim.holdDetail": {
-		"translation": "El líder ha deshecho {sold} de su pico — por debajo de la línea del {threshold}. Eso es información, no una salida: el agente lo apunta y conserva la posición entera.",
-		"sourceHash": "b662fc43"
+	"hub.cluster.leaves": {
+		"translation": "la primera de ellas se da la vuelta",
+		"sourceHash": "abd7061e"
 	},
-	"wallet.sim.trim.closeHeadline": {
-		"translation": "CIERRA LA PIERNA ENTERA",
-		"sourceHash": "9d0fa55b"
+	"hub.cluster.name": {
+		"translation": "Copia a la multitud",
+		"sourceHash": "673a1776"
 	},
-	"wallet.sim.trim.closeDetail": {
-		"translation": "{sold} del pico ha desaparecido — en la línea del {threshold} o más allá. El agente vende la copia entera de una vez, nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de {min} participaciones de la casa y volverse invendible.",
-		"sourceHash": "da16fc83"
+	"hub.cluster.tagline": {
+		"translation": "Espera al menos tres carteras hábiles del mismo lado de la misma apuesta, en operaciones separadas. Entonces compra $5. Una cartera es una opinión. Tres llegando por separado son información.",
+		"sourceHash": "6a08f349"
 	},
-	"wallet.sim.summary.sentence": {
-		"translation": "Cuando uno de los dos líderes construye al menos {a} (leader-a) o {b} (leader-b) de una apuesta nueva, {flowClause} y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no ha corrido más de {staleness} desde su entrada → el agente compra {size} del resultado que sostienen, paga como mucho {maxPrice} por participación y {slippage} sobre el precio de venta, lleva como mucho {copies} copias por líder y {cap} abiertos en total, conserva {floor} gastables, aguanta los recortes pequeños y vende la pierna entera cuando ese líder haya deshecho {trim} de su pico — o girado, o cerrado.",
-		"sourceHash": "0eb49b2c"
+	"hub.cluster.ticket": {
+		"translation": "$5, todo o nada",
+		"sourceHash": "a8fd269d"
 	},
-	"wallet.sim.summary.flowAny": {
-		"translation": "sea cual sea su flujo reciente,",
-		"sourceHash": "e86e86f7"
+	"hub.compare.exit.cluster": {
+		"translation": "la primera cartera de la multitud se da la vuelta",
+		"sourceHash": "67d5abd9"
 	},
-	"wallet.sim.summary.flowCapped": {
-		"translation": "y su flujo reciente en ella no es de doble lado más allá de {ratio},",
-		"sourceHash": "a5f81350"
+	"hub.compare.exit.label": {
+		"translation": "Sale cuando",
+		"sourceHash": "e8f7f617"
 	},
-	"wallet.page.title": {
-		"translation": "Wallet copy para dummies",
-		"sourceHash": "b7ea685a"
+	"hub.compare.exit.wallet": {
+		"translation": "el líder deshace la mitad de su pico, se gira o cierra",
+		"sourceHash": "ebc73c5e"
+	},
+	"hub.compare.fees.cluster": {
+		"translation": "sí — en la práctica un precio mínimo de $0.60",
+		"sourceHash": "c8450f4a"
+	},
+	"hub.compare.fees.label": {
+		"translation": "Raíl de comisiones",
+		"sourceHash": "0848e675"
+	},
+	"hub.compare.fees.wallet": {
+		"translation": "ninguno, y su página lo dice claramente",
+		"sourceHash": "30315294"
+	},
+	"hub.compare.guard.cluster": {
+		"translation": "un miembro de la multitud en el otro lado dentro de 10 minutos anula la multitud",
+		"sourceHash": "0a5b3984"
+	},
+	"hub.compare.guard.label": {
+		"translation": "Su guarda extra",
+		"sourceHash": "b9c2e81e"
+	},
+	"hub.compare.guard.wallet": {
+		"translation": "un líder operando ambos lados de la apuesta en 48 horas queda descartado",
+		"sourceHash": "9a7cce52"
+	},
+	"hub.compare.liveSince.cluster": {
+		"translation": "julio de 2026",
+		"sourceHash": "b3a0905b"
+	},
+	"hub.compare.liveSince.label": {
+		"translation": "En vivo desde",
+		"sourceHash": "982b96a5"
+	},
+	"hub.compare.liveSince.wallet": {
+		"translation": "11 de agosto de 2026",
+		"sourceHash": "ddf6ecac"
+	},
+	"hub.compare.money.cluster": {
+		"translation": "su propio fondo, como máximo $20 abiertos",
+		"sourceHash": "4eb6bfab"
+	},
+	"hub.compare.money.label": {
+		"translation": "Dinero",
+		"sourceHash": "b34b4bef"
+	},
+	"hub.compare.money.wallet": {
+		"translation": "su propia cuenta separada, como máximo $20 abiertos",
+		"sourceHash": "c524835f"
+	},
+	"hub.compare.signal.cluster": {
+		"translation": "3+ carteras hábiles del mismo lado, en operaciones separadas",
+		"sourceHash": "56811e67"
+	},
+	"hub.compare.signal.label": {
+		"translation": "Una señal es",
+		"sourceHash": "0e71a388"
+	},
+	"hub.compare.signal.wallet": {
+		"translation": "una apuesta nueva de un líder cruzando su propio listón de convicción ($500 / $100)",
+		"sourceHash": "e59af184"
+	},
+	"hub.description": {
+		"translation": "Dos pequeños agentes operan con cantidades diminutas de dinero real junto al historial publicado. Uno sigue a un grupo de carteras hábiles. El otro replica a dos traders elegidos a mano. Elige una guía. Cada una explica todas las reglas en lenguaje llano y te deja jugar con los ajustes en vivo.",
+		"sourceHash": "98946f99"
+	},
+	"hub.eyebrow": {
+		"translation": "para dummies",
+		"sourceHash": "0f509a28"
+	},
+	"hub.facts.fires": {
+		"translation": "dispara cuando",
+		"sourceHash": "75b99b42"
+	},
+	"hub.facts.follows": {
+		"translation": "sigue a",
+		"sourceHash": "ee8061b9"
+	},
+	"hub.facts.leaves": {
+		"translation": "sale cuando",
+		"sourceHash": "fedbb877"
+	},
+	"hub.facts.ticket": {
+		"translation": "ticket",
+		"sourceHash": "6517b3e5"
+	},
+	"hub.heading": {
+		"translation": "Dos agentes. Dos preguntas.",
+		"sourceHash": "0d2b5c4c"
+	},
+	"hub.mdRead": {
+		"translation": "Lee la guía completa en {href} — o como markdown en {mdHref}.",
+		"sourceHash": "2e3e3ba2"
+	},
+	"hub.read": {
+		"translation": "Lee la guía →",
+		"sourceHash": "533033e2"
+	},
+	"hub.sharedNote": {
+		"translation": "Todo lo demás es ADN compartido. Solo mercados Macro. Tickets de $5 todo-o-nada sobre la propia rejilla de precios del exchange. Los mismos raíles de liquidez y tiempo. El mismo raíl para un precio que ya corrió. Un suelo de gasto de $5. Interruptores de emergencia que detienen las compras pero nunca las ventas. Un barrido semanal de beneficios. Cada descarte anotado con sus números.",
+		"sourceHash": "eab18a80"
+	},
+	"hub.sideBySide": {
+		"translation": "Lado a lado",
+		"sourceHash": "6f659592"
+	},
+	"hub.title": {
+		"translation": "Copy trading para dummies",
+		"sourceHash": "a4ab9276"
+	},
+	"hub.wallet.fires": {
+		"translation": "un líder apuesta por encima de su propio listón",
+		"sourceHash": "e8f30341"
+	},
+	"hub.wallet.follows": {
+		"translation": "dos líderes con nombre, anonimizados",
+		"sourceHash": "68309c83"
+	},
+	"hub.wallet.leaves": {
+		"translation": "el líder deshace la mitad, se gira o cierra",
+		"sourceHash": "e63fb7ce"
+	},
+	"hub.wallet.name": {
+		"translation": "Copia al trader",
+		"sourceHash": "7002ce19"
+	},
+	"hub.wallet.tagline": {
+		"translation": "Sigue como una sombra a dos traders hábiles elegidos a mano e ignora casi todo lo que hacen. Entonces uno compromete dinero serio en una apuesta nueva. Coloca una pequeña copia en su propia cuenta separada.",
+		"sourceHash": "a12415f7"
+	},
+	"hub.wallet.ticket": {
+		"translation": "$5, todo o nada",
+		"sourceHash": "a8fd269d"
+	},
+	"install.caption": {
+		"translation": "Inyecta el llms.txt del proyecto en el contexto de tu agente",
+		"sourceHash": "eb382b81"
+	},
+	"install.eyebrow": {
+		"translation": "Instálalo para tu agente LLM",
+		"sourceHash": "591ebb40"
+	},
+	"latest.eyebrow": {
+		"translation": "Último informe",
+		"sourceHash": "4d09725b"
+	},
+	"latest.viewAll": {
+		"translation": "Ver todos los informes →",
+		"sourceHash": "b0171481"
+	},
+	"meta.description": {
+		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
+		"sourceHash": "983ff027"
+	},
+	"meta.title": {
+		"translation": "ogsfrompoly — traders con habilidad real en Polymarket",
+		"sourceHash": "c232326e"
+	},
+	"methodology.description": {
+		"translation": "Cómo ogsfrompoly separa la habilidad de la suerte en Polymarket. Cómo puntúa las alertas pasadas. Cómo decide qué es seguro publicar.",
+		"sourceHash": "5f9e0cfd"
+	},
+	"methodology.note": {
+		"translation": "Esta página es una traducción. Si algo difiere, manda el original en inglés, incluida su política de divulgación.",
+		"sourceHash": "e1322d27"
+	},
+	"methodology.sections.academicIntro": {
+		"translation": "## Fundamento académico\n\nLa metodología se apoya en dos artículos de 2026 sobre habilidad, persistencia\nde los traders y resultados en mercados de predicción:",
+		"sourceHash": "c4e7c014"
+	},
+	"methodology.sections.academicOutro": {
+		"translation": "Ambos artículos apuntan a la misma lección. El PnL realizado a corto plazo es\nun proxy débil de la habilidad. Una cartera puede tener suerte. Una cartera con\nsuerte puede dejar de ganar.\n\nPor eso ogsfrompoly empieza con una prueba estadística de habilidad. Luego\npublica, en el historial abierto, si esas señales funcionaron.",
+		"sourceHash": "ba5eeddc"
+	},
+	"methodology.sections.controls": {
+		"translation": "## Controles antes de publicar\n\nEl marcador público mide señal repetible del trader. No debe medir el trasiego\nde direcciones ni artefactos de microestructura de mercado.\n\nAntes de que una cartera llegue al registro publicado, la revisamos. Buscamos\ncarteras que se mueven como una manada coordinada, la misma contraparte al\notro lado una y otra vez, y operaciones que parecen wash trading. Eliminamos o\ndegradamos la señal que no pasa.",
+		"sourceHash": "f6780ef4"
+	},
+	"methodology.sections.disclosure": {
+		"translation": "## Política de divulgación\n\nSomos abiertos sobre la metodología y los resultados agregados. Somos cerrados\nsobre cualquier cosa que permita hacer front-running a una posición o exponer a\nun trader concreto.\n\nEstas reglas aplican a la página HTML renderizada, al feed `.md` en crudo, al\nRSS y a `llms.txt`.\n\n- **Las carteras aparecen solo como IDs truncados y opacos** — p. ej.\n  `wallet_a3f8`. Nunca publicamos una dirección EVM completa. Los IDs\n  truncados no llevan de vuelta a una identidad on-chain, por diseño.\n- **Nada de alfa en vivo. Nunca.** Jamás publicamos una alerta en vivo, una\n  posición aún abierta ni nada que un lector pueda usar para adelantarse a una\n  operación en curso. Publicamos los resultados a posteriori y agregados.\n- **Sin leaderboards.** Nunca clasificamos carteras nombradas entre sí.\n  Publicamos la cohorte de estrategia, no la dirección.\n- **Sin exportes crudos del almacén.** Solo conteos agregados, hit rates y\n  distribuciones de categorías — nunca nada que permita reconstruir el\n  historial de una cartera individual.\n- **Sin direcciones de agentes ni de líderes.** Los agentes de copia operan desde sus\n  propias carteras. Míralas en tiempo real y verás nuestras posiciones\n  abiertas. Por eso nunca publicamos sus cuentas de trading, sus direcciones de\n  cobro ni las carteras líder que replican. Los líderes aparecen solo bajo\n  etiquetas opacas (p. ej. `leader-a`). Nunca nombramos el mercado de una\n  posición abierta de un agente.\n\nCuando una cifra publicada roza el límite, la retrasamos 30+ días o\nanonimizamos la categoría. Ante la duda, no publicamos.",
+		"sourceHash": "9152e47c"
+	},
+	"methodology.sections.intro": {
+		"translation": "ogsfrompoly plantea una pregunta estrecha:\n\n> **¿Qué carteras de Polymarket siguen pareciendo hábiles cuando le quitas la\n> suerte — y siguen funcionando sus movimientos cuando los puntuamos después?**\n\nPublicamos la respuesta a posteriori, como un marcador. No publicamos ideas de\ntrading en vivo, ni posiciones abiertas, ni rankings de carteras.",
+		"sourceHash": "1442e11c"
+	},
+	"methodology.sections.notThis": {
+		"translation": "## Qué no es esto\n\nogsfrompoly no es una recomendación de inversión, un servicio de señales de\ntrading ni una promesa de que alguna cartera seguirá ganando.\n\nEs un rastro de auditoría de un método. Encuentra carteras cuyo historial\nresuelto no parezca signos aleatorios. Puntúa sus alertas a posteriori, en las\ncategorías que publicamos. Muestra los resultados.",
+		"sourceHash": "83829217"
+	},
+	"methodology.sections.qualify": {
+		"translation": "## Cómo se califica una cartera\n\nUna cartera necesita suficiente historial resuelto para poder someterla a\nprueba. Aquí un **evento** es una pregunta del mundo real que Polymarket\nliquida. Una pregunta puede llevar muchos mercados, resultados, ejecuciones o\nposiciones sueltas en tokens, y aun así cuenta una vez. El listón son al menos 20\neventos resueltos dentro del período de medición.\n\nSolo cuentan los mercados resueltos. Ignoramos las posiciones abiertas. Para\ncada cartera elegible construimos una serie de **only-realized PnL**: un número\nde pérdidas y ganancias por evento resuelto.\n\nAgrupamos a nivel de evento porque una predicción puede abarcar muchas\nejecuciones o mercados. Cuenta cada ejecución como su propia decisión y una\nposición empieza a parecer una docena de apuestas independientes. Agrupar\nmantiene la prueba en lo que nos importa: ¿eligió esta cartera el lado\ncorrecto, una y otra vez, en preguntas que ya se liquidaron?",
+		"sourceHash": "7078b298"
+	},
+	"methodology.sections.scope": {
+		"translation": "## Alcance actual\n\nEl historial público cubre un área de Polymarket:\n\n- **Macro/Finanzas** - macro, tipos de interés, datos económicos, FOMC,\n  resultados empresariales y mercados de Polymarket con etiqueta financiera.\n\nLa estrechez es a propósito. No perseguimos cobertura de categorías.\nConstruimos un rastro de auditoría limpio: carteras hábiles, alertas puntuadas\na posteriori y resultados que el lector puede verificar más tarde.",
+		"sourceHash": "ae1ea60f"
+	},
+	"methodology.sections.scoring": {
+		"translation": "## Cómo puntuamos las alertas\n\nLos informes semanales puntúan el período a posteriori. Reportan:\n\n- total de alertas\n- hit rate de resueltos\n- PnL hipotético\n- mezcla de categorías\n- un pequeño conjunto de IDs opacos de carteras cuando ayuda a la auditoría\n\nLos informes mensuales añaden el lado empresarial del proyecto: ingresos,\ngastos operativos, resultado neto y runway.\n\nLa categoría publicada es **macro-finance**. Todo lo que queda fuera del\nalcance público desaparece de las páginas de informes. Nunca lo fusionamos con\notra categoría.\n\nCada informe mira hacia atrás. Publicamos si las señales pasadas funcionaron.\nNo publicamos nada sobre una operación en curso.",
+		"sourceHash": "be962336"
+	},
+	"methodology.sections.skillTest": {
+		"translation": "## La prueba de habilidad\n\nMedimos la habilidad con una prueba de **aleatorización de signos** a nivel de\nevento.\n\nPara cada cartera elegible, las entradas son:\n\n- `n` = número de eventos resueltos de la cartera.\n- `x_i` = el PnL realizado de la cartera en el evento `i`.\n- `A = sum(x_i)` = el PnL total realizado real de la cartera.\n- `B = 1,000 simulations` = el tamaño de la corrida de aleatorización.\n\nCada simulación conserva el tamaño del resultado de cada evento pero\naleatoriza el signo. En la simulación `j`, cada evento recibe un signo\naleatorio:\n\n`s_{j,i} in {-1, +1}`\n\nEl total simulado sin habilidad es:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nEl p-valor es:\n\n`p = count(T_j >= A) / B`\n\nEn palabras, el p-valor responde:\n\n«Si esta cartera solo estuviera adivinando, ¿con qué frecuencia unos giros de\nsigno aleatorios igualarían o superarían su total real?»\n\nLlamamos hábil a una cartera solo cuando ese p-valor supera el umbral\nprerregistrado: `p <= 0.05`. Un PnL bruto grande no basta.",
+		"sourceHash": "520a92e2"
+	},
+	"methodology.sections.skin": {
+		"translation": "## Skin in the game: dos pequeños agentes en vivo\n\nEl marcador mira hacia atrás. El dinero no. Dos agentes operan en vivo detrás de\nnuestras propias señales, con tickets diminutos de **$5**:\n\n- **Cluster copy** (en vivo desde julio de 2026) compra solo cuando varias\n  carteras hábiles caen del mismo lado del mismo mercado a la vez, en\n  operaciones separadas.\n- **Wallet copy** (en vivo desde agosto de 2026) replica dos carteras\n  individuales del roster hábil, cada una publicada solo bajo una etiqueta\n  opaca.\n\nDocumentamos ambos en lenguaje llano en [copy trading para dummies](/for-dummies):\ncada regla, cada ajuste en vivo y un simulador que puedes arrastrar. Sus\nresultados realizados llegan a los informes mensuales como efectivo. Cada\nsemana barremos el beneficio a una cartera de recolección y lo contamos como\ningreso cuando aterriza. No publicamos nada de una posición de agente mientras esa\nposición está abierta.",
+		"sourceHash": "34cab2e2"
+	},
+	"methodology.title": {
+		"translation": "Metodología",
+		"sourceHash": "7a2321b0"
+	},
+	"sim.days": {
+		"translation": "{n} d",
+		"sourceHash": "9a267af5"
+	},
+	"sim.hours": {
+		"translation": "{n} h",
+		"sourceHash": "9e268141"
+	},
+	"sim.minutes": {
+		"translation": "{n} min",
+		"sourceHash": "a12685fa"
+	},
+	"sim.off": {
+		"translation": "desact.",
+		"sourceHash": "ab3a8a0a"
+	},
+	"sim.pct": {
+		"translation": "{n} %",
+		"sourceHash": "592614a2"
+	},
+	"sim.share.few": {
+		"translation": "{n} participaciones",
+		"sourceHash": "117e70cd"
+	},
+	"sim.share.many": {
+		"translation": "{n} participaciones",
+		"sourceHash": "117e70cd"
+	},
+	"sim.share.one": {
+		"translation": "{n} participación",
+		"sourceHash": "5b70c06c"
+	},
+	"sim.skilledWallet.few": {
+		"translation": "{n} carteras hábiles",
+		"sourceHash": "cb61c1f1"
+	},
+	"sim.skilledWallet.many": {
+		"translation": "{n} carteras hábiles",
+		"sourceHash": "cb61c1f1"
+	},
+	"sim.skilledWallet.one": {
+		"translation": "{n} cartera hábil",
+		"sourceHash": "2f907098"
+	},
+	"sim.step.few": {
+		"translation": "{n} pasos",
+		"sourceHash": "4193e800"
+	},
+	"sim.step.many": {
+		"translation": "{n} pasos",
+		"sourceHash": "4193e800"
+	},
+	"sim.step.one": {
+		"translation": "{n} paso",
+		"sourceHash": "5e2d7873"
+	},
+	"sim.usd": {
+		"translation": "${n}",
+		"sourceHash": "aa0612ed"
+	},
+	"sim.wallet.few": {
+		"translation": "{n} carteras",
+		"sourceHash": "0a902bc1"
+	},
+	"sim.wallet.many": {
+		"translation": "{n} carteras",
+		"sourceHash": "0a902bc1"
+	},
+	"sim.wallet.one": {
+		"translation": "{n} cartera",
+		"sourceHash": "4f85c1a8"
+	},
+	"skin.body": {
+		"translation": "Dos pequeños agentes operan con dinero real junto al registro. Uno sigue a un grupo de carteras hábiles. El otro replica a dos traders elegidos a mano. Cada regla y cada ajuste en vivo en lenguaje llano, con un simulador que puedes arrastrar.",
+		"sourceHash": "afc5b4e8"
+	},
+	"skin.cta": {
+		"translation": "Copy trading para dummies →",
+		"sourceHash": "c4f9add0"
+	},
+	"skin.eyebrow": {
+		"translation": "Nos jugamos nuestro propio dinero",
+		"sourceHash": "7f81645e"
 	},
 	"wallet.page.description": {
 		"translation": "Guía en lenguaje llano del agente wallet-copy de ogsfrompoly, el que replica a dos traders hábiles elegidos a mano. Cuándo copia. Cuándo se niega. Cuándo sale. Y qué números puedes girar.",
 		"sourceHash": "661411e3"
 	},
+	"wallet.page.knobGroups.conviction": {
+		"translation": "¿Va el líder realmente en serio?",
+		"sourceHash": "a887bd3e"
+	},
+	"wallet.page.knobGroups.execution": {
+		"translation": "¿Cómo consigo llenarme?",
+		"sourceHash": "f7277e44"
+	},
+	"wallet.page.knobGroups.exit": {
+		"translation": "¿Cuándo salgo?",
+		"sourceHash": "f8969ecb"
+	},
+	"wallet.page.knobGroups.gate": {
+		"translation": "¿Debería copiar esto siquiera?",
+		"sourceHash": "a6ef7aa5"
+	},
+	"wallet.page.knobGroups.size": {
+		"translation": "¿Cuánto puedo poner en riesgo?",
+		"sourceHash": "0cf0295f"
+	},
+	"wallet.page.knobs.auto_close_loss_pct": {
+		"translation": "Vender si la posición pierde más de",
+		"sourceHash": "6c5b4c0e"
+	},
+	"wallet.page.knobs.auto_close_profit_pct": {
+		"translation": "Vender si gana más de",
+		"sourceHash": "e19132bc"
+	},
+	"wallet.page.knobs.exposure_cap_usdc": {
+		"translation": "Nunca mantener abierto más de",
+		"sourceHash": "eee65c54"
+	},
+	"wallet.page.knobs.leader_a_min_notional_usdc": {
+		"translation": "Copiar a leader-a solo cuando su apuesta alcance",
+		"sourceHash": "e3879958"
+	},
+	"wallet.page.knobs.leader_b_min_notional_usdc": {
+		"translation": "Copiar a leader-b solo cuando su apuesta alcance",
+		"sourceHash": "a0281b11"
+	},
+	"wallet.page.knobs.max_entry_price": {
+		"translation": "Nunca pagar por participación más de",
+		"sourceHash": "3bb889bf"
+	},
+	"wallet.page.knobs.max_open_copies_per_leader": {
+		"translation": "Nunca llevar más copias de un líder que",
+		"sourceHash": "e75150db"
+	},
+	"wallet.page.knobs.max_wallet_two_sided_ratio": {
+		"translation": "Rechazar a un líder que opera ambos lados más allá de",
+		"sourceHash": "3ee77a20"
+	},
+	"wallet.page.knobs.min_liquidity_usdc": {
+		"translation": "Pasar de mercados más finos que",
+		"sourceHash": "212826b6"
+	},
+	"wallet.page.knobs.min_seconds_to_resolution": {
+		"translation": "Pasar de mercados que resuelven dentro de",
+		"sourceHash": "1a7c23d3"
+	},
+	"wallet.page.knobs.slippage_min_ticks": {
+		"translation": "…pero dar siempre a la orden al menos este margen",
+		"sourceHash": "b8cca0a1"
+	},
+	"wallet.page.knobs.slippage_pct": {
+		"translation": "Retirarse antes que pagar de más por encima de",
+		"sourceHash": "6446b4b4"
+	},
+	"wallet.page.knobs.staleness_min_ticks": {
+		"translation": "…pero tratar como ruido un movimiento menor que",
+		"sourceHash": "ae4d2d11"
+	},
+	"wallet.page.knobs.staleness_pct": {
+		"translation": "Pasar si el precio ya corrió más de",
+		"sourceHash": "b34be1fa"
+	},
+	"wallet.page.knobs.trade_size_usdc": {
+		"translation": "Tamaño de una copia",
+		"sourceHash": "adb06e66"
+	},
+	"wallet.page.knobs.trim_close_fraction": {
+		"translation": "Cerrarlo todo cuando el líder haya deshecho",
+		"sourceHash": "11a48495"
+	},
+	"wallet.page.knobs.working_capital_floor_usdc": {
+		"translation": "Nunca dejar caer el saldo gastable por debajo de",
+		"sourceHash": "6ab9f735"
+	},
+	"wallet.page.md.gasLabel": {
+		"translation": "Gas reservado antes de cualquier pago (solo barrido, no raíl de entrada)",
+		"sourceHash": "6b6f33e9"
+	},
+	"wallet.page.md.inOneSentence": {
+		"translation": "En una frase",
+		"sourceHash": "7de3e1c3"
+	},
+	"wallet.page.md.killLabel": {
+		"translation": "Parar entradas nuevas (las salidas siguen funcionando)",
+		"sourceHash": "f87dd749"
+	},
+	"wallet.page.md.knobsBlurb": {
+		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la\ndecisión del agente cambiar. En markdown son solo la tabla:",
+		"sourceHash": "afec1924"
+	},
+	"wallet.page.md.knobsHeading": {
+		"translation": "Las perillas",
+		"sourceHash": "3db32689"
+	},
+	"wallet.page.md.notPublished": {
+		"translation": "no publicado",
+		"sourceHash": "c0bab374"
+	},
+	"wallet.page.md.payoutLabel": {
+		"translation": "Dirección de pago, lista permitida, umbral de polvo",
+		"sourceHash": "af059b4f"
+	},
+	"wallet.page.md.tableKey": {
+		"translation": "Clave",
+		"sourceHash": "cd1ac90c"
+	},
+	"wallet.page.md.tableLive": {
+		"translation": "En vivo ({market})",
+		"sourceHash": "8677d97e"
+	},
+	"wallet.page.md.tableRole": {
+		"translation": "Papel en la historia",
+		"sourceHash": "8bddd4de"
+	},
+	"wallet.page.scenarios.broke": {
+		"translation": "Sin efectivo",
+		"sourceHash": "7f5079da"
+	},
+	"wallet.page.scenarios.chased": {
+		"translation": "El precio se escapó",
+		"sourceHash": "5f414887"
+	},
+	"wallet.page.scenarios.cheap-side": {
+		"translation": "Lado barato",
+		"sourceHash": "49ce38cb"
+	},
+	"wallet.page.scenarios.empty-window": {
+		"translation": "Ventana vacía",
+		"sourceHash": "ab8de1c6"
+	},
+	"wallet.page.scenarios.ends-soon": {
+		"translation": "Termina muy pronto",
+		"sourceHash": "addd7194"
+	},
+	"wallet.page.scenarios.full": {
+		"translation": "Sin sitio libre",
+		"sourceHash": "bddb8796"
+	},
+	"wallet.page.scenarios.leader-b-bar": {
+		"translation": "El listón de leader-b",
+		"sourceHash": "27244810"
+	},
+	"wallet.page.scenarios.small-poke": {
+		"translation": "Toque pequeño",
+		"sourceHash": "a77cbd79"
+	},
+	"wallet.page.scenarios.spree": {
+		"translation": "Desatado",
+		"sourceHash": "5f928076"
+	},
+	"wallet.page.scenarios.textbook": {
+		"translation": "Copia de manual",
+		"sourceHash": "6fc24670"
+	},
+	"wallet.page.scenarios.thin": {
+		"translation": "Mercado fino",
+		"sourceHash": "9ba617b6"
+	},
+	"wallet.page.scenarios.too-dear": {
+		"translation": "Demasiado caro",
+		"sourceHash": "563569d3"
+	},
+	"wallet.page.scenarios.two-sided": {
+		"translation": "Doble lado",
+		"sourceHash": "ec619559"
+	},
+	"wallet.page.sections.hardWired": {
+		"translation": "## Qué está cableado, y no es un ajuste\n\n- **El listón de convicción dispara una vez por apuesta nueva.** Las\n  ampliaciones nunca lo reactivan; solo un cierre completo o un giro lo\n  reinician.\n- **El agente cuenta las posiciones en el resultado sostenido.** Comprar un lado y\n  vender el otro son la misma opinión, normalizada antes de que ninguna regla\n  las mire.\n- **Las salidas cierran la pierna entera, siempre** — en el umbral de recorte,\n  en un giro, en un cierre total, al eliminarse de la config, en la resolución\n  o cuando dispara el raíl de cierre automático. No hay cierre parcial. Los dos\n  umbrales del raíl son números que puedes girar; la confirmación sobre dos\n  lecturas y el cierre de la pierna entera, no.\n- **Una pierna por apuesta por líder.** El mismo mercado copiado de ambos\n  líderes son dos piernas independientes.\n- **La entrada es una orden fill-or-kill valorada sobre la parrilla de la\n  casa**, y el mínimo de 5 participaciones se impone al arrancar, no por\n  orden.\n- **Solo mercados macro**, calificados contra el mismo catálogo que todo lo\n  demás en este sitio.\n- **El interruptor perdona las salidas.** Solo las entradas pueden detenerse.\n\n**¿Por qué dividirlo así?** Por la misma razón que en la página del clúster:\nlos umbrales son números, y los números son seguros de exponer. La lógica de\ncopia en sí — qué cuenta como convicción, cómo funcionan las salidas — vive en\ncódigo. Una línea descuidada de YAML no puede descarrilar la estrategia.",
+		"sourceHash": "d31d1d28"
+	},
 	"wallet.page.sections.intro": {
 		"translation": "Junto al historial publicado corre un segundo pequeño agente. Replica a dos traders\nindividuales — carteras que nuestra prueba de habilidad ya señaló, ascendidas\ndel mismo ranking sobre el que se construyen los informes semanales. Donde\n[cluster copy]({clusterHref}) espera a que un *grupo* de carteras hábiles se\nponga de acuerdo, este hace una pregunta distinta: **¿qué hace un trader\nprobado cuando va realmente en serio?**\n\nPiensa en un **aprendiz muy paciente** siguiendo a dos maestros. Ignora casi\ntodo lo que hacen. Entonces uno de ellos compromete dinero serio en una apuesta\nnueva, y coloca una pequeña copia propia — $5, en su propia cuenta separada,\ntras su propio interruptor de emergencia.\n\nCada número de esta página es el ajuste vivo para los mercados **{market}** a\nfecha de **{asOf}**, leído de `config/wallet_copy.yml`.\n¿No sabes cuál de los dos agentes buscabas? [El selector]({hubHref}) los compara\nlado a lado.",
 		"sourceHash": "66dee6aa"
 	},
-	"wallet.page.sections.storyHeading": {
-		"translation": "## La historia completa, paso a paso",
-		"sourceHash": "8e715273"
+	"wallet.page.sections.notClaiming": {
+		"translation": "## Lo que aún no afirmamos\n\n- **La historia en vivo tiene días.** La función entró en vivo el 2026-08-11 y\n  ha abierto un número de posiciones de un solo dígito. Argumentamos cada raíl\n  de esta página con mediciones tomadas *antes* de armarlo. Casi ninguno tiene\n  un historial significativo de disparos en producción.\n- **No hay raíl de comisiones, y eso es una apuesta, no una prueba.** La\n  lección de comisiones del agente de clúster (77 % de sus primeras pérdidas) no\n  tiene guardia aquí. Si la convicción de los líderes no filtra los resultados\n  baratos como esperamos, esta página lo dirá — después de los libros.\n- **La evidencia temprana del raíl de doble lado era fina.** La mayoría de sus\n  primeras lecturas eran ceros sobre ventanas de medición vacías. El payload\n  separa ahora «medido limpio» de «nada que pesar», pero el raíl aún no ha\n  probado su umbral contra tráfico real.\n- **La redención no es automática.** Una victoria resuelta queda en los libros\n  como cerrada pero explícitamente *sin pagar* hasta que se redime — los\n  libros se niegan a contar dinero que no ha llegado.\n- **El raíl de cierre automático nunca ha disparado.** Se desplegó desarmado en\n  ambos agentes, así que el paso 9 describe un mecanismo sin historial vivo\n  alguno. Su aritmética está clavada al mismo evaluador que ejecuta el agente,\n  que es una afirmación distinta de saber cómo se comporta ante libros reales.",
+		"sourceHash": "f8e4a4d8"
+	},
+	"wallet.page.sections.notThis": {
+		"translation": "## Lo que esta página no es\n\nEstos son los parámetros operativos de nuestro propio agente pequeño, publicados\ncon el mismo espíritu que el resto del historial. No son consejo, no son un\nservicio de señales y no son la afirmación de que replicar traders hábiles\nseguirá funcionando.\n\nNunca publicamos ninguna de las carteras implicadas — los dos líderes, la propia\ncuenta de trading del agente o la dirección de pago. Observa cualquiera de ellas en\ntiempo real y verás posiciones abiertas, que es exactamente lo que la\n[política de divulgación]({methodologyHref}) existe para impedir.",
+		"sourceHash": "c806924e"
 	},
 	"wallet.page.sections.step1": {
 		"translation": "### 1. Sigue a dos traders, no a una multitud\n\nElegimos las dos carteras que replica de nuestro propio ranking de habilidad —\nla misma lista medida y clasificada sobre la que informa el resto de este sitio.\nEn esta página son solo **leader-a** y **leader-b**, que son literalmente sus\netiquetas en la config. Nunca publicamos sus direcciones. Señala en público una\ncartera hábil y todo el mercado se adelanta a ella, y observarlas observándonos\nfiltraría también nuestras propias posiciones.\n\nUna señal aquí son las acciones de una sola cartera. No hay quórum que esperar\nni multitud que contar. Por eso mismo cada control restante funciona distinto\nque en la [página del clúster]({clusterHref}).",
 		"sourceHash": "f4dca315"
+	},
+	"wallet.page.sections.step10": {
+		"translation": "### 10. Una salida fallida se encola, no se olvida\n\nUna orden de salida puede morir igual que una entrada. Cada una recibe **tres\nintentos**, rastreados por posición en una cola duradera — una pierna atascada\nno puede bloquear a las demás — y si el tercero falla el agente lo dice en voz alta\nen vez de callarse. Un mercado resuelto pero aún no redimido queda en los libros\ncomo **sin pagar**. Los libros nunca cuentan efectivo que no tienen.",
+		"sourceHash": "dbe46b81"
+	},
+	"wallet.page.sections.step11": {
+		"translation": "### 11. El interruptor de emergencia para las compras, nunca las ventas\n\nEn cualquier momento el interruptor detiene las entradas nuevas **mientras las\nsalidas, los reintentos y las liquidaciones siguen funcionando** — así que un\nalto nunca puede dejar tirada una posición abierta. Deja de tomar riesgo; no\nlo abandona.",
+		"sourceHash": "e1857fa0"
+	},
+	"wallet.page.sections.step12": {
+		"translation": "### 12. Su dinero no puede tocar el del otro agente\n\nWallet copy opera una **cuenta separada con su propia clave**, sus propios\nlibros, su propio canal de alertas, su propio interruptor y su propio servicio.\nUn bug de wallet-copy solo puede gastar dinero de wallet-copy. Ninguno de los\nagentes puede siquiera leer los registros del otro. Lo único que comparten, a\npropósito, es el destino del barrido semanal de beneficios — nombrado en la\nconfig como `profit_destination` tras una `destination_allowlist`, con un\numbral de polvo de **$1** (`dust_threshold_usdc`). Nunca publicamos las\ndirecciones en sí.",
+		"sourceHash": "e745bfdf"
+	},
+	"wallet.page.sections.step13": {
+		"translation": "### 13. Dónde está hoy\n\nLa función entró en vivo el **2026-08-11**. Pasó sus primeros días copiando\ncorrectamente **nada**. Con listones así de altos, el silencio es el estado\nesperado, y las herramientas de operación existen para demostrar que el silencio\nes salud y no avería. Su primera posición real llegó a los pocos días. Esa es\ntoda la historia en vivo hasta ahora. Lee cada número de esta página como una\nversión 1: argumentada desde la medición, apenas ejercitada en producción.",
+		"sourceHash": "cc831823"
 	},
 	"wallet.page.sections.step2": {
 		"translation": "### 2. Solo se mueve cuando el líder va en serio\n\nCada líder tiene un **listón de convicción** (`min_leader_notional_usdc`). El\nagente copia una apuesta solo cuando la posición del propio líder en ella alcanza\nel listón. El listón se fija *por líder*, contra la historia de ese líder,\nporque la misma cifra en dólares no significa lo mismo dos veces.\n\nMedido a 90 días: las posiciones de leader-a tienen una **mediana de $285** y un\npercentil 90 de $1.729. Un listón de **$500** selecciona su tercio más\nconvencido, y nuestra copia de $5 es cerca del 1 % de lo que apuestan. La\nmediana de leader-b es de **$5**. Con un listón de $500 este raíl dispararía más\no menos una vez por trimestre mientras aparenta ser un líder armado, así que su\nlistón es de **$100**. Una perilla que parece armada y nunca dispara es peor que\nninguna perilla.\n\nEl listón dispara **una vez por apuesta nueva**, en el momento en que se cruza\npor primera vez. Las ampliaciones nunca lo reactivan. Una apuesta vuelve a ser\nnueva solo cuando el líder la cierra del todo — o cambia de lado.",
@@ -1060,287 +1188,291 @@
 		"sourceHash": "e0a7b8b8"
 	},
 	"wallet.page.sections.step8": {
-		"translation": "### 8. Aguanta los recortes, y sale a la mitad\n\nLas salidas son donde este agente más se diferencia de su hermano. El agente de\nclúster sale a la *primera* venta de cualquiera de la multitud. Este es más\ndifícil de sacudir a propósito:\n\n- Un líder **recortando** su posición es información, no una salida. El agente lo\n  registra y aguanta.\n- Cuando la venta acumulada del líder alcanza el **50 % de su posición pico**\n  (`trim_close_fraction`), el agente cierra su pierna **entera** de una vez.\n  Medido contra el pico, no por llenado — un líder desangrándose de 20 % en\n  20 % nunca activaría una regla por llenado. Y siempre la pierna entera,\n  nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de 5\n  participaciones de la casa y volverse invendible.\n- Un líder que llega a **cero**, o que **gira** al otro lado, cierra la pierna\n  de inmediato. Un giro además inicia una apuesta nueva — el agente puede cerrar\n  y reentrar por el otro lado en el mismo aliento, exactamente como el líder.\n- Elimina o desactiva a un líder en la config y el agente cierra sus piernas en un\n  minuto. Cuando un mercado **resuelve**, el agente lo redime.\n\n*La forma de esto está cableada. El único número de salida que puedes girar es\nel umbral de recorte.*",
-		"sourceHash": "4d3ff191"
+		"translation": "### 8. Aguanta los recortes, y sale a la mitad\n\nLas salidas son donde este agente más se diferencia de su hermano. El agente de\nclúster sale a la *primera* venta de cualquiera de la multitud. Este es más\ndifícil de sacudir a propósito:\n\n- Un líder **recortando** su posición es información, no una salida. El agente lo\n  registra y aguanta.\n- Cuando la venta acumulada del líder alcanza el **50 % de su posición pico**\n  (`trim_close_fraction`), el agente cierra su pierna **entera** de una vez.\n  Medido contra el pico, no por llenado — un líder desangrándose de 20 % en\n  20 % nunca activaría una regla por llenado. Y siempre la pierna entera,\n  nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de 5\n  participaciones de la casa y volverse invendible.\n- Un líder que llega a **cero**, o que **gira** al otro lado, cierra la pierna\n  de inmediato. Un giro además inicia una apuesta nueva — el agente puede cerrar\n  y reentrar por el otro lado en el mismo aliento, exactamente como el líder.\n- Elimina o desactiva a un líder en la config y el agente cierra sus piernas en un\n  minuto. Cuando un mercado **resuelve**, el agente lo redime.\n\n*La forma de esto está cableada. El umbral de recorte es el único número que\npuedes girar en ella — el paso siguiente añade dos más, y esos no miran al líder\nen absoluto.*",
+		"sourceHash": "846334ba"
 	},
 	"wallet.page.sections.step9": {
-		"translation": "### 9. Una salida fallida se encola, no se olvida\n\nUna orden de salida puede morir igual que una entrada. Cada una recibe **tres\nintentos**, rastreados por posición en una cola duradera — una pierna atascada\nno puede bloquear a las demás — y si el tercero falla el agente lo dice en voz alta\nen vez de callarse. Un mercado resuelto pero aún no redimido queda en los libros\ncomo **sin pagar**. Los libros nunca cuentan efectivo que no tienen.",
-		"sourceHash": "e9852a0b"
+		"translation": "### 9. Y un stop-loss y un take-profit, con sus propios números\n\nEl paso 8 va enteramente del líder. Este no. Más o menos una vez por minuto el\nagente valora una salida completa de cada pierna abierta — lo que pagaría la\nmejor puja, menos la comisión de salida, frente a lo que costó la pierna incluida\nla comisión que pagó al entrar — y la cierra si esa lectura pierde más de\n`auto_close_loss_pct` o gana más de `auto_close_profit_pct`.\n\nAquí importa más que en el agente hermano. Este no tiene techo de comisión en la\nentrada (paso 6), así que un resultado barato que el agente de grupo rechazaría\nde plano sí puede copiarse — y un resultado barato es justo donde la comisión por\nparticipación muerde más fuerte. Un raíl que mide lo que de verdad volvería, en\nvez de dónde está el precio, es la guarda que esa ausencia deja hueca.\n\nEl mecanismo es código compartido con el agente de grupo, así que se comporta\nigual en ambos: dos lecturas consecutivas pasada la misma línea antes de que\nocurra nada; un libro ilegible se salta la pierna ese minuto y olvida el rebase\nque tenía guardado; la pierna entera se va de una vez, nunca en rodajas; y el\ninterruptor de emergencia no lo bloquea, porque frenar las entradas no puede\ndejar tirada una posición abierta.\n\nAmbos números se leen al arrancar, y `0` — o una clave ausente, que se parsea\nigual — deja ese lado en reposo. **Hoy ambos están ausentes.** El raíl está\ndesplegado en este agente y armado en ninguno de los dos lados, así que nada se\nha cerrado nunca así, y los valores que acabemos armando no se publicarán. Un\numbral vivo es algo contra lo que un lector podría operar mientras la pierna\nsigue abierta.",
+		"sourceHash": "3ef4d57c"
 	},
-	"wallet.page.sections.step10": {
-		"translation": "### 10. El interruptor de emergencia para las compras, nunca las ventas\n\nEn cualquier momento el interruptor detiene las entradas nuevas **mientras las\nsalidas, los reintentos y las liquidaciones siguen funcionando** — así que un\nalto nunca puede dejar tirada una posición abierta. Deja de tomar riesgo; no\nlo abandona.",
-		"sourceHash": "eaa6c38d"
+	"wallet.page.sections.storyHeading": {
+		"translation": "## La historia completa, paso a paso",
+		"sourceHash": "8e715273"
 	},
-	"wallet.page.sections.step11": {
-		"translation": "### 11. Su dinero no puede tocar el del otro agente\n\nWallet copy opera una **cuenta separada con su propia clave**, sus propios\nlibros, su propio canal de alertas, su propio interruptor y su propio servicio.\nUn bug de wallet-copy solo puede gastar dinero de wallet-copy. Ninguno de los\nagentes puede siquiera leer los registros del otro. Lo único que comparten, a\npropósito, es el destino del barrido semanal de beneficios — nombrado en la\nconfig como `profit_destination` tras una `destination_allowlist`, con un\numbral de polvo de **$1** (`dust_threshold_usdc`). Nunca publicamos las\ndirecciones en sí.",
-		"sourceHash": "d5001446"
-	},
-	"wallet.page.sections.step12": {
-		"translation": "### 12. Dónde está hoy\n\nLa función entró en vivo el **2026-08-11**. Pasó sus primeros días copiando\ncorrectamente **nada**. Con listones así de altos, el silencio es el estado\nesperado, y las herramientas de operación existen para demostrar que el silencio\nes salud y no avería. Su primera posición real llegó a los pocos días. Esa es\ntoda la historia en vivo hasta ahora. Lee cada número de esta página como una\nversión 1: argumentada desde la medición, apenas ejercitada en producción.",
-		"sourceHash": "2cf42b80"
-	},
-	"wallet.page.sections.hardWired": {
-		"translation": "## Qué está cableado, y no es un ajuste\n\n- **El listón de convicción dispara una vez por apuesta nueva.** Las\n  ampliaciones nunca lo reactivan; solo un cierre completo o un giro lo\n  reinician.\n- **El agente cuenta las posiciones en el resultado sostenido.** Comprar un lado y\n  vender el otro son la misma opinión, normalizada antes de que ninguna regla\n  las mire.\n- **Las salidas cierran la pierna entera, siempre** — en el umbral de recorte,\n  en un giro, en un cierre total, al eliminarse de la config o en la\n  resolución. No hay cierre parcial, ni take-profit ni stop-loss que afinar.\n- **Una pierna por apuesta por líder.** El mismo mercado copiado de ambos\n  líderes son dos piernas independientes.\n- **La entrada es una orden fill-or-kill valorada sobre la parrilla de la\n  casa**, y el mínimo de 5 participaciones se impone al arrancar, no por\n  orden.\n- **Solo mercados macro**, calificados contra el mismo catálogo que todo lo\n  demás en este sitio.\n- **El interruptor perdona las salidas.** Solo las entradas pueden detenerse.\n\n**¿Por qué dividirlo así?** Por la misma razón que en la página del clúster:\nlos umbrales son números, y los números son seguros de exponer. La lógica de\ncopia en sí — qué cuenta como convicción, cómo funcionan las salidas — vive en\ncódigo. Una línea descuidada de YAML no puede descarrilar la estrategia.",
-		"sourceHash": "4fd74a46"
-	},
-	"wallet.page.sections.notClaiming": {
-		"translation": "## Lo que aún no afirmamos\n\n- **La historia en vivo tiene días.** La función entró en vivo el 2026-08-11 y\n  ha abierto un número de posiciones de un solo dígito. Argumentamos cada raíl\n  de esta página con mediciones tomadas *antes* de armarlo. Casi ninguno tiene\n  un historial significativo de disparos en producción.\n- **No hay raíl de comisiones, y eso es una apuesta, no una prueba.** La\n  lección de comisiones del agente de clúster (77 % de sus primeras pérdidas) no\n  tiene guardia aquí. Si la convicción de los líderes no filtra los resultados\n  baratos como esperamos, esta página lo dirá — después de los libros.\n- **La evidencia temprana del raíl de doble lado era fina.** La mayoría de sus\n  primeras lecturas eran ceros sobre ventanas de medición vacías. El payload\n  separa ahora «medido limpio» de «nada que pesar», pero el raíl aún no ha\n  probado su umbral contra tráfico real.\n- **La redención no es automática.** Una victoria resuelta queda en los libros\n  como cerrada pero explícitamente *sin pagar* hasta que se redime — los\n  libros se niegan a contar dinero que no ha llegado.",
-		"sourceHash": "9466c665"
-	},
-	"wallet.page.sections.notThis": {
-		"translation": "## Lo que esta página no es\n\nEstos son los parámetros operativos de nuestro propio agente pequeño, publicados\ncon el mismo espíritu que el resto del historial. No son consejo, no son un\nservicio de señales y no son la afirmación de que replicar traders hábiles\nseguirá funcionando.\n\nNunca publicamos ninguna de las carteras implicadas — los dos líderes, la propia\ncuenta de trading del agente o la dirección de pago. Observa cualquiera de ellas en\ntiempo real y verás posiciones abiertas, que es exactamente lo que la\n[política de divulgación]({methodologyHref}) existe para impedir.",
-		"sourceHash": "c806924e"
-	},
-	"wallet.page.md.inOneSentence": {
-		"translation": "En una frase",
-		"sourceHash": "7de3e1c3"
-	},
-	"wallet.page.md.knobsHeading": {
-		"translation": "Las perillas",
-		"sourceHash": "3db32689"
-	},
-	"wallet.page.md.knobsBlurb": {
-		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la\ndecisión del agente cambiar. En markdown son solo la tabla:",
-		"sourceHash": "afec1924"
-	},
-	"wallet.page.md.tableRole": {
-		"translation": "Papel en la historia",
-		"sourceHash": "8bddd4de"
-	},
-	"wallet.page.md.tableKey": {
-		"translation": "Clave",
-		"sourceHash": "cd1ac90c"
-	},
-	"wallet.page.md.tableLive": {
-		"translation": "En vivo ({market})",
-		"sourceHash": "8677d97e"
-	},
-	"wallet.page.md.gasLabel": {
-		"translation": "Gas reservado antes de cualquier pago (solo barrido, no raíl de entrada)",
-		"sourceHash": "6b6f33e9"
-	},
-	"wallet.page.md.payoutLabel": {
-		"translation": "Dirección de pago, lista permitida, umbral de polvo",
-		"sourceHash": "af059b4f"
-	},
-	"wallet.page.md.notPublished": {
-		"translation": "no publicado",
-		"sourceHash": "c0bab374"
-	},
-	"wallet.page.md.killLabel": {
-		"translation": "Parar entradas nuevas (las salidas siguen funcionando)",
-		"sourceHash": "f87dd749"
+	"wallet.page.title": {
+		"translation": "Wallet copy para dummies",
+		"sourceHash": "b7ea685a"
 	},
 	"wallet.page.ui.ariaLabel": {
 		"translation": "Simulador de decisiones de wallet-copy",
 		"sourceHash": "b53e8f76"
 	},
-	"wallet.page.ui.tryIt": {
-		"translation": "Pruébalo — la decisión del agente, en vivo",
-		"sourceHash": "9599b5b9"
+	"wallet.page.ui.closeLine": {
+		"translation": "línea de cierre",
+		"sourceHash": "08cdd643"
 	},
 	"wallet.page.ui.defaultsNote": {
 		"translation": "por defecto = config {market}, {asOf}",
 		"sourceHash": "7f716bd5"
 	},
-	"wallet.page.ui.reset": {
-		"translation": "Restaurar nuestra config en vivo",
-		"sourceHash": "62792b0b"
-	},
-	"wallet.page.ui.incomingSignal": {
-		"translation": "Señal entrante",
-		"sourceHash": "b6c20e5b"
-	},
-	"wallet.page.ui.stageBoot": {
-		"translation": "Primero — ¿arrancaría siquiera el servicio?",
-		"sourceHash": "5127fe65"
-	},
-	"wallet.page.ui.stageAlert": {
-		"translation": "Luego aguas arriba — ¿emite el tracker una señal siquiera?",
-		"sourceHash": "ef8ee58f"
-	},
-	"wallet.page.ui.stageExecutor": {
-		"translation": "Luego los raíles del propio agente, en orden",
-		"sourceHash": "d11485d8"
-	},
-	"wallet.page.ui.flagBoot": {
-		"translation": "el servicio se niega a arrancar — ninguna señal llega a leerse",
-		"sourceHash": "d3b9ef8e"
-	},
-	"wallet.page.ui.flagAlert": {
-		"translation": "no se emite señal — al agente nunca se le pregunta",
-		"sourceHash": "5871501a"
-	},
-	"wallet.page.ui.flagExecutor": {
-		"translation": "el agente real se detiene aquí",
-		"sourceHash": "fb529306"
-	},
-	"wallet.page.ui.explainer": {
-		"translation": "El ejecutor real se detiene en el primer ✗ de la última lista y sigue adelante. Puntuamos aquí cada control para que veas qué hace cada perilla. Los precios están siempre en el resultado que el líder realmente sostiene — una posición construida vendiendo un lado es una posición en el otro. El motor corre además una fila de rechazos contables — ¿está esta apuesta ya copiada, está el mercado en alcance, está puesto el interruptor? Los omitimos porque ninguno es un número que puedas girar.",
-		"sourceHash": "88926cc4"
-	},
-	"wallet.page.ui.noscript": {
-		"translation": "Sin JavaScript esto muestra nuestra config en vivo contra la primera señal de ejemplo. Los deslizadores y los botones de señal necesitan JavaScript para recalcular.",
-		"sourceHash": "abce22be"
-	},
 	"wallet.page.ui.exitHeading": {
 		"translation": "¿Y cuándo sale? Arrastra las ventas del líder",
 		"sourceHash": "dabe1bb4"
-	},
-	"wallet.page.ui.soldLabel": {
-		"translation": "El líder ha vendido este tanto de su posición pico",
-		"sourceHash": "130b4873"
-	},
-	"wallet.page.ui.soldAria": {
-		"translation": "Cuánto de su posición pico ha vendido el líder",
-		"sourceHash": "681bd7a3"
-	},
-	"wallet.page.ui.soldNote": {
-		"translation": "la señal, no un ajuste",
-		"sourceHash": "86c18682"
-	},
-	"wallet.page.ui.peakLabel": {
-		"translation": "su posición pico",
-		"sourceHash": "f3e67221"
-	},
-	"wallet.page.ui.closeLine": {
-		"translation": "línea de cierre",
-		"sourceHash": "08cdd643"
 	},
 	"wallet.page.ui.exitNote": {
 		"translation": "Un giro al otro lado, un cierre a cero, un líder eliminado de la config o la resolución del mercado — cada uno de ellos cierra la pierna diga lo que diga este deslizador. Solo la línea de recorte es un ajuste.",
 		"sourceHash": "c6cdd246"
 	},
-	"wallet.page.knobs.leader_a_min_notional_usdc": {
-		"translation": "Copiar a leader-a solo cuando su apuesta alcance",
-		"sourceHash": "e3879958"
+	"wallet.page.ui.explainer": {
+		"translation": "El ejecutor real se detiene en el primer ✗ de la última lista y sigue adelante. Puntuamos aquí cada control para que veas qué hace cada perilla. Los precios están siempre en el resultado que el líder realmente sostiene — una posición construida vendiendo un lado es una posición en el otro. El motor corre además una fila de rechazos contables — ¿está esta apuesta ya copiada, está el mercado en alcance, está puesto el interruptor? Los omitimos porque ninguno es un número que puedas girar.",
+		"sourceHash": "88926cc4"
 	},
-	"wallet.page.knobs.leader_b_min_notional_usdc": {
-		"translation": "Copiar a leader-b solo cuando su apuesta alcance",
-		"sourceHash": "a0281b11"
+	"wallet.page.ui.flagAlert": {
+		"translation": "no se emite señal — al agente nunca se le pregunta",
+		"sourceHash": "5871501a"
 	},
-	"wallet.page.knobs.max_open_copies_per_leader": {
-		"translation": "Nunca llevar más copias de un líder que",
-		"sourceHash": "e75150db"
+	"wallet.page.ui.flagBoot": {
+		"translation": "el servicio se niega a arrancar — ninguna señal llega a leerse",
+		"sourceHash": "d3b9ef8e"
 	},
-	"wallet.page.knobs.max_wallet_two_sided_ratio": {
-		"translation": "Rechazar a un líder que opera ambos lados más allá de",
-		"sourceHash": "3ee77a20"
+	"wallet.page.ui.flagExecutor": {
+		"translation": "el agente real se detiene aquí",
+		"sourceHash": "fb529306"
 	},
-	"wallet.page.knobs.min_liquidity_usdc": {
-		"translation": "Pasar de mercados más finos que",
-		"sourceHash": "212826b6"
+	"wallet.page.ui.incomingSignal": {
+		"translation": "Señal entrante",
+		"sourceHash": "b6c20e5b"
 	},
-	"wallet.page.knobs.min_seconds_to_resolution": {
-		"translation": "Pasar de mercados que resuelven dentro de",
-		"sourceHash": "1a7c23d3"
+	"wallet.page.ui.noscript": {
+		"translation": "Sin JavaScript esto muestra nuestra config en vivo contra la primera señal de ejemplo. Los deslizadores y los botones de señal necesitan JavaScript para recalcular.",
+		"sourceHash": "abce22be"
 	},
-	"wallet.page.knobs.staleness_pct": {
-		"translation": "Pasar si el precio ya corrió más de",
-		"sourceHash": "b34be1fa"
+	"wallet.page.ui.peakLabel": {
+		"translation": "su posición pico",
+		"sourceHash": "f3e67221"
 	},
-	"wallet.page.knobs.staleness_min_ticks": {
-		"translation": "…pero tratar como ruido un movimiento menor que",
-		"sourceHash": "ae4d2d11"
+	"wallet.page.ui.reset": {
+		"translation": "Restaurar nuestra config en vivo",
+		"sourceHash": "62792b0b"
 	},
-	"wallet.page.knobs.max_entry_price": {
-		"translation": "Nunca pagar por participación más de",
-		"sourceHash": "3bb889bf"
+	"wallet.page.ui.soldAria": {
+		"translation": "Cuánto de su posición pico ha vendido el líder",
+		"sourceHash": "681bd7a3"
 	},
-	"wallet.page.knobs.trade_size_usdc": {
-		"translation": "Tamaño de una copia",
-		"sourceHash": "adb06e66"
+	"wallet.page.ui.soldLabel": {
+		"translation": "El líder ha vendido este tanto de su posición pico",
+		"sourceHash": "130b4873"
 	},
-	"wallet.page.knobs.exposure_cap_usdc": {
-		"translation": "Nunca mantener abierto más de",
-		"sourceHash": "eee65c54"
+	"wallet.page.ui.soldNote": {
+		"translation": "la señal, no un ajuste",
+		"sourceHash": "86c18682"
 	},
-	"wallet.page.knobs.working_capital_floor_usdc": {
-		"translation": "Nunca dejar caer el saldo gastable por debajo de",
-		"sourceHash": "6ab9f735"
+	"wallet.page.ui.stageAlert": {
+		"translation": "Luego aguas arriba — ¿emite el tracker una señal siquiera?",
+		"sourceHash": "ef8ee58f"
 	},
-	"wallet.page.knobs.slippage_pct": {
-		"translation": "Retirarse antes que pagar de más por encima de",
-		"sourceHash": "6446b4b4"
+	"wallet.page.ui.stageBoot": {
+		"translation": "Primero — ¿arrancaría siquiera el servicio?",
+		"sourceHash": "5127fe65"
 	},
-	"wallet.page.knobs.slippage_min_ticks": {
-		"translation": "…pero dar siempre a la orden al menos este margen",
-		"sourceHash": "b8cca0a1"
+	"wallet.page.ui.stageExecutor": {
+		"translation": "Luego los raíles del propio agente, en orden",
+		"sourceHash": "d11485d8"
 	},
-	"wallet.page.knobs.trim_close_fraction": {
-		"translation": "Cerrarlo todo cuando el líder haya deshecho",
-		"sourceHash": "11a48495"
+	"wallet.page.ui.tryIt": {
+		"translation": "Pruébalo — la decisión del agente, en vivo",
+		"sourceHash": "9599b5b9"
 	},
-	"wallet.page.knobGroups.conviction": {
-		"translation": "¿Va el líder realmente en serio?",
-		"sourceHash": "a887bd3e"
+	"wallet.sim.detail.copy": {
+		"translation": "Todos los controles pasaron. {order} {hold}",
+		"sourceHash": "f5cd3133"
 	},
-	"wallet.page.knobGroups.gate": {
-		"translation": "¿Debería copiar esto siquiera?",
-		"sourceHash": "a6ef7aa5"
+	"wallet.sim.detail.copyViaSale": {
+		"translation": "El líder construyó esta posición vendiendo el otro lado, así que el agente compra el resultado que realmente sostiene, a {ask}. {order} {hold}",
+		"sourceHash": "2af10d68"
 	},
-	"wallet.page.knobGroups.size": {
-		"translation": "¿Cuánto puedo poner en riesgo?",
-		"sourceHash": "0cf0295f"
+	"wallet.sim.detail.hold": {
+		"translation": "Luego aguanta los recortes pequeños y vende la pierna entera en cuanto {leader} haya deshecho {threshold} de su pico — o girado, o cerrado.",
+		"sourceHash": "73c75273"
 	},
-	"wallet.page.knobGroups.execution": {
-		"translation": "¿Cómo consigo llenarme?",
-		"sourceHash": "f7277e44"
+	"wallet.sim.detail.order": {
+		"translation": "Envía una orden fill-or-kill de {size} con un límite de {limit} — unas {shares} — se llena entera o muere. Una orden cancelada no recibe reintento.",
+		"sourceHash": "0eafb1c8"
 	},
-	"wallet.page.knobGroups.exit": {
-		"translation": "¿Cuándo salgo?",
-		"sourceHash": "f8969ecb"
+	"wallet.sim.drift.favour": {
+		"translation": "se movió a nuestro favor",
+		"sourceHash": "c2bcc77a"
 	},
-	"wallet.page.scenarios.textbook": {
-		"translation": "Copia de manual",
-		"sourceHash": "6fc24670"
+	"wallet.sim.gates.boot.actual": {
+		"translation": "{size} → {shares} a {limit}",
+		"sourceHash": "47a2e21a"
 	},
-	"wallet.page.scenarios.small-poke": {
-		"translation": "Toque pequeño",
-		"sourceHash": "a77cbd79"
+	"wallet.sim.gates.boot.because": {
+		"translation": "Un ticket de {size} al peor límite que permiten las demás perillas ({limit}) compra menos que el mínimo de {min} participaciones de la casa, así que el servicio se niega a arrancar con esta config en vez de fallar orden a orden.",
+		"sourceHash": "e2d0d0b8"
 	},
-	"wallet.page.scenarios.leader-b-bar": {
-		"translation": "El listón de leader-b",
-		"sourceHash": "27244810"
+	"wallet.sim.gates.boot.question": {
+		"translation": "¿Puede mi ticket comprar siquiera {min} participaciones al peor precio que permito?",
+		"sourceHash": "44a22d56"
 	},
-	"wallet.page.scenarios.cheap-side": {
-		"translation": "Lado barato",
-		"sourceHash": "49ce38cb"
+	"wallet.sim.gates.cap.actual": {
+		"translation": "{n} abiertas de {leader}",
+		"sourceHash": "fbb7f495"
 	},
-	"wallet.page.scenarios.two-sided": {
-		"translation": "Doble lado",
-		"sourceHash": "ec619559"
+	"wallet.sim.gates.cap.because.few": {
+		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "b8c369d6"
 	},
-	"wallet.page.scenarios.empty-window": {
-		"translation": "Ventana vacía",
-		"sourceHash": "ab8de1c6"
+	"wallet.sim.gates.cap.because.many": {
+		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "b8c369d6"
 	},
-	"wallet.page.scenarios.spree": {
-		"translation": "Desatado",
-		"sourceHash": "5f928076"
+	"wallet.sim.gates.cap.because.one": {
+		"translation": "{n} copia de {leader} ya está abierta, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "40e963c8"
 	},
-	"wallet.page.scenarios.full": {
-		"translation": "Sin sitio libre",
-		"sourceHash": "bddb8796"
+	"wallet.sim.gates.cap.question": {
+		"translation": "¿No estoy copiando ya bastante a este líder?",
+		"sourceHash": "3a5223bf"
 	},
-	"wallet.page.scenarios.chased": {
-		"translation": "El precio se escapó",
-		"sourceHash": "5f414887"
+	"wallet.sim.gates.conviction.actual": {
+		"translation": "{stake} en el pico",
+		"sourceHash": "f53ff873"
 	},
-	"wallet.page.scenarios.too-dear": {
-		"translation": "Demasiado caro",
-		"sourceHash": "563569d3"
+	"wallet.sim.gates.conviction.because": {
+		"translation": "La posición completa de {leader} en esta apuesta llegó en su pico a {stake}, por debajo de su listón de {bar} — el tracker nunca emite señal de entrada, así que al agente nadie le pregunta y nada queda registrado.",
+		"sourceHash": "5f38054b"
 	},
-	"wallet.page.scenarios.ends-soon": {
-		"translation": "Termina muy pronto",
-		"sourceHash": "addd7194"
+	"wallet.sim.gates.conviction.question": {
+		"translation": "¿Ha apostado {leader} lo bastante como para ir en serio?",
+		"sourceHash": "d9558f67"
 	},
-	"wallet.page.scenarios.thin": {
-		"translation": "Mercado fino",
-		"sourceHash": "9ba617b6"
+	"wallet.sim.gates.floor.because": {
+		"translation": "Una copia de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
+		"sourceHash": "1360d312"
 	},
-	"wallet.page.scenarios.broke": {
-		"translation": "Sin efectivo",
-		"sourceHash": "7f5079da"
+	"wallet.sim.gates.floor.question": {
+		"translation": "¿Me dejará esto por debajo de mi suelo?",
+		"sourceHash": "d32b7df4"
+	},
+	"wallet.sim.gates.flow.actualNone": {
+		"translation": "nada que pesar",
+		"sourceHash": "20c3264b"
+	},
+	"wallet.sim.gates.flow.because": {
+		"translation": "En las últimas 48 horas el flujo de compra y de venta de este líder en esta apuesta están a {ratio} el uno del otro, más allá del techo de {ceiling} — una cartera que opera ambos lados está haciendo mercado, no expresando una opinión, y cada giro copiado es un viaje de ida y vuelta pagado.",
+		"sourceHash": "26fd4584"
+	},
+	"wallet.sim.gates.flow.question": {
+		"translation": "¿Opera este líder ambos lados de esta apuesta?",
+		"sourceHash": "70153acb"
+	},
+	"wallet.sim.gates.freshness.because": {
+		"translation": "El precio de venta está {drift} por encima de la entrada del líder a {entry} (ahora {ask}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
+		"sourceHash": "ed9c0534"
+	},
+	"wallet.sim.gates.freshness.question": {
+		"translation": "¿Se ha escapado ya el precio del líder?",
+		"sourceHash": "3bcc4f25"
+	},
+	"wallet.sim.gates.freshness.rulePctOnly": {
+		"translation": "≤ {pct}",
+		"sourceHash": "364242d8"
+	},
+	"wallet.sim.gates.freshness.ruleWithFloor": {
+		"translation": "≤ {pct} o < {steps}",
+		"sourceHash": "1e33b50a"
+	},
+	"wallet.sim.gates.liquidity.because": {
+		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
+		"sourceHash": "4f2ea6bd"
+	},
+	"wallet.sim.gates.liquidity.question": {
+		"translation": "¿Hay alguien aquí con quien operar?",
+		"sourceHash": "61d03dbb"
+	},
+	"wallet.sim.gates.price.because": {
+		"translation": "El mercado valora este resultado en {price}, por encima del techo de {ceiling} — una copia podría ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
+		"sourceHash": "8c1e416a"
+	},
+	"wallet.sim.gates.price.question": {
+		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
+		"sourceHash": "e1dc3057"
+	},
+	"wallet.sim.gates.room.actual": {
+		"translation": "{open} abiertos + {size}",
+		"sourceHash": "511d479d"
+	},
+	"wallet.sim.gates.room.because": {
+		"translation": "Ya hay {open} abiertos entre ambos líderes; otra copia de {size} rompería el tope de {cap}.",
+		"sourceHash": "59ec0658"
+	},
+	"wallet.sim.gates.room.question": {
+		"translation": "¿Tengo sitio bajo mi tope?",
+		"sourceHash": "ca2c72ff"
+	},
+	"wallet.sim.gates.timing.because": {
+		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
+		"sourceHash": "5dbf4e29"
+	},
+	"wallet.sim.gates.timing.question": {
+		"translation": "¿Está este mercado a punto de terminar?",
+		"sourceHash": "d23cb86d"
+	},
+	"wallet.sim.signal.lead": {
+		"translation": "{leader} construyó una posición de {stake} en",
+		"sourceHash": "cbca887f"
+	},
+	"wallet.sim.signal.trail": {
+		"translation": "a {entry}.",
+		"sourceHash": "4d1306b0"
+	},
+	"wallet.sim.signal.trailViaSale": {
+		"translation": "— vendiendo el otro lado, así que el resultado que realmente sostiene cotiza a {entry}, y eso es lo que compraría el agente.",
+		"sourceHash": "f0e183c4"
+	},
+	"wallet.sim.summary.flowAny": {
+		"translation": "sea cual sea su flujo reciente,",
+		"sourceHash": "e86e86f7"
+	},
+	"wallet.sim.summary.flowCapped": {
+		"translation": "y su flujo reciente en ella no es de doble lado más allá de {ratio},",
+		"sourceHash": "a5f81350"
+	},
+	"wallet.sim.summary.sentence": {
+		"translation": "Cuando uno de los dos líderes construye al menos {a} (leader-a) o {b} (leader-b) de una apuesta nueva, {flowClause} y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no ha corrido más de {staleness} desde su entrada → el agente compra {size} del resultado que sostienen, paga como mucho {maxPrice} por participación y {slippage} sobre el precio de venta, lleva como mucho {copies} copias por líder y {cap} abiertos en total, conserva {floor} gastables, aguanta los recortes pequeños y vende la pierna entera cuando ese líder haya deshecho {trim} de su pico — o girado, o cerrado.",
+		"sourceHash": "0eb49b2c"
+	},
+	"wallet.sim.trim.closeDetail": {
+		"translation": "{sold} del pico ha desaparecido — en la línea del {threshold} o más allá. El agente vende la copia entera de una vez, nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de {min} participaciones de la casa y volverse invendible.",
+		"sourceHash": "da16fc83"
+	},
+	"wallet.sim.trim.closeHeadline": {
+		"translation": "CIERRA LA PIERNA ENTERA",
+		"sourceHash": "9d0fa55b"
+	},
+	"wallet.sim.trim.holdDetail": {
+		"translation": "El líder ha deshecho {sold} de su pico — por debajo de la línea del {threshold}. Eso es información, no una salida: el agente lo apunta y conserva la posición entera.",
+		"sourceHash": "b662fc43"
+	},
+	"wallet.sim.trim.holdHeadline": {
+		"translation": "MANTIENE",
+		"sourceHash": "ebb64f78"
+	},
+	"wallet.sim.verdict.copy": {
+		"translation": "COPIA {size}",
+		"sourceHash": "376968a3"
+	},
+	"wallet.sim.verdict.noBoot": {
+		"translation": "RECHAZADO AL ARRANCAR",
+		"sourceHash": "4e8f8cdc"
+	},
+	"wallet.sim.verdict.noSignal": {
+		"translation": "SIN SEÑAL",
+		"sourceHash": "9d7aa6e6"
+	},
+	"wallet.sim.verdict.skip": {
+		"translation": "PASA",
+		"sourceHash": "7ebdb0c2"
 	}
 }

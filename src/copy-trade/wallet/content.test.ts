@@ -185,3 +185,52 @@ describe("walletContentFor", () => {
 		expect(md).toContain("leader-b");
 	});
 });
+
+/**
+ * Issue #77: the same rail, the same disclosure line, on the second agent.
+ */
+describe("auto-close rail", () => {
+	it.each([["en"], ["pl"], ["es"]] as const)("describes the rail in the %s twin", (locale) => {
+		const md = walletMarkdownFor(locale);
+
+		expect(md).toContain("`auto_close_loss_pct`");
+		expect(md).toContain("`auto_close_profit_pct`");
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("publishes both thresholds as off in the %s knob table", (locale) => {
+		const md = walletMarkdownFor(locale);
+		const fmt = formattersFor(locale, resolveSimUnits(locale));
+		const page = resolveWalletPage(locale);
+		const off = resolveSimUnits(locale).off;
+
+		for (const key of ["auto_close_loss_pct", "auto_close_profit_pct"] as const) {
+			expect(md).toContain(`| ${page.knobs[key]} | \`${key}\` | ${off} |`);
+			expect(md).not.toContain(`| \`${key}\` | ${fmt.pct(30)} |`);
+		}
+	});
+
+	it("no longer claims the agent has no stop-loss or take-profit", () => {
+		expect(walletCopyMarkdown).not.toContain("no take-profit and no stop-loss to tune");
+		expect(walletCopyMarkdown).not.toContain("The only exit number you can turn");
+	});
+
+	it("names the rail as deployed and disarmed rather than as a plan", () => {
+		expect(walletCopyMarkdown).toContain("Both are absent today");
+		expect(walletCopyMarkdown).toContain("armed on neither side");
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("keeps every step heading in order in the %s twin", (locale) => {
+		const md = walletMarkdownFor(locale);
+		const numbers = [...md.matchAll(/^### (\d+)\./gm)].map((match) => Number(match[1]));
+
+		expect(numbers).toEqual(Array.from({ length: 13 }, (_, index) => index + 1));
+	});
+});

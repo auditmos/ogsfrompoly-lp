@@ -25,6 +25,8 @@ export interface SimFormatters {
 	priceLimit(value: number): string;
 	shares(value: number): string;
 	pct(value: number): string;
+	/** A percentage threshold, where `0` means the rail is off rather than nil. */
+	pctLimit(value: number): string;
 	/** `3600` → `"1h"`, `1320` → `"22m"`, `0` → off. */
 	duration(seconds: number): string;
 	steps(value: number): string;
@@ -118,6 +120,9 @@ export function formattersFor(locale: Locale, units: SimUnits): SimFormatters {
 			return plural(units.share, rounded, render(text));
 		},
 		pct,
+		pctLimit(value) {
+			return value <= 0 ? units.off : pct(value);
+		},
 		duration(seconds) {
 			if (seconds <= 0) return units.off;
 			if (seconds < 3600) {
