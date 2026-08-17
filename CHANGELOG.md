@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.25.0...v1.26.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** home goes trilingual — /es live, switcher, hreflang ([6648612](https://github.com/auditmos/ogsfrompoly-lp/commit/664861249e3a2ba87aa9724c3929dc29aadf94c2)), closes [#70](https://github.com/auditmos/ogsfrompoly-lp/issues/70)
+
 # [1.25.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.24.0...v1.25.0) (2026-08-16)
 
 
