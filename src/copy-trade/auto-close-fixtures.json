@@ -1,0 +1,755 @@
+{
+	"version": 1,
+	"source": "poly_track.copy_trade.auto_close.evaluate_auto_close",
+	"generator": "scripts/export_auto_close_fixtures.py",
+	"cases": [
+		{
+			"id": "stop-loss-two-ticks",
+			"note": "two consecutive breaches fire on the second",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -10.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -31.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -40.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -10.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": -31.0,
+						"decision": "stop_loss",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 3,
+				"decision": "stop_loss",
+				"netPct": -31.0
+			}
+		},
+		{
+			"id": "take-profit-two-ticks",
+			"note": "the profit side debounces identically",
+			"thresholds": {
+				"lossPct": 0.0,
+				"profitPct": 40.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": 12.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 45.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 52.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": 12.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 45.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 52.0,
+						"decision": "take_profit",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 3,
+				"decision": "take_profit",
+				"netPct": 52.0
+			}
+		},
+		{
+			"id": "loss-boundary-exact",
+			"note": "a reading exactly at the threshold counts as breached",
+			"thresholds": {
+				"lossPct": 30.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "stop_loss",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 2,
+				"decision": "stop_loss",
+				"netPct": -30.0
+			}
+		},
+		{
+			"id": "profit-boundary-exact",
+			"note": "same inclusive boundary on the profit side",
+			"thresholds": {
+				"lossPct": 0.0,
+				"profitPct": 30.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": 30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": 30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 30.0,
+						"decision": "take_profit",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 2,
+				"decision": "take_profit",
+				"netPct": 30.0
+			}
+		},
+		{
+			"id": "recovery-breaks-streak",
+			"note": "breach, recover, breach never fires",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -10.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -10.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": -30.0
+			}
+		},
+		{
+			"id": "unquotable-breaks-streak",
+			"note": "an unreadable book resets the streak between two breaches",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				null,
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": false,
+						"netPct": null,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": -30.0
+			}
+		},
+		{
+			"id": "already-breached-at-start",
+			"note": "arming semantics: a position past the line closes by tick two",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -60.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -60.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -60.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -60.0,
+						"decision": "stop_loss",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 2,
+				"decision": "stop_loss",
+				"netPct": -60.0
+			}
+		},
+		{
+			"id": "direction-flip-restarts",
+			"note": "a loss breach then a profit breach is not a streak",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 25.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 30.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 31.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 30.0,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 31.0,
+						"decision": "take_profit",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 3,
+				"decision": "take_profit",
+				"netPct": 31.0
+			}
+		},
+		{
+			"id": "loss-side-disabled",
+			"note": "loss_pct 0 never stops a loss, however deep",
+			"thresholds": {
+				"lossPct": 0.0,
+				"profitPct": 30.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -80.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -85.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -90.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -80.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -85.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": -90.0,
+						"decision": "none",
+						"streakTicks": 0
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": -90.0
+			}
+		},
+		{
+			"id": "profit-side-disabled",
+			"note": "profit_pct 0 never takes a profit, however large",
+			"thresholds": {
+				"lossPct": 30.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": 80.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 85.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 90.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": 80.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 85.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 90.0,
+						"decision": "none",
+						"streakTicks": 0
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": 90.0
+			}
+		},
+		{
+			"id": "both-sides-disarmed",
+			"note": "the shipped config: no reading can produce a close",
+			"thresholds": {
+				"lossPct": 0.0,
+				"profitPct": 0.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -99.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": -50.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 0.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 500.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -99.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -50.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 0.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 4,
+						"quotable": true,
+						"netPct": 500.0,
+						"decision": "none",
+						"streakTicks": 0
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": 500.0
+			}
+		},
+		{
+			"id": "never-breaches",
+			"note": "a path that stays inside both lines rides to the end",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 40.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -10.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 5.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				},
+				{
+					"realizedPnlUsdc": 12.0,
+					"costUsdc": 100.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -10.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 5.0,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 12.0,
+						"decision": "none",
+						"streakTicks": 0
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": 12.0
+			}
+		},
+		{
+			"id": "fee-inclusive-drift",
+			"note": "real per-share fees off both ends, priced from a book",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 40.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -0.54725,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				},
+				{
+					"realizedPnlUsdc": -1.53125,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				},
+				{
+					"realizedPnlUsdc": -1.7759999999999994,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": -10.62621359223301,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": -29.73300970873786,
+						"decision": "none",
+						"streakTicks": 1
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": -34.48543689320387,
+						"decision": "stop_loss",
+						"streakTicks": 2
+					}
+				],
+				"closeTick": 3,
+				"decision": "stop_loss",
+				"netPct": -34.48543689320387
+			}
+		},
+		{
+			"id": "fee-inclusive-run-up",
+			"note": "the same ticket running the other way into the take-profit",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 40.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": 0.694,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				},
+				{
+					"realizedPnlUsdc": 1.9477499999999992,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				},
+				{
+					"realizedPnlUsdc": 2.45275,
+					"costUsdc": 5.0,
+					"entryFeeUsdc": 0.15
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": 13.475728155339803,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 2,
+						"quotable": true,
+						"netPct": 37.820388349514545,
+						"decision": "none",
+						"streakTicks": 0
+					},
+					{
+						"tick": 3,
+						"quotable": true,
+						"netPct": 47.62621359223301,
+						"decision": "none",
+						"streakTicks": 1
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": 47.62621359223301
+			}
+		},
+		{
+			"id": "zero-basis",
+			"note": "nothing paid means no percent of it can move",
+			"thresholds": {
+				"lossPct": 25.0,
+				"profitPct": 25.0
+			},
+			"readings": [
+				{
+					"realizedPnlUsdc": -3.0,
+					"costUsdc": 0.0,
+					"entryFeeUsdc": 0.0
+				}
+			],
+			"expected": {
+				"ticks": [
+					{
+						"tick": 1,
+						"quotable": true,
+						"netPct": 0.0,
+						"decision": "none",
+						"streakTicks": 0
+					}
+				],
+				"closeTick": null,
+				"decision": "none",
+				"netPct": 0.0
+			}
+		}
+	]
+}

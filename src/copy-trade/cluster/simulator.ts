@@ -36,9 +36,9 @@
 
 import type { Locale } from "@/i18n/catalog";
 import { fillTemplate, formattersFor, type SimFormatters } from "../locale-format";
-import { complement, roundTo, snapDown } from "../market-math";
+import { complement, roundTo, snapDown, VENUE_FEE_RATE } from "../market-math";
 import { SIM_UNITS_EN, type SimUnits } from "../sim-units-en";
-import { type KnobKey, type KnobValues, type Scenario, VENUE_FEE_RATE } from "./config";
+import type { KnobKey, KnobValues, Scenario } from "./config";
 import { CLUSTER_SIM_EN, type ClusterSimStrings } from "./sim-prose-en";
 
 /**
