@@ -276,6 +276,9 @@ const EN_SIM: AutoCloseSimLocale = {
  */
 type AutoCloseAction = "disarmed" | "held" | "stop_loss" | "take_profit";
 
+/** Stands in for a tick with no price. Punctuation, so no locale owns it. */
+const NO_READING = "—";
+
 function stateWord(
 	tick: { quotable: boolean; decision: AutoCloseDecision; streakTicks: number },
 	strings: AutoCloseSimStrings,
@@ -317,7 +320,10 @@ export function describeAutoClose(
 
 	const rows = path.ticks.map((tick) => ({
 		tick: fillTemplate(strings.tick, { n: String(tick.tick) }),
-		reading: tick.netPct === null ? sim.units.off : fmt.pct(tick.netPct),
+		// An em dash, not the "off" word: a rail standing down and a book with
+		// nothing resting on it are different facts, and only the second one is
+		// what a missing reading means.
+		reading: tick.netPct === null ? NO_READING : fmt.pct(tick.netPct),
 		state: stateWord(tick, strings),
 		quotable: tick.quotable,
 		closed: tick.decision !== "none",
@@ -345,7 +351,7 @@ export function describeAutoClose(
 			rows,
 			headline: strings.verdict.heldHeadline,
 			detail: fillTemplate(strings.verdict.heldDetail, {
-				pct: path.netPct === null ? sim.units.off : fmt.pct(path.netPct),
+				pct: path.netPct === null ? NO_READING : fmt.pct(path.netPct),
 			}),
 			position,
 		};

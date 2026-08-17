@@ -8,8 +8,10 @@
  */
 import { marked } from "marked";
 import CopyTradeSimulator from "@/components/brand/CopyTradeSimulator.astro";
+import AutoCloseRail, { type RailKnob } from "@/components/copy-trade/AutoCloseRail.astro";
 import { clusterContentFor } from "@/copy-trade/cluster/content";
-import type { Locale } from "@/i18n/catalog";
+import { KNOBS, LIVE_CONFIG } from "@/copy-trade/cluster/config";
+import { type Locale, resolveClusterPage } from "@/i18n/catalog";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -18,6 +20,22 @@ interface Props {
 
 const { locale } = Astro.props;
 const content = clusterContentFor(locale);
+const page = resolveClusterPage(locale);
+
+/* The rail panel is bot-agnostic, so the page hands it its own two knobs. The
+   cluster YAML has no nested keys, so `yamlKey` is the key itself. */
+const railKnobs: RailKnob[] = KNOBS.filter(
+	(knob): knob is typeof knob & { key: RailKnob["key"] } =>
+		knob.key === "auto_close_loss_pct" || knob.key === "auto_close_profit_pct",
+).map((knob) => ({
+	key: knob.key,
+	label: page.knobs[knob.key] ?? knob.label,
+	yamlKey: knob.key,
+	live: LIVE_CONFIG[knob.key],
+	min: knob.min,
+	max: knob.max,
+	step: knob.step,
+}));
 
 const intro = marked.parse(content.introMarkdown, { async: false }) as string;
 const story = marked.parse(content.storyMarkdown, { async: false }) as string;
@@ -36,6 +54,9 @@ const closing = marked.parse(content.closingMarkdown, { async: false }) as strin
 		<CopyTradeSimulator locale={locale} />
 		<article class="long-form-article">
 			<Fragment set:html={story} />
+		</article>
+		<AutoCloseRail locale={locale} knobs={railKnobs} />
+		<article class="long-form-article">
 			<Fragment set:html={closing} />
 		</article>
 	</main>

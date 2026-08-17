@@ -8,8 +8,10 @@
  */
 import { marked } from "marked";
 import WalletCopySimulator from "@/components/brand/WalletCopySimulator.astro";
+import AutoCloseRail, { type RailKnob } from "@/components/copy-trade/AutoCloseRail.astro";
+import { WALLET_KNOBS, WALLET_LIVE_CONFIG } from "@/copy-trade/wallet/config";
 import { walletContentFor } from "@/copy-trade/wallet/content";
-import type { Locale } from "@/i18n/catalog";
+import { type Locale, resolveWalletPage } from "@/i18n/catalog";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -18,6 +20,21 @@ interface Props {
 
 const { locale } = Astro.props;
 const content = walletContentFor(locale);
+const page = resolveWalletPage(locale);
+
+/* The rail panel is bot-agnostic, so the page hands it its own two knobs. */
+const railKnobs: RailKnob[] = WALLET_KNOBS.filter(
+	(knob): knob is typeof knob & { key: RailKnob["key"] } =>
+		knob.key === "auto_close_loss_pct" || knob.key === "auto_close_profit_pct",
+).map((knob) => ({
+	key: knob.key,
+	label: page.knobs[knob.key] ?? knob.label,
+	yamlKey: knob.yamlKey,
+	live: WALLET_LIVE_CONFIG[knob.key],
+	min: knob.min,
+	max: knob.max,
+	step: knob.step,
+}));
 
 const intro = marked.parse(content.introMarkdown, { async: false }) as string;
 const story = marked.parse(content.storyMarkdown, { async: false }) as string;
@@ -36,6 +53,9 @@ const closing = marked.parse(content.closingMarkdown, { async: false }) as strin
 		<WalletCopySimulator locale={locale} />
 		<article class="long-form-article">
 			<Fragment set:html={story} />
+		</article>
+		<AutoCloseRail locale={locale} knobs={railKnobs} />
+		<article class="long-form-article">
 			<Fragment set:html={closing} />
 		</article>
 	</main>

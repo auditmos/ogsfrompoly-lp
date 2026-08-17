@@ -1,0 +1,309 @@
+---
+/**
+ * The auto-close rail as its own panel, shared by both walkthroughs (issue
+ * #77). Bot-agnostic on purpose: the rail is one shared evaluator upstream, so
+ * the page that renders it only hands over its two knob definitions and the
+ * locale — nothing here knows whether it is sitting on the cluster page or the
+ * wallet one.
+ *
+ * The initial paint is server-rendered from `describeAutoClose`, the same
+ * function the client script calls, so the panel is readable without
+ * JavaScript. It shows the live config, which arms neither side.
+ *
+ * The tick list is a fixed set of rows in a fixed order — the script only
+ * rewrites text and toggles classes, so there is no second markup renderer to
+ * drift. Five rows is the longest path we ship; a shorter one hides the rest.
+ */
+import {
+	AUTO_CLOSE_SCENARIOS,
+	type AutoCloseSimLocale,
+	describeAutoClose,
+} from "@/copy-trade/auto-close";
+import { formattersFor } from "@/copy-trade/locale-format";
+import { type Locale, resolveAutoCloseSim, resolveSimUnits } from "@/i18n/catalog";
+
+/** One threshold slider, as the owning page's config defines it. */
+export interface RailKnob {
+	readonly key: "auto_close_loss_pct" | "auto_close_profit_pct";
+	readonly label: string;
+	readonly yamlKey: string;
+	readonly live: number;
+	readonly min: number;
+	readonly max: number;
+	readonly step: number;
+}
+
+interface Props {
+	locale: Locale;
+	knobs: readonly RailKnob[];
+}
+
+const { locale, knobs } = Astro.props;
+
+const sim: AutoCloseSimLocale = {
+	locale,
+	units: resolveSimUnits(locale),
+	strings: resolveAutoCloseSim(locale),
+};
+const fmt = formattersFor(locale, sim.units);
+const strings = sim.strings;
+
+const liveOf = (key: RailKnob["key"]): number =>
+	knobs.find((knob) => knob.key === key)?.live ?? 0;
+
+const initialScenario = AUTO_CLOSE_SCENARIOS[0];
+const initial = describeAutoClose(
+	{ lossPct: liveOf("auto_close_loss_pct"), profitPct: liveOf("auto_close_profit_pct") },
+	initialScenario,
+	sim,
+);
+
+/** Longest path we ship — every shorter one hides its trailing rows. */
+const MAX_TICKS = Math.max(...AUTO_CLOSE_SCENARIOS.map((path) => path.bids.length));
+const TICK_SLOTS = Array.from({ length: MAX_TICKS }, (_, index) => index);
+
+// `</script>`-safe: the payload is parsed by the client script, never executed.
+const simPayload = JSON.stringify(sim).replace(/</g, "\\u003c");
+---
+
+<section
+	class="@container not-prose my-12 overflow-hidden rounded-terminal border border-terminal-border bg-terminal-bg"
+	data-auto-close-rail
+	aria-label={strings.ariaLabel}
+>
+	<script type="application/json" data-rail-locale set:html={simPayload} />
+	<header class="border-b border-terminal-border px-5 py-4">
+		<h2 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
+			{strings.heading}
+		</h2>
+		<p class="mt-2 max-w-prose font-sans text-sm leading-snug text-ink-6">{strings.blurb}</p>
+	</header>
+
+	<div class="grid gap-px bg-terminal-border @3xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+		<div class="flex flex-col gap-6 bg-terminal-bg p-5">
+			{
+				knobs.map((knob) => (
+					<label class="flex flex-col gap-1">
+						<span class="flex items-baseline justify-between gap-3">
+							<span class="font-sans text-sm leading-snug text-ink-7">{knob.label}</span>
+							<output
+								data-rail-value={knob.key}
+								class="shrink-0 font-mono text-sm tabular-nums text-accent"
+							>
+								{fmt.pctLimit(knob.live)}
+							</output>
+						</span>
+						<input
+							type="range"
+							data-rail-knob={knob.key}
+							min={knob.min}
+							max={knob.max}
+							step={knob.step}
+							value={knob.live}
+							aria-label={knob.label}
+							class="w-full accent-accent"
+						/>
+						<span class="font-mono text-[0.7rem] text-ink-5">{knob.yamlKey}</span>
+					</label>
+				))
+			}
+
+			<div class="flex flex-col gap-2">
+				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+					{strings.pathLabel}
+				</p>
+				<div class="flex flex-wrap gap-1.5">
+					{
+						AUTO_CLOSE_SCENARIOS.map((path) => (
+							<button
+								type="button"
+								data-rail-path={path.id}
+								aria-pressed={path.id === initialScenario.id ? "true" : "false"}
+								class="rounded-card border border-ink-3 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-ink-4 hover:text-ink-7 aria-pressed:border-accent-dim aria-pressed:text-accent"
+							>
+								{strings.paths[path.id]}
+							</button>
+						))
+					}
+				</div>
+			</div>
+
+			<p data-rail-position class="font-sans text-sm leading-snug text-ink-6">
+				{initial.position}
+			</p>
+		</div>
+
+		<div class="@container flex flex-col gap-4 bg-terminal-bg p-5">
+			<ul class="flex flex-col font-mono text-sm">
+				<li
+					class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-baseline gap-x-3 border-b border-ink-3 pb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5"
+				>
+					<span></span>
+					<span>{strings.columnReading}</span>
+					<span class="justify-self-end">{strings.columnState}</span>
+				</li>
+				{
+					TICK_SLOTS.map((slot) => {
+						const row = initial.rows[slot];
+						return (
+							<li
+								data-tick-row={slot}
+								class:list={[
+									"grid grid-cols-[auto_minmax(0,1fr)_auto] items-baseline gap-x-3 border-b border-ink-3 py-2 last:border-b-0",
+									row === undefined && "hidden",
+								]}
+							>
+								<span data-tick-label class="tabular-nums text-ink-5">
+									{row?.tick ?? ""}
+								</span>
+								<span
+									data-tick-reading
+									class:list={[
+										"tabular-nums",
+										row?.quotable === false ? "text-ink-5" : "text-ink-8",
+									]}
+								>
+									{row?.reading ?? ""}
+								</span>
+								<span
+									data-tick-state
+									class:list={[
+										"justify-self-end font-sans text-xs",
+										row?.closed ? "text-warn" : "text-ink-5",
+									]}
+								>
+									{row?.state ?? ""}
+								</span>
+							</li>
+						);
+					})
+				}
+			</ul>
+
+			{/* Four states. `disarmed` stays the quietest: the rail standing down is
+			    what the shipped config asks for, and warn-coloured chrome would dress
+			    a deliberate non-event up as a refusal. */}
+			<div
+				data-rail-verdict
+				data-action={initial.action}
+				class="group flex flex-col gap-1.5 rounded-card border border-ink-3 px-4 py-3 data-[action=stop_loss]:border-loss/40 data-[action=stop_loss]:bg-loss/5 data-[action=take_profit]:border-accent/40 data-[action=take_profit]:bg-accent/5 data-[action=held]:border-warn/40 data-[action=held]:bg-warn/5"
+			>
+				<p
+					data-rail-headline
+					class="font-mono text-sm font-semibold uppercase tracking-wider text-ink-5 group-data-[action=stop_loss]:text-loss group-data-[action=take_profit]:text-accent group-data-[action=held]:text-warn"
+				>
+					{initial.headline}
+				</p>
+				<p data-rail-detail class="font-sans text-sm leading-snug text-ink-6">
+					{initial.detail}
+				</p>
+			</div>
+
+			<p class="font-sans text-xs leading-snug text-ink-5">{strings.note}</p>
+			<noscript>
+				<p class="font-sans text-xs leading-snug text-warn">{strings.noscript}</p>
+			</noscript>
+		</div>
+	</div>
+</section>
+
+<script>
+	import {
+		AUTO_CLOSE_SCENARIOS,
+		type AutoCloseSimLocale,
+		describeAutoClose,
+	} from "@/copy-trade/auto-close";
+	import { formattersFor } from "@/copy-trade/locale-format";
+
+	const root = document.querySelector<HTMLElement>("[data-auto-close-rail]");
+	// The SSR-embedded locale bundle: the same catalog-resolved strings the
+	// server painted with, so both recomputes can never disagree on a string.
+	const payload = root?.querySelector("[data-rail-locale]")?.textContent;
+
+	if (root && payload) {
+		const sim = JSON.parse(payload) as AutoCloseSimLocale;
+		const fmt = formattersFor(sim.locale, sim.units);
+		const thresholds = { lossPct: 0, profitPct: 0 };
+		let pathId: string = AUTO_CLOSE_SCENARIOS[0].id;
+
+		// Read the sliders rather than assuming the live config: the server
+		// painted from whatever the page's own knobs said.
+		root.querySelectorAll<HTMLInputElement>("[data-rail-knob]").forEach((slider) => {
+			if (slider.dataset.railKnob === "auto_close_loss_pct") {
+				thresholds.lossPct = Number(slider.value);
+			} else if (slider.dataset.railKnob === "auto_close_profit_pct") {
+				thresholds.profitPct = Number(slider.value);
+			}
+		});
+
+		const setText = (selector: string, text: string): void => {
+			const element = root.querySelector(selector);
+			if (element) element.textContent = text;
+		};
+
+		const render = (): void => {
+			const scenario =
+				AUTO_CLOSE_SCENARIOS.find((entry) => entry.id === pathId) ?? AUTO_CLOSE_SCENARIOS[0];
+			const view = describeAutoClose(thresholds, scenario, sim);
+
+			setText('[data-rail-value="auto_close_loss_pct"]', fmt.pctLimit(thresholds.lossPct));
+			setText('[data-rail-value="auto_close_profit_pct"]', fmt.pctLimit(thresholds.profitPct));
+
+			root.querySelectorAll<HTMLElement>("[data-rail-path]").forEach((button) => {
+				button.setAttribute(
+					"aria-pressed",
+					button.dataset.railPath === scenario.id ? "true" : "false",
+				);
+			});
+
+			setText("[data-rail-position]", view.position);
+
+			root.querySelectorAll<HTMLElement>("[data-tick-row]").forEach((element, index) => {
+				const row = view.rows[index];
+				element.classList.toggle("hidden", row === undefined);
+				if (!row) return;
+
+				const label = element.querySelector<HTMLElement>("[data-tick-label]");
+				if (label) label.textContent = row.tick;
+
+				const reading = element.querySelector<HTMLElement>("[data-tick-reading]");
+				if (reading) {
+					reading.textContent = row.reading;
+					reading.classList.toggle("text-ink-5", !row.quotable);
+					reading.classList.toggle("text-ink-8", row.quotable);
+				}
+
+				const state = element.querySelector<HTMLElement>("[data-tick-state]");
+				if (state) {
+					state.textContent = row.state;
+					state.classList.toggle("text-warn", row.closed);
+					state.classList.toggle("text-ink-5", !row.closed);
+				}
+			});
+
+			const verdict = root.querySelector<HTMLElement>("[data-rail-verdict]");
+			if (verdict) verdict.dataset.action = view.action;
+			setText("[data-rail-headline]", view.headline);
+			setText("[data-rail-detail]", view.detail);
+		};
+
+		root.addEventListener("input", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLInputElement)) return;
+			const key = target.dataset.railKnob;
+			if (key === "auto_close_loss_pct") thresholds.lossPct = Number(target.value);
+			else if (key === "auto_close_profit_pct") thresholds.profitPct = Number(target.value);
+			else return;
+			render();
+		});
+
+		root.addEventListener("click", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) return;
+			const button = target.closest<HTMLElement>("[data-rail-path]");
+			if (button?.dataset.railPath === undefined) return;
+			pathId = button.dataset.railPath;
+			render();
+		});
+	}
+</script>

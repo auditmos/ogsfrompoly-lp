@@ -402,6 +402,10 @@ describe("describeAutoClose", () => {
 		expect(gap?.quotable).toBe(false);
 		expect(gap?.state).toBe(AUTO_CLOSE_SIM_EN.stateNoBid);
 		expect(view.action).toBe("held");
+		// Not the "off" word: a rail standing down and a book with nothing on it
+		// are different facts, and the reading column is where the second one shows.
+		expect(gap?.reading).toBe("—");
+		expect(gap?.reading).not.toBe(AUTO_CLOSE_SIM_EN.stateNoBid);
 	});
 
 	it("names the position the reader is watching, fees and all", () => {
