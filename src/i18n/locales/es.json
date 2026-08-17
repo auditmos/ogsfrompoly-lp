@@ -282,5 +282,545 @@
 	"hub.compare.liveSince.wallet": {
 		"translation": "11 de agosto de 2026",
 		"sourceHash": "ddf6ecac"
+	},
+	"sim.usd": {
+		"translation": "${n}",
+		"sourceHash": "aa0612ed"
+	},
+	"sim.pct": {
+		"translation": "{n} %",
+		"sourceHash": "592614a2"
+	},
+	"sim.share.one": {
+		"translation": "{n} participación",
+		"sourceHash": "5b70c06c"
+	},
+	"sim.share.few": {
+		"translation": "{n} participaciones",
+		"sourceHash": "117e70cd"
+	},
+	"sim.share.many": {
+		"translation": "{n} participaciones",
+		"sourceHash": "117e70cd"
+	},
+	"sim.step.one": {
+		"translation": "{n} paso",
+		"sourceHash": "5e2d7873"
+	},
+	"sim.step.few": {
+		"translation": "{n} pasos",
+		"sourceHash": "4193e800"
+	},
+	"sim.step.many": {
+		"translation": "{n} pasos",
+		"sourceHash": "4193e800"
+	},
+	"sim.wallet.one": {
+		"translation": "{n} cartera",
+		"sourceHash": "4f85c1a8"
+	},
+	"sim.wallet.few": {
+		"translation": "{n} carteras",
+		"sourceHash": "0a902bc1"
+	},
+	"sim.wallet.many": {
+		"translation": "{n} carteras",
+		"sourceHash": "0a902bc1"
+	},
+	"sim.skilledWallet.one": {
+		"translation": "{n} cartera hábil",
+		"sourceHash": "2f907098"
+	},
+	"sim.skilledWallet.few": {
+		"translation": "{n} carteras hábiles",
+		"sourceHash": "cb61c1f1"
+	},
+	"sim.skilledWallet.many": {
+		"translation": "{n} carteras hábiles",
+		"sourceHash": "cb61c1f1"
+	},
+	"sim.minutes": {
+		"translation": "{n} min",
+		"sourceHash": "a12685fa"
+	},
+	"sim.hours": {
+		"translation": "{n} h",
+		"sourceHash": "9e268141"
+	},
+	"sim.days": {
+		"translation": "{n} d",
+		"sourceHash": "9a267af5"
+	},
+	"sim.off": {
+		"translation": "desact.",
+		"sourceHash": "ab3a8a0a"
+	},
+	"cluster.sim.gates.crowd.question": {
+		"translation": "¿Está de acuerdo un grupo, y no un solo trader?",
+		"sourceHash": "490475d1"
+	},
+	"cluster.sim.gates.crowd.because": {
+		"translation": "Solo lo operaron {wallets}, por debajo de las {threshold} que hacen falta para ser un grupo — así que no se emite alerta, al ejecutor nunca le llega nada y nada queda registrado.",
+		"sourceHash": "94b48dc8"
+	},
+	"cluster.sim.gates.room.question": {
+		"translation": "¿Tengo sitio bajo mi tope?",
+		"sourceHash": "ca2c72ff"
+	},
+	"cluster.sim.gates.room.actual": {
+		"translation": "{open} abiertos + {size}",
+		"sourceHash": "511d479d"
+	},
+	"cluster.sim.gates.room.because": {
+		"translation": "Ya hay {open} abiertos; otro ticket de {size} rompería el tope de {cap}.",
+		"sourceHash": "863f03f3"
+	},
+	"cluster.sim.gates.liquidity.question": {
+		"translation": "¿Hay alguien aquí con quien operar?",
+		"sourceHash": "61d03dbb"
+	},
+	"cluster.sim.gates.liquidity.because": {
+		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
+		"sourceHash": "4f2ea6bd"
+	},
+	"cluster.sim.gates.timing.question": {
+		"translation": "¿Está este mercado a punto de terminar?",
+		"sourceHash": "d23cb86d"
+	},
+	"cluster.sim.gates.timing.because": {
+		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
+		"sourceHash": "5dbf4e29"
+	},
+	"cluster.sim.gates.freshness.question": {
+		"translation": "¿Se ha escapado ya el precio?",
+		"sourceHash": "89e4be4b"
+	},
+	"cluster.sim.gates.freshness.rulePctOnly": {
+		"translation": "≤ {pct}",
+		"sourceHash": "364242d8"
+	},
+	"cluster.sim.gates.freshness.ruleWithFloor": {
+		"translation": "≤ {pct} o < {steps}",
+		"sourceHash": "1e33b50a"
+	},
+	"cluster.sim.gates.freshness.because": {
+		"translation": "El precio se movió {drift} en nuestra contra ({entry} → {live}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
+		"sourceHash": "b4b909fd"
+	},
+	"cluster.sim.gates.reversal.question": {
+		"translation": "¿Alguno de ellos estaba justo en el otro lado?",
+		"sourceHash": "a830c52d"
+	},
+	"cluster.sim.gates.reversal.actualNone": {
+		"translation": "nadie se dio la vuelta",
+		"sourceHash": "1b597df7"
+	},
+	"cluster.sim.gates.reversal.actualSome": {
+		"translation": "{flipped} de {total}, hace {ago}",
+		"sourceHash": "8bb3752e"
+	},
+	"cluster.sim.gates.reversal.rule": {
+		"translation": "≤ {tolerated} en {window}",
+		"sourceHash": "260023e0"
+	},
+	"cluster.sim.gates.reversal.when": {
+		"translation": "hace {ago}, dentro de la ventana de {window}",
+		"sourceHash": "e0f78510"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.one": {
+		"translation": "{n} de estas carteras sostenía la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, es una cartera cambiando de opinión en público.",
+		"sourceHash": "a72959bf"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.few": {
+		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
+		"sourceHash": "fc114698"
+	},
+	"cluster.sim.gates.reversal.becauseTooMany.many": {
+		"translation": "{n} de estas carteras sostenían la opinión contraria sobre este mercado {when} — no son un grupo de acuerdo, son carteras cambiando de opinión en público.",
+		"sourceHash": "fc114698"
+	},
+	"cluster.sim.gates.reversal.becauseTooFew": {
+		"translation": "Descontando las {flipped} que se dieron la vuelta {when} quedan solo {clean} — por debajo de las {threshold} que hacen falta para ser un grupo, así que el giro era lo que sostenía esta señal.",
+		"sourceHash": "e351cae3"
+	},
+	"cluster.sim.gates.price.question": {
+		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
+		"sourceHash": "99ae575c"
+	},
+	"cluster.sim.gates.price.because": {
+		"translation": "Una participación cuesta {entry}, por encima del techo de {ceiling} — puede ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
+		"sourceHash": "d4ba5735"
+	},
+	"cluster.sim.gates.fee.question": {
+		"translation": "¿Se come la comisión demasiada parte del ticket?",
+		"sourceHash": "6a570d5f"
+	},
+	"cluster.sim.gates.fee.because": {
+		"translation": "Entrar en un resultado a {entry} cuesta {fraction} del ticket en comisiones, por encima del techo de {ceiling} — la comisión se cobra por participación, así que el resultado barato es el caro de operar.",
+		"sourceHash": "cd2719b5"
+	},
+	"cluster.sim.gates.floor.question": {
+		"translation": "¿Me dejará esto por debajo de mi suelo?",
+		"sourceHash": "d32b7df4"
+	},
+	"cluster.sim.gates.floor.because": {
+		"translation": "Un ticket de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
+		"sourceHash": "26916049"
+	},
+	"cluster.sim.gates.fill.question": {
+		"translation": "¿Puedo comprar dentro de mi propio límite de precio?",
+		"sourceHash": "27f6269b"
+	},
+	"cluster.sim.gates.fill.actual": {
+		"translation": "pide {price}",
+		"sourceHash": "5ee4868e"
+	},
+	"cluster.sim.gates.fill.because": {
+		"translation": "La oferta más barata es {ask} y el límite del bot es {limit} — una orden todo-o-nada con ese límite simplemente se cancela.",
+		"sourceHash": "27b7939e"
+	},
+	"cluster.sim.gates.size.question": {
+		"translation": "¿Es la orden lo bastante grande para la casa?",
+		"sourceHash": "70628828"
+	},
+	"cluster.sim.gates.size.because": {
+		"translation": "{size} con un límite de {limit} compra solo {shares}, y esta casa rechaza cualquier orden por debajo de {min}.",
+		"sourceHash": "347a3d87"
+	},
+	"cluster.sim.drift.favour": {
+		"translation": "se movió a nuestro favor",
+		"sourceHash": "c2bcc77a"
+	},
+	"cluster.sim.verdict.buy": {
+		"translation": "COMPRA {size}",
+		"sourceHash": "43b83066"
+	},
+	"cluster.sim.verdict.skip": {
+		"translation": "PASA",
+		"sourceHash": "7ebdb0c2"
+	},
+	"cluster.sim.verdict.noSignal": {
+		"translation": "SIN SEÑAL",
+		"sourceHash": "9d7aa6e6"
+	},
+	"cluster.sim.detail.order": {
+		"translation": "Compra {size} con un límite de {limit} — unas {shares} — todo o nada, o nada en absoluto.",
+		"sourceHash": "e6edcb23"
+	},
+	"cluster.sim.detail.buy": {
+		"translation": "Todos los controles pasaron. {order} Mantiene hasta que la primera de esas carteras venda.",
+		"sourceHash": "46df4f65"
+	},
+	"cluster.sim.detail.buyMirror": {
+		"translation": "El grupo estaba vendiendo, así que el bot compra el resultado contrario a {entry}. {order} Mantiene hasta que la primera de esas carteras recompre lo que vendió.",
+		"sourceHash": "0193fd80"
+	},
+	"cluster.sim.signal.leadBought": {
+		"translation": "{wallets} en el lado comprador",
+		"sourceHash": "e0e5b41e"
+	},
+	"cluster.sim.signal.leadSold": {
+		"translation": "{wallets} en el lado vendedor",
+		"sourceHash": "01a318df"
+	},
+	"cluster.sim.signal.trailBought": {
+		"translation": "a {price}.",
+		"sourceHash": "b5e1ded5"
+	},
+	"cluster.sim.signal.trailSold": {
+		"translation": "a {price} — así que el bot compraría el resultado contrario a {mirror}.",
+		"sourceHash": "25a57102"
+	},
+	"cluster.sim.summary.sentence": {
+		"translation": "Cuando {threshold}+ carteras hábiles están de acuerdo, sin que ninguna haya estado en el otro lado en los últimos {lookback}, y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no se les ha movido más de {staleness} en contra → el bot compra {size} de lo que ellas compraron (o del resultado contrario, si estaban vendiendo), {priceBand} cede como mucho {fee} del ticket en comisiones, no paga más de {slippage} por encima del precio que ellas consiguieron, mantiene hasta que la primera se dé la vuelta, conserva {floor} gastables y {gas} POL para gas, y repite sin tener nunca más de {cap} en juego a la vez.",
+		"sourceHash": "a5419437"
+	},
+	"cluster.sim.summary.priceCapOnly": {
+		"translation": "paga como mucho {max} por participación,",
+		"sourceHash": "d5832e42"
+	},
+	"cluster.sim.summary.priceBand": {
+		"translation": "paga entre {min} y {max} por participación,",
+		"sourceHash": "c19f7a73"
+	},
+	"cluster.page.title": {
+		"translation": "Cluster copy para dummies",
+		"sourceHash": "1c6f5829"
+	},
+	"cluster.page.description": {
+		"translation": "Guía en lenguaje llano del bot cluster-copy de ogsfrompoly — el que sigue a un grupo de carteras hábiles: cuándo compra, cuándo pasa, cuándo vende y qué números se pueden girar de verdad.",
+		"sourceHash": "562036e3"
+	},
+	"cluster.page.sections.intro": {
+		"translation": "Junto al historial publicado, un pequeño bot replica las carteras que nuestra\nprueba de habilidad señala — pero solo cuando varias están de acuerdo a la vez.\nEsta página es el mecanismo entero en lenguaje llano: qué hace, paso a paso, y\nqué números son perillas frente a reglas soldadas en el código.\n\nEs uno de dos bots. El otro, [wallet copy]({walletHref}),\nsigue a dos traders concretos en lugar de esperar a un grupo — si no tienes\nclaro qué página buscas, empieza por [el selector]({hubHref}).\n\nPiénsalo como un **imitador muy cauteloso** plantado en el mercado, observando a\ntraders que ya se han demostrado. Es tímido a propósito. El dinero es real, pero\nlas posiciones de abajo son diminutas adrede — el objetivo de la primera corrida\nen vivo es acertar, no ser grande.\n\nCada número de esta página es el ajuste vivo para el mercado **{market}** a\nfecha de **{asOf}**, leído de `config/copy_trade.yml`.",
+		"sourceHash": "7dd4ce38"
+	},
+	"cluster.page.sections.storyHeading": {
+		"translation": "## La historia completa, paso a paso",
+		"sourceHash": "8e715273"
+	},
+	"cluster.page.sections.step1": {
+		"translation": "### 1. Escucha a un grupo, nunca a un solo trader\n\nNo se mueve porque una sola cartera haya comprado algo. Solo cuando al menos\n**3 carteras hábiles** operan lo mismo a la vez (`cluster_threshold`) dice: eso\nes un quórum, merece un vistazo.\n\n«Lo mismo a la vez» resultó ser tres requisitos separados, y durante mucho\ntiempo solo se comprobaba de verdad uno. Un grupo ahora tiene que ser tres\ncarteras que cada una **tomó** el precio ofrecido en vez de publicar una oferta\ny esperar; que cada una cayó en el **mismo lado de la misma apuesta**, no solo\nen el mismo mercado; y que cada una llegó en una **transacción separada**. Dos\ncarteras llenadas por una sola operación son una decisión con dos nombres, y un\ncreador de mercado cuya oferta casualmente fue golpeada nunca tuvo opinión\nalguna.\n\nApretar eso llevó un mes de alertas de **263 a 14** — y, reproducido sobre las\nposiciones realmente abiertas, **32 de 38** nunca se habrían tomado. Ninguna de\nlas tres reglas era redundante: por sí solas cazaron el 14 %, el 48 % y el 25 %\nde los malos grupos respectivamente.",
+		"sourceHash": "1b5e94d4"
+	},
+	"cluster.page.sections.step2": {
+		"translation": "### 2. Si el grupo está vendiendo, compra el otro lado\n\nSolo puedes vender algo que ya posees, y una posición nueva no posee nada. Así\nque durante mucho tiempo cada señal de «el grupo está vendiendo» simplemente\nrebotaba contra la casa — y eso es aproximadamente el **40 %** de las señales\nque recibimos.\n\nLa salida está en la forma del propio mercado. Un mercado con dos resultados los\nvalora de modo que sumen $1, y exactamente uno acaba valiendo $1. Vender «sí» a\n90¢ y comprar «no» a 10¢ son la misma opinión, y lo segundo es una compra\nordinaria que el bot sí puede hacer.\n\nLas posiciones abiertas así son **espejos**. El bot recuerda ambos lados — el\nque sostiene y el que opera el grupo — porque necesita el segundo para saber\ncuándo salir.",
+		"sourceHash": "7865b040"
+	},
+	"cluster.page.sections.step3": {
+		"translation": "### 3. ¿Sigue el grupo siquiera siendo de esa opinión?\n\nUn grupo puede estar de acuerdo a las 15:00 y discutir consigo mismo a las\n15:02. Si cualquiera de esas mismas carteras estuvo en el lado **opuesto** de\neste mismo mercado en los últimos **10 minutos** (`reversal_lookback_s`), la\nseñal se rechaza — no son un grupo, son una cartera cambiando de opinión en\npúblico.\n\nLa ventana no es una conjetura. Los giros realmente registrados llegaron con\n**121 a 457 segundos** de separación, y luego nada hasta los 915 segundos; 600\ncae en ese hueco, que compra todo el beneficio con el menor daño colateral.\n\nHay aquí un segundo número, y es el más engañoso de la página.\n`max_reversed_wallets` está en **0**, que parece un raíl apagado y es\nexactamente lo contrario: significa que **ningún** giro se tolera, así que uno\nsolo rechaza el grupo entero. Subirlo es lo que afloja la regla. El raíl se\napaga poniendo la *ventana* a cero, no esto.\n\nTambién rechaza desde la otra dirección. Si apartar a los que giraron deja menos\nde 3 carteras en pie, la señal también cae — no porque demasiadas cambiaran de\nopinión, sino porque las que lo hicieron eran la razón de que pareciera un\ngrupo.\n\nUna trampa que merece nombre, porque equivocarse aquí fue peor que no tener la\nregla. En un mercado de dos resultados, comprar «sí» y vender «no» son la\n*misma* operación, y la casa reporta ambas. Comparar las palabras «compró» y\n«vendió» encontró por tanto **82 giros que nunca ocurrieron** entre 263 alertas\n— la misma operación, vista dos veces — y habría tirado posiciones ganadoras\nreales, incluida la mejor del libro. La dirección hay que calcularla contra el\nresultado sostenido, nunca leerla de la etiqueta.",
+		"sourceHash": "9f030849"
+	},
+	"cluster.page.sections.step4": {
+		"translation": "### 4. Tres controles de seguridad antes de comprar nada\n\n- **«¿Hay alguien aquí con quien operar?»** — si el mercado tiene menos de\n  **$1.000** de liquidez (`min_liquidity_usdc`), pasa. Entrar es fácil; salir\n  de un mercado fino es la parte que duele.\n- **«¿Está este mercado a punto de terminar?»** — si queda menos de **1 hora**\n  para la resolución (`min_seconds_to_resolution`), pasa.\n- **«¿Se ha escapado ya el precio?»** — pasa solo si el precio se movió contra\n  la entrada del grupo más de un **3 %** (`staleness_pct`) *y* más de **dos\n  pasos de precio** (`staleness_min_ticks`). Ambos, no cualquiera.\n\n¿Por qué dos reglas para una pregunta? Los mercados cotizan en pasos fijos — un\ncentavo, o una décima de centavo. El tres por ciento de un resultado de 2¢ es\nmenor que el movimiento más pequeño que el mercado puede mostrar, así que un\nporcentaje solo llamaría «rancio» al parpadeo más diminuto posible y nada\npasaría nunca. El suelo de pasos dice: un movimiento que la parrilla no puede\nsubdividir es ruido, no información.\n\nEl compromiso es real y conviene decirlo claro: en un mercado que solo cotiza\ncentavos enteros, dos pasos son 2¢ — y 2¢ contra un resultado de 10¢ es un\nmovimiento del 20 %, no del 3 %. En esos mercados el suelo de pasos, no el\nporcentaje, es la regla que de verdad ata.\n\nPara un espejo, cada uno de estos controles se mide en el lado que el bot\nrealmente compra. El mismo movimiento es un 5,4 % en un resultado de 24¢ y un\n1,7 % en su gemelo de 76¢; medir el lado equivocado tiraría exactamente los\nresultados baratos que los grupos vendedores favorecen.",
+		"sourceHash": "6b2b5e3a"
+	},
+	"cluster.page.sections.step5": {
+		"translation": "### 5. Lo que cuesta el resultado, y lo que se lleva la comisión\n\nDos controles que entre ambos deciden a qué precios operará el bot.\n\n**La comisión.** La casa cobra su comisión **por participación**, no por dólar.\nCompra un resultado barato y $5 compran muchas participaciones, así que los\nmismos $5 entregan mucho más en comisiones: como parte del ticket la comisión\nsale a `5% × (1 − precio)`. Es un **4,5 % en un resultado de 10¢ y un 0,3 % en\nuno de 94¢**. Limitarla al **2 %** (`max_entry_fee_pct`) no es por tanto\nrealmente una regla de comisiones — es un **precio mínimo de $0,60**, escrito\nen las unidades que importan.\n\nMereció la pena. En las primeras ocho posiciones cerradas el precio se movió en\nnuestra contra $0,46 en total mientras las comisiones sumaron **$1,58** — la\ncomisión fue el **77 %** de todo lo perdido, y 3,4× la contribución del propio\nmercado. En una posición el precio se movió *a nuestro favor* y la operación\naun así perdió dinero.\n\nSubir la apuesta no ayuda, y vale la pena ver por qué: la comisión y las\nganancias escalan ambas con el número de participaciones, así que la proporción\nnunca cambia. Doblar el ticket dobla la pérdida.\n\n**El precio.** Aparte, no pagará más de **$0,95** por participación\n(`max_entry_price`). A 95¢ un ticket de $5 puede ganar 26¢ y perder $5 — unas\n19 a 1 en contra. A 99,8¢ apuesta $5 para ganar un solo centavo, 500 a 1, donde\nuna mala resolución borra varios cientos de victorias.\n\nLa comisión no es el argumento aquí arriba — como parte de la ganancia\n*disponible* es más o menos constante a cualquier precio alto. La **parrilla de\nprecios** de la propia casa sí lo es. Los mercados cotizan en pasos de una\ndécima de centavo, y un paso es el 2 % de todo lo que puede ganar un ticket a\n95¢, pero la **mitad** de todo lo que puede uno a 99,8¢. Por encima de eso, el\nmovimiento más pequeño que el mercado es capaz de mostrar es la mayor parte del\npremio.",
+		"sourceHash": "7691702f"
+	},
+	"cluster.page.sections.step6": {
+		"translation": "### 6. Revisa su propia cartera\n\n*«¿Tengo sitio?»* — mantiene como mucho **$20** abiertos en cualquier momento\n(`exposure_cap_usdc`), que son cuatro tickets de $5.\n\n*«¿Me dejará esto demasiado bajo?»* — nunca opera si el saldo gastable cayera\npor debajo de **$5** (`working_capital_floor_usdc`). En la práctica ese suelo\nes lo que lo frena mucho antes que el tope.",
+		"sourceHash": "83f368b1"
+	},
+	"cluster.page.sections.step7": {
+		"translation": "### 7. Compra pequeño, y se niega a pagar de más\n\nSi todo cuadra compra **$5** (`trade_size_usdc`), todo o nada: la orden se llena\nentera o se tira. El límite de precio es un **1 %** sobre lo que pagó el grupo\n(`slippage_pct`), pero nunca más apretado que **dos pasos de precio**\n(`slippage_min_ticks`) — el 1 % de un resultado de 34¢ es menos de un centavo,\nque en un mercado de centavos enteros se redondea a ningún margen, y una orden\nsin margen es una orden que muere. El límite se ajusta después a la parrilla del\nmercado, porque la casa solo acepta precios que caen exactamente sobre ella.\n\n¿Por qué **$5** y no $1? La casa no acepta una orden de menos de\n**5 participaciones**. Un dólar compra 5 participaciones solo si el resultado\ncuesta 20¢ o menos; por encima, absolutamente todas las órdenes fueron\nrechazadas. El bot ahora cuenta las participaciones él mismo antes de enviar, en\nvez de enterarse por la casa — un rechazo por esta razón es ambiguo, y un\nrechazo ambiguo ata parte del tope a una posición que no existe.",
+		"sourceHash": "334aa023"
+	},
+	"cluster.page.sections.step8": {
+		"translation": "### 8. Dónde está el dinero en realidad\n\nDesde la actualización del exchange de Polymarket, una cartera normal ya no se\nacepta como la parte que coloca una orden. Así que el efectivo está en una\ncartera de depósito de Polymarket, y la clave solo **firma** en nombre de esa\ncartera.\n\nTienen que estar en su sitio dos permisos on-chain separados: uno para gastar el\nefectivo (comprar), otro para mover los tokens de resultado (vender). Se rompen\nde forma independiente — hubo una tarde en la que comprar funcionó todo el día y\ncada venta rebotó contra un permiso ausente. La comprobación previa ahora lee\nambos directamente de la cadena en vez de confiar en que la config tenga razón.",
+		"sourceHash": "8145f32d"
+	},
+	"cluster.page.sections.step9": {
+		"translation": "### 9. Mantiene, y sale al primer giro\n\nLuego observa a las mismas carteras, y sale en cuanto la **primera** se dé la\nvuelta. No espera a que las demás estén de acuerdo.\n\n- En una posición normal sostiene lo que ellas sostienen, así que **su venta**\n  es la salida.\n- En un espejo ellas sostienen el resultado que vendieron, así que **su\n  recompra** es la salida. Que vendan *más* es doblar la apuesta — la misma\n  opinión otra vez, no un giro — así que deliberadamente no nos cierra.\n\nLlegar hasta la resolución es solo el plan de reserva, para cuando nadie gira\nprimero.\n\n*Esto está cableado. No hay ajuste para ello.*",
+		"sourceHash": "3bac78f5"
+	},
+	"cluster.page.sections.step10": {
+		"translation": "### 10. Una salida fallida se reintenta, no se olvida\n\nUna orden de salida puede rechazarse igual que una entrada, y antes se esfumaba\ncon una línea en un log. Ahora el evento se conserva: **tres intentos**, más o\nmenos a un minuto y ensanchándose, cada uno reportado. Si el tercero falla lo\ndice en voz alta en vez de callarse. Reintentar es seguro — si la posición se\ncerró entre tanto, el reintento no hace absolutamente nada.",
+		"sourceHash": "697e6ea1"
+	},
+	"cluster.page.sections.step11": {
+		"translation": "### 11. Nada desaparece en silencio\n\nCada pase y cada rechazo se apuntan con sus números: el límite que el bot pidió,\nel precio tras el redondeo a la parrilla, el mejor precio del libro y cuánto\nvolumen había realmente en nuestro límite. Sin ellos, «mi límite era demasiado\napretado» y «el libro era demasiado fino» parecen idénticos — y sus arreglos son\nopuestos.",
+		"sourceHash": "7b88b3de"
+	},
+	"cluster.page.sections.step12": {
+		"translation": "### 12. Y vuelta a empezar\n\nVendido, efectivo de vuelta, sitio libre, siguiente señal. Una posición por\ngrupo, nunca dos, y un grupo ya cerrado no se reabre jamás. En un primer\narranque empieza por la alerta más nueva en vez de reproducir toda la historia\ncontra una cartera viva.",
+		"sourceHash": "0a812c03"
+	},
+	"cluster.page.sections.step13": {
+		"translation": "### 13. Una vez por semana barre el beneficio\n\nCuenta el beneficio contabilizado y envía el excedente por encima del suelo de\n**$5** a la dirección de pago (`profit_destination`) — pero solo si esa\ndirección está en la lista permitida (`destination_allowlist`, el seguro), solo\nsi la cantidad supera el umbral de polvo de **$1** (`dust_threshold_usdc`) y\nsolo si quedan al menos **2 POL** de gas (`gas_reserve_pol`). Sin gas no podría\ncerrar una posición, así que el pago es lo que cede. Una semana perdedora no\npaga nada en absoluto. El primer pago de la historia necesita a un humano que\ndiga que sí.",
+		"sourceHash": "2ce4da06"
+	},
+	"cluster.page.sections.step14": {
+		"translation": "### 14. El gran botón rojo\n\nEn cualquier momento el interruptor de emergencia (`kill_switch`) impide que el\nbot **compre** nada nuevo — mientras sigue vigilando y cerrando lo que ya está\nabierto. Deja de tomar riesgo; no lo abandona. También hay un modo sombra que\ndecide exactamente igual que siempre pero escribe cada orden frustrada a un\nfichero en vez de enviarla.",
+		"sourceHash": "c5c2a2a7"
+	},
+	"cluster.page.sections.hardWired": {
+		"translation": "## Qué está cableado, y no es un ajuste\n\n- **«La primera cartera hábil gira → estamos fuera.»** Lógica fija, con la\n  resolución como respaldo. No hay take-profit ni stop-loss que afinar.\n- **Vender se copia comprando el otro resultado.** Si un grupo vendedor se\n  replica y cómo — fijo; no hay interruptor de «copiar solo compras».\n- **Una posición por grupo**, y sin reentrada en un grupo ya cerrado.\n- **La entrada es una orden todo-o-nada valorada sobre la parrilla de la\n  casa.** *Cómo* entra es fijo. Solo afinas los umbrales de alrededor —\n  deslizamiento, precio ya movido, liquidez.\n- **El mínimo de 5 participaciones por orden es regla de la casa**, no nuestra.\n  El bot solo la respeta.\n\n**¿Por qué dividirlo así?** Cuánto, cuándo pasar, cuánto a la vez, cuánto dejar\natrás — todo eso es un número, y los números son seguros de exponer. Cómo\ncompra y cuándo vende — toda la lógica de copia — vive en código, para que una\nlínea descuidada de YAML no pueda descarrilar la estrategia en silencio.",
+		"sourceHash": "a733d7ff"
+	},
+	"cluster.page.sections.notClaiming": {
+		"translation": "## Lo que aún no afirmamos\n\nTres límites que conviene conocer, porque cambian cómo deben leerse los números\ndel propio bot.\n\n- **La contabilidad ya captura la comisión de la casa, y cambió el panorama.**\n  Cada posición cerrada solía registrar comisión cero, lo que las hacía parecer\n  mejores de lo que eran; conciliado contra los registros de liquidación\n  on-chain, el coste ausente era **enteramente** esa comisión, y ahora se\n  calcula de la curva publicada de cada mercado y se registra por llenado. El\n  gas de red sigue apuntado como cero, y ese sí es correcto y no pendiente — en\n  esta casa la transacción de liquidación la paga un relayer, no nosotros.\n- **La regla de «el precio ya se movió» es más débil que el 3 % en mercados\n  gruesos** — véase el suelo de dos pasos en el paso 4. Aproximadamente uno de\n  cada veinte mercados cotiza en centavos enteros, y en esos la regla efectiva\n  es mucho más permisiva de lo que el ajuste aparenta.\n- **Los raíles son jóvenes, y en su mayoría sin ejercitar.** La regla de\n  independencia del grupo recortó el número de señales cerca de un 95 %, así\n  que los añadidos después — la ventana de giros, el techo de precio — han\n  tenido muy poco tráfico real contra el que probarse. Se argumentan con\n  mediciones tomadas *antes* de armarlos, y la posición honesta es que aún no\n  sabemos con qué frecuencia disparan.\n- **El techo de precio no se justifica por dinero recuperado.** Las cuatro\n  posiciones que habría rechazado valen unos **5 centavos** entre todas. Se\n  compra como seguro contra una apuesta desequilibrada — $5 en juego para ganar\n  un centavo — no como arreglo de una pérdida medida, y no debe leerse como\n  tal.",
+		"sourceHash": "ce406b83"
+	},
+	"cluster.page.sections.notThis": {
+		"translation": "## Lo que esta página no es\n\nEstos son parámetros operativos de nuestro propio bot pequeño, publicados con el\nmismo espíritu que el resto del historial. No son consejo, no son un servicio de\nseñales y no son la afirmación de que replicar carteras hábiles seguirá\nfuncionando.\n\nLas direcciones de las carteras del bot no se publican en ningún lugar de este\nsitio — observar la cartera ejecutora en tiempo real expondría posiciones\nabiertas, que es exactamente lo que la [política de divulgación]({methodologyHref})\nexiste para impedir.",
+		"sourceHash": "0cb8d7e0"
+	},
+	"cluster.page.md.inOneSentence": {
+		"translation": "En una frase",
+		"sourceHash": "7de3e1c3"
+	},
+	"cluster.page.md.knobsHeading": {
+		"translation": "Las perillas",
+		"sourceHash": "3db32689"
+	},
+	"cluster.page.md.knobsBlurb": {
+		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la decisión\ndel bot cambiar. En markdown son solo la tabla:",
+		"sourceHash": "c9ad4848"
+	},
+	"cluster.page.md.tableRole": {
+		"translation": "Papel en la historia",
+		"sourceHash": "8bddd4de"
+	},
+	"cluster.page.md.tableKey": {
+		"translation": "Clave",
+		"sourceHash": "cd1ac90c"
+	},
+	"cluster.page.md.tableLive": {
+		"translation": "En vivo ({market})",
+		"sourceHash": "8677d97e"
+	},
+	"cluster.page.md.payoutLabel": {
+		"translation": "Dirección de pago, lista permitida, umbral de polvo",
+		"sourceHash": "af059b4f"
+	},
+	"cluster.page.md.notPublished": {
+		"translation": "no publicado",
+		"sourceHash": "c0bab374"
+	},
+	"cluster.page.md.killLabel": {
+		"translation": "Parar todo",
+		"sourceHash": "032bf222"
+	},
+	"cluster.page.ui.tryIt": {
+		"translation": "Pruébalo — la decisión del bot, en vivo",
+		"sourceHash": "97b38b75"
+	},
+	"cluster.page.ui.defaultsNote": {
+		"translation": "por defecto = config {market}, {asOf}",
+		"sourceHash": "7f716bd5"
+	},
+	"cluster.page.ui.reset": {
+		"translation": "Restaurar nuestra config en vivo",
+		"sourceHash": "62792b0b"
+	},
+	"cluster.page.ui.incomingSignal": {
+		"translation": "Señal entrante",
+		"sourceHash": "b6c20e5b"
+	},
+	"cluster.page.ui.stageAlert": {
+		"translation": "Primero, aguas arriba — ¿hay siquiera una alerta?",
+		"sourceHash": "e6227480"
+	},
+	"cluster.page.ui.stageExecutor": {
+		"translation": "Luego los raíles del propio bot, en orden",
+		"sourceHash": "54d39948"
+	},
+	"cluster.page.ui.flagAlert": {
+		"translation": "no se emite alerta — al bot nunca se le pregunta",
+		"sourceHash": "e98028b4"
+	},
+	"cluster.page.ui.flagExecutor": {
+		"translation": "el bot real se detiene aquí",
+		"sourceHash": "75aa497a"
+	},
+	"cluster.page.ui.explainer": {
+		"translation": "El ejecutor real se corta en el primer ✗ de la segunda lista y sigue adelante. Aquí se puntúa cada control para que veas qué hace cada perilla. Los precios son siempre los del lado que el bot compraría de verdad — para un grupo vendedor, ese es el resultado contrario. Los dos últimos controles son reglas de la propia casa: el límite tiene que ser alcanzable y la orden lo bastante grande. Entre las dos listas el ejecutor corre además un puñado de controles contables — ¿está este grupo ya abierto, está puesto el interruptor de emergencia? — que aquí se omiten porque ninguno es un número que puedas girar.",
+		"sourceHash": "1024e3a8"
+	},
+	"cluster.page.ui.noscript": {
+		"translation": "Sin JavaScript esto muestra nuestra config en vivo contra la primera señal de ejemplo. Los deslizadores y los botones de señal necesitan JavaScript para recalcular.",
+		"sourceHash": "abce22be"
+	},
+	"cluster.page.knobs.cluster_threshold": {
+		"translation": "Cuántas carteras hábiles cuentan como grupo",
+		"sourceHash": "59c3e605"
+	},
+	"cluster.page.knobs.min_liquidity_usdc": {
+		"translation": "Pasar de mercados más finos que",
+		"sourceHash": "212826b6"
+	},
+	"cluster.page.knobs.min_seconds_to_resolution": {
+		"translation": "Pasar de mercados que resuelven dentro de",
+		"sourceHash": "1a7c23d3"
+	},
+	"cluster.page.knobs.staleness_pct": {
+		"translation": "Pasar si el precio ya corrió más de",
+		"sourceHash": "b34be1fa"
+	},
+	"cluster.page.knobs.staleness_min_ticks": {
+		"translation": "…pero tratar como ruido un movimiento menor que",
+		"sourceHash": "ae4d2d11"
+	},
+	"cluster.page.knobs.reversal_lookback_s": {
+		"translation": "Pasar si uno de ellos estuvo en el otro lado dentro de",
+		"sourceHash": "7de54f81"
+	},
+	"cluster.page.knobs.max_reversed_wallets": {
+		"translation": "…tolerando como mucho este número de giros",
+		"sourceHash": "85684d35"
+	},
+	"cluster.page.knobs.max_entry_fee_pct": {
+		"translation": "Pasar si la comisión de entrada come del ticket más de",
+		"sourceHash": "afcb25ff"
+	},
+	"cluster.page.knobs.max_entry_price": {
+		"translation": "Nunca pagar por participación más de",
+		"sourceHash": "3bb889bf"
+	},
+	"cluster.page.knobs.trade_size_usdc": {
+		"translation": "Tamaño de una apuesta",
+		"sourceHash": "dda01e7e"
+	},
+	"cluster.page.knobs.exposure_cap_usdc": {
+		"translation": "Nunca mantener abierto más de",
+		"sourceHash": "eee65c54"
+	},
+	"cluster.page.knobs.working_capital_floor_usdc": {
+		"translation": "Nunca dejar caer el saldo gastable por debajo de",
+		"sourceHash": "6ab9f735"
+	},
+	"cluster.page.knobs.gas_reserve_pol": {
+		"translation": "Guardar este gas antes de cualquier pago",
+		"sourceHash": "8a44ed51"
+	},
+	"cluster.page.knobs.slippage_pct": {
+		"translation": "Retirarse antes que pagar de más por encima de",
+		"sourceHash": "6446b4b4"
+	},
+	"cluster.page.knobs.slippage_min_ticks": {
+		"translation": "…pero dar siempre a la orden al menos este margen",
+		"sourceHash": "b8cca0a1"
+	},
+	"cluster.page.knobGroups.gate": {
+		"translation": "¿Debería tocar esto siquiera?",
+		"sourceHash": "46be91ad"
+	},
+	"cluster.page.knobGroups.size": {
+		"translation": "¿Cuánto puedo poner en riesgo?",
+		"sourceHash": "0cf0295f"
+	},
+	"cluster.page.knobGroups.execution": {
+		"translation": "¿Cómo consigo llenarme?",
+		"sourceHash": "f7277e44"
+	},
+	"cluster.page.scenarios.textbook": {
+		"translation": "Compra de manual",
+		"sourceHash": "d8de0eef"
+	},
+	"cluster.page.scenarios.mirror": {
+		"translation": "El grupo vende",
+		"sourceHash": "6d903646"
+	},
+	"cluster.page.scenarios.coarse": {
+		"translation": "Parrilla gruesa",
+		"sourceHash": "540e255c"
+	},
+	"cluster.page.scenarios.pricey": {
+		"translation": "Resultado caro",
+		"sourceHash": "475d8919"
+	},
+	"cluster.page.scenarios.too-dear": {
+		"translation": "Demasiado caro",
+		"sourceHash": "563569d3"
+	},
+	"cluster.page.scenarios.flipped": {
+		"translation": "El grupo acaba de girar",
+		"sourceHash": "e27da688"
+	},
+	"cluster.page.scenarios.ends-soon": {
+		"translation": "Termina muy pronto",
+		"sourceHash": "addd7194"
+	},
+	"cluster.page.scenarios.thin": {
+		"translation": "Mercado fino",
+		"sourceHash": "9ba617b6"
+	},
+	"cluster.page.scenarios.chased": {
+		"translation": "El precio se escapó",
+		"sourceHash": "5f414887"
+	},
+	"cluster.page.scenarios.full": {
+		"translation": "Sin sitio libre",
+		"sourceHash": "bddb8796"
+	},
+	"cluster.page.scenarios.broke": {
+		"translation": "Sin efectivo",
+		"sourceHash": "7f5079da"
+	},
+	"cluster.page.ui.ariaLabel": {
+		"translation": "Simulador de decisiones de copy-trading",
+		"sourceHash": "a2bae839"
 	}
 }

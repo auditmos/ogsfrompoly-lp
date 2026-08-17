@@ -12,14 +12,10 @@
  * example signals below are invented, and so are their balances.
  */
 
-import {
-	formatDuration,
-	formatFraction,
-	formatPct,
-	formatPrice,
-	formatSteps,
-	formatUsd,
-} from "../format";
+import { formattersFor, type SimFormatters } from "../locale-format";
+import { SIM_UNITS_EN } from "../sim-units-en";
+
+const EN_FORMATTERS = formattersFor("en", SIM_UNITS_EN);
 
 /** The market whose live config the defaults reflect. */
 export const CONFIG_MARKET = "Macro";
@@ -507,40 +503,35 @@ export const SCENARIOS = [
 	},
 ] as const satisfies readonly Scenario[];
 
-/** A price ceiling, where `0` means the rail is switched off rather than free. */
-function formatPriceLimit(value: number): string {
-	if (value <= 0) return "off";
-	return formatPrice(value);
-}
-
-export function formatKnobValue(unit: KnobUnit, value: number): string {
+/**
+ * A knob's live value as the reader sees it beside the slider and in the
+ * `.md` table. Locale-aware through the optional formatter set (issue #73) —
+ * omitted, it renders the canonical English strings. `POL` is a token symbol
+ * and `count` a bare number, so neither varies by locale.
+ */
+export function formatKnobValue(
+	unit: KnobUnit,
+	value: number,
+	fmt: SimFormatters = EN_FORMATTERS,
+): string {
 	switch (unit) {
 		case "usdc":
-			return formatUsd(value);
+			return fmt.usd(value);
 		case "pct":
-			return formatPct(value);
+			return fmt.pct(value);
 		case "fraction":
-			return formatFraction(value);
+			return fmt.fraction(value);
 		case "price":
-			return formatPriceLimit(value);
+			return fmt.priceLimit(value);
 		case "seconds":
-			return formatDuration(value);
+			return fmt.duration(value);
 		case "pol":
 			return `${value} POL`;
 		case "steps":
-			return formatSteps(value);
+			return fmt.steps(value);
 		case "count":
 			return String(value);
 	}
-}
-
-/**
- * `"4 skilled wallets"` / `"1 skilled wallet"`. Takes a plain `number` on
- * purpose: read off a `SCENARIOS` tuple member the count is a literal type, and
- * an inline ternary would be statically dead.
- */
-export function formatWalletCount(count: number): string {
-	return `${count} skilled ${count === 1 ? "wallet" : "wallets"}`;
 }
 
 export function knobsInGroup(group: KnobGroup): readonly Knob[] {

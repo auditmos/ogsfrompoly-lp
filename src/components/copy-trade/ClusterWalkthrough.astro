@@ -1,0 +1,42 @@
+---
+/**
+ * The copy-cluster walkthrough page for one locale (issue #73). Every string
+ * comes from the same locale-resolved content the `.md` twin stitches from —
+ * the two surfaces can never disagree. The simulator sits outside the 44rem
+ * prose column on purpose: it needs the full page width to split into two
+ * panels.
+ */
+import { marked } from "marked";
+import CopyTradeSimulator from "@/components/brand/CopyTradeSimulator.astro";
+import { clusterContentFor } from "@/copy-trade/cluster/content";
+import type { Locale } from "@/i18n/catalog";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content = clusterContentFor(locale);
+
+const intro = marked.parse(content.introMarkdown, { async: false }) as string;
+const story = marked.parse(content.storyMarkdown, { async: false }) as string;
+const closing = marked.parse(content.closingMarkdown, { async: false }) as string;
+---
+
+<Layout
+	title={`${content.title} · ogsfrompoly`}
+	description={content.description}
+	localePath="/for-dummies/copy-cluster"
+>
+	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
+		<article class="long-form-article">
+			<Fragment set:html={intro} />
+		</article>
+		<CopyTradeSimulator locale={locale} />
+		<article class="long-form-article">
+			<Fragment set:html={story} />
+			<Fragment set:html={closing} />
+		</article>
+	</main>
+</Layout>

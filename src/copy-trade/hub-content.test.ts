@@ -28,18 +28,18 @@ describe("hubFor", () => {
 		expect(forDummiesMarkdownFor("en")).toBe(forDummiesMarkdown);
 	});
 
-	// The localized walkthroughs don't exist yet — until the walkthrough issues
-	// ship them, every locale's cards link to the live English pages (the
-	// per-link English fallback) instead of dead same-locale URLs. The
-	// methodology link is same-locale already: those pages exist.
+	// The cluster walkthrough ships localized pages (issue #73), so its card
+	// links same-locale; the wallet walkthrough doesn't yet, so its card keeps
+	// the live English page (the per-link English fallback) instead of a dead
+	// same-locale URL — issue #74 flips it. Methodology is same-locale already.
 	it.each([
 		["pl"],
 		["es"],
-	] as const)("falls %s bot card links back to the English walkthroughs", (locale) => {
+	] as const)("links the %s cluster card same-locale, wallet card to English", (locale) => {
 		const hub = hubFor(locale);
 
 		expect(hub.cards.map((card) => card.href)).toEqual([
-			"/for-dummies/copy-cluster",
+			`/${locale}/for-dummies/copy-cluster`,
 			"/for-dummies/copy-wallet",
 		]);
 		for (const card of hub.cards) {

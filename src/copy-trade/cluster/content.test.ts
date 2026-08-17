@@ -1,6 +1,10 @@
 import { findRawWalletHex, findScaffoldingPhrases } from "@/content/body-disclosure";
+import { resolveClusterPage, resolveClusterSim, resolveSimUnits } from "@/i18n/catalog";
+import { formattersFor } from "../locale-format";
 import { formatKnobValue, KNOBS, LIVE_CONFIG, SCENARIOS } from "./config";
 import {
+	clusterContentFor,
+	clusterMarkdownFor,
 	copyTradeClosingMarkdown,
 	copyTradeDescription,
 	copyTradeIntroMarkdown,
@@ -8,6 +12,7 @@ import {
 	copyTradeStoryMarkdown,
 	copyTradeTitle,
 } from "./content";
+import { summarySentence } from "./simulator";
 
 // The HTML page renders the three blocks with the simulator slotted between
 // them; the `.md` twin has to carry the same prose plus a static knob table.
@@ -97,5 +102,80 @@ describe("example signals", () => {
 
 	it("gives every signal a unique id for the panel's button state", () => {
 		expect(new Set(SCENARIOS.map((s) => s.id)).size).toBe(SCENARIOS.length);
+	});
+});
+
+/**
+ * Issue #73 assumptions: every locale's HTML page and `.md` twin stitch from
+ * the same catalog-resolved strings (the dual-format invariant shared with
+ * methodology and the hub); the English stitch is byte-identical to the
+ * legacy exports; link targets and config values are filled by the stitcher,
+ * never carried inside translations. The wallet-copy link stays on the
+ * English route in every locale until issue #74 ships the localized target.
+ */
+describe("clusterContentFor", () => {
+	it("stitches the English twin identical to the legacy export", () => {
+		expect(clusterMarkdownFor("en")).toBe(copyTradeMarkdown);
+		const english = clusterContentFor("en");
+		expect(english.introMarkdown).toBe(copyTradeIntroMarkdown);
+		expect(english.storyMarkdown).toBe(copyTradeStoryMarkdown);
+		expect(english.closingMarkdown).toBe(copyTradeClosingMarkdown);
+	});
+
+	it.each([["pl"], ["es"]] as const)("resolves the %s page translated in meaning", (locale) => {
+		const localized = clusterContentFor(locale);
+		const english = clusterContentFor("en");
+
+		expect(localized.title).not.toBe(english.title);
+		expect(localized.introMarkdown).not.toBe(english.introMarkdown);
+		expect(localized.storyMarkdown).not.toBe(english.storyMarkdown);
+		expect(localized.closingMarkdown).not.toBe(english.closingMarkdown);
+	});
+
+	it.each([
+		["pl"],
+		["es"],
+	] as const)("links the %s page to the same-locale hub and methodology, English wallet page", (locale) => {
+		const localized = clusterContentFor(locale);
+
+		expect(localized.introMarkdown).toContain(`(/${locale}/for-dummies)`);
+		expect(localized.closingMarkdown).toContain(`(/${locale}/methodology)`);
+		expect(localized.introMarkdown).toContain("(/for-dummies/copy-wallet)");
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("stitches every shared %s string into the .md twin", (locale) => {
+		const content = clusterContentFor(locale);
+		const md = clusterMarkdownFor(locale);
+		const page = resolveClusterPage(locale);
+		const sim = {
+			locale,
+			units: resolveSimUnits(locale),
+			strings: resolveClusterSim(locale),
+		};
+		const fmt = formattersFor(locale, sim.units);
+
+		expect(md).toContain(content.introMarkdown);
+		expect(md).toContain(content.storyMarkdown);
+		expect(md).toContain(content.closingMarkdown);
+		expect(md).toContain(summarySentence(LIVE_CONFIG, sim));
+		for (const knob of KNOBS) {
+			const label = page.knobs[knob.key];
+			expect(label).toBeDefined();
+			expect(md).toContain(
+				`| ${label} | \`${knob.key}\` | ${formatKnobValue(knob.unit, LIVE_CONFIG[knob.key], fmt)} |`,
+			);
+		}
+	});
+
+	it.each([["pl"], ["es"]] as const)("keeps the %s twin inside the disclosure line", (locale) => {
+		const md = clusterMarkdownFor(locale);
+
+		expect(findRawWalletHex(md)).toEqual([]);
+		expect(findScaffoldingPhrases(md)).toEqual([]);
+		expect(md).not.toContain("github.com/auditmos/ogsfrompoly");
 	});
 });

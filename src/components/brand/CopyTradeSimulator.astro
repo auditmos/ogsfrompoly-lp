@@ -1,29 +1,46 @@
 ---
 /**
- * The semi-interactive panel on `/for-dummies`: drag the executor's knobs, pick
- * an incoming signal, watch the buy/skip decision change.
+ * The semi-interactive panel on the copy-cluster walkthrough: drag the
+ * executor's knobs, pick an incoming signal, watch the buy/skip decision
+ * change.
  *
  * The initial paint is server-rendered from the same `evaluateSignal` the client
  * script calls, so the page is fully readable without JavaScript — it just shows
  * the live config against the first example signal. The gate list is a fixed set
  * of rows in a fixed order, so the script only rewrites text and toggles classes;
  * there is no second markup renderer to drift out of sync with this template.
+ *
+ * Localization (issue #73): every string resolves through the Translation
+ * Catalog server-side, and the resolved simulator bundle is embedded as a JSON
+ * island so the client recompute rewrites text in the same language without
+ * shipping the catalog (or its overlays) to the browser.
  */
+import { clusterSimFor } from "@/copy-trade/cluster/content";
 import {
 	CONFIG_AS_OF,
 	CONFIG_MARKET,
 	formatKnobValue,
-	KNOB_GROUP_LABELS,
 	KNOB_GROUP_ORDER,
 	knobsInGroup,
 	LIVE_CONFIG,
 	SCENARIOS,
 } from "@/copy-trade/cluster/config";
 import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/cluster/simulator";
+import { fillTemplate, formattersFor } from "@/copy-trade/locale-format";
+import { type Locale, resolveClusterPage } from "@/i18n/catalog";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const page = resolveClusterPage(locale);
+const sim = clusterSimFor(locale);
+const fmt = formattersFor(locale, sim.units);
 
 const initialScenario = SCENARIOS[0];
-const initial = evaluateSignal(LIVE_CONFIG, initialScenario);
-const initialLine = signalLine(initialScenario);
+const initial = evaluateSignal(LIVE_CONFIG, initialScenario, sim);
+const initialLine = signalLine(initialScenario, sim);
 
 /* Read off the verdict rather than imported: `simulator.ts` keeps its result
    shapes private on purpose, and a `Record` keyed on this stays exhaustive. */
@@ -32,31 +49,35 @@ type GateStage = (typeof initial.gates)[number]["stage"];
 const GATE_STAGE_ORDER = ["alert", "executor"] as const satisfies readonly GateStage[];
 
 const GATE_STAGE_LABELS: Record<GateStage, string> = {
-	alert: "First, upstream — is there an alert at all?",
-	executor: "Then the bot's own rails, in order",
+	alert: page.ui.stageAlert,
+	executor: page.ui.stageExecutor,
 };
 
 /* What a ✗ on this row actually means. An upstream ✗ is not a refusal: the alert
    is never raised, so there is no decision, no skip card and no log line. */
 const GATE_STAGE_FLAGS: Record<GateStage, string> = {
-	alert: "no alert is raised — the bot is never asked",
-	executor: "the real bot stops here",
+	alert: page.ui.flagAlert,
+	executor: page.ui.flagExecutor,
 };
+
+// `</script>`-safe: the payload is parsed by the client script, never executed.
+const simPayload = JSON.stringify(sim).replace(/</g, "\\u003c");
 ---
 
 <section
 	class="@container not-prose my-12 overflow-hidden rounded-terminal border border-terminal-border bg-terminal-bg"
 	data-copy-trade-sim
-	aria-label="Copy-trade decision simulator"
+	aria-label={page.ui.ariaLabel}
 >
+	<script type="application/json" data-sim-locale set:html={simPayload} />
 	<header
 		class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-terminal-border px-5 py-4"
 	>
 		<h2 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
-			Try it — the bot's decision, live
+			{page.ui.tryIt}
 		</h2>
 		<p class="font-mono text-[0.7rem] text-ink-5">
-			defaults = {CONFIG_MARKET} config, {CONFIG_AS_OF}
+			{fillTemplate(page.ui.defaultsNote, { market: CONFIG_MARKET, asOf: CONFIG_AS_OF })}
 		</p>
 	</header>
 
@@ -68,17 +89,19 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				KNOB_GROUP_ORDER.map((group) => (
 					<fieldset class="flex flex-col gap-4 border-0 p-0">
 						<legend class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
-							{KNOB_GROUP_LABELS[group]}
+							{page.knobGroups[group]}
 						</legend>
 						{knobsInGroup(group).map((knob) => (
 							<label class="flex flex-col gap-1">
 								<span class="flex items-baseline justify-between gap-3">
-									<span class="font-sans text-sm leading-snug text-ink-7">{knob.label}</span>
+									<span class="font-sans text-sm leading-snug text-ink-7">
+										{page.knobs[knob.key] ?? knob.label}
+									</span>
 									<output
 										data-knob-value={knob.key}
 										class="shrink-0 font-mono text-sm tabular-nums text-accent"
 									>
-										{formatKnobValue(knob.unit, LIVE_CONFIG[knob.key])}
+										{formatKnobValue(knob.unit, LIVE_CONFIG[knob.key], fmt)}
 									</output>
 								</span>
 								<input
@@ -88,7 +111,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 									max={knob.max}
 									step={knob.step}
 									value={LIVE_CONFIG[knob.key]}
-									aria-label={knob.label}
+									aria-label={page.knobs[knob.key] ?? knob.label}
 									class="w-full accent-accent"
 								/>
 								<span class="font-mono text-[0.7rem] text-ink-5">{knob.key}</span>
@@ -102,7 +125,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				data-reset
 				class="self-start rounded-card border border-ink-3 px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-accent-dim hover:text-accent"
 			>
-				Reset to our live config
+				{page.ui.reset}
 			</button>
 		</div>
 
@@ -110,7 +133,9 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		     width, which is roughly half the panel once the split kicks in. -->
 		<div class="@container flex flex-col gap-4 bg-terminal-bg p-5">
 			<div class="flex flex-col gap-2">
-				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">Incoming signal</p>
+				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+					{page.ui.incomingSignal}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					{
 						SCENARIOS.map((scenario) => (
@@ -120,7 +145,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 								aria-pressed={scenario.id === initialScenario.id ? "true" : "false"}
 								class="rounded-card border border-ink-3 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-ink-4 hover:text-ink-7 aria-pressed:border-accent-dim aria-pressed:text-accent"
 							>
-								{scenario.label}
+								{page.scenarios[scenario.id] ?? scenario.label}
 							</button>
 						))
 					}
@@ -211,27 +236,22 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 			</div>
 
 			<p class="font-sans text-xs leading-snug text-ink-5">
-				The real executor short-circuits at the first ✗ in the second list and moves on. Every
-				check is scored here so you can see what each knob does. Prices are always the ones on
-				the side the bot would really buy — for a selling crowd, that is the opposite outcome.
-				The last two checks are the exchange's own rules: the limit has to be reachable, and the
-				order has to be big enough. Between the two lists the executor also runs a handful of
-				bookkeeping checks — is this crowd already open, is the kill switch on — that are left
-				out here because none of them is a number you can turn.
+				{page.ui.explainer}
 			</p>
 			<noscript>
 				<p class="font-sans text-xs leading-snug text-warn">
-					With JavaScript off this shows our live config against the first example signal. The
-					sliders and signal buttons need JavaScript to recompute.
+					{page.ui.noscript}
 				</p>
 			</noscript>
 		</div>
 	</div>
 
 	<footer class="border-t border-terminal-border px-5 py-4">
-		<p class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">In one sentence</p>
+		<p class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+			{page.md.inOneSentence}
+		</p>
 		<p data-summary class="font-sans text-sm leading-relaxed text-ink-7">
-			{summarySentence(LIVE_CONFIG)}
+			{summarySentence(LIVE_CONFIG, sim)}
 		</p>
 	</footer>
 </section>
@@ -245,11 +265,22 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		LIVE_CONFIG,
 		SCENARIOS,
 	} from "@/copy-trade/cluster/config";
-	import { evaluateSignal, signalLine, summarySentence } from "@/copy-trade/cluster/simulator";
+	import {
+		type ClusterSimLocale,
+		evaluateSignal,
+		signalLine,
+		summarySentence,
+	} from "@/copy-trade/cluster/simulator";
+	import { formattersFor } from "@/copy-trade/locale-format";
 
 	const root = document.querySelector<HTMLElement>("[data-copy-trade-sim]");
+	// The SSR-embedded locale bundle: the same catalog-resolved strings the
+	// server painted with, so both recomputes can never disagree on a string.
+	const payload = root?.querySelector("[data-sim-locale]")?.textContent;
 
-	if (root) {
+	if (root && payload) {
+		const sim = JSON.parse(payload) as ClusterSimLocale;
+		const fmt = formattersFor(sim.locale, sim.units);
 		const values: KnobValues = { ...LIVE_CONFIG };
 		let scenarioId: string = SCENARIOS[0].id;
 
@@ -260,10 +291,13 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 
 		const render = (): void => {
 			const scenario = SCENARIOS.find((entry) => entry.id === scenarioId) ?? SCENARIOS[0];
-			const verdict = evaluateSignal(values, scenario);
+			const verdict = evaluateSignal(values, scenario, sim);
 
 			for (const knob of KNOBS) {
-				setText(`[data-knob-value="${knob.key}"]`, formatKnobValue(knob.unit, values[knob.key]));
+				setText(
+					`[data-knob-value="${knob.key}"]`,
+					formatKnobValue(knob.unit, values[knob.key], fmt),
+				);
 			}
 
 			root.querySelectorAll<HTMLElement>("[data-scenario]").forEach((button) => {
@@ -273,7 +307,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				);
 			});
 
-			const line = signalLine(scenario);
+			const line = signalLine(scenario, sim);
 			setText("[data-signal-lead]", line.lead);
 			setText("[data-signal-market]", `“${line.market}”`);
 			setText("[data-signal-trail]", line.trail);
@@ -303,7 +337,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 			if (verdictBox) verdictBox.dataset.action = verdict.action;
 			setText("[data-verdict-headline]", verdict.headline);
 			setText("[data-verdict-detail]", verdict.detail);
-			setText("[data-summary]", summarySentence(values));
+			setText("[data-summary]", summarySentence(values, sim));
 		};
 
 		root.addEventListener("input", (event) => {

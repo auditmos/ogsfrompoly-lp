@@ -59,25 +59,32 @@ export interface HubModel {
 	readonly rows: readonly CompareRow[];
 }
 
+// `localized` marks a walkthrough that ships /pl and /es pages: its card links
+// same-locale. The wallet page has no localized variants until issue #74, so
+// its card keeps the live English page rather than a dead same-locale URL.
 const CARD_STATIC = [
-	{ id: "cluster", eyebrow: "bot 01 · cluster copy", path: "/for-dummies/copy-cluster" },
-	{ id: "wallet", eyebrow: "bot 02 · wallet copy", path: "/for-dummies/copy-wallet" },
+	{
+		id: "cluster",
+		eyebrow: "bot 01 · cluster copy",
+		path: "/for-dummies/copy-cluster",
+		localized: true,
+	},
+	{
+		id: "wallet",
+		eyebrow: "bot 02 · wallet copy",
+		path: "/for-dummies/copy-wallet",
+		localized: false,
+	},
 ] as const;
 
 const COMPARE_ORDER = ["signal", "guard", "fees", "exit", "money", "liveSince"] as const;
 
-/**
- * The hub resolved for a locale. Bot card links point at the English
- * walkthrough pages from every locale for now — the localized walkthroughs
- * don't exist yet, so the English page is the per-link fallback. The
- * walkthrough issues flip these to same-locale URLs when they ship. The
- * methodology link is same-locale already — those pages exist.
- */
+/** The hub resolved for a locale, card links per `CARD_STATIC.localized`. */
 export function hubFor(locale: Locale): HubModel {
 	const prose = resolveHubProse(locale);
 	const cards: BotCard[] = CARD_STATIC.map((entry) => {
 		const bot = prose[entry.id];
-		const href = entry.path;
+		const href = entry.localized ? localeHref(locale, entry.path) : entry.path;
 		return {
 			id: entry.id,
 			eyebrow: entry.eyebrow,

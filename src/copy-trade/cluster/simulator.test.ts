@@ -1,3 +1,4 @@
+import { resolveClusterSim, resolveSimUnits } from "@/i18n/catalog";
 import { isKnobKey, type KnobValues, LIVE_CONFIG, SCENARIOS, type Scenario } from "./config";
 import { evaluateSignal, signalLine, summarySentence } from "./simulator";
 
@@ -343,5 +344,66 @@ describe("summarySentence", () => {
 		expect(sentence).toContain("7+ skilled wallets");
 		expect(sentence).toContain("$50 in play");
 		expect(sentence).not.toContain("3+ skilled wallets");
+	});
+});
+
+/**
+ * Issue #73 assumptions: `evaluateSignal` stays the single decision function —
+ * a locale bundle (units + strings resolved through the Translation Catalog)
+ * only parameterizes its strings. Decisions (action, pass/fail, blocker) are
+ * asserted identical across locales; string assertions check language and
+ * number conventions, not exact seed-translation bytes.
+ */
+describe("localized simulation", () => {
+	const plSim = {
+		locale: "pl",
+		units: resolveSimUnits("pl"),
+		strings: resolveClusterSim("pl"),
+	} as const;
+	const esSim = {
+		locale: "es",
+		units: resolveSimUnits("es"),
+		strings: resolveClusterSim("es"),
+	} as const;
+
+	it("keeps every decision identical across locales", () => {
+		for (const scenario of SCENARIOS) {
+			const english = evaluateSignal(LIVE_CONFIG, scenario);
+			const polish = evaluateSignal(LIVE_CONFIG, scenario, plSim);
+
+			expect(polish.action).toBe(english.action);
+			expect(polish.gates.map(({ id, passed, blocker }) => ({ id, passed, blocker }))).toEqual(
+				english.gates.map(({ id, passed, blocker }) => ({ id, passed, blocker })),
+			);
+		}
+	});
+
+	it("resolves verdict and gate strings in the target language", () => {
+		const english = evaluateSignal(LIVE_CONFIG, thin);
+		const polish = evaluateSignal(LIVE_CONFIG, thin, plSim);
+
+		expect(polish.headline).not.toBe(english.headline);
+		expect(polish.detail).not.toBe(english.detail);
+		for (const [index, gateResult] of polish.gates.entries()) {
+			expect(gateResult.question).not.toBe(english.gates[index]?.question);
+		}
+	});
+
+	it("formats numbers inside resolved strings with the locale conventions", () => {
+		const polish = evaluateSignal(LIVE_CONFIG, textbook, plSim);
+		const spanish = evaluateSignal(LIVE_CONFIG, textbook, esSim);
+
+		expect(polish.gates.find((entry) => entry.id === "liquidity")?.rule).toContain("1\u00a0000");
+		expect(spanish.gates.find((entry) => entry.id === "liquidity")?.rule).toContain("1.000");
+		expect(summarySentence(LIVE_CONFIG, plSim)).toContain("1\u00a0000");
+	});
+
+	it("speaks the signal line in the target language, market title untouched", () => {
+		const english = signalLine(mirror);
+		const polish = signalLine(mirror, plSim);
+
+		expect(polish.market).toBe(english.market);
+		expect(polish.lead).not.toBe(english.lead);
+		expect(polish.trail).not.toBe(english.trail);
 	});
 });

@@ -1,6 +1,5 @@
 import {
 	formatKnobValue,
-	formatWalletCount,
 	isKnobKey,
 	KNOB_GROUP_ORDER,
 	KNOBS,
@@ -17,16 +16,6 @@ describe("formatKnobValue", () => {
 		expect(formatKnobValue("pol", 2)).toBe("2 POL");
 		expect(formatKnobValue("steps", 2)).toBe("2 steps");
 		expect(formatKnobValue("count", 3)).toBe("3");
-	});
-});
-
-describe("formatWalletCount", () => {
-	it.each([
-		[1, "1 skilled wallet"],
-		[3, "3 skilled wallets"],
-		[0, "0 skilled wallets"],
-	])("describes %p wallets as %p", (input, expected) => {
-		expect(formatWalletCount(input)).toBe(expected);
 	});
 });
 
