@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.30.0...v1.31.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** the discovery layer learns where the translations live ([49e0c07](https://github.com/auditmos/ogsfrompoly-lp/commit/49e0c07bdf889f37ef3c613bdde0b99f3e0a55ff)), closes [#75](https://github.com/auditmos/ogsfrompoly-lp/issues/75)
+
 # [1.30.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.29.0...v1.30.0) (2026-08-17)
 
 
