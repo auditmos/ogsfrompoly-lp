@@ -312,7 +312,7 @@
 		"sourceHash": "e764dc1a"
 	},
 	"cluster.page.sections.step15": {
-		"translation": "### 15. El gran agenteón rojo\n\nEn cualquier momento el interruptor de emergencia (`kill_switch`) impide que el\nagente **compre** nada nuevo — mientras sigue vigilando y cerrando lo que ya está\nabierto. Deja de tomar riesgo; no lo abandona. Un modo sombra decide exactamente\nigual que siempre pero escribe cada orden frustrada a un fichero en vez de\nenviarla.",
+		"translation": "### 15. El gran botón rojo\n\nEn cualquier momento el interruptor de emergencia (`kill_switch`) impide que el\nagente **compre** nada nuevo — mientras sigue vigilando y cerrando lo que ya está\nabierto. Deja de tomar riesgo; no lo abandona. Un modo sombra decide exactamente\nigual que siempre pero escribe cada orden frustrada a un fichero en vez de\nenviarla.",
 		"sourceHash": "e53505d4"
 	},
 	"cluster.page.sections.step2": {
