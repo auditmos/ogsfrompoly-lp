@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.27.0...v1.28.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** the for-dummies hub picks its bot in three languages ([dc7988b](https://github.com/auditmos/ogsfrompoly-lp/commit/dc7988bd4c8a9f6a9814b605579b357e1984042c)), closes [#72](https://github.com/auditmos/ogsfrompoly-lp/issues/72)
+
 # [1.27.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.26.0...v1.27.0) (2026-08-17)
 
 
