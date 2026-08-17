@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.28.0...v1.29.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** the cluster walkthrough talks its reader's language, live ([95134c7](https://github.com/auditmos/ogsfrompoly-lp/commit/95134c7800b3cbc1258194a946ae1ea67bbe0187)), closes [#74](https://github.com/auditmos/ogsfrompoly-lp/issues/74) [#73](https://github.com/auditmos/ogsfrompoly-lp/issues/73)
+
 # [1.28.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.27.0...v1.28.0) (2026-08-17)
 
 
