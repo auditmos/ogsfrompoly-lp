@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.29.0...v1.30.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** the wallet walkthrough borrows its sibling's tongue ([d68254d](https://github.com/auditmos/ogsfrompoly-lp/commit/d68254d3b4cf9399123b2b2d709035b572b20782)), closes [issue-#73](https://github.com/issue-/issues/73) [#74](https://github.com/auditmos/ogsfrompoly-lp/issues/74)
+
 # [1.29.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.28.0...v1.29.0) (2026-08-17)
 
 
