@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.31.0...v1.32.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** every locale's prose answers to the slop linter ([274f687](https://github.com/auditmos/ogsfrompoly-lp/commit/274f6873586320d68ad2f5a98da02a7dff6bcfdf))
+
 # [1.31.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.30.0...v1.31.0) (2026-08-17)
 
 
