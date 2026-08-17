@@ -249,7 +249,7 @@ describe("signalLine", () => {
 		const line = signalLine(mirror);
 
 		expect(line.lead).toBe("4 skilled wallets sold");
-		expect(line.trail).toBe("at $0.30 — so the bot would buy the opposite outcome at $0.70.");
+		expect(line.trail).toBe("at $0.30 — so the agent would buy the opposite outcome at $0.70.");
 	});
 });
 

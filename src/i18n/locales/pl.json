@@ -4,16 +4,16 @@
 		"sourceHash": "c232326e"
 	},
 	"meta.description": {
-		"translation": "Mierzymy, kto na Polymarkecie faktycznie ma skilla — i co tydzień pokazujemy nasze wyliczenia.",
+		"translation": "Jawnie liczymy i weryfikujemy, kto na Polymarket wie, co robi — i zarabia.",
 		"sourceHash": "983ff027"
 	},
 	"hero.heading": {
-		"translation": "Mierzymy, kto na Polymarkecie faktycznie ma skilla — i co tydzień pokazujemy nasze wyliczenia.",
+		"translation": "Jawnie liczymy i weryfikujemy, kto na Polymarket wie, co robi — i zarabia.",
 		"sourceHash": "983ff027"
 	},
 	"hero.intro": {
-		"translation": "Otwarta księga: track record strategii i P&L projektu. Wyłącznie zagregowane dane, skrócone identyfikatory portfeli. Zero żywej alfy, zapisów i newslettera — tylko RSS i markdownowy feed, który przeczyta twój agent.",
-		"sourceHash": "b7febce4"
+		"translation": "Trzymamy księgi otwarte. Historia wyników strategii i P&L projektu. Tylko liczby zbiorcze. Skrócone identyfikatory portfeli. Zero żywej alfy, zapisów i newslettera — tylko RSS i markdownowy feed, który przeczyta twój agent.",
+		"sourceHash": "203956b7"
 	},
 	"install.eyebrow": {
 		"translation": "Zainstaluj dla swojego agenta LLM",
@@ -36,8 +36,8 @@
 		"sourceHash": "7f81645e"
 	},
 	"skin.body": {
-		"translation": "Dwa małe boty handlują prawdziwymi pieniędzmi równolegle do rejestru — jeden podąża za grupą skutecznych portfeli, drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Każda reguła i każde aktualne ustawienie, wyjaśnione po ludzku, z symulatorem do przeciągania.",
-		"sourceHash": "a0b370cc"
+		"translation": "Dwaj mali agenci handlują prawdziwymi pieniędzmi obok rejestru. Jeden podąża za grupą skutecznych portfeli. Drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Każda reguła i każde aktualne ustawienie po ludzku, z symulatorem do przeciągania.",
+		"sourceHash": "afc5b4e8"
 	},
 	"skin.cta": {
 		"translation": "Copy trading dla opornych →",
@@ -48,72 +48,72 @@
 		"sourceHash": "7a2321b0"
 	},
 	"methodology.description": {
-		"translation": "Jak ogsfrompoly testuje portfele na Polymarkecie pod kątem powtarzalnego skilla, ocenia retrospektywne alerty i decyduje, co można bezpiecznie opublikować.",
-		"sourceHash": "ad768128"
+		"translation": "Jak ogsfrompoly oddziela skuteczność od szczęścia na Polymarkecie. Jak ocenia alerty po fakcie. Jak decyduje, co można bezpiecznie opublikować.",
+		"sourceHash": "5f9e0cfd"
 	},
 	"methodology.note": {
-		"translation": "Ta strona jest tłumaczeniem angielskiego oryginału — w razie różnic wiążąca jest wersja angielska, łącznie z jej polityką ujawniania.",
-		"sourceHash": "59862971"
+		"translation": "Ta strona to tłumaczenie. Jeśli coś się różni, wygrywa angielski oryginał — razem ze swoją polityką ujawniania.",
+		"sourceHash": "e1322d27"
 	},
 	"methodology.sections.intro": {
-		"translation": "ogsfrompoly zadaje wąskie pytanie:\n\n> **Które portfele na Polymarkecie wyglądają na skilled po odsianiu szczęścia — i czy\n> ich ruchy nadal działają, gdy oceniamy je później?**\n\nOdpowiedź publikujemy jako retrospektywną kartę wyników. Nie publikujemy żywych\npomysłów na trade'y, szczegółów otwartych pozycji ani rankingów portfeli.",
-		"sourceHash": "063e95f1"
+		"translation": "ogsfrompoly zadaje wąskie pytanie:\n\n> **Które portfele na Polymarkecie nadal wyglądają na skuteczne, gdy odsiejesz\n> szczęście — i czy ich ruchy działają, gdy oceniamy je później?**\n\nOdpowiedź publikujemy po fakcie, w karcie wyników. Nie publikujemy żywych\npomysłów na transakcje, otwartych pozycji ani rankingów portfeli.",
+		"sourceHash": "1442e11c"
 	},
 	"methodology.sections.scope": {
-		"translation": "## Obecny zakres\n\nPubliczny track record obejmuje obecnie jeden obszar Polymarketu:\n\n- **Makro/Finanse** - makro, stopy procentowe, dane gospodarcze, FOMC, wyniki\n  spółek i rynki Polymarketu z etykietą finansową.\n\nTen wąski zakres jest celowy. Nie chodzi o szerokie pokrycie kategorii.\nChodzi o czysty ślad audytowy: skilled portfele, retrospektywne alerty i\nopublikowane wyniki, które czytelnik może później zweryfikować.",
-		"sourceHash": "522c9512"
+		"translation": "## Obecny zakres\n\nPubliczna historia wyników obejmuje jeden obszar Polymarketu:\n\n- **Makro/Finanse** - makro, stopy procentowe, dane gospodarcze, FOMC, wyniki\n  spółek i rynki Polymarketu z etykietą finansową.\n\nTa wąskość jest celowa. Nie gonimy za pokryciem kategorii. Budujemy czysty ślad\naudytowy: skuteczne portfele, alerty ocenione po fakcie i wyniki, które\nczytelnik może później sprawdzić.",
+		"sourceHash": "ae1ea60f"
 	},
 	"methodology.sections.qualify": {
-		"translation": "## Jak portfel się kwalifikuje\n\nPortfel musi najpierw mieć dość rozstrzygniętej historii, by dało się go\nprzetestować. **Event** oznacza tu jedno rozstrzygane na Polymarkecie pytanie ze\nświata rzeczywistego, nawet jeśli obejmuje ono wiele rynków, wyników, transakcji\nlub nóg tokenowych. Minimum to co najmniej 20 eventów rozstrzygniętych w okresie\npomiaru.\n\nLiczą się wyłącznie rozstrzygnięte rynki. Otwarte pozycje są ignorowane. Dla\nkażdego kwalifikującego się portfela budujemy serię **only-realized PnL**: jedną\nwartość zysku i straty na każdy rozstrzygnięty event.\n\nGrupujemy na poziomie eventu, bo jedna predykcja ze świata rzeczywistego może\nobejmować wiele transakcji lub nóg rynkowych. Liczenie każdej transakcji jako\nosobnej decyzji sprawiłoby, że jedna pozycja wygląda jak wiele niezależnych\nzakładów. Liczenie na poziomie eventu trzyma test bliżej tego, o co naprawdę\nchodzi: czy portfel raz za razem wybierał właściwą stronę rozstrzygniętych\neventów na Polymarkecie.",
-		"sourceHash": "0c80af36"
+		"translation": "## Jak portfel się kwalifikuje\n\nPortfel musi mieć dość rozstrzygniętej historii, żeby dało się go przetestować.\n**Wydarzenie** oznacza tu jedno pytanie ze świata rzeczywistego, które\nPolymarket rozstrzyga. Jedno pytanie może nieść wiele rynków, wyników,\ntransakcji czy pojedynczych tokenów — i liczy się raz. Próg to co najmniej 20\nwydarzeń rozstrzygniętych w okresie pomiaru.\n\nLiczą się tylko rozstrzygnięte rynki. Otwarte pozycje pomijamy. Dla każdego\nkwalifikującego się portfela budujemy serię **only-realized PnL**: jedna liczba\nzysku i straty na rozstrzygnięte wydarzenie.\n\nGrupujemy na poziomie wydarzenia, bo jedna predykcja może rozciągać się na\nwiele transakcji i rynków. Policz każdą transakcję jako osobną decyzję, a jedna\npozycja zacznie wyglądać jak tuzin niezależnych zakładów. Grupowanie trzyma\ntest przy tym, o co nam chodzi: czy ten portfel raz za razem wybierał właściwą\nstronę pytań, które już się rozstrzygnęły?",
+		"sourceHash": "7078b298"
 	},
 	"methodology.sections.skillTest": {
-		"translation": "## Test skilla\n\nSkill mierzymy testem **randomizacji znaku** na poziomie eventów.\n\nDla każdego kwalifikującego się portfela dane wejściowe to:\n\n- `n` = liczba rozstrzygniętych eventów portfela.\n- `x_i` = zrealizowany PnL portfela na evencie `i`.\n- `A = sum(x_i)` = faktyczny łączny zrealizowany PnL portfela.\n- `B = 1,000 simulations` = rozmiar przebiegu randomizacji.\n\nKażda symulacja zachowuje wielkość wyniku każdego eventu, ale losuje jego znak.\nW symulacji `j` każdy event dostaje losowy znak:\n\n`s_{j,i} in {-1, +1}`\n\nSymulowany wynik łączny bez skilla to:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nP-wartość to:\n\n`p = count(T_j >= A) / B`\n\nSłowami: p-wartość odpowiada na pytanie:\n\n„Gdyby ten portfel nie miał skilla, jak często losowe odwrócenia znaków dałyby\nłączny PnL co najmniej tak dobry jak jego faktyczny wynik?\"\n\nPortfel uznajemy za skilled tylko wtedy, gdy ta p-wartość przechodzi\nprerejestrowany próg: `p <= 0.05`. Duży surowy PnL nie wystarczy.",
-		"sourceHash": "43dfeddd"
+		"translation": "## Test skuteczności\n\nSkuteczność mierzymy testem **randomizacji znaku** na poziomie wydarzeń.\n\nDla każdego kwalifikującego się portfela dane wejściowe to:\n\n- `n` = liczba rozstrzygniętych wydarzeń portfela.\n- `x_i` = zrealizowany PnL portfela na wydarzeniu `i`.\n- `A = sum(x_i)` = faktyczny łączny zrealizowany PnL portfela.\n- `B = 1,000 simulations` = rozmiar przebiegu randomizacji.\n\nKażda symulacja zachowuje wielkość wyniku każdego wydarzenia, ale losuje jego\nznak. W symulacji `j` każde wydarzenie dostaje losowy znak:\n\n`s_{j,i} in {-1, +1}`\n\nSymulowany wynik łączny przy czystym losie to:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nP-wartość to:\n\n`p = count(T_j >= A) / B`\n\nSłowami: p-wartość odpowiada na pytanie:\n\n„Gdyby ten portfel tylko zgadywał, jak często losowe odwrócenia znaków\ndorównałyby jego faktycznemu wynikowi albo go pobiły?\"\n\nPortfel nazywamy skutecznym tylko wtedy, gdy ta p-wartość przechodzi\nprerejestrowany próg: `p <= 0.05`. Duży surowy PnL nie wystarczy.",
+		"sourceHash": "520a92e2"
 	},
 	"methodology.sections.controls": {
-		"translation": "## Kontrole przed publikacją\n\nPubliczna karta wyników ma mierzyć powtarzalny sygnał tradera, a nie żonglerkę\nadresami czy artefakty mikrostruktury rynku.\n\nZanim portfel wpłynie na publikowany rejestr, pipeline stosuje kontrole na\nskoordynowane klastry wielu portfeli, skoncentrowane wzorce kontrahentów i\nzachowania przypominające wash trading. Te kontrole usuwają lub degradują\nsygnały, które mogą sprawić, że jeden adres wygląda na bardziej skilled, niż\njest naprawdę.",
-		"sourceHash": "75c7a51c"
+		"translation": "## Kontrole przed publikacją\n\nPubliczna karta wyników mierzy powtarzalny sygnał tradera. Nie ma mierzyć\nżonglerki adresami ani artefaktów mikrostruktury rynku.\n\nZanim portfel trafi do publikowanego rejestru, sprawdzamy go. Szukamy portfeli\nchodzących jedną skoordynowaną grupą, tego samego kontrahenta po drugiej\nstronie raz za razem i transakcji, które wyglądają na wash trading. Sygnał,\nktóry nie przejdzie, wycinamy albo degradujemy.",
+		"sourceHash": "f6780ef4"
 	},
 	"methodology.sections.scoring": {
-		"translation": "## Jak oceniane są alerty\n\nCotygodniowe sprawozdania oceniają miniony okres po fakcie. Raportują:\n\n- łączną liczbę alertów\n- hit rate rozstrzygniętych\n- hipotetyczny PnL\n- mix kategorii\n- mały zestaw nieprzejrzystych ID portfeli, gdy pomaga to w audycie\n\nMiesięczne sprawozdania dodają biznesową stronę projektu: przychód, koszty\noperacyjne, wynik netto i runway.\n\nPublikowana kategoria to **macro-finance**. Wszystko spoza obecnego publicznego\nzakresu jest usuwane z powierzchni sprawozdań na stronie, a nie doklejane do\ninnej kategorii.\n\nKażde sprawozdanie jest retrospektywne. Strona publikuje, czy historyczne\nsygnały zadziałały. Nie publikuje instrukcji dla trwających trade'ów.",
-		"sourceHash": "48b34512"
+		"translation": "## Jak oceniamy alerty\n\nCotygodniowe sprawozdania oceniają miniony okres po fakcie. Raportują:\n\n- łączną liczbę alertów\n- trafność rozstrzygniętych\n- hipotetyczny PnL\n- rozkład kategorii\n- mały zestaw nieprzejrzystych ID portfeli, gdy pomaga to w audycie\n\nMiesięczne sprawozdania dodają biznesową stronę projektu: przychód, koszty\noperacyjne, wynik netto i runway.\n\nPublikowana kategoria to **macro-finance**. Wszystko spoza publicznego zakresu\nznika ze stron ze sprawozdaniami. Nigdy nie doklejamy tego do innej kategorii.\n\nKażde sprawozdanie patrzy wstecz. Publikujemy, czy dawne sygnały zadziałały.\nO trwającej transakcji nie publikujemy nic.",
+		"sourceHash": "be962336"
 	},
 	"methodology.sections.skin": {
-		"translation": "## Skin in the game: dwa małe żywe boty\n\nKarta wyników jest retrospektywna, ale projekt stawia też niewielkie prawdziwe\npieniądze za własnymi sygnałami. Dwa boty handlują na żywo, celowo maleńkimi\nbiletami po **5 $**:\n\n- **Cluster copy** (żywy od lipca 2026) kupuje tylko wtedy, gdy kilka skilled\n  portfeli ląduje po tej samej stronie tego samego rynku naraz, w osobnych\n  transakcjach.\n- **Wallet copy** (żywy od sierpnia 2026) lustrzanie kopiuje dwa pojedyncze\n  portfele z rosteru skilled, każdy publikowany wyłącznie pod nieprzejrzystą\n  etykietą.\n\nOba są udokumentowane po ludzku — każda reguła, każde aktualne ustawienie i\nsymulator do przeciągania — w [copy tradingu dla opornych](/for-dummies). Ich\nzrealizowane wyniki trafiają do miesięcznych sprawozdań jako gotówka: zysk jest\nco tydzień zgarniany do portfela zbiorczego i liczony jako przychód dopiero,\ngdy tam wyląduje. Nic o pozycji bota nie jest publikowane, dopóki ta pozycja\njest otwarta.",
-		"sourceHash": "42ef81bc"
+		"translation": "## Własne pieniądze w grze: dwaj mali żywi agenci\n\nKarta wyników patrzy wstecz. Pieniądze nie. Dwaj agenci handlują na żywo za\nnaszymi własnymi sygnałami, na maleńkich biletach po **5 $**:\n\n- **Cluster copy** (żywy od lipca 2026) kupuje tylko wtedy, gdy kilka\n  skutecznych portfeli ląduje po tej samej stronie tego samego rynku naraz, w\n  osobnych transakcjach.\n- **Wallet copy** (żywy od sierpnia 2026) lustrzanie kopiuje dwa pojedyncze\n  portfele z naszej listy skutecznych, każdy publikowany wyłącznie pod\n  nieprzejrzystą etykietą.\n\nObu opisujemy po ludzku w [copy tradingu dla opornych](/for-dummies): każda\nreguła, każde aktualne ustawienie i symulator do przeciągania. Ich zrealizowane\nwyniki trafiają do miesięcznych sprawozdań jako gotówka. Zysk co tydzień\nzgarniamy do portfela zbiorczego i liczymy jako przychód, gdy tam wyląduje.\nO pozycji agenta nie publikujemy nic, dopóki ta pozycja jest otwarta.",
+		"sourceHash": "34cab2e2"
 	},
 	"methodology.sections.academicIntro": {
-		"translation": "## Fundament akademicki\n\nMetodologia opiera się na dwóch artykułach z 2026 roku o skillu na rynkach\npredykcyjnych, trwałości wyników traderów i rezultatach rynkowych:",
-		"sourceHash": "55b58db4"
+		"translation": "## Fundament akademicki\n\nMetodologia opiera się na dwóch artykułach z 2026 roku o skuteczności,\ntrwałości wyników traderów i rezultatach na rynkach predykcyjnych:",
+		"sourceHash": "c4e7c014"
 	},
 	"methodology.sections.academicOutro": {
-		"translation": "Oba artykuły wskazują tę samą praktyczną lekcję: krótkoterminowy zrealizowany\nPnL to słaby wskaźnik skilla. Portfel może mieć szczęście, a szczęśliwy portfel\nmoże przestać wygrywać.\n\nDlatego ogsfrompoly zaczyna od statystycznego testu skilla, a potem publikuje w\npublicznym track recordzie, czy wynikające z niego sygnały faktycznie\nzadziałały.",
-		"sourceHash": "de16ecf5"
+		"translation": "Oba artykuły wskazują tę samą lekcję. Krótkoterminowy zrealizowany PnL to\nsłaby wskaźnik skuteczności. Portfel może mieć szczęście. Szczęśliwy portfel\nmoże przestać wygrywać.\n\nDlatego ogsfrompoly zaczyna od statystycznego testu skuteczności. Potem\npublikuje w otwartej historii wyników, czy te sygnały zadziałały.",
+		"sourceHash": "ba5eeddc"
 	},
 	"methodology.sections.disclosure": {
-		"translation": "## Polityka ujawniania\n\nStrona jest otwarta w kwestii metodologii i zagregowanych wyników. Jest\nzamknięta na wszystko, co mogłoby posłużyć do front-runningu pozycji albo\nujawnić tożsamość pojedynczego tradera.\n\nTe zasady obowiązują dla renderowanej strony HTML, surowego feedu `.md`, RSS i\n`llms.txt`.\n\n- **Portfele występują wyłącznie jako skrócone, nieprzejrzyste ID** — np.\n  `wallet_a3f8`. Nigdy nie publikujemy pełnego adresu EVM. Skrócone ID są\n  celowo nieodwracalne do tożsamości on-chain.\n- **Zero żywej alfy. Nigdy.** Nie publikujemy żywych alertów, wciąż otwartych\n  pozycji ani niczego, czym czytelnik mógłby front-runnować trwający trade.\n  Wyniki są wyłącznie retrospektywne i zagregowane.\n- **Zero rankingów.** Nie zestawiamy nazwanych portfeli przeciwko sobie.\n  Jednostką publikacji jest kohorta strategii, nie pojedynczy adres.\n- **Zero surowych eksportów z hurtowni.** Wyłącznie zagregowane liczby, hit\n  rate'y i rozkłady kategorii — nigdy nic, z czego dałoby się odtworzyć\n  historię pojedynczego portfela.\n- **Zero adresów botów i liderów.** Żywe boty copy handlują z własnych\n  portfeli, a obserwowanie ich na żywo ujawniłoby otwarte pozycje — dlatego\n  ich konta tradingowe, adresy wypłat i lustrzane portfele liderów nigdy nie\n  są publikowane. Liderzy występują wyłącznie pod nieprzejrzystymi etykietami\n  (np. `leader-a`), a rynek otwartej pozycji bota nigdy nie jest nazywany.\n\nGdy publikowana liczba jest blisko granicy, opóźniamy publikację o 30+ dni albo\nanonimizujemy kategorię. W razie wątpliwości — nie publikujemy.",
-		"sourceHash": "063d7771"
+		"translation": "## Polityka ujawniania\n\nJesteśmy otwarci w kwestii metodologii i wyników zbiorczych. Jesteśmy zamknięci\nna wszystko, co mogłoby posłużyć do wyprzedzania zleceń albo ujawnić\npojedynczego tradera.\n\nTe zasady obowiązują dla renderowanej strony HTML, surowego feedu `.md`, RSS i\n`llms.txt`.\n\n- **Portfele występują wyłącznie jako skrócone, nieprzejrzyste ID** — np.\n  `wallet_a3f8`. Nigdy nie publikujemy pełnego adresu EVM. Skrócone ID z\n  założenia nie prowadzą z powrotem do tożsamości on-chain.\n- **Zero żywej alfy. Nigdy.** Nigdy nie publikujemy żywego alertu, wciąż\n  otwartej pozycji ani niczego, czym czytelnik mógłby uprzedzić trwającą\n  transakcję. Wyniki publikujemy po fakcie i zbiorczo.\n- **Zero rankingów.** Nigdy nie zestawiamy nazwanych portfeli przeciwko sobie.\n  Publikujemy kohortę strategii, nie adres.\n- **Zero surowych eksportów z hurtowni.** Wyłącznie liczby zbiorcze, trafności\n  i rozkłady kategorii — nigdy nic, z czego dałoby się odtworzyć historię\n  pojedynczego portfela.\n- **Zero adresów agentów i liderów.** Żywi agenci copy handlują z własnych\n  portfeli. Popatrz na te portfele na żywo, a zobaczysz nasze otwarte pozycje.\n  Dlatego nigdy nie publikujemy ich kont tradingowych, adresów wypłat ani\n  portfeli liderów, których kopiują. Liderzy występują wyłącznie pod\n  nieprzejrzystymi etykietami (np. `leader-a`). Nigdy nie nazywamy rynku\n  otwartej pozycji agenta.\n\nGdy publikowana liczba jest blisko granicy, opóźniamy ją o 30+ dni albo\nanonimizujemy kategorię. W razie wątpliwości — nie publikujemy.",
+		"sourceHash": "9152e47c"
 	},
 	"methodology.sections.notThis": {
-		"translation": "## Czym to nie jest\n\nogsfrompoly nie jest rekomendacją inwestycyjną, serwisem sygnałów tradingowych\nani obietnicą, że jakikolwiek portfel będzie dalej wygrywał.\n\nTo ślad audytowy jednej konkretnej metody: znajdź portfele, których\nrozstrzygnięta historia odstaje od nulla z randomizacji znaku, śledź ich\nretrospektywne alerty w publikowanych kategoriach i pokaż wyniki.",
-		"sourceHash": "c41b9eda"
+		"translation": "## Czym to nie jest\n\nogsfrompoly nie jest rekomendacją inwestycyjną, serwisem sygnałów tradingowych\nani obietnicą, że jakikolwiek portfel będzie dalej wygrywał.\n\nTo ślad audytowy jednej metody. Znajdź portfele, których rozstrzygnięta\nhistoria nie wygląda na losowe znaki. Oceń ich alerty po fakcie, w\npublikowanych kategoriach. Pokaż wyniki.",
+		"sourceHash": "83829217"
 	},
 	"hub.title": {
 		"translation": "Copy trading dla opornych",
 		"sourceHash": "a4ab9276"
 	},
 	"hub.description": {
-		"translation": "Dwa małe boty handlują drobnymi, prawdziwymi pieniędzmi równolegle do publikowanego track recordu — jeden podąża za grupą skutecznych portfeli, drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Wybierz swój przewodnik; każdy tłumaczy każdą regułę po ludzku i pozwala pobawić się aktualnymi ustawieniami.",
-		"sourceHash": "4a1ff6a0"
+		"translation": "Dwaj mali agenci handlują drobnymi, prawdziwymi pieniędzmi obok publikowanej historii wyników. Jeden podąża za grupą skutecznych portfeli. Drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Wybierz przewodnik. Każdy tłumaczy każdą regułę po ludzku i pozwala pobawić się aktualnymi ustawieniami.",
+		"sourceHash": "98946f99"
 	},
 	"hub.eyebrow": {
 		"translation": "dla opornych",
 		"sourceHash": "0f509a28"
 	},
 	"hub.heading": {
-		"translation": "Dwa boty. Dwa pytania.",
-		"sourceHash": "a59fd21c"
+		"translation": "Dwaj agenci. Dwa pytania.",
+		"sourceHash": "0d2b5c4c"
 	},
 	"hub.choose": {
 		"translation": "Wybierz przewodnik",
@@ -128,24 +128,24 @@
 		"sourceHash": "6f659592"
 	},
 	"hub.sharedNote": {
-		"translation": "Cała reszta to wspólne DNA: wyłącznie rynki Macro, bilety 5 $ wszystko-albo-nic na siatce cen samej giełdy, te same bezpieczniki płynności, timingu i ceny-która-już-uciekła, próg wydatków 5 $, wyłączniki awaryjne, które zatrzymują kupowanie, ale nigdy sprzedaż, cotygodniowy sweep zysku i każdy skip zapisany razem ze swoimi liczbami.",
-		"sourceHash": "4916858a"
+		"translation": "Cała reszta to wspólne DNA. Wyłącznie rynki Macro. Bilety 5 $ wszystko-albo-nic na siatce cen samej giełdy. Te same bezpieczniki płynności i czasu. Ten sam bezpiecznik ceny, która już uciekła. Próg wydatków 5 $. Wyłączniki awaryjne, które zatrzymują kupowanie, ale nigdy sprzedaż. Cotygodniowe zgarnianie zysku. Każde odpuszczenie zapisane razem ze swoimi liczbami.",
+		"sourceHash": "eab18a80"
 	},
 	"hub.mdRead": {
 		"translation": "Pełny przewodnik przeczytasz pod {href} — albo jako markdown pod {mdHref}.",
 		"sourceHash": "2e3e3ba2"
 	},
 	"hub.advice.lead": {
-		"translation": "Żadna z tych stron nie jest poradą, a żaden portfel nigdy nie jest publikowany —",
-		"sourceHash": "0a90a546"
+		"translation": "Żadna z tych stron nie jest poradą. Nigdy nie publikujemy żadnego portfela —",
+		"sourceHash": "d0c290f1"
 	},
 	"hub.advice.link": {
 		"translation": "metodologia i polityka ujawniania",
 		"sourceHash": "b3a8abdb"
 	},
 	"hub.advice.md": {
-		"translation": "Żadna z tych stron nie jest poradą ani serwisem sygnałów, a żaden portfel\nzaangażowany w któregokolwiek bota nigdy nie jest publikowany — zobacz [metodologię i politykę ujawniania]({methodologyHref}).",
-		"sourceHash": "fd6c92df"
+		"translation": "Żadna z tych stron nie jest poradą ani serwisem sygnałów. Nigdy nie publikujemy\nżadnego portfela zaangażowanego w któregokolwiek agenta. Zobacz [metodologię i politykę ujawniania]({methodologyHref}).",
+		"sourceHash": "88b6b844"
 	},
 	"hub.facts.follows": {
 		"translation": "podąża za",
@@ -168,11 +168,11 @@
 		"sourceHash": "673a1776"
 	},
 	"hub.cluster.tagline": {
-		"translation": "Czeka, aż co najmniej trzy skilled portfele wylądują po tej samej stronie tego samego zakładu, w osobnych transakcjach, i dopiero wtedy kupuje za 5 $. Jeden portfel to opinia; trzy przychodzące osobno to informacja.",
-		"sourceHash": "9f792c85"
+		"translation": "Czeka na co najmniej trzy skuteczne portfele po tej samej stronie tego samego zakładu, w osobnych transakcjach. Dopiero wtedy kupuje za 5 $. Jeden portfel to opinia. Trzy przychodzące osobno to informacja.",
+		"sourceHash": "6a08f349"
 	},
 	"hub.cluster.follows": {
-		"translation": "dowolny tłum z naszego rosteru skilled",
+		"translation": "dowolny tłum z naszej listy skutecznych",
 		"sourceHash": "92b63225"
 	},
 	"hub.cluster.fires": {
@@ -192,8 +192,8 @@
 		"sourceHash": "7002ce19"
 	},
 	"hub.wallet.tagline": {
-		"translation": "Chodzi cieniem za dwoma ręcznie wybranymi skilled traderami i ignoruje niemal wszystko, co robią — dopóki któryś nie postawi poważnych pieniędzy na świeży zakład. Wtedy stawia jedną małą kopię na własnym, osobnym koncie.",
-		"sourceHash": "18cf621d"
+		"translation": "Chodzi cieniem za dwoma ręcznie wybranymi skutecznymi traderami i ignoruje niemal wszystko, co robią. Potem któryś stawia poważne pieniądze na świeży zakład. Wtedy agent stawia jedną małą kopię na własnym, osobnym koncie.",
+		"sourceHash": "a12415f7"
 	},
 	"hub.wallet.follows": {
 		"translation": "dwóch nazwanych liderów, zanonimizowanych",
@@ -216,7 +216,7 @@
 		"sourceHash": "0e71a388"
 	},
 	"hub.compare.signal.cluster": {
-		"translation": "3+ skilled portfele po tej samej stronie, w osobnych transakcjach",
+		"translation": "3+ skuteczne portfele po tej samej stronie, w osobnych transakcjach",
 		"sourceHash": "56811e67"
 	},
 	"hub.compare.signal.wallet": {
@@ -256,8 +256,8 @@
 		"sourceHash": "67d5abd9"
 	},
 	"hub.compare.exit.wallet": {
-		"translation": "lider zwinął połowę szczytu, odwrócił się albo zamknął",
-		"sourceHash": "f030c58b"
+		"translation": "lider zwija połowę szczytu, odwraca się albo zamyka",
+		"sourceHash": "ebc73c5e"
 	},
 	"hub.compare.money.label": {
 		"translation": "Pieniądze",
@@ -360,8 +360,8 @@
 		"sourceHash": "490475d1"
 	},
 	"cluster.sim.gates.crowd.because": {
-		"translation": "Zagrało to tylko {wallets} — poniżej progu {threshold}, od którego zaczyna się grupa. Alert nie powstaje, egzekutor niczego nie dostaje i nic nie zostaje zapisane.",
-		"sourceHash": "94b48dc8"
+		"translation": "Zagrało to tylko {wallets} — poniżej progu {threshold}, od którego zaczyna się grupa. Alert nie powstaje, egzekutor tego nie widzi i nic nie zostaje zapisane.",
+		"sourceHash": "55b773b9"
 	},
 	"cluster.sim.gates.room.question": {
 		"translation": "Czy mam jeszcze miejsce pod limitem?",
@@ -445,7 +445,7 @@
 	},
 	"cluster.sim.gates.price.question": {
 		"translation": "Czy udział nie jest za drogi względem ryzyka?",
-		"sourceHash": "99ae575c"
+		"sourceHash": "e1dc3057"
 	},
 	"cluster.sim.gates.price.because": {
 		"translation": "Udział kosztuje {entry}, ponad sufit {ceiling} — może wygrać najwyżej {gain}, wciąż ryzykując całe {size}.",
@@ -476,8 +476,8 @@
 		"sourceHash": "5ee4868e"
 	},
 	"cluster.sim.gates.fill.because": {
-		"translation": "Najtańsza oferta to {ask}, a limit bota to {limit} — zlecenie wszystko-albo-nic z takim limitem jest po prostu ubijane.",
-		"sourceHash": "27b7939e"
+		"translation": "Najtańsza oferta to {ask}, a limit agenta to {limit} — zlecenie wszystko-albo-nic z takim limitem po prostu ginie.",
+		"sourceHash": "f19e81be"
 	},
 	"cluster.sim.gates.size.question": {
 		"translation": "Czy zlecenie jest dość duże dla giełdy?",
@@ -512,8 +512,8 @@
 		"sourceHash": "46df4f65"
 	},
 	"cluster.sim.detail.buyMirror": {
-		"translation": "Grupa sprzedawała, więc bot kupuje przeciwny wynik po {entry}. {order} Trzyma, aż pierwszy z tych portfeli odkupi to, co sprzedał.",
-		"sourceHash": "0193fd80"
+		"translation": "Grupa sprzedawała, więc agent kupuje przeciwny wynik po {entry}. {order} Trzyma, aż pierwszy z tych portfeli odkupi to, co sprzedał.",
+		"sourceHash": "d58ca380"
 	},
 	"cluster.sim.signal.leadBought": {
 		"translation": "{wallets} po stronie kupna",
@@ -528,12 +528,12 @@
 		"sourceHash": "b5e1ded5"
 	},
 	"cluster.sim.signal.trailSold": {
-		"translation": "po {price} — bot kupiłby więc przeciwny wynik po {mirror}.",
-		"sourceHash": "25a57102"
+		"translation": "po {price} — agent kupiłby więc przeciwny wynik po {mirror}.",
+		"sourceHash": "bc516db6"
 	},
 	"cluster.sim.summary.sentence": {
-		"translation": "Gdy zgadza się {threshold}+ skutecznych portfeli, z których żaden w ciągu ostatnich {lookback} nie był po drugiej stronie, a rynek ma co najmniej {liquidity} płynności, więcej niż {horizon} do rozstrzygnięcia i nie uciekł im o więcej niż {staleness} → bot kupuje za {size} to, co one kupiły (albo przeciwny wynik, jeśli sprzedawały), {priceBand} oddaje w prowizjach nie więcej niż {fee} biletu, nie przepłaca ponad {slippage} względem ich ceny, trzyma do pierwszego odwrócenia, zostawia {floor} do wydania i {gas} POL na gaz — i powtarza, mając w grze nigdy więcej niż {cap} naraz.",
-		"sourceHash": "a5419437"
+		"translation": "Gdy zgadza się {threshold}+ skutecznych portfeli, z których żaden w ciągu ostatnich {lookback} nie był po drugiej stronie, a rynek ma co najmniej {liquidity} płynności, więcej niż {horizon} do rozstrzygnięcia i nie uciekł im o więcej niż {staleness} → agent kupuje za {size} to, co one kupiły (albo przeciwny wynik, jeśli sprzedawały), {priceBand} oddaje w prowizjach nie więcej niż {fee} biletu, nie przepłaca ponad {slippage} względem ich ceny, trzyma do pierwszego odwrócenia, zostawia {floor} do wydania i {gas} POL na gaz — i powtarza, mając w grze nigdy więcej niż {cap} naraz.",
+		"sourceHash": "2beb618b"
 	},
 	"cluster.sim.summary.priceCapOnly": {
 		"translation": "płaci za udział najwyżej {max},",
@@ -548,84 +548,84 @@
 		"sourceHash": "1c6f5829"
 	},
 	"cluster.page.description": {
-		"translation": "Przewodnik po ludzku po bocie cluster-copy ogsfrompoly — tym, który podąża za grupą skutecznych portfeli: kiedy kupuje, kiedy odpuszcza, kiedy sprzedaje i którymi liczbami naprawdę da się kręcić.",
-		"sourceHash": "562036e3"
+		"translation": "Przewodnik po ludzku po agencie cluster-copy ogsfrompoly, tym, który podąża za grupą skutecznych portfeli. Kiedy kupuje. Kiedy odpuszcza. Kiedy sprzedaje. I którymi liczbami da się kręcić.",
+		"sourceHash": "3bdfb5c6"
 	},
 	"cluster.page.sections.intro": {
-		"translation": "Obok publikowanego track recordu mały bot lustrzanie kopiuje portfele, które nasz\ntest skuteczności oznaczył — ale tylko wtedy, gdy kilka z nich zgadza się naraz.\nTa strona to cały mechanizm opowiedziany po ludzku: co bot robi, krok po kroku,\ni które liczby są pokrętłami, a które regułami przyspawanymi w kodzie.\n\nTo jeden z dwóch botów. Drugi, [wallet copy]({walletHref}),\npodąża za dwoma konkretnymi traderami, zamiast czekać na grupę — jeśli nie masz\npewności, której strony szukasz, zacznij od [wybieracza]({hubHref}).\n\nWyobraź sobie **bardzo ostrożnego naśladowcę** stojącego na rynku i patrzącego na\ntraderów, którzy już się sprawdzili. Jest celowo bojaźliwy. Pieniądze są\nprawdziwe, ale pozycje poniżej są malutkie z premedytacją — celem pierwszego\nżywego przebiegu jest mieć rację, a nie być dużym.\n\nKażda liczba na tej stronie to aktualne ustawienie dla rynku **{market}**\nwedług stanu na **{asOf}**, odczytane z `config/copy_trade.yml`.",
-		"sourceHash": "7dd4ce38"
+		"translation": "Obok publikowanej historii wyników chodzi mały agent. Lustrzanie kopiuje\nportfele, które oznaczył nasz test skuteczności — ale tylko wtedy, gdy kilka z\nnich zgadza się naraz. Ta strona to cały mechanizm po ludzku: co robi, krok po\nkroku, i które liczby są pokrętłami, a które regułami przyspawanymi w kodzie.\n\nTo jeden z dwóch agentów. Drugi, [wallet copy]({walletHref}), podąża za dwoma\nkonkretnymi traderami, zamiast czekać na grupę. Nie wiesz, której strony\nszukasz? Zacznij od [wybieracza]({hubHref}).\n\nWyobraź sobie **bardzo ostrożnego naśladowcę** stojącego na rynku i patrzącego\nna traderów, którzy już się sprawdzili. Jest bojaźliwy z premedytacją. Pieniądze\nsą prawdziwe. Pozycje poniżej są malutkie z rozmysłem — celem pierwszego żywego\nprzebiegu jest mieć rację, a nie być dużym.\n\nKażda liczba na tej stronie to aktualne ustawienie dla rynku **{market}**\nwedług stanu na **{asOf}**, odczytane z `config/copy_trade.yml`.",
+		"sourceHash": "7d5c842b"
 	},
 	"cluster.page.sections.storyHeading": {
 		"translation": "## Cała historia, krok po kroku",
 		"sourceHash": "8e715273"
 	},
 	"cluster.page.sections.step1": {
-		"translation": "### 1. Nasłuchuje grupy, nigdy pojedynczego tradera\n\nNie rusza się dlatego, że jeden portfel coś kupił. Dopiero gdy co najmniej\n**3 skuteczne portfele** zagrają to samo naraz (`cluster_threshold`), mówi:\nto jest kworum, warte spojrzenia.\n\n„To samo naraz\" okazało się trzema osobnymi wymaganiami, a przez długi czas\nnaprawdę sprawdzane było tylko jedno z nich. Grupa musi dziś być trzema\nportfelami, z których każdy **wziął** cenę z rynku, zamiast wystawić ofertę i\nczekać; każdy wylądował po **tej samej stronie tego samego zakładu**, a nie\ntylko na tym samym rynku; i każdy przyszedł w **osobnej transakcji**. Dwa\nportfele wypełnione jednym trade'em to jedna decyzja w dwóch przebraniach, a\nmarket maker, którego ofertę akurat ktoś trafił, nigdy nie miał żadnego zdania.\n\nDokręcenie tego sprowadziło miesiąc alertów z **263 do 14** — a po odtworzeniu\nna faktycznie otwartych pozycjach **32 z 38** nigdy nie zostałoby zawartych.\nŻadna z trzech reguł nie była zbędna: w pojedynkę łapały odpowiednio 14%, 48%\ni 25% złych grup.",
-		"sourceHash": "1b5e94d4"
+		"translation": "### 1. Nasłuchuje grupy, nigdy pojedynczego tradera\n\nJeden portfel, który coś kupił, nie rusza niczego. Trzeba co najmniej\n**3 skutecznych portfeli** grających to samo naraz (`cluster_threshold`), żeby\nagent nazwał to kworum wartym spojrzenia.\n\n„To samo naraz\" okazało się trzema wymaganiami, a przez długi czas sprawdzaliśmy\ntylko jedno. Grupa musi dziś być trzema portfelami, z których każdy **wziął**\ncenę z rynku, zamiast wystawić ofertę i czekać. Każdy musi wylądować po **tej\nsamej stronie tego samego zakładu**, a nie tylko na tym samym rynku. Każdy musi\nprzyjść w **osobnej transakcji**. Dwa portfele wypełnione jedną transakcją to\njedna decyzja w dwóch przebraniach, a market maker, którego ofertę ktoś trafił,\nnigdy nie miał zdania.\n\nDokręcenie tego sprowadziło miesiąc alertów z **263 do 14**. Po odtworzeniu na\notwartych już pozycjach **32 z 38** nigdy nie zostałoby zawartych. Żadna reguła\nnie była zbędna: w pojedynkę łapały 14%, 48% i 25% złych grup.",
+		"sourceHash": "33ba9497"
 	},
 	"cluster.page.sections.step2": {
-		"translation": "### 2. Jeśli grupa sprzedaje, bot kupuje drugą stronę\n\nSprzedać można tylko to, co się już ma, a świeża pozycja nie ma nic. Przez długi\nczas każdy sygnał „grupa sprzedaje\" po prostu odbijał się więc od giełdy — a to\nmniej więcej **40%** sygnałów, które dostajemy.\n\nObejście tkwi w samym kształcie rynku. Rynek z dwoma wynikami wycenia je tak, by\nsumowały się do 1 $, i dokładnie jeden z nich kończy wart 1 $. Sprzedaż „tak\" po\n90¢ i kupno „nie\" po 10¢ to więc ta sama opinia, a to drugie jest zwykłym\nzakupem, który bot potrafi wykonać.\n\nPozycje otwarte w ten sposób to **lustra**. Bot pamięta obie strony — tę, którą\ntrzyma, i tę, którą handluje grupa — bo tej drugiej potrzebuje, żeby wiedzieć,\nkiedy wyjść.",
-		"sourceHash": "7865b040"
+		"translation": "### 2. Jeśli grupa sprzedaje, agent kupuje drugą stronę\n\nSprzedać można tylko to, co się już ma, a świeża pozycja nie ma nic. Przez długi\nczas każdy sygnał „grupa sprzedaje\" odbijał się więc od giełdy. To mniej więcej\n**40%** sygnałów, które dostajemy.\n\nObejście tkwi w kształcie rynku. Rynek z dwoma wynikami wycenia je tak, by\nsumowały się do 1 $, i dokładnie jeden z nich kończy wart 1 $. Sprzedaż „tak\" po\n90¢ i kupno „nie\" po 10¢ to ta sama opinia. To drugie jest zwykłym zakupem,\nktóry agent potrafi wykonać.\n\nPozycje otwarte w ten sposób to **lustra**. Agent pamięta obie strony — tę, którą\ntrzyma, i tę, którą handluje grupa — bo tej drugiej potrzebuje, żeby wiedzieć,\nkiedy wyjść.",
+		"sourceHash": "81f50b6f"
 	},
 	"cluster.page.sections.step3": {
-		"translation": "### 3. Czy grupa w ogóle jest jeszcze tego zdania?\n\nGrupa może zgadzać się o 15:00 i kłócić sama ze sobą o 15:02. Jeśli którykolwiek\nz tych samych portfeli był po **przeciwnej** stronie tego samego rynku w ciągu\nostatnich **10 minut** (`reversal_lookback_s`), sygnał zostaje odrzucony — to\nnie grupa, to portfel publicznie zmieniający zdanie.\n\nOkno nie jest zgadywane. Faktycznie zarejestrowane odwrócenia następowały\n**121 do 457 sekund** po sobie, a potem nic aż do 915 sekund; 600 siedzi w tej\nluce, kupując cały zysk najmniejszym kosztem ubocznym.\n\nJest tu druga liczba i to najbardziej myląca na całej stronie.\n`max_reversed_wallets` ma wartość **0**, co wygląda jak wyłączona zapadka, a\njest dokładnym przeciwieństwem: znaczy, że **żaden** odwracający się portfel nie\njest tolerowany, więc jeden jedyny odrzuca całą grupę. To podniesienie tej liczby\nrozluźnia regułę. Zapadkę wyłącza się, zerując *okno*, nie ją.\n\nOdmawia też z drugiej strony. Jeśli po odstawieniu odwróconych zostaje mniej niż\n3 portfele, sygnał też przepada — nie dlatego, że za dużo zmieniło zdanie, tylko\ndlatego, że to właśnie one sprawiały, iż wyglądało to na grupę.\n\nJedna pułapka warta nazwania, bo pomylenie się tu było gorsze niż brak reguły.\nNa rynku z dwoma wynikami kupno „tak\" i sprzedaż „nie\" to ten *sam* trade, a\ngiełda raportuje oba. Porównywanie słów „kupił\" i „sprzedał\" znalazło więc\n**82 odwrócenia, które nigdy się nie wydarzyły**, na 263 alerty — ten sam trade\nwidziany dwa razy — i wyrzuciłoby prawdziwe wygrywające pozycje, łącznie z\nnajlepszą w księdze. Kierunek trzeba wyliczać względem trzymanego wyniku, nigdy\nodczytywać z etykiety.",
-		"sourceHash": "9f030849"
+		"translation": "### 3. Czy grupa w ogóle jest jeszcze tego zdania?\n\nGrupa może zgadzać się o 15:00 i kłócić sama ze sobą o 15:02. Jeśli którykolwiek\nz tych samych portfeli stanął po **przeciwnej** stronie tego samego rynku w\nciągu ostatnich **10 minut** (`reversal_lookback_s`), agent odrzuca sygnał. To\nnie grupa. To portfel publicznie zmieniający zdanie.\n\nOkno nie jest zgadywane. Zarejestrowane odwrócenia następowały **121 do 457\nsekund** po sobie, a potem nic aż do 915. 600 siedzi w tej luce. Kupuje cały\nzysk najmniejszym kosztem ubocznym.\n\nSiedzi tu druga liczba i to najbardziej myląca na całej stronie.\n`max_reversed_wallets` ma wartość **0**. Wygląda to jak wyłączona zapadka, a\nznaczy dokładnie odwrotnie: nie toleruje **żadnego** odwracającego się portfela,\nwięc jeden jedyny odrzuca całą grupę. Podniesienie tej liczby rozluźnia regułę.\nZapadkę wyłącza się, zerując *okno*, nie ją.\n\nOdmawia też z drugiej strony. Odstaw odwrócone portfele i zostaje mniej niż 3?\nSygnał też przepada — nie dlatego, że za dużo zmieniło zdanie, tylko dlatego, że\nto właśnie one sprawiały, iż wyglądało to na grupę.\n\nJedna pułapka warta nazwania, bo pomylenie się tu było gorsze niż brak reguły.\nNa rynku z dwoma wynikami kupno „tak\" i sprzedaż „nie\" to ta *sama* transakcja,\na giełda raportuje obie. Porównywanie słów „kupił\" i „sprzedał\" znalazło\n**82 odwrócenia, które nigdy się nie wydarzyły**, na 263 alerty — ta sama\ntransakcja widziana dwa razy. Wyrzuciłoby prawdziwe wygrywające pozycje, łącznie\nz najlepszą w księdze. Kierunek wyliczamy względem trzymanego wyniku. Nigdy nie\nodczytujemy go z etykiety.",
+		"sourceHash": "21a993e1"
 	},
 	"cluster.page.sections.step4": {
-		"translation": "### 4. Trzy kontrole bezpieczeństwa, zanim cokolwiek kupi\n\n- **„Czy jest tu z kim handlować?\"** — jeśli rynek ma mniej niż **1 000 $**\n  płynności (`min_liquidity_usdc`), bot odpuszcza. Wejść łatwo; wychodzenie z\n  płytkiego rynku to ta część, która boli.\n- **„Czy ten rynek zaraz się nie kończy?\"** — jeśli do rozstrzygnięcia zostało\n  mniej niż **1 godzina** (`min_seconds_to_resolution`), odpuszcza.\n- **„Czy cena już nie uciekła?\"** — odpuszcza tylko wtedy, gdy cena poszła\n  przeciw wejściu grupy o więcej niż **3%** (`staleness_pct`) *i* o więcej niż\n  **dwa kroki cenowe** (`staleness_min_ticks`). Oba warunki, nie którykolwiek.\n\nCzemu dwie reguły na jedno pytanie? Rynki kwotują w stałych krokach — cent albo\ndziesiąta centa. Trzy procent 2-centowego wyniku to mniej niż najmniejszy ruch,\njaki rynek umie pokazać, więc sam procent nazywałby „nieświeżym\" najdrobniejsze\nmożliwe drgnięcie i nic nigdy by nie przechodziło. Próg krokowy mówi: ruch,\nktórego rynek nie umie podzielić, to szum, nie informacja.\n\nKompromis jest realny i warto go nazwać wprost: na rynku kwotującym tylko całe\ncenty dwa kroki to 2¢ — a 2¢ wobec 10-centowego wyniku to ruch o 20%, nie o 3%.\nNa takich rynkach to próg krokowy, nie procent, jest regułą, która naprawdę\nwiąże.\n\nDla lustra każda z tych kontroli jest mierzona po stronie, którą bot naprawdę\nkupuje. Ten sam ruch to 5,4% na 24-centowym wyniku i 1,7% na jego 76-centowym\nbliźniaku; mierzenie złej strony wyrzucałoby dokładnie te tanie wyniki, które\nsprzedające grupy lubią najbardziej.",
-		"sourceHash": "6b2b5e3a"
+		"translation": "### 4. Trzy kontrole bezpieczeństwa, zanim cokolwiek kupi\n\n- **„Czy jest tu z kim handlować?\"** — jeśli rynek ma mniej niż **1 000 $**\n  płynności (`min_liquidity_usdc`), agent odpuszcza. Wejść łatwo; wychodzenie z\n  płytkiego rynku to ta część, która boli.\n- **„Czy ten rynek zaraz się nie kończy?\"** — jeśli do rozstrzygnięcia zostało\n  mniej niż **1 godzina** (`min_seconds_to_resolution`), odpuszcza.\n- **„Czy cena już nie uciekła?\"** — odpuszcza tylko wtedy, gdy cena poszła\n  przeciw wejściu grupy o więcej niż **3%** (`staleness_pct`) *i* o więcej niż\n  **dwa kroki cenowe** (`staleness_min_ticks`). Oba warunki, nie którykolwiek.\n\nCzemu dwie reguły na jedno pytanie? Rynki kwotują w stałych krokach — cent albo\ndziesiąta centa. Trzy procent 2-centowego wyniku to mniej niż najmniejszy ruch,\njaki rynek umie zrobić. Sam procent nazywałby „nieświeżym\" najdrobniejsze\ndrgnięcie i nic nigdy by nie przechodziło. Próg krokowy mówi to wprost: ruch,\nktórego rynek nie umie podzielić, to szum, nie informacja.\n\nKompromis jest realny. Na rynku kwotującym tylko całe centy dwa kroki to 2¢ — a\n2¢ wobec 10-centowego wyniku to ruch o 20%, nie o 3%. Na takich rynkach to próg\nkrokowy jest regułą, która wiąże, nie procent.\n\nDla lustra agent mierzy każdą z tych kontroli po stronie, którą naprawdę kupuje.\nTen sam ruch to 5,4% na 24-centowym wyniku i 1,7% na jego 76-centowym\nbliźniaku. Zmierz złą stronę, a wyrzucisz dokładnie te tanie wyniki, które\nsprzedające grupy lubią najbardziej.",
+		"sourceHash": "5745421a"
 	},
 	"cluster.page.sections.step5": {
-		"translation": "### 5. Ile kosztuje wynik i ile zabiera prowizja\n\nDwie kontrole, które razem decydują, po jakich cenach bot w ogóle zagra.\n\n**Prowizja.** Giełda nalicza swoją opłatę **od udziału**, nie od dolara. Kup tani\nwynik, a 5 $ kupuje dużo udziałów, więc te same 5 $ oddaje znacznie więcej w\nprowizjach: jako część biletu prowizja wychodzi `5% × (1 − cena)`. To **4,5% na\n10-centowym wyniku i 0,3% na 94-centowym**. Ograniczenie tego do **2%**\n(`max_entry_fee_pct`) nie jest więc tak naprawdę regułą prowizyjną — to\n**cena minimalna 0,60 $**, zapisana w jednostkach, które się liczą.\n\nByło warto. Na pierwszych ośmiu zamkniętych pozycjach cena poszła przeciw nam\nłącznie o 0,46 $, a prowizje wyniosły **1,58 $** — prowizja była **77%**\nwszystkiego, co stracone, i 3,4× wkładu samego rynku. W jednej pozycji cena\nposzła *na naszą korzyść*, a trade i tak stracił pieniądze.\n\nPodnoszenie stawki nie pomaga i warto zobaczyć czemu: prowizja i wygrana skalują\nsię z liczbą udziałów, więc proporcja nigdy się nie zmienia. Podwojenie biletu\npodwaja stratę.\n\n**Cena.** Osobno: bot nie zapłaci za udział więcej niż **0,95 $**\n(`max_entry_price`). Przy 95¢ bilet za 5 $ może wygrać 26¢ i stracić 5 $ —\nokoło 19 do 1 przeciw. Przy 99,8¢ stawia 5 $, by wygrać jednego centa, 500 do 1,\ngdzie jedno złe rozstrzygnięcie wymazuje kilkaset wygranych.\n\nProwizja nie jest tu argumentem — jako część *dostępnego* zysku jest z grubsza\nstała przy każdej wysokiej cenie. Jest nim **siatka cenowa** samej giełdy. Rynki\nkwotują w krokach po dziesiątej centa, a jeden krok to 2% wszystkiego, co może\nzarobić bilet po 95¢ — ale **połowa** wszystkiego, co może bilet po 99,8¢.\nPowyżej tego najmniejszy ruch, jaki rynek umie pokazać, jest większością nagrody.",
-		"sourceHash": "7691702f"
+		"translation": "### 5. Ile kosztuje wynik i ile zabiera prowizja\n\nDwie kontrole decydują, po jakich cenach agent w ogóle zagra.\n\n**Prowizja.** Giełda nalicza swoją opłatę **od udziału**, nie od dolara. Kup tani\nwynik, a 5 $ kupuje dużo udziałów, więc te same 5 $ oddaje znacznie więcej w\nprowizjach. Jako część biletu prowizja wychodzi `5% × (1 − cena)`. To **4,5% na\n10-centowym wyniku i 0,3% na 94-centowym**. Ograniczenie tego do **2%**\n(`max_entry_fee_pct`) nie jest więc regułą prowizyjną. To **cena minimalna\n0,60 $**, zapisana w jednostkach, które się liczą.\n\nByło warto. Na pierwszych ośmiu zamkniętych pozycjach cena poszła przeciw nam\nłącznie o 0,46 $. Prowizje wyniosły **1,58 $**. Prowizja była **77%** wszystkiego,\nco stracone, i 3,4× wkładu samego rynku. W jednej pozycji cena poszła *na naszą\nkorzyść*, a transakcja i tak straciła pieniądze.\n\nPodnoszenie stawki nie pomaga. Prowizja i wygrana skalują się z liczbą udziałów,\nwięc proporcja nigdy się nie zmienia. Podwojenie biletu podwaja stratę.\n\n**Cena.** Osobno: agent nie zapłaci za udział więcej niż **0,95 $**\n(`max_entry_price`). Przy 95¢ bilet za 5 $ może wygrać 26¢ i stracić 5 $ —\nokoło 19 do 1 przeciw. Przy 99,8¢ stawia 5 $, by wygrać jednego centa, 500 do 1,\ngdzie jedno złe rozstrzygnięcie wymazuje kilkaset wygranych.\n\nProwizja nie jest tu argumentem. Jako część *dostępnego* zysku zostaje z grubsza\nstała przy każdej wysokiej cenie. Argumentem jest **siatka cenowa** samej\ngiełdy. Rynki kwotują w krokach po dziesiątej centa. Jeden krok to 2%\nwszystkiego, co może zarobić bilet po 95¢, ale **połowa** wszystkiego, co może\nbilet po 99,8¢. Powyżej tego najmniejszy ruch, jaki rynek umie pokazać, jest\nwiększością nagrody.",
+		"sourceHash": "bd3ebd85"
 	},
 	"cluster.page.sections.step6": {
-		"translation": "### 6. Sprawdza własny portfel\n\n*„Czy mam miejsce?\"* — trzyma otwarte najwyżej **20 $** naraz\n(`exposure_cap_usdc`), czyli cztery bilety po 5 $.\n\n*„Czy nie zejdę za nisko?\"* — nigdy nie zagra, jeśli saldo do wydania spadłoby\nponiżej **5 $** (`working_capital_floor_usdc`). W praktyce to ten próg\nzatrzymuje bota na długo przed limitem.",
-		"sourceHash": "83f368b1"
+		"translation": "### 6. Sprawdza własny portfel\n\n*„Czy mam miejsce?\"* — trzyma otwarte najwyżej **20 $** naraz\n(`exposure_cap_usdc`), czyli cztery bilety po 5 $.\n\n*„Czy nie zejdę za nisko?\"* — nigdy nie zagra, jeśli saldo do wydania spadłoby\nponiżej **5 $** (`working_capital_floor_usdc`). W praktyce to ten próg zatrzymuje\nagenta na długo przed limitem.",
+		"sourceHash": "20638d93"
 	},
 	"cluster.page.sections.step7": {
-		"translation": "### 7. Kupuje mało i odmawia przepłacania\n\nJeśli wszystko się układa, kupuje **5 $** (`trade_size_usdc`), wszystko albo\nnic: zlecenie wypełnia się w całości albo idzie do kosza. Limit ceny to **1%**\nponad to, co zapłaciła grupa (`slippage_pct`), ale nigdy ciaśniej niż **dwa\nkroki cenowe** (`slippage_min_ticks`) — 1% 34-centowego wyniku to mniej niż\ncent, co na rynku całocentowym zaokrągla się do zera miejsca, a zlecenie bez\nmiejsca to zlecenie, które ginie. Limit jest potem przyciągany do siatki rynku,\nbo giełda przyjmuje tylko ceny leżące dokładnie na niej.\n\nCzemu **5 $**, a nie 1 $? Giełda nie przyjmie zlecenia na mniej niż\n**5 udziałów**. Dolar kupuje 5 udziałów tylko przy wyniku po 20¢ lub tańszym;\npowyżej każde pojedyncze zlecenie było odrzucane. Bot liczy dziś udziały sam\nprzed wysłaniem, zamiast dowiadywać się od giełdy — odmowa z tego powodu jest\ndwuznaczna, a dwuznaczna odmowa wiąże część limitu pod pozycję, która nie\nistnieje.",
-		"sourceHash": "334aa023"
+		"translation": "### 7. Kupuje mało i odmawia przepłacania\n\nJeśli wszystko się układa, kupuje **5 $** (`trade_size_usdc`), wszystko albo\nnic: zlecenie wypełnia się w całości albo ginie. Limit ceny to **1%** ponad to,\nco zapłaciła grupa (`slippage_pct`), ale nigdy ciaśniej niż **dwa kroki cenowe**\n(`slippage_min_ticks`). 1% 34-centowego wyniku to mniej niż cent, co na rynku\ncałocentowym zaokrągla się do zera miejsca. A zlecenie bez miejsca to zlecenie,\nktóre ginie. Agent przyciąga potem limit do siatki rynku, bo giełda przyjmuje\ntylko ceny leżące dokładnie na niej.\n\nCzemu **5 $**, a nie 1 $? Giełda nie przyjmie zlecenia na mniej niż\n**5 udziałów**. Dolar kupuje 5 udziałów tylko przy wyniku po 20¢ lub tańszym.\nPowyżej giełda odrzucała każde zlecenie. Agent liczy dziś udziały sam przed\nwysłaniem, zamiast dowiadywać się od giełdy. Odmowa z tego powodu jest\ndwuznaczna, a dwuznaczna odmowa wiąże część limitu pod pozycję, która nie\nistnieje.",
+		"sourceHash": "17d4d982"
 	},
 	"cluster.page.sections.step8": {
-		"translation": "### 8. Gdzie naprawdę leżą pieniądze\n\nOd aktualizacji giełdy Polymarketu zwykły portfel nie jest już akceptowany jako\nstrona składająca zlecenie. Gotówka leży więc w portfelu depozytowym\nPolymarketu, a klucz jedynie **podpisuje** w imieniu tego portfela.\n\nMuszą istnieć dwa osobne uprawnienia on-chain: jedno do wydawania gotówki (żeby\nkupować), drugie do przenoszenia tokenów wyników (żeby sprzedawać). Psują się\nniezależnie — było popołudnie, gdy kupowanie działało cały dzień, a każda\nsprzedaż odbijała się od brakującego uprawnienia. Kontrola przedstartowa czyta\ndziś oba wprost z łańcucha, zamiast ufać, że config ma rację.",
-		"sourceHash": "8145f32d"
+		"translation": "### 8. Gdzie naprawdę leżą pieniądze\n\nOd aktualizacji giełdy Polymarketu giełda nie przyjmuje już zwykłego portfela\njako strony składającej zlecenie. Gotówka leży więc w portfelu depozytowym\nPolymarketu, a klucz jedynie **podpisuje** w imieniu tego portfela.\n\nMuszą istnieć dwa uprawnienia on-chain: jedno do wydawania gotówki (żeby\nkupować), drugie do przenoszenia tokenów wyników (żeby sprzedawać). Psują się\nniezależnie. Jednego popołudnia kupowanie działało cały dzień, a każda sprzedaż\nodbijała się od brakującego uprawnienia. Kontrola przedstartowa czyta dziś oba\nwprost z łańcucha, zamiast ufać konfiguracji.",
+		"sourceHash": "6bd0eae9"
 	},
 	"cluster.page.sections.step9": {
-		"translation": "### 9. Trzyma i wychodzi przy pierwszym odwróceniu\n\nPotem obserwuje te same portfele i wychodzi, gdy tylko **pierwszy** z nich się\nodwróci. Nie czeka, aż zgodzą się pozostałe.\n\n- Na zwykłej pozycji trzyma to, co oni, więc wyjściem jest **ich sprzedaż**.\n- Na lustrze oni trzymają wynik, który sprzedali, więc wyjściem jest **ich\n  odkup**. Dosprzedawanie *kolejnych* to dokładanie się — znów ta sama opinia,\n  nie odwrócenie — więc celowo nas nie zamyka.\n\nDojechanie do rozstrzygnięcia to tylko wariant zapasowy, gdy nikt nie odwróci\nsię pierwszy.\n\n*To jest przyspawane. Nie ma na to ustawienia.*",
-		"sourceHash": "3bac78f5"
+		"translation": "### 9. Trzyma i wychodzi przy pierwszym odwróceniu\n\nPotem obserwuje te same portfele i wychodzi, gdy tylko **pierwszy** z nich się\nodwróci. Nie czeka, aż zgodzą się pozostałe.\n\n- Na zwykłej pozycji trzyma to, co oni, więc wyjściem jest **ich sprzedaż**.\n- Na lustrze oni trzymają wynik, który sprzedali, więc wyjściem jest **ich\n  odkup**. Dosprzedawanie *kolejnych* to dokładanie się — znów ta sama opinia,\n  nie odwrócenie — więc nas nie zamyka.\n\nDojechanie do rozstrzygnięcia to tylko wariant zapasowy, gdy nikt nie odwróci\nsię pierwszy.\n\n*To jest przyspawane. Nie ma na to ustawienia.*",
+		"sourceHash": "b0c3f917"
 	},
 	"cluster.page.sections.step10": {
-		"translation": "### 10. Nieudane wyjście jest ponawiane, nie zapominane\n\nZlecenie wyjścia może zostać odrzucone tak samo jak wejście, a kiedyś znikało z\njedną linijką w logu. Teraz zdarzenie zostaje: **trzy próby**, mniej więcej co\nminutę i coraz rzadziej, każda raportowana. Jeśli trzecia zawiedzie, bot mówi to\ngłośno, zamiast ucichnąć. Ponawianie jest bezpieczne — jeśli pozycja zamknęła\nsię w międzyczasie, ponowienie nie robi zupełnie nic.",
-		"sourceHash": "697e6ea1"
+		"translation": "### 10. Nieudane wyjście jest ponawiane, nie zapominane\n\nZlecenie wyjścia może zostać odrzucone tak samo jak wejście, a kiedyś znikało z\njedną linijką w logu. Teraz zdarzenie zostaje: **trzy próby**, mniej więcej co\nminutę i coraz rzadziej, każda raportowana. Jeśli trzecia zawiedzie, agent mówi\nto głośno, zamiast ucichnąć. Ponawianie jest bezpieczne. Jeśli pozycja zamknęła\nsię w międzyczasie, ponowienie nie robi nic.",
+		"sourceHash": "8724cddd"
 	},
 	"cluster.page.sections.step11": {
-		"translation": "### 11. Nic nie znika po cichu\n\nKażde odpuszczenie i każda odmowa są zapisywane z liczbami: limit, o który bot\nprosił, cena po zaokrągleniu do siatki, najlepsza cena w księdze i ile wolumenu\nfaktycznie siedziało na naszym limicie. Bez nich „mój limit był za ciasny\" i\n„księga była za płytka\" wyglądają identycznie — a ich naprawy są przeciwieństwami.",
-		"sourceHash": "7b88b3de"
+		"translation": "### 11. Nic nie znika po cichu\n\nKażde odpuszczenie i każdą odmowę zapisujemy z liczbami: limit, o który agent\nprosił, cena po zaokrągleniu do siatki, najlepsza cena w księdze i ile wolumenu\nsiedziało na naszym limicie. Bez nich „mój limit był za ciasny\" i „księga była\nza płytka\" wyglądają identycznie — a ich naprawy są przeciwieństwami.",
+		"sourceHash": "d620e461"
 	},
 	"cluster.page.sections.step12": {
-		"translation": "### 12. I od nowa\n\nSprzedane, gotówka z powrotem, miejsce wolne, następny sygnał. Jedna pozycja na\ngrupę, nigdy dwie, a grupa już raz zamknięta nie jest nigdy otwierana ponownie.\nPrzy pierwszym w życiu starcie zaczyna od najnowszego alertu, zamiast odtwarzać\ncałą historię do żywego portfela.",
-		"sourceHash": "0a812c03"
+		"translation": "### 12. I od nowa\n\nSprzedane, gotówka z powrotem, miejsce wolne, następny sygnał. Jedna pozycja na\ngrupę, nigdy dwie, a do grupy raz zamkniętej agent już nigdy nie wraca. Przy\npierwszym w życiu starcie zaczyna od najnowszego alertu, zamiast odtwarzać całą\nhistorię do żywego portfela.",
+		"sourceHash": "5912bb08"
 	},
 	"cluster.page.sections.step13": {
-		"translation": "### 13. Raz w tygodniu zgarnia zysk\n\nLiczy zaksięgowany zysk i wysyła nadwyżkę ponad próg **5 $** na adres wypłat\n(`profit_destination`) — ale tylko jeśli ten adres jest na liście dozwolonych\n(`destination_allowlist`, bezpiecznik), tylko jeśli kwota przekracza próg\nkurzu **1 $** (`dust_threshold_usdc`) i tylko jeśli zostały co najmniej\n**2 POL** gazu (`gas_reserve_pol`). Bez gazu nie mógłby zamknąć pozycji, więc\nto wypłata ustępuje pierwsza. Stratny tydzień nie wypłaca nic. Pierwsza w\nhistorii wypłata wymaga człowieka, który powie „tak\".",
-		"sourceHash": "2ce4da06"
+		"translation": "### 13. Raz w tygodniu zgarnia zysk\n\nLiczy zaksięgowany zysk i wysyła nadwyżkę ponad próg **5 $** na adres wypłat\n(`profit_destination`). Wypłaca tylko wtedy, gdy ten adres jest na liście\ndozwolonych (`destination_allowlist`, bezpiecznik), tylko gdy kwota przekracza\npróg kurzu **1 $** (`dust_threshold_usdc`) i tylko gdy zostały co najmniej\n**2 POL** gazu (`gas_reserve_pol`). Bez gazu nie mógłby zamknąć pozycji, więc to\nwypłata ustępuje pierwsza. Stratny tydzień nie wypłaca nic. Pierwsza w historii\nwypłata wymaga człowieka, który powie „tak\".",
+		"sourceHash": "f42855d7"
 	},
 	"cluster.page.sections.step14": {
-		"translation": "### 14. Wielki czerwony przycisk\n\nW każdej chwili wyłącznik (`kill_switch`) zatrzymuje **kupowanie** czegokolwiek\nnowego — a bot dalej obserwuje i zamyka to, co już otwarte. Przestaje brać\nryzyko; nie porzuca go. Jest też tryb cienia, który decyduje dokładnie jak\nnormalnie, ale każde niedoszłe zlecenie zapisuje do pliku, zamiast je wysłać.",
-		"sourceHash": "c5c2a2a7"
+		"translation": "### 14. Wielki czerwony przycisk\n\nW każdej chwili wyłącznik (`kill_switch`) zatrzymuje **kupowanie** czegokolwiek\nnowego — a agent dalej obserwuje i zamyka to, co już otwarte. Przestaje brać\nryzyko; nie porzuca go. Tryb cienia decyduje dokładnie jak normalnie, ale każde\nniedoszłe zlecenie zapisuje do pliku, zamiast je wysłać.",
+		"sourceHash": "c7db6b75"
 	},
 	"cluster.page.sections.hardWired": {
-		"translation": "## Co jest przyspawane i nie jest ustawieniem\n\n- **„Pierwszy skuteczny portfel się odwraca → wychodzimy.\"** Stała logika, z\n  rozstrzygnięciem jako zabezpieczeniem. Nie ma take-profitu ani stop-lossa do\n  strojenia.\n- **Sprzedaż kopiuje się kupnem przeciwnego wyniku.** Czy i jak lustrzana jest\n  sprzedająca grupa — stałe; nie ma przełącznika „kopiuj tylko kupna\".\n- **Jedna pozycja na grupę** i żadnego powrotu do grupy już zamkniętej.\n- **Wejście to zlecenie wszystko-albo-nic wycenione na siatce giełdy.** *Jak*\n  wchodzi — stałe. Stroisz tylko progi wokół — poślizg, nieświeżość, płynność.\n- **Minimum 5 udziałów na zlecenie to reguła giełdy**, nie nasza. Bot jej tylko\n  przestrzega.\n\n**Czemu taki podział?** Ile, kiedy odpuścić, ile naraz, ile zostawić — to\nwszystko liczby, a liczby można bezpiecznie wystawić. Jak kupuje i kiedy\nsprzedaje — cała logika kopiowania — żyje w kodzie, żeby jedna nieuważna linijka\nYAML-a nie mogła po cichu wykoleić strategii.",
-		"sourceHash": "a733d7ff"
+		"translation": "## Co jest przyspawane i nie jest ustawieniem\n\n- **„Pierwszy skuteczny portfel się odwraca → wychodzimy.\"** Stała logika, z\n  rozstrzygnięciem jako zabezpieczeniem. Nie ma take-profitu ani stop-lossa do\n  strojenia.\n- **Sprzedaż kopiuje się kupnem przeciwnego wyniku.** Czy i jak lustrzana jest\n  sprzedająca grupa — stałe; nie ma przełącznika „kopiuj tylko kupna\".\n- **Jedna pozycja na grupę** i żadnego powrotu do grupy już zamkniętej.\n- **Wejście to zlecenie wszystko-albo-nic wycenione na siatce giełdy.** *Jak*\n  wchodzi — stałe. Stroisz tylko progi wokół — poślizg, nieświeżość, płynność.\n- **Minimum 5 udziałów na zlecenie to reguła giełdy**, nie nasza. Agent jej tylko\n  przestrzega.\n\n**Czemu taki podział?** Ile, kiedy odpuścić, ile naraz, ile zostawić — to\nwszystko liczby, a liczby można bezpiecznie wystawić. Jak kupuje i kiedy\nsprzedaje — cała logika kopiowania — żyje w kodzie. Jedna nieuważna linijka\nYAML-a nie może wykoleić strategii.",
+		"sourceHash": "24ff4d45"
 	},
 	"cluster.page.sections.notClaiming": {
-		"translation": "## Czego jeszcze nie twierdzimy\n\nTrzy ograniczenia warte znajomości, bo zmieniają sposób czytania liczb samego\nbota.\n\n- **Księgowość łapie już prowizję giełdy i to zmieniło obraz.** Każda zamknięta\n  pozycja miała kiedyś zapisaną prowizję zero, przez co wszystkie wyglądały\n  lepiej, niż były; po uzgodnieniu z zapisami rozliczeń on-chain brakującym\n  kosztem była **w całości** ta prowizja — dziś jest liczona z opublikowanej\n  krzywej każdego rynku i zapisywana per wypełnienie. Gaz sieciowy wciąż\n  zapisujemy jako zero i to akurat jest poprawne, a nie odłożone — na tej\n  giełdzie transakcję rozliczenia opłaca relayer, nie my.\n- **Reguła „cena już uciekła\" jest słabsza niż 3% na gruboziarnistych rynkach**\n  — patrz dwukrokowy próg w kroku 4. Mniej więcej jeden rynek na dwadzieścia\n  kwotuje w całych centach i na nich faktyczna reguła jest znacznie łagodniejsza,\n  niż czyta się ustawienie.\n- **Zapadki są młode i w większości niesprawdzone.** Reguła niezależności grupy\n  ścięła liczbę sygnałów o około 95%, więc te dodane po niej — okno odwróceń,\n  sufit ceny — miały bardzo mało żywego ruchu, by się obronić. Argumentuje się je\n  pomiarami sprzed uzbrojenia, a uczciwa pozycja brzmi: nie wiemy jeszcze, jak\n  często strzelają.\n- **Sufitu ceny nie uzasadniają odzyskane pieniądze.** Cztery pozycje, których\n  by odmówił, są warte razem około **5 centów**. Kupuje się go jako\n  ubezpieczenie od krzywego zakładu — 5 $ postawione, by wygrać centa — a nie\n  jako naprawę zmierzonej straty, i nie należy go tak czytać.",
-		"sourceHash": "ce406b83"
+		"translation": "## Czego jeszcze nie twierdzimy\n\nCztery ograniczenia warte znajomości. Zmieniają sposób, w jaki należy czytać\nliczby samego agenta.\n\n- **Księgowość łapie już prowizję giełdy i to zmieniło obraz.** Każda zamknięta\n  pozycja miała kiedyś zapisaną prowizję zero, przez co wszystkie wyglądały\n  lepiej, niż były. Po uzgodnieniu z zapisami rozliczeń on-chain brakującym\n  kosztem była **w całości** ta prowizja. Liczymy ją dziś z opublikowanej\n  krzywej każdego rynku i zapisujemy per wypełnienie. Gaz sieciowy wciąż\n  zapisujemy jako zero i to akurat jest poprawne, a nie odłożone — na tej\n  giełdzie transakcję rozliczenia opłaca relayer, nie my.\n- **Reguła „cena już uciekła\" jest słabsza niż 3% na gruboziarnistych rynkach**\n  — patrz dwukrokowy próg w kroku 4. Mniej więcej jeden rynek na dwadzieścia\n  kwotuje w całych centach i na nich faktyczna reguła jest znacznie łagodniejsza,\n  niż czyta się ustawienie.\n- **Zapadki są młode i w większości niesprawdzone.** Reguła niezależności grupy\n  ścięła liczbę sygnałów o około 95%, więc te dodane po niej — okno odwróceń,\n  sufit ceny — miały bardzo mało żywego ruchu, by się obronić. Argumentujemy je\n  pomiarami sprzed uzbrojenia. Uczciwa pozycja: nie wiemy jeszcze, jak często\n  strzelają.\n- **Odzyskane pieniądze nie uzasadniają sufitu ceny.** Cztery pozycje, których\n  by odmówił, są warte razem około **5 centów**. Kupujemy go jako ubezpieczenie\n  od krzywego zakładu — 5 $ postawione, by wygrać centa — a nie jako naprawę\n  zmierzonej straty. Nie czytaj go tak.",
+		"sourceHash": "f3e1a2b3"
 	},
 	"cluster.page.sections.notThis": {
-		"translation": "## Czym ta strona nie jest\n\nTo parametry operacyjne naszego własnego małego bota, publikowane w tym samym\nduchu co reszta track recordu. Nie są poradą, nie są serwisem sygnałowym i nie\nsą twierdzeniem, że lustrzane kopiowanie skutecznych portfeli będzie dalej\ndziałać.\n\nAdresy portfeli bota nie są publikowane nigdzie na tej stronie — oglądanie\nportfela wykonawczego na żywo odsłaniałoby otwarte pozycje, czyli dokładnie to,\nczemu [polityka ujawniania]({methodologyHref}) ma zapobiegać.",
-		"sourceHash": "0cb8d7e0"
+		"translation": "## Czym ta strona nie jest\n\nTo parametry operacyjne naszego własnego małego agenta, publikowane w tym samym\nduchu co reszta historii wyników. Nie są poradą, nie są serwisem sygnałowym i\nnie są twierdzeniem, że lustrzane kopiowanie skutecznych portfeli będzie dalej\ndziałać.\n\nNigdy nie publikujemy adresów portfeli agenta nigdzie na tej stronie. Popatrz na\nportfel wykonawczy na żywo, a zobaczysz otwarte pozycje — czyli dokładnie to,\nczemu [polityka ujawniania]({methodologyHref}) ma zapobiegać.",
+		"sourceHash": "c801a4b7"
 	},
 	"cluster.page.md.inOneSentence": {
 		"translation": "W jednym zdaniu",
@@ -636,8 +636,8 @@
 		"sourceHash": "3db32689"
 	},
 	"cluster.page.md.knobsBlurb": {
-		"translation": "Strona renderuje je jako suwaki, którymi możesz kręcić i patrzeć, jak decyzja\nbota się przełącza. W markdownie zostaje sama tabela:",
-		"sourceHash": "c9ad4848"
+		"translation": "Strona renderuje je jako suwaki, którymi możesz kręcić i patrzeć, jak decyzja\nagenta się przełącza. W markdownie zostaje sama tabela:",
+		"sourceHash": "a0cd6480"
 	},
 	"cluster.page.md.tableRole": {
 		"translation": "Rola w historii",
@@ -664,15 +664,15 @@
 		"sourceHash": "032bf222"
 	},
 	"cluster.page.ui.tryIt": {
-		"translation": "Wypróbuj — decyzja bota, na żywo",
-		"sourceHash": "97b38b75"
+		"translation": "Wypróbuj — decyzja agenta, na żywo",
+		"sourceHash": "9599b5b9"
 	},
 	"cluster.page.ui.defaultsNote": {
-		"translation": "domyślne = config {market}, {asOf}",
+		"translation": "domyślne = ustawienia {market}, {asOf}",
 		"sourceHash": "7f716bd5"
 	},
 	"cluster.page.ui.reset": {
-		"translation": "Przywróć nasz aktualny config",
+		"translation": "Przywróć nasze aktualne ustawienia",
 		"sourceHash": "62792b0b"
 	},
 	"cluster.page.ui.incomingSignal": {
@@ -684,23 +684,23 @@
 		"sourceHash": "e6227480"
 	},
 	"cluster.page.ui.stageExecutor": {
-		"translation": "Potem własne zapadki bota, po kolei",
-		"sourceHash": "54d39948"
+		"translation": "Potem własne zapadki agenta, po kolei",
+		"sourceHash": "d11485d8"
 	},
 	"cluster.page.ui.flagAlert": {
-		"translation": "alert nie powstaje — bot nie jest pytany",
-		"sourceHash": "e98028b4"
+		"translation": "alert nie powstaje — agent nie jest pytany",
+		"sourceHash": "eeede51c"
 	},
 	"cluster.page.ui.flagExecutor": {
-		"translation": "prawdziwy bot staje tutaj",
-		"sourceHash": "75aa497a"
+		"translation": "prawdziwy agent staje tutaj",
+		"sourceHash": "fb529306"
 	},
 	"cluster.page.ui.explainer": {
-		"translation": "Prawdziwy egzekutor zatrzymuje się na pierwszym ✗ z drugiej listy i idzie dalej. Tu punktowana jest każda kontrola, żeby było widać, co robi które pokrętło. Ceny są zawsze po stronie, którą bot naprawdę by kupił — dla sprzedającej grupy to przeciwny wynik. Ostatnie dwie kontrole to reguły samej giełdy: limit musi być osiągalny, a zlecenie dość duże. Między listami egzekutor wykonuje jeszcze garść kontroli księgowych — czy ta grupa jest już otwarta, czy włączony jest wyłącznik — pominiętych tutaj, bo żadna nie jest liczbą do kręcenia.",
-		"sourceHash": "1024e3a8"
+		"translation": "Prawdziwy egzekutor zatrzymuje się na pierwszym ✗ z drugiej listy i idzie dalej. Punktujemy tu każdą kontrolę, żeby było widać, co robi które pokrętło. Ceny są zawsze po stronie, którą agent naprawdę by kupił — dla sprzedającej grupy to przeciwny wynik. Ostatnie dwie kontrole to reguły samej giełdy: limit musi być osiągalny, a zlecenie dość duże. Między listami egzekutor wykonuje jeszcze garść kontroli księgowych — czy ta grupa jest już otwarta, czy włączony jest wyłącznik. Pomijamy je tutaj, bo żadna nie jest liczbą do kręcenia.",
+		"sourceHash": "e352f658"
 	},
 	"cluster.page.ui.noscript": {
-		"translation": "Bez JavaScriptu widać nasz aktualny config wobec pierwszego przykładowego sygnału. Suwaki i przyciski sygnałów potrzebują JavaScriptu, żeby przeliczać.",
+		"translation": "Bez JavaScriptu widać nasze aktualne ustawienia wobec pierwszego przykładowego sygnału. Suwaki i przyciski sygnałów potrzebują JavaScriptu, żeby przeliczać.",
 		"sourceHash": "abce22be"
 	},
 	"cluster.page.knobs.cluster_threshold": {
@@ -832,7 +832,7 @@
 		"sourceHash": "47a2e21a"
 	},
 	"wallet.sim.gates.boot.because": {
-		"translation": "Bilet za {size} przy najgorszym limicie, na jaki pozwalają pozostałe pokrętła ({limit}), kupuje mniej niż giełdowe minimum {min} udziałów, więc serwis w ogóle odmawia startu na tym configu, zamiast wykładać się po jednym zleceniu.",
+		"translation": "Bilet za {size} przy najgorszym limicie, na jaki pozwalają pozostałe pokrętła ({limit}), kupuje mniej niż giełdowe minimum {min} udziałów, więc serwis w ogóle odmawia startu na tej konfiguracji, zamiast wykładać się po jednym zleceniu.",
 		"sourceHash": "e2d0d0b8"
 	},
 	"wallet.sim.gates.conviction.question": {
@@ -844,8 +844,8 @@
 		"sourceHash": "f53ff873"
 	},
 	"wallet.sim.gates.conviction.because": {
-		"translation": "Cała pozycja {leader} na tym zakładzie sięgnęła w szczycie {stake}, poniżej progu {bar} — tracker nie emituje sygnału wejścia, bot nie jest pytany i nic nie zostaje zapisane.",
-		"sourceHash": "c587192d"
+		"translation": "Cała pozycja {leader} na tym zakładzie sięgnęła w szczycie {stake}, poniżej progu {bar} — tracker nie emituje sygnału wejścia, więc agenta nikt nie pyta i nic nie zostaje zapisane.",
+		"sourceHash": "5f38054b"
 	},
 	"wallet.sim.gates.cap.question": {
 		"translation": "Czy nie kopiuję już tego lidera wystarczająco?",
@@ -925,7 +925,7 @@
 	},
 	"wallet.sim.gates.price.question": {
 		"translation": "Czy udział nie jest za drogi względem ryzyka?",
-		"sourceHash": "99ae575c"
+		"sourceHash": "e1dc3057"
 	},
 	"wallet.sim.gates.price.because": {
 		"translation": "Rynek wycenia ten wynik na {price}, ponad sufit {ceiling} — kopia może wygrać najwyżej {gain}, wciąż ryzykując całe {size}.",
@@ -960,11 +960,11 @@
 		"sourceHash": "4e8f8cdc"
 	},
 	"wallet.sim.detail.order": {
-		"translation": "Wysyła zlecenie fill-or-kill za {size} z limitem {limit} — około {shares} — które wypełnia się w całości albo ginie; ubite zlecenie nie jest ponawiane.",
-		"sourceHash": "897f4023"
+		"translation": "Wysyła zlecenie fill-or-kill za {size} z limitem {limit} — około {shares} — wypełnia się w całości albo ginie. Ubite zlecenie nie dostaje ponowienia.",
+		"sourceHash": "0eafb1c8"
 	},
 	"wallet.sim.detail.hold": {
-		"translation": "Potem trzyma mimo drobnych redukcji i sprzedaje całą nogę w chwili, gdy {leader} zdejmie {threshold} swojego szczytu — albo odwróci pozycję, albo ją zamknie.",
+		"translation": "Potem trzyma mimo drobnych redukcji i sprzedaje całą kopię w chwili, gdy {leader} zdejmie {threshold} swojego szczytu — albo odwróci pozycję, albo ją zamknie.",
 		"sourceHash": "73c75273"
 	},
 	"wallet.sim.detail.copy": {
@@ -972,8 +972,8 @@
 		"sourceHash": "f5cd3133"
 	},
 	"wallet.sim.detail.copyViaSale": {
-		"translation": "Lider zbudował tę pozycję, sprzedając drugą stronę, więc bot kupuje wynik, który lider naprawdę trzyma, po {ask}. {order} {hold}",
-		"sourceHash": "64965574"
+		"translation": "Lider zbudował tę pozycję, sprzedając drugą stronę, więc agent kupuje wynik, który lider naprawdę trzyma, po {ask}. {order} {hold}",
+		"sourceHash": "2af10d68"
 	},
 	"wallet.sim.signal.lead": {
 		"translation": "{leader} zbudował pozycję {stake} na",
@@ -984,28 +984,28 @@
 		"sourceHash": "4d1306b0"
 	},
 	"wallet.sim.signal.trailViaSale": {
-		"translation": "— sprzedając drugą stronę, więc wynik, który naprawdę trzyma, kosztuje {entry} i to jego kupiłby bot.",
-		"sourceHash": "67f51618"
+		"translation": "— sprzedając drugą stronę, więc wynik, który naprawdę trzyma, kosztuje {entry} i to jego kupiłby agent.",
+		"sourceHash": "f0e183c4"
 	},
 	"wallet.sim.trim.holdHeadline": {
 		"translation": "TRZYMA",
 		"sourceHash": "ebb64f78"
 	},
 	"wallet.sim.trim.holdDetail": {
-		"translation": "Lider zdjął {sold} swojego szczytu — poniżej linii {threshold}. To informacja, nie wyjście: bot to zapisuje i trzyma całą pozycję.",
-		"sourceHash": "7de013f3"
+		"translation": "Lider zdjął {sold} swojego szczytu — poniżej linii {threshold}. To informacja, nie wyjście: agent to zapisuje i trzyma całą pozycję.",
+		"sourceHash": "b662fc43"
 	},
 	"wallet.sim.trim.closeHeadline": {
-		"translation": "ZAMYKA CAŁĄ NOGĘ",
+		"translation": "ZAMYKA CAŁĄ KOPIĘ",
 		"sourceHash": "9d0fa55b"
 	},
 	"wallet.sim.trim.closeDetail": {
-		"translation": "{sold} szczytu zniknęło — na linii {threshold} lub za nią. Bot sprzedaje całą kopię naraz, nigdy kawałek: proporcjonalny okrawek może spaść poniżej giełdowego minimum {min} udziałów i stać się niesprzedawalny.",
-		"sourceHash": "e49e686f"
+		"translation": "{sold} szczytu zniknęło — na linii {threshold} lub za nią. Agent sprzedaje całą kopię naraz, nigdy kawałek: proporcjonalny okrawek może spaść poniżej giełdowego minimum {min} udziałów i stać się niesprzedawalny.",
+		"sourceHash": "da16fc83"
 	},
 	"wallet.sim.summary.sentence": {
-		"translation": "Gdy jeden z dwóch liderów zbuduje co najmniej {a} (leader-a) lub {b} (leader-b) świeżego zakładu, {flowClause} a rynek ma co najmniej {liquidity} płynności, więcej niż {horizon} do rozstrzygnięcia i cena nie uciekła ponad {staleness} od jego wejścia → bot kupuje za {size} wynik, który lider trzyma, płaci za udział najwyżej {maxPrice} i {slippage} ponad ask, prowadzi najwyżej {copies} kopie na lidera i {cap} otwarte łącznie, zostawia {floor} do wydania, trzyma mimo drobnych redukcji i sprzedaje całą nogę, gdy ten lider zdejmie {trim} swojego szczytu — albo odwróci pozycję, albo zamknie.",
-		"sourceHash": "b4a90a18"
+		"translation": "Gdy jeden z dwóch liderów zbuduje co najmniej {a} (leader-a) lub {b} (leader-b) świeżego zakładu, {flowClause} a rynek ma co najmniej {liquidity} płynności, więcej niż {horizon} do rozstrzygnięcia i cena nie uciekła ponad {staleness} od jego wejścia → agent kupuje za {size} wynik, który lider trzyma, płaci za udział najwyżej {maxPrice} i {slippage} ponad ask, prowadzi najwyżej {copies} kopie na lidera i {cap} otwarte łącznie, zostawia {floor} do wydania, trzyma mimo drobnych redukcji i sprzedaje całą kopię, gdy ten lider zdejmie {trim} swojego szczytu — albo odwróci pozycję, albo zamknie.",
+		"sourceHash": "0eb49b2c"
 	},
 	"wallet.sim.summary.flowAny": {
 		"translation": "niezależnie od tego, jak wygląda jego ostatni przepływ,",
@@ -1020,76 +1020,76 @@
 		"sourceHash": "b7ea685a"
 	},
 	"wallet.page.description": {
-		"translation": "Przewodnik po ludzku po bocie wallet-copy ogsfrompoly — tym, który lustrzanie kopiuje dwóch ręcznie wybranych skutecznych traderów: kiedy kopiuje, kiedy odmawia, kiedy wychodzi i którymi liczbami naprawdę da się kręcić.",
-		"sourceHash": "41693a6a"
+		"translation": "Przewodnik po ludzku po agencie wallet-copy ogsfrompoly, tym, który lustrzanie kopiuje dwóch ręcznie wybranych skutecznych traderów. Kiedy kopiuje. Kiedy odmawia. Kiedy wychodzi. I którymi liczbami da się kręcić.",
+		"sourceHash": "661411e3"
 	},
 	"wallet.page.sections.intro": {
-		"translation": "Obok publikowanego track recordu drugi mały bot lustrzanie kopiuje dwóch\npojedynczych traderów — portfele, które nasz test skuteczności już oznaczył,\nawansowane z tej samej tabeli liderów, na której stoją cotygodniowe raporty.\nTam, gdzie [cluster copy]({clusterHref}) czeka, aż zgodzi się *grupa*\nskutecznych portfeli, ten zadaje inne pytanie: **co robi jeden sprawdzony\ntrader, kiedy naprawdę mówi serio?**\n\nWyobraź sobie **bardzo cierpliwego czeladnika** chodzącego za dwoma mistrzami.\nIgnoruje niemal wszystko, co robią. Dopiero gdy jeden z nich włoży poważne\npieniądze w świeży zakład, stawia jedną małą własną kopię — 5 $, na osobnym\nkoncie, za własnym wyłącznikiem.\n\nKażda liczba na tej stronie to aktualne ustawienie dla rynków **{market}**\nwedług stanu na **{asOf}**, odczytane z `config/wallet_copy.yml`.\nNie wiesz, którego z dwóch botów szukasz? [Wybieracz]({hubHref}) porównuje je\nobok siebie.",
-		"sourceHash": "661d5952"
+		"translation": "Obok publikowanej historii wyników chodzi drugi mały agent. Lustrzanie kopiuje\ndwóch pojedynczych traderów — portfele, które nasz test skuteczności już\noznaczył, awansowane z tej samej tabeli liderów, na której stoją cotygodniowe\nraporty. Tam, gdzie [cluster copy]({clusterHref}) czeka, aż zgodzi się *grupa*\nskutecznych portfeli, ten zadaje inne pytanie: **co robi jeden sprawdzony\ntrader, kiedy naprawdę mówi serio?**\n\nWyobraź sobie **bardzo cierpliwego czeladnika** chodzącego za dwoma mistrzami.\nIgnoruje niemal wszystko, co robią. Potem jeden z nich wkłada poważne pieniądze\nw świeży zakład, a agent stawia jedną małą własną kopię — 5 $, na osobnym\nkoncie, za własnym wyłącznikiem.\n\nKażda liczba na tej stronie to aktualne ustawienie dla rynków **{market}**\nwedług stanu na **{asOf}**, odczytane z `config/wallet_copy.yml`.\nNie wiesz, którego z dwóch agentów szukasz? [Wybieracz]({hubHref}) porównuje ich\nobok siebie.",
+		"sourceHash": "66dee6aa"
 	},
 	"wallet.page.sections.storyHeading": {
 		"translation": "## Cała historia, krok po kroku",
 		"sourceHash": "8e715273"
 	},
 	"wallet.page.sections.step1": {
-		"translation": "### 1. Podąża za dwoma traderami, nie za tłumem\n\nDwa kopiowane portfele zostały wybrane z naszej własnej tabeli skuteczności —\ntej samej zmierzonej, sklasyfikowanej listy, o której raportuje reszta strony.\nTutaj są zawsze tylko **leader-a** i **leader-b**, czyli dosłownie ich\netykietami z configu. Ich adresy nie są nigdy publikowane: publiczne wskazanie\nskutecznego portfela zaprosiłoby cały rynek do front-runningu, a obserwowanie,\njak oni obserwują nas, wyciekłoby też nasze własne pozycje.\n\nJeden sygnał to tutaj działania jednego portfela. Nie ma kworum do odczekania\nani tłumu do policzenia — i właśnie dlatego każda pozostała kontrola działa\ninaczej niż na [stronie clustera]({clusterHref}).",
-		"sourceHash": "79ed58d9"
+		"translation": "### 1. Podąża za dwoma traderami, nie za tłumem\n\nDwa kopiowane portfele wybraliśmy z naszej własnej tabeli skuteczności — tej\nsamej zmierzonej, sklasyfikowanej listy, o której raportuje reszta strony.\nTutaj są zawsze tylko **leader-a** i **leader-b**, czyli dosłownie ich etykietami\nz konfiguracji. Nigdy nie publikujemy ich adresów. Wskaż skuteczny portfel\npublicznie, a cały rynek zacznie wyprzedzać jego zlecenia — a obserwowanie, jak\noni obserwują nas, wyciekłoby też nasze własne pozycje.\n\nJeden sygnał to tutaj działania jednego portfela. Nie ma kworum do odczekania\nani tłumu do policzenia. Właśnie dlatego każda pozostała kontrola działa inaczej\nniż na [stronie clustera]({clusterHref}).",
+		"sourceHash": "f4dca315"
 	},
 	"wallet.page.sections.step2": {
-		"translation": "### 2. Rusza się tylko, gdy lider mówi serio\n\nKażdy lider ma **próg przekonania** (`min_leader_notional_usdc`): bot kopiuje\nzakład dopiero, gdy własna pozycja lidera na nim sięgnie progu. A próg jest\nustawiany *per lider*, względem jego własnej historii, bo ta sama kwota nie\nznaczy dwa razy tego samego.\n\nZmierzone na 90 dniach: pozycje leader-a mają **medianę 285 $** i 90. percentyl\n1 729 $ — próg **500 $** wybiera ich najbardziej przekonaną jedną trzecią, a\nnasza kopia za 5 $ to około 1% tego, co stawiają. Mediana leader-b to **5 $**;\nprzy progu 500 $ ta zapadka strzelałaby mniej więcej raz na kwartał, czytając\nsię jak uzbrojony lider, więc ich próg to **100 $**. Pokrętło, które wygląda na\nuzbrojone i nigdy nie strzela, jest gorsze niż brak pokrętła.\n\nPróg strzela **raz na świeży zakład**, w chwili pierwszego przekroczenia.\nDokupowanie nigdy go nie przeładowuje, a zakład staje się znów świeży dopiero,\ngdy lider całkiem go zamknie — albo odwróci stronę.",
-		"sourceHash": "cbe7d29d"
+		"translation": "### 2. Rusza się tylko, gdy lider mówi serio\n\nKażdy lider ma **próg przekonania** (`min_leader_notional_usdc`). Agent kopiuje\nzakład dopiero, gdy własna pozycja lidera na nim sięgnie progu. Próg stoi *per\nlider*, względem jego własnej historii, bo ta sama kwota nie znaczy dwa razy\ntego samego.\n\nZmierzone na 90 dniach: pozycje leader-a mają **medianę 285 $** i 90. percentyl\n1 729 $. Próg **500 $** wybiera ich najbardziej przekonaną jedną trzecią, a nasza\nkopia za 5 $ to około 1% tego, co stawiają. Mediana leader-b to **5 $**. Przy\nprogu 500 $ ta zapadka strzelałaby mniej więcej raz na kwartał, czytając się jak\nuzbrojony lider, więc ich próg to **100 $**. Pokrętło, które wygląda na\nuzbrojone i nigdy nie strzela, jest gorsze niż brak pokrętła.\n\nPróg strzela **raz na świeży zakład**, w chwili pierwszego przekroczenia.\nDokupowanie nigdy go nie przeładowuje. Zakład staje się znów świeży dopiero, gdy\nlider całkiem go zamknie — albo odwróci stronę.",
+		"sourceHash": "fcb75df2"
 	},
 	"wallet.page.sections.step3": {
-		"translation": "### 3. Liczy to, co lider trzyma, nie to, co kliknął\n\nNa rynku z dwoma wynikami kupno jednej strony i sprzedaż drugiej to ta sama\nopinia. Przekonanie mierzy się więc w tym, co lider **ostatecznie trzyma**, po\ncenie *tego* wyniku — nie w słowach na kwicie transakcji.\n\nRóżnica nie jest mała. Sprzedaż 500 udziałów niemal bezwartościowego wyniku po\npół centa zbiera około **2 $** gotówki — ale to mniej więcej **498 $**\nprzekonania co do *drugiego* wyniku i tak bot to dziś liczy. Cena wejścia też\nidzie za trzymanym wynikiem: zanim to naprawiono, pozycja zbudowana sprzedażą\npotrafiła pokazywać dryf ceny w tysiącach procent i być odrzucana jako\nnieświeża — błąd, który odrzucał dokładnie te transakcje, do których kopiowania\nistniał.",
-		"sourceHash": "e292e912"
+		"translation": "### 3. Liczy to, co lider trzyma, nie to, co kliknął\n\nNa rynku z dwoma wynikami kupno jednej strony i sprzedaż drugiej to ta sama\nopinia. Agent mierzy więc przekonanie w tym, co lider **ostatecznie trzyma**, po\ncenie *tego* wyniku — nie w słowach na kwicie transakcji.\n\nRóżnica nie jest mała. Sprzedaż 500 udziałów niemal bezwartościowego wyniku po\npół centa zbiera około **2 $** gotówki. To zarazem mniej więcej **498 $**\nprzekonania co do *drugiego* wyniku i tak agent to dziś liczy. Cena wejścia też\nidzie za trzymanym wynikiem. Zanim to naprawiliśmy, pozycja zbudowana sprzedażą\npotrafiła pokazywać dryf ceny w tysiącach procent i lądować w odrzuconych jako\nnieświeża — błąd, który odrzucał dokładnie te transakcje, do których kopiowania\nistniał.",
+		"sourceHash": "98c7a32d"
 	},
 	"wallet.page.sections.step4": {
-		"translation": "### 4. Odmawia liderowi grającemu obie strony\n\nZapadka, która najczęściej odmówi wejścia. Przed skopiowaniem bot patrzy na\nprzepływ lidera na tym zakładzie z ostatnich **48 godzin** i porównuje kupno ze\nsprzedażą (mniejsze ÷ większe, w dolarach). Powyżej **0,5**\n(`max_wallet_two_sided_ratio`) odmawia: portfel grający obie strony tego samego\nzakładu robi rynek, a nie wyraża pogląd — a każde odwrócenie, za którym pójdzie\nkopiujący, to pełna, opłacona podróż w obie strony. Na bocie clustera jedno\nżywe podążenie za odwróceniem wyceniono na **0,25 $ na pozycji 5 $ — około 5% —\nżeby skończyć na krótko w tym, w czym przed chwilą było się długo**.\n\nJedna uczciwa subtelność: puste okno to **„nie ma czego zważyć\"**, a nie czysty\nwynik zero. Gdy 48 godzin nie zawiera żadnego przepływu do zmierzenia, zapadka\nsię wycofuje i mówi, że pomiaru nie było, zamiast udawać, że lider zdał.\nRozróżnienie dodano, gdy prawdziwe odpuszczenia pokazały, że większość\nwczesnych odczytów była dokładnie tym: zerami nad pustymi oknami, przebranymi\nza dowody.",
-		"sourceHash": "20a7460d"
+		"translation": "### 4. Odmawia liderowi grającemu obie strony\n\nZapadka, która najczęściej odmówi wejścia. Przed skopiowaniem agent patrzy na\nprzepływ lidera na tym zakładzie z ostatnich **48 godzin** i porównuje kupno ze\nsprzedażą (mniejsze ÷ większe, w dolarach). Powyżej **0,5**\n(`max_wallet_two_sided_ratio`) odmawia. Portfel grający obie strony tego samego\nzakładu robi rynek, a nie wyraża pogląd — a każde odwrócenie, za którym pójdzie\nkopiujący, to pełna, opłacona podróż w obie strony. Na agencie clustera jedno\nżywe podążenie za odwróceniem kosztowało **0,25 $ na pozycji 5 $ — około 5% —\nżeby skończyć na krótko w tym, w czym przed chwilą było się długo**.\n\nJedna uczciwa subtelność: puste okno to **„nie ma czego zważyć\"**, a nie czysty\nwynik zero. Gdy 48 godzin nie zawiera żadnego przepływu do zmierzenia, zapadka\nsię wycofuje i mówi, że pomiaru nie było, zamiast udawać, że lider zdał.\nRozróżnienie dodaliśmy, gdy prawdziwe odpuszczenia pokazały, że większość\nwczesnych odczytów była dokładnie tym: zerami nad pustymi oknami, przebranymi\nza dowody.",
+		"sourceHash": "ce269a1f"
 	},
 	"wallet.page.sections.step5": {
-		"translation": "### 5. Zwykłe kontrole bezpieczeństwa\n\nReszta bramki wejściowej to ta sama rodzina pytań, które zadaje bot clustera, w\ntym samym duchu:\n\n- **„Czy jest tu z kim handlować?\"** — poniżej **1 000 $** płynności\n  (`min_liquidity_usdc`) odpuszcza.\n- **„Czy ten rynek zaraz się nie kończy?\"** — poniżej **1 godziny** do\n  rozstrzygnięcia (`min_seconds_to_resolution`) odpuszcza.\n- **„Czy cena nie uciekła już liderowi?\"** — odpuszcza, jeśli ask odjechał od\n  efektywnego wejścia lidera o więcej niż **3%** (`staleness_pct`) *i* o więcej\n  niż **dwa kroki cenowe** (`staleness_min_ticks`). Ruch, którego siatka rynku\n  nie umie podzielić, to szum, nie informacja.\n- **„Czy udział nie jest za drogi?\"** — nigdy nie płaci więcej niż **0,95 $**\n  (`max_entry_price`). Na szczycie zakresu cen kopia ryzykuje 5 $, żeby wygrać\n  centy, a jedno złe rozstrzygnięcie wymazuje setki wygranych.\n- **„Czy nie kopiuję już tego lidera wystarczająco?\"** — najwyżej **2 otwarte\n  kopie na lidera** (`max_open_copies_per_leader`), żeby jeden lider w amoku\n  nie zjadł całego budżetu. Ta zapadka nie ma odpowiednika w clusterze.\n- **„Czy mam miejsce i minimum?\"** — najwyżej **20 $** otwarte łącznie\n  (`exposure_cap_usdc`), nigdy nie wydając konta poniżej **5 $**\n  (`working_capital_floor_usdc`).",
-		"sourceHash": "8b913483"
+		"translation": "### 5. Zwykłe kontrole bezpieczeństwa\n\nReszta bramki wejściowej to ta sama rodzina pytań, które zadaje agent clustera,\nw tym samym duchu:\n\n- **„Czy jest tu z kim handlować?\"** — poniżej **1 000 $** płynności\n  (`min_liquidity_usdc`) odpuszcza.\n- **„Czy ten rynek zaraz się nie kończy?\"** — poniżej **1 godziny** do\n  rozstrzygnięcia (`min_seconds_to_resolution`) odpuszcza.\n- **„Czy cena nie uciekła już liderowi?\"** — odpuszcza, jeśli ask odjechał od\n  efektywnego wejścia lidera o więcej niż **3%** (`staleness_pct`) *i* o więcej\n  niż **dwa kroki cenowe** (`staleness_min_ticks`). Ruch, którego siatka rynku\n  nie umie podzielić, to szum, nie informacja.\n- **„Czy udział nie jest za drogi?\"** — nigdy nie płaci więcej niż **0,95 $**\n  (`max_entry_price`). Na szczycie zakresu cen kopia ryzykuje 5 $, żeby wygrać\n  centy, a jedno złe rozstrzygnięcie wymazuje setki wygranych.\n- **„Czy nie kopiuję już tego lidera wystarczająco?\"** — najwyżej **2 otwarte\n  kopie na lidera** (`max_open_copies_per_leader`), żeby jeden lider w amoku\n  nie zjadł całego budżetu. Ta zapadka nie ma odpowiednika w clusterze.\n- **„Czy mam miejsce i minimum?\"** — najwyżej **20 $** otwarte łącznie\n  (`exposure_cap_usdc`), nigdy nie wydając konta poniżej **5 $**\n  (`working_capital_floor_usdc`).",
+		"sourceHash": "d04f5d12"
 	},
 	"wallet.page.sections.step6": {
-		"translation": "### 6. Czego celowo nie sprawdza\n\nTrzech zapadek z bota clustera **tu nie ma** — i uczciwość w tej sprawie liczy\nsię bardziej niż symetria:\n\n- **Brak zapadki prowizyjnej.** Najdroższa lekcja bota clustera — prowizja\n  giełdy od udziału była 77% jego wczesnych strat — dała tam sufit prowizji,\n  który sprowadza się do **ceny minimalnej 0,60 $**. Ten bot takiej zapadki nie\n  ma: 7-centowy wynik, którego jego rodzeństwo by odmówiło, przechodzi gładko.\n  Zakład brzmi: własne przekonanie lidera już odfiltrowuje tanie losy na\n  loterię; ten zakład nie jest jeszcze dowiedziony.\n- **Brak okna odwróceń.** Bot clustera odmawia tłumowi, którego członkowie\n  właśnie zmienili stronę. Tutaj tę rolę dla pojedynczego portfela gra zapadka\n  dwustronnego przepływu.\n- **Brak kontroli gazu przy wejściu.** Relayer giełdy płaci za rozliczenie, a\n  konto handlowe strukturalnie nie trzyma gazu w ogóle — zapadka gazowa na\n  ścieżce wejścia odmawiała *każdego* wejścia, zanim ją usunięto. Gaz to\n  kwestia wypłat: cotygodniowy sweep zostawia **2 POL** (`gas_reserve_pol`).",
-		"sourceHash": "58361e11"
+		"translation": "### 6. Czego celowo nie sprawdza\n\nTrzech zapadek z agenta clustera **tu nie ma**. Uczciwość w tej sprawie liczy\nsię bardziej niż symetria:\n\n- **Brak zapadki prowizyjnej.** Najdroższa lekcja agenta clustera — prowizja\n  giełdy od udziału była 77% jego wczesnych strat — dała tam sufit prowizji,\n  który sprowadza się do **ceny minimalnej 0,60 $**. Ten agent takiej zapadki\n  nie ma. 7-centowy wynik, którego jego rodzeństwo by odmówiło, przechodzi\n  gładko. Zakładamy, że własne przekonanie lidera już odfiltrowuje tanie losy na\n  loterię. Ten zakład nie jest jeszcze dowiedziony.\n- **Brak okna odwróceń.** Agent clustera odmawia tłumowi, którego członkowie\n  właśnie zmienili stronę. Tutaj tę rolę dla pojedynczego portfela gra zapadka\n  dwustronnego przepływu.\n- **Brak kontroli gazu przy wejściu.** Relayer giełdy płaci za rozliczenie, a\n  konto handlowe strukturalnie nie trzyma gazu. Zapadka gazowa na ścieżce\n  wejścia odmawiała *każdego* wejścia, zanim ją usunęliśmy. Gaz to kwestia\n  wypłat: cotygodniowe zgarnianie zostawia **2 POL** (`gas_reserve_pol`).",
+		"sourceHash": "996b089d"
 	},
 	"wallet.page.sections.step7": {
-		"translation": "### 7. Bilet, który nie może istnieć, odmawia startu\n\nSamo zlecenie ma ten sam kształt co u bota clustera: **fill-or-kill**, z\nlimitem bieżącego asku plus **1%** miejsca (`slippage_pct`), ale nigdy mniej\nniż **dwa kroki cenowe** (`slippage_min_ticks`), przyciągniętym do siatki cen\nrynku. Wypełnia się w całości albo ginie; ubite zlecenie nie jest ponawiane.\n\nGiełdowe minimum 5 udziałów jest jednak obsługiwane inaczej — **przy starcie,\nnie per zlecenie**. Serwis wylicza najgorszy limit, na jaki pozwalają jego\nwłasne zapadki (z sufitem 0,95 $ i dwoma krokami miejsca to 0,97 $), i w ogóle\nodmawia startu, jeśli bilet nie kupi tam pięciu udziałów. Poniżej **4,85 $** na\nzakład bot nie wystartuje — config, który nie umie handlować, powinien wyłożyć\nsię raz, głośno, przy starcie, a nie raz na każdy sygnał na zawsze.",
-		"sourceHash": "b8aea255"
+		"translation": "### 7. Bilet, który nie może istnieć, odmawia startu\n\nZlecenie ma ten sam kształt co u agenta clustera: **fill-or-kill**, z limitem\nbieżącego asku plus **1%** miejsca (`slippage_pct`), ale nigdy mniej niż **dwa\nkroki cenowe** (`slippage_min_ticks`), przyciągniętym do siatki cen rynku.\nWypełnia się w całości albo ginie. Ubitego zlecenia nikt nie ponawia.\n\nGiełdowe minimum 5 udziałów działa inaczej — **przy starcie, nie per zlecenie**.\nSerwis wylicza najgorszy limit, na jaki pozwalają jego własne zapadki (z sufitem\n0,95 $ i dwoma krokami miejsca to 0,97 $), i odmawia startu, jeśli bilet nie\nkupi tam pięciu udziałów. Poniżej **4,85 $** na zakład agent nie wystartuje.\nKonfiguracja, która nie umie handlować, powinna wyłożyć się raz, głośno, przy\nstarcie — a nie raz na każdy sygnał na zawsze.",
+		"sourceHash": "e0a7b8b8"
 	},
 	"wallet.page.sections.step8": {
-		"translation": "### 8. Trzyma mimo redukcji i wychodzi przy połowie\n\nWyjścia to miejsce, gdzie ten bot najbardziej różni się od rodzeństwa. Bot\nclustera wychodzi przy *pierwszej* sprzedaży kogokolwiek z tłumu. Ten jest\ncelowo trudniejszy do wytrząśnięcia:\n\n- Lider **redukujący** pozycję to informacja, nie wyjście. Bot to zapisuje i\n  trzyma.\n- Gdy skumulowana sprzedaż lidera sięgnie **50% jego szczytowej pozycji**\n  (`trim_close_fraction`), bot zamyka **całą** swoją nogę naraz. Mierzone\n  względem szczytu, nie per transakcja — lider upuszczający po 20% naraz nigdy\n  nie uruchomiłby reguły per transakcja. I zawsze cała noga, nigdy kawałek:\n  proporcjonalny okrawek może spaść poniżej giełdowego minimum 5 udziałów i\n  stać się niesprzedawalny.\n- Lider schodzący do **zera** albo **odwracający** się na drugą stronę zamyka\n  nogę natychmiast. Odwrócenie zaczyna też świeży zakład — bot może zamknąć i\n  wejść po drugiej stronie jednym tchem, dokładnie jak lider.\n- Lider **usunięty lub wyłączony w configu** ma nogi zamykane w ciągu minuty.\n  Rynek, który się **rozstrzyga**, jest realizowany.\n\n*Kształt tego jest przyspawany. Jedyna liczba wyjścia do kręcenia to próg\nredukcji.*",
-		"sourceHash": "b9a0655c"
+		"translation": "### 8. Trzyma mimo redukcji i wychodzi przy połowie\n\nWyjścia to miejsce, gdzie ten agent najbardziej różni się od rodzeństwa. Agent\nclustera wychodzi przy *pierwszej* sprzedaży kogokolwiek z tłumu. Ten jest\ntrudniejszy do wytrząśnięcia z premedytacją:\n\n- Lider **redukujący** pozycję to informacja, nie wyjście. Agent to zapisuje i\n  trzyma.\n- Gdy skumulowana sprzedaż lidera sięgnie **50% jego szczytowej pozycji**\n  (`trim_close_fraction`), agent zamyka **całą** swoją kopię naraz. Mierzone\n  względem szczytu, nie per transakcja — lider upuszczający po 20% naraz nigdy\n  nie uruchomiłby reguły per transakcja. I zawsze cała kopia, nigdy kawałek:\n  proporcjonalny okrawek może spaść poniżej giełdowego minimum 5 udziałów i\n  stać się niesprzedawalny.\n- Lider schodzący do **zera** albo **odwracający** się na drugą stronę zamyka\n  kopię natychmiast. Odwrócenie zaczyna też świeży zakład — agent może zamknąć i\n  wejść po drugiej stronie jednym tchem, dokładnie jak lider.\n- Usuń albo wyłącz lidera w konfiguracji, a agent zamknie jego kopie w ciągu\n  minuty. Gdy rynek się **rozstrzyga**, agent go realizuje.\n\n*Kształt tego jest przyspawany. Jedyna liczba wyjścia do kręcenia to próg\nredukcji.*",
+		"sourceHash": "4d3ff191"
 	},
 	"wallet.page.sections.step9": {
-		"translation": "### 9. Nieudane wyjście trafia do kolejki, nie do niepamięci\n\nZlecenie wyjścia może zginąć tak samo jak wejście. Każde dostaje **trzy\npróby**, śledzone per pozycja w trwałej kolejce — jedna zablokowana noga nie\nmoże blokować pozostałych — a jeśli trzecia zawiedzie, bot mówi to głośno,\nzamiast ucichnąć. Rynek rozstrzygnięty, ale jeszcze nie zrealizowany, jest w\nksięgach oznaczony jako **niewypłacony** i nigdy nie liczy się jako gotówka,\nktórej nie ma.",
-		"sourceHash": "d5972989"
+		"translation": "### 9. Nieudane wyjście trafia do kolejki, nie do niepamięci\n\nZlecenie wyjścia może zginąć tak samo jak wejście. Każde dostaje **trzy\npróby**, śledzone per pozycja w trwałej kolejce — jedna zablokowana kopia nie\nmoże blokować pozostałych — a jeśli trzecia zawiedzie, agent mówi to głośno,\nzamiast ucichnąć. Rynek rozstrzygnięty, ale jeszcze nie zrealizowany, siedzi w\nksięgach jako **niewypłacony**. Księgi nigdy nie liczą gotówki, której nie mają.",
+		"sourceHash": "e9852a0b"
 	},
 	"wallet.page.sections.step10": {
 		"translation": "### 10. Wyłącznik zatrzymuje kupowanie, nigdy sprzedawanie\n\nW każdej chwili wyłącznik wstrzymuje nowe wejścia, **podczas gdy wyjścia,\nponowienia i rozliczenia dalej działają** — więc zatrzymanie nigdy nie może\nosierocić otwartej pozycji. Przestaje brać ryzyko; nie porzuca go.",
 		"sourceHash": "eaa6c38d"
 	},
 	"wallet.page.sections.step11": {
-		"translation": "### 11. Jego pieniądze nie mogą dotknąć pieniędzy drugiego bota\n\nWallet copy handluje na **osobnym koncie z własnym kluczem**, z własnymi\nksięgami, własnym kanałem alertów, własnym wyłącznikiem i własnym serwisem.\nBłąd wallet-copy może wydać tylko pieniądze wallet-copy; żaden bot nie umie\nnawet czytać zapisów drugiego. Jedyne, co celowo dzielą, to cel cotygodniowego\nsweepu zysku — nazwany w configu jako `profit_destination` za\n`destination_allowlist`, z progiem kurzu **1 $** (`dust_threshold_usdc`); same\nadresy nie są nigdy publikowane.",
-		"sourceHash": "7903e26f"
+		"translation": "### 11. Jego pieniądze nie mogą dotknąć pieniędzy drugiego agenta\n\nWallet copy handluje na **osobnym koncie z własnym kluczem**, z własnymi\nksięgami, własnym kanałem alertów, własnym wyłącznikiem i własnym serwisem.\nBłąd wallet-copy może wydać tylko pieniądze wallet-copy. Żaden z agentów nie\numie nawet czytać zapisów drugiego. Jedyne, co celowo dzielą, to cel\ncotygodniowego zgarniania zysku — nazwany w konfiguracji jako\n`profit_destination` za `destination_allowlist`, z progiem kurzu **1 $**\n(`dust_threshold_usdc`). Samych adresów nigdy nie publikujemy.",
+		"sourceHash": "d5001446"
 	},
 	"wallet.page.sections.step12": {
-		"translation": "### 12. Gdzie jest dzisiaj\n\nFunkcja weszła na żywo **2026-08-11**. Pierwsze dni spędziła, poprawnie\nkopiując **nic** — przy tak wysokich progach cisza jest stanem oczekiwanym, a\nnarzędzia operacyjne istnieją właśnie po to, by dowodzić, że cisza to zdrowie,\nnie awaria. Pierwsza prawdziwa pozycja przyszła w ciągu kilku dni. To cała\ndotychczasowa żywa historia: czytaj każdą liczbę na tej stronie jak wersję 1,\nargumentowaną pomiarem, ale ledwo sprawdzoną w produkcji.",
-		"sourceHash": "b7f4f96c"
+		"translation": "### 12. Gdzie jest dzisiaj\n\nFunkcja weszła na żywo **2026-08-11**. Pierwsze dni spędziła, poprawnie kopiując\n**nic**. Przy tak wysokich progach cisza jest stanem oczekiwanym, a narzędzia\noperacyjne istnieją po to, by dowodzić, że cisza to zdrowie, nie awaria.\nPierwsza prawdziwa pozycja przyszła w ciągu kilku dni. To cała dotychczasowa\nżywa historia. Czytaj każdą liczbę na tej stronie jak wersję 1: argumentowaną\npomiarem, ledwo sprawdzoną w produkcji.",
+		"sourceHash": "2cf42b80"
 	},
 	"wallet.page.sections.hardWired": {
-		"translation": "## Co jest przyspawane i nie jest ustawieniem\n\n- **Próg przekonania strzela raz na świeży zakład.** Dokupowanie nigdy nie\n  przeładowuje; resetuje go tylko pełne zamknięcie albo odwrócenie.\n- **Pozycje liczą się w trzymanym wyniku.** Kupno jednej strony i sprzedaż\n  drugiej to ta sama opinia, znormalizowana zanim spojrzy na nie jakakolwiek\n  reguła.\n- **Wyjścia zamykają całą nogę, zawsze** — na progu redukcji, przy odwróceniu,\n  przy zamknięciu, przy usunięciu z configu albo przy rozstrzygnięciu. Nie ma\n  częściowego zamknięcia, take-profitu ani stop-lossa do strojenia.\n- **Jedna noga na zakład na lidera.** Ten sam rynek skopiowany od obu liderów\n  to dwie niezależne nogi.\n- **Wejście to zlecenie fill-or-kill wycenione na siatce giełdy**, a giełdowe\n  minimum 5 udziałów jest egzekwowane przy starcie, nie per zlecenie.\n- **Wyłącznie rynki makro**, kwalifikowane tym samym katalogiem co wszystko\n  inne na tej stronie.\n- **Wyłącznik oszczędza wyjścia.** Wstrzymać można tylko wejścia.\n\n**Czemu taki podział?** Z tego samego powodu co na stronie clustera: progi to\nliczby, a liczby można bezpiecznie wystawić. Sama logika kopiowania — co\nliczy się jako przekonanie, jak działają wyjścia — żyje w kodzie, żeby jedna\nnieuważna linijka YAML-a nie mogła po cichu wykoleić strategii.",
-		"sourceHash": "5b43a5cb"
+		"translation": "## Co jest przyspawane i nie jest ustawieniem\n\n- **Próg przekonania strzela raz na świeży zakład.** Dokupowanie nigdy nie\n  przeładowuje; resetuje go tylko pełne zamknięcie albo odwrócenie.\n- **Agent liczy pozycje w trzymanym wyniku.** Kupno jednej strony i sprzedaż\n  drugiej to ta sama opinia, znormalizowana zanim spojrzy na nie jakakolwiek\n  reguła.\n- **Wyjścia zamykają całą kopię, zawsze** — na progu redukcji, przy odwróceniu,\n  przy zamknięciu, przy usunięciu z konfiguracji albo przy rozstrzygnięciu. Nie\n  ma częściowego zamknięcia, take-profitu ani stop-lossa do strojenia.\n- **Jedna kopia na zakład na lidera.** Ten sam rynek skopiowany od obu liderów\n  to dwie niezależne kopie.\n- **Wejście to zlecenie fill-or-kill wycenione na siatce giełdy**, a giełdowe\n  minimum 5 udziałów jest egzekwowane przy starcie, nie per zlecenie.\n- **Wyłącznie rynki makro**, kwalifikowane tym samym katalogiem co wszystko\n  inne na tej stronie.\n- **Wyłącznik oszczędza wyjścia.** Wstrzymać można tylko wejścia.\n\n**Czemu taki podział?** Z tego samego powodu co na stronie clustera: progi to\nliczby, a liczby można bezpiecznie wystawić. Sama logika kopiowania — co liczy\nsię jako przekonanie, jak działają wyjścia — żyje w kodzie. Jedna nieuważna\nlinijka YAML-a nie może wykoleić strategii.",
+		"sourceHash": "4fd74a46"
 	},
 	"wallet.page.sections.notClaiming": {
-		"translation": "## Czego jeszcze nie twierdzimy\n\n- **Żywa historia ma kilka dni.** Funkcja weszła na żywo 2026-08-11 i otworzyła\n  jednocyfrową liczbę pozycji. Każda zapadka na tej stronie jest argumentowana\n  pomiarami sprzed uzbrojenia; niemal żadna nie ma znaczącej historii strzałów\n  w produkcji.\n- **Nie ma zapadki prowizyjnej i to jest zakład, nie dowód.** Prowizyjna lekcja\n  bota clustera (77% wczesnych strat) nie ma tu strażnika. Jeśli przekonanie\n  liderów nie odfiltruje tanich wyników tak, jak oczekujemy, ta strona to\n  powie — po księgach.\n- **Wczesne dowody zapadki dwustronnej były cienkie.** Większość jej pierwszych\n  odczytów to zera nad pustymi oknami pomiaru; payload odróżnia dziś „zmierzone\n  czysto\" od „nie ma czego zważyć\", ale sama zapadka nie obroniła jeszcze\n  swojego progu na prawdziwym ruchu.\n- **Realizacja nie jest automatyczna.** Rozstrzygnięta wygrana siedzi w\n  księgach jako zamknięta, ale jawnie *niewypłacona*, dopóki nie zostanie\n  zrealizowana — księgi odmawiają liczenia pieniędzy, które nie przyszły.",
-		"sourceHash": "04fa6d2f"
+		"translation": "## Czego jeszcze nie twierdzimy\n\n- **Żywa historia ma kilka dni.** Funkcja weszła na żywo 2026-08-11 i otworzyła\n  jednocyfrową liczbę pozycji. Każdą zapadkę na tej stronie argumentujemy\n  pomiarami sprzed uzbrojenia. Niemal żadna nie ma znaczącej historii strzałów\n  w produkcji.\n- **Nie ma zapadki prowizyjnej i to jest zakład, nie dowód.** Prowizyjna lekcja\n  agenta clustera (77% wczesnych strat) nie ma tu strażnika. Jeśli przekonanie\n  liderów nie odfiltruje tanich wyników tak, jak oczekujemy, ta strona to\n  powie — po księgach.\n- **Wczesne dowody zapadki dwustronnej były cienkie.** Większość jej pierwszych\n  odczytów to zera nad pustymi oknami pomiaru. Dane sygnału oddzielają dziś\n  „zmierzone czysto\" od „nie ma czego zważyć\", ale sama zapadka nie obroniła\n  jeszcze swojego progu na prawdziwym ruchu.\n- **Realizacja nie jest automatyczna.** Rozstrzygnięta wygrana siedzi w\n  księgach jako zamknięta, ale jawnie *niewypłacona*, dopóki nie zostanie\n  zrealizowana — księgi odmawiają liczenia pieniędzy, które nie przyszły.",
+		"sourceHash": "9466c665"
 	},
 	"wallet.page.sections.notThis": {
-		"translation": "## Czym ta strona nie jest\n\nTo parametry operacyjne naszego własnego małego bota, publikowane w tym samym\nduchu co reszta track recordu. Nie są poradą, nie są serwisem sygnałowym i nie\nsą twierdzeniem, że lustrzane kopiowanie skutecznych traderów będzie dalej\ndziałać.\n\nŻaden z zaangażowanych portfeli — dwaj liderzy, własne konto handlowe bota ani\nadres wypłat — nie jest nigdy publikowany nigdzie na tej stronie. Oglądanie\nktóregokolwiek z nich na żywo odsłaniałoby otwarte pozycje, czyli dokładnie\nto, czemu [polityka ujawniania]({methodologyHref}) ma zapobiegać.",
-		"sourceHash": "ff6d2c88"
+		"translation": "## Czym ta strona nie jest\n\nTo parametry operacyjne naszego własnego małego agenta, publikowane w tym samym\nduchu co reszta historii wyników. Nie są poradą, nie są serwisem sygnałowym i\nnie są twierdzeniem, że lustrzane kopiowanie skutecznych traderów będzie dalej\ndziałać.\n\nNigdy nie publikujemy żadnego z zaangażowanych portfeli — dwóch liderów,\nwłasnego konta handlowego agenta ani adresu wypłat. Popatrz na którykolwiek z\nnich na żywo, a zobaczysz otwarte pozycje — czyli dokładnie to, czemu\n[polityka ujawniania]({methodologyHref}) ma zapobiegać.",
+		"sourceHash": "c806924e"
 	},
 	"wallet.page.md.inOneSentence": {
 		"translation": "W jednym zdaniu",
@@ -1100,8 +1100,8 @@
 		"sourceHash": "3db32689"
 	},
 	"wallet.page.md.knobsBlurb": {
-		"translation": "Strona renderuje je jako suwaki, którymi możesz kręcić i patrzeć, jak decyzja\nbota się przełącza. W markdownie zostaje sama tabela:",
-		"sourceHash": "e859566c"
+		"translation": "Strona renderuje je jako suwaki, którymi możesz kręcić i patrzeć, jak decyzja\nagenta się przełącza. W markdownie zostaje sama tabela:",
+		"sourceHash": "afec1924"
 	},
 	"wallet.page.md.tableRole": {
 		"translation": "Rola w historii",
@@ -1116,7 +1116,7 @@
 		"sourceHash": "8677d97e"
 	},
 	"wallet.page.md.gasLabel": {
-		"translation": "Gaz zostawiany przed każdą wypłatą (tylko sweep, nie zapadka wejścia)",
+		"translation": "Gaz zostawiany przed każdą wypłatą (tylko zgarnianie, nie zapadka wejścia)",
 		"sourceHash": "6b6f33e9"
 	},
 	"wallet.page.md.payoutLabel": {
@@ -1136,15 +1136,15 @@
 		"sourceHash": "b53e8f76"
 	},
 	"wallet.page.ui.tryIt": {
-		"translation": "Wypróbuj — decyzja bota, na żywo",
-		"sourceHash": "97b38b75"
+		"translation": "Wypróbuj — decyzja agenta, na żywo",
+		"sourceHash": "9599b5b9"
 	},
 	"wallet.page.ui.defaultsNote": {
-		"translation": "domyślne = config {market}, {asOf}",
+		"translation": "domyślne = ustawienia {market}, {asOf}",
 		"sourceHash": "7f716bd5"
 	},
 	"wallet.page.ui.reset": {
-		"translation": "Przywróć nasz aktualny config",
+		"translation": "Przywróć nasze aktualne ustawienia",
 		"sourceHash": "62792b0b"
 	},
 	"wallet.page.ui.incomingSignal": {
@@ -1160,27 +1160,27 @@
 		"sourceHash": "ef8ee58f"
 	},
 	"wallet.page.ui.stageExecutor": {
-		"translation": "Potem własne zapadki bota, po kolei",
-		"sourceHash": "54d39948"
+		"translation": "Potem własne zapadki agenta, po kolei",
+		"sourceHash": "d11485d8"
 	},
 	"wallet.page.ui.flagBoot": {
 		"translation": "serwis odmawia startu — żaden sygnał nie jest czytany",
 		"sourceHash": "d3b9ef8e"
 	},
 	"wallet.page.ui.flagAlert": {
-		"translation": "sygnał nie jest emitowany — bot nie jest pytany",
-		"sourceHash": "8a824aea"
+		"translation": "sygnał nie jest emitowany — agent nie jest pytany",
+		"sourceHash": "5871501a"
 	},
 	"wallet.page.ui.flagExecutor": {
-		"translation": "prawdziwy bot staje tutaj",
-		"sourceHash": "75aa497a"
+		"translation": "prawdziwy agent staje tutaj",
+		"sourceHash": "fb529306"
 	},
 	"wallet.page.ui.explainer": {
-		"translation": "Prawdziwy egzekutor zatrzymuje się na pierwszym ✗ z ostatniej listy i idzie dalej. Tu punktowana jest każda kontrola, żeby było widać, co robi które pokrętło. Ceny są zawsze po wyniku, który lider naprawdę trzyma — pozycja zbudowana sprzedażą jednej strony jest pozycją w drugiej. Silnik wykonuje też rząd księgowych odmów pominiętych tutaj — czy ten zakład jest już skopiowany, czy rynek jest w zakresie, czy włączony jest wyłącznik — bo żadna nie jest liczbą do kręcenia.",
-		"sourceHash": "ce4bd4c2"
+		"translation": "Prawdziwy egzekutor zatrzymuje się na pierwszym ✗ z ostatniej listy i idzie dalej. Punktujemy tu każdą kontrolę, żeby było widać, co robi które pokrętło. Ceny są zawsze po wyniku, który lider naprawdę trzyma — pozycja zbudowana sprzedażą jednej strony jest pozycją w drugiej. Silnik wykonuje też rząd księgowych odmów — czy ten zakład jest już skopiowany, czy rynek jest w zakresie, czy włączony jest wyłącznik. Pomijamy je, bo żadna nie jest liczbą do kręcenia.",
+		"sourceHash": "88926cc4"
 	},
 	"wallet.page.ui.noscript": {
-		"translation": "Bez JavaScriptu widać nasz aktualny config wobec pierwszego przykładowego sygnału. Suwaki i przyciski sygnałów potrzebują JavaScriptu, żeby przeliczać.",
+		"translation": "Bez JavaScriptu widać nasze aktualne ustawienia wobec pierwszego przykładowego sygnału. Suwaki i przyciski sygnałów potrzebują JavaScriptu, żeby przeliczać.",
 		"sourceHash": "abce22be"
 	},
 	"wallet.page.ui.exitHeading": {
@@ -1208,7 +1208,7 @@
 		"sourceHash": "08cdd643"
 	},
 	"wallet.page.ui.exitNote": {
-		"translation": "Odwrócenie na drugą stronę, zejście do zera, lider usunięty z configu albo rozstrzygnięcie rynku — każde z nich zamyka nogę niezależnie od tego suwaka. Ustawieniem jest tylko linia redukcji.",
+		"translation": "Odwrócenie na drugą stronę, zejście do zera, lider usunięty z konfiguracji albo rozstrzygnięcie rynku — każde z nich zamyka kopię niezależnie od tego suwaka. Ustawieniem jest tylko linia redukcji.",
 		"sourceHash": "c6cdd246"
 	},
 	"wallet.page.knobs.leader_a_min_notional_usdc": {

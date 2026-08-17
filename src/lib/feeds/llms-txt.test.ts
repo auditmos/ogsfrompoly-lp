@@ -82,7 +82,7 @@ describe("generateLlmsTxt", () => {
 
 		expect(txt).toContain("## Methodology");
 		expect(txt).toContain(
-			"- [Methodology](https://ogsfrompoly.com/methodology.md): How ogsfrompoly tests Polymarket wallets for repeatable skill",
+			"- [Methodology](https://ogsfrompoly.com/methodology.md): How ogsfrompoly separates skill from luck on Polymarket",
 		);
 	});
 
@@ -91,13 +91,13 @@ describe("generateLlmsTxt", () => {
 
 		expect(txt).toContain("## Copy trade");
 		expect(txt).toContain(
-			"- [Copy trading for dummies](https://ogsfrompoly.com/for-dummies.md): Two small bots",
+			"- [Copy trading for dummies](https://ogsfrompoly.com/for-dummies.md): Two small agents",
 		);
 		expect(txt).toContain(
-			"- [Cluster copy for dummies](https://ogsfrompoly.com/for-dummies/copy-cluster.md): Plain-English walkthrough of the ogsfrompoly cluster-copy bot",
+			"- [Cluster copy for dummies](https://ogsfrompoly.com/for-dummies/copy-cluster.md): Plain-English walkthrough of the ogsfrompoly cluster-copy agent",
 		);
 		expect(txt).toContain(
-			"- [Wallet copy for dummies](https://ogsfrompoly.com/for-dummies/copy-wallet.md): Plain-English walkthrough of the ogsfrompoly wallet-copy bot",
+			"- [Wallet copy for dummies](https://ogsfrompoly.com/for-dummies/copy-wallet.md): Plain-English walkthrough of the ogsfrompoly wallet-copy agent",
 		);
 	});
 

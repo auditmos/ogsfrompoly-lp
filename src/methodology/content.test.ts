@@ -141,7 +141,7 @@ describe("methodologyMarkdown", () => {
 
 		it("states how bot results reach the monthly statements", () => {
 			// Cash-basis: swept realized profit only — never marks on open positions.
-			expect(methodologyMarkdown.toLowerCase()).toContain("swept");
+			expect(methodologyMarkdown.toLowerCase()).toContain("sweep");
 			expect(methodologyMarkdown.toLowerCase()).toMatch(/while that position is open/);
 		});
 	});
@@ -175,7 +175,7 @@ describe("methodologyMarkdown", () => {
 			// wallets unwatchable — the policy has to actually say so.
 			expect(body).toContain("leader-a");
 			expect(body).toContain("payout address");
-			expect(body).toMatch(/open bot position is never named/);
+			expect(body).toMatch(/never name the market of an open agent position/);
 		});
 	});
 });

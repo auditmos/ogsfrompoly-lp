@@ -24,7 +24,7 @@ interface BotFact {
 
 export interface BotCard {
 	readonly id: "cluster" | "wallet";
-	/** Small mono line above the name, e.g. `"bot 01 · cluster copy"`. */
+	/** Small mono line above the name, e.g. `"agent 01 · cluster copy"`. */
 	readonly eyebrow: string;
 	/** The friendly name, e.g. `"Copy the crowd"`. */
 	readonly name: string;
@@ -62,8 +62,8 @@ export interface HubModel {
 // Both walkthroughs ship /pl and /es pages (issues #73 and #74), so every
 // card links same-locale.
 const CARD_STATIC = [
-	{ id: "cluster", eyebrow: "bot 01 · cluster copy", path: "/for-dummies/copy-cluster" },
-	{ id: "wallet", eyebrow: "bot 02 · wallet copy", path: "/for-dummies/copy-wallet" },
+	{ id: "cluster", eyebrow: "agent 01 · cluster copy", path: "/for-dummies/copy-cluster" },
+	{ id: "wallet", eyebrow: "agent 02 · wallet copy", path: "/for-dummies/copy-wallet" },
 ] as const;
 
 const COMPARE_ORDER = ["signal", "guard", "fees", "exit", "money", "liveSince"] as const;

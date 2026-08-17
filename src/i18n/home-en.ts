@@ -38,7 +38,7 @@ export const HOME_EN: HomeProse = {
 	hero: {
 		heading: "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
 		intro:
-			"Open-book strategy track record and project P&L. Aggregate-only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
+			"We keep the books open. The strategy track record and the project P&L. Aggregate numbers only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
 	},
 	install: {
 		eyebrow: "Install for your LLM agent",
@@ -50,7 +50,7 @@ export const HOME_EN: HomeProse = {
 	},
 	skin: {
 		eyebrow: "Skin in the game",
-		body: "Two small bots trade real money alongside the record — one follows a crowd of skilled wallets, one mirrors two hand-picked traders. Every rule and every live setting, explained in plain English with a simulator you can drag.",
+		body: "Two small agents trade real money next to the record. One follows a crowd of skilled wallets. One mirrors two hand-picked traders. Every rule and every live setting in plain English, with a simulator you can drag.",
 		cta: "Copy trading for dummies →",
 	},
 };

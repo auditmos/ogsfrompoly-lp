@@ -1,7 +1,7 @@
 {
 	"cluster.page.description": {
-		"text": "Plain-English walkthrough of the ogsfrompoly cluster-copy bot — the one that follows a crowd of skilled wallets: when it buys, when it skips, when it sells, and which numbers you can actually turn.",
-		"sourceHash": "562036e3"
+		"text": "Plain-English walkthrough of the ogsfrompoly cluster-copy agent, the one that follows a crowd of skilled wallets. When it buys. When it skips. When it sells. And which numbers you can turn.",
+		"sourceHash": "3bdfb5c6"
 	},
 	"cluster.page.knobGroups.execution": {
 		"text": "How do I get filled?",
@@ -84,8 +84,8 @@
 		"sourceHash": "032bf222"
 	},
 	"cluster.page.md.knobsBlurb": {
-		"text": "The site renders these as sliders you can drag to watch the bot's decision flip.\nIn markdown they are just the table:",
-		"sourceHash": "c9ad4848"
+		"text": "The site renders these as sliders you can drag to watch the agent's decision flip.\nIn markdown they are just the table:",
+		"sourceHash": "a0cd6480"
 	},
 	"cluster.page.md.knobsHeading": {
 		"text": "The knobs",
@@ -156,76 +156,76 @@
 		"sourceHash": "563569d3"
 	},
 	"cluster.page.sections.hardWired": {
-		"text": "## What is hard-wired, and not a setting\n\n- **\"First skilled wallet reverses → we are out.\"** Fixed logic, with resolution\n  as the backstop. There is no take-profit and no stop-loss to tune.\n- **Selling is copied by buying the other outcome.** Whether and how a selling\n  crowd gets mirrored is fixed; there is no \"only copy buys\" switch.\n- **One position per crowd**, and no re-entry into a crowd already closed.\n- **Entry is an all-or-nothing order priced on the exchange's grid.** *How* it\n  enters is fixed. You only tune the thresholds around it — slippage, staleness,\n  liquidity.\n- **The 5-share minimum order is the exchange's rule**, not ours. The bot only\n  respects it.\n\n**Why split it that way?** How much, when to skip, how much at once, how much to\nleave behind — all of that is a number, and numbers are safe to expose. How it\nbuys and when it sells — the entire copying logic — lives in code, so that one\ncareless line of YAML cannot quietly derail the strategy.",
-		"sourceHash": "a733d7ff"
+		"text": "## What is hard-wired, and not a setting\n\n- **\"First skilled wallet reverses → we are out.\"** Fixed logic, with resolution\n  as the backstop. There is no take-profit and no stop-loss to tune.\n- **Selling is copied by buying the other outcome.** Whether and how a selling\n  crowd gets mirrored is fixed; there is no \"only copy buys\" switch.\n- **One position per crowd**, and no re-entry into a crowd already closed.\n- **Entry is an all-or-nothing order priced on the exchange's grid.** *How* it\n  enters is fixed. You only tune the thresholds around it — slippage, staleness,\n  liquidity.\n- **The 5-share minimum order is the exchange's rule**, not ours. The agent only\n  respects it.\n\n**Why split it that way?** How much, when to skip, how much at once, how much to\nleave behind — all of that is a number, and numbers are safe to expose. How it\nbuys and when it sells — the whole copying logic — lives in code. One careless\nline of YAML must never derail the strategy.",
+		"sourceHash": "24ff4d45"
 	},
 	"cluster.page.sections.intro": {
-		"text": "Alongside the published track record, a small bot mirrors the wallets our skill\ntest flags — but only when several of them agree at once. This page is the whole\nmechanism in plain language: what it does, step by step, and which numbers are\nknobs versus rules welded into the code.\n\nIt is one of two bots. The other one, [wallet copy]({walletHref}),\nfollows two named traders instead of waiting for a crowd — if you are not sure\nwhich page you want, start from [the chooser]({hubHref}).\n\nThink of it as a **very cautious impersonator** standing in the market, watching\ntraders who have already proven themselves. It is deliberately timid. The money\nis real, but the position sizes below are tiny on purpose — the point of the\nfirst live run is to be correct, not to be big.\n\nEvery number on this page is the live setting for the **{market}** market\nas of **{asOf}**, read from `config/copy_trade.yml`.",
-		"sourceHash": "7dd4ce38"
+		"text": "A small agent runs next to the published track record. It mirrors the wallets our\nskill test flags, but only when several of them agree at once. This page is the\nwhole mechanism in plain language: what it does, step by step, and which numbers\nare knobs versus rules welded into the code.\n\nIt is one of two agents. The other one, [wallet copy]({walletHref}), follows two\nnamed traders instead of waiting for a crowd. Not sure which page you want?\nStart from [the chooser]({hubHref}).\n\nThink of a **very cautious impersonator** standing in the market, watching\ntraders who have already proven themselves. It is timid on purpose. The money is\nreal. The position sizes below are tiny by design — the point of the first live\nrun is to be right, not to be big.\n\nEvery number on this page is the live setting for the **{market}** market\nas of **{asOf}**, read from `config/copy_trade.yml`.",
+		"sourceHash": "7d5c842b"
 	},
 	"cluster.page.sections.notClaiming": {
-		"text": "## What we are not claiming yet\n\nThree limits worth knowing, because they change how the bot's own numbers should\nbe read.\n\n- **The bookkeeping now captures the exchange's fee, and it changed the\n  picture.** Every closed position used to record a fee of zero, which made all\n  of them look better than they were; reconciled against the settlement records\n  on chain, the missing cost was **entirely** that fee, and it is now computed\n  from each market's own published curve and recorded per fill. Network gas is\n  still written down as zero, and that one is correct rather than pending — on\n  this exchange the settlement transaction is paid for by a relayer, not by us.\n- **The \"price already run\" rule is weaker than 3% on coarse markets** — see the\n  two-step floor in step 4. Roughly one market in twenty quotes in whole cents,\n  and on those the effective rule is far more permissive than the setting reads.\n- **The rails are young, and mostly unexercised.** The crowd-independence rule\n  cut the signal count by roughly 95%, so the ones added after it — the reversal\n  window, the price ceiling — have had very little live traffic to prove\n  themselves against. They are argued from measurements taken *before* they were\n  armed, and the honest position is that we do not yet know how often they fire.\n- **The price ceiling is not justified by money recovered.** The four positions\n  it would have refused are worth about **5 cents** between them. It is bought as\n  insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a\n  measured loss, and it should not be read as one.",
-		"sourceHash": "ce406b83"
+		"text": "## What we are not claiming yet\n\nFour limits worth knowing. They change how you should read the agent's own\nnumbers.\n\n- **The bookkeeping now captures the exchange's fee, and it changed the\n  picture.** Every closed position used to record a fee of zero, which made all\n  of them look better than they were. Reconciled against the on-chain settlement\n  records, the missing cost was **entirely** that fee. We now compute it from\n  each market's own published curve and record it per fill. We still write\n  network gas down as zero, and that one is correct rather than pending — on this\n  exchange a relayer pays for the settlement transaction, not us.\n- **The \"price already run\" rule is weaker than 3% on coarse markets** — see the\n  two-step floor in step 4. Roughly one market in twenty quotes in whole cents,\n  and on those the effective rule is far more permissive than the setting reads.\n- **The rails are young, and mostly unexercised.** The crowd-independence rule\n  cut the signal count by roughly 95%, so the ones added after it — the reversal\n  window, the price ceiling — have had very little live traffic to prove\n  themselves against. We argue them from measurements taken *before* they were\n  armed. The honest position: we do not yet know how often they fire.\n- **Money recovered does not justify the price ceiling.** The four positions it\n  would have refused are worth about **5 cents** between them. We buy it as\n  insurance against a lopsided bet — $5 staked to win a cent — not as a fix for a\n  measured loss. Do not read it as one.",
+		"sourceHash": "f3e1a2b3"
 	},
 	"cluster.page.sections.notThis": {
-		"text": "## What this page is not\n\nThese are operating parameters for our own small bot, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled wallets will keep working.\n\nThe bot's wallet addresses are never published anywhere on this site — watching\nthe execution wallet in real time would expose open positions, which is exactly\nwhat the [disclosure policy]({methodologyHref}) exists to prevent.",
-		"sourceHash": "0cb8d7e0"
+		"text": "## What this page is not\n\nThese are operating parameters for our own small agent, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled wallets will keep working.\n\nWe never publish the agent's wallet addresses anywhere on this site. Watch the\nexecution wallet in real time and you see open positions, which is exactly what\nthe [disclosure policy]({methodologyHref}) exists to prevent.",
+		"sourceHash": "c801a4b7"
 	},
 	"cluster.page.sections.step1": {
-		"text": "### 1. It listens for a crowd, never for one trader\n\nIt does not move because a single wallet bought something. Only when at least\n**3 skilled wallets** trade the same thing at once (`cluster_threshold`) does it\nsay: that is a quorum, worth a look.\n\n\"The same thing at once\" turned out to be three separate requirements, and for a\nlong time it was only really checking one of them. A crowd now has to be three\nwallets that each **took** the price on offer rather than posting a quote and\nwaiting; that each landed on the **same side of the same bet**, not merely the\nsame market; and that each arrived in a **separate transaction**. Two wallets\nfilled by one trade are one decision wearing two names, and a market maker whose\nquote happened to get hit never had an opinion at all.\n\nTightening that took a month of alerts from **263 down to 14** — and, replayed\nover the positions actually opened, **32 of 38** would never have been taken.\nNone of the three rules was redundant: alone, they caught 14%, 48% and 25% of the\nbad crowds respectively.",
-		"sourceHash": "1b5e94d4"
+		"text": "### 1. It listens for a crowd, never for one trader\n\nOne wallet buying something moves nothing. It takes at least **3 skilled\nwallets** trading the same thing at once (`cluster_threshold`) before the agent\ncalls it a quorum worth a look.\n\n\"The same thing at once\" turned out to be three requirements, and for a long\ntime we only checked one. A crowd now needs three wallets that each **took** the\nprice on offer instead of posting a quote and waiting. Each has to land on the\n**same side of the same bet**, not just the same market. Each has to arrive in a\n**separate transaction**. Two wallets filled by one trade are one decision\nwearing two names, and a market maker whose quote got hit never had an opinion.\n\nTightening that took a month of alerts from **263 down to 14**. Replayed over\nthe positions we had opened, **32 of 38** would never have been taken. No rule\nwas redundant: alone, they caught 14%, 48% and 25% of the bad crowds.",
+		"sourceHash": "33ba9497"
 	},
 	"cluster.page.sections.step10": {
-		"text": "### 10. A failed exit is retried, not forgotten\n\nAn exit order can be refused just like an entry, and it used to vanish with one\nline in a log. Now the event is kept: **three attempts**, roughly a minute apart\nand widening, each one reported. If the third fails it says so loudly rather than\ngoing quiet. Replaying is safe — if the position closed in the meantime, the\nretry does nothing at all.",
-		"sourceHash": "697e6ea1"
+		"text": "### 10. A failed exit is retried, not forgotten\n\nAn exit order can be refused just like an entry, and it used to vanish with one\nline in a log. Now we keep the event: **three attempts**, roughly a minute apart\nand widening, each one reported. If the third fails the agent says so loudly\ninstead of going quiet. Replaying is safe. If the position closed in the\nmeantime, the retry does nothing.",
+		"sourceHash": "8724cddd"
 	},
 	"cluster.page.sections.step11": {
-		"text": "### 11. Nothing disappears quietly\n\nEvery skip and every refusal is written down with its numbers: the limit the bot\nasked for, the price after grid rounding, the best price on the book, and how\nmuch size was actually sitting at our limit. Without those, \"my limit was too\ntight\" and \"the book was too thin\" look identical — and their fixes are\nopposites.",
-		"sourceHash": "7b88b3de"
+		"text": "### 11. Nothing disappears quietly\n\nWe write down every skip and every refusal with its numbers: the limit the agent\nasked for, the price after grid rounding, the best price on the book, and how\nmuch size was sitting at our limit. Without those, \"my limit was too tight\" and\n\"the book was too thin\" look identical — and their fixes are opposites.",
+		"sourceHash": "d620e461"
 	},
 	"cluster.page.sections.step12": {
-		"text": "### 12. It goes around again\n\nSold, cash back, room free, next signal. One position per crowd, never two, and a\ncrowd it has already closed is never re-entered. On a first-ever start it begins\nat the newest alert rather than replaying the entire history into a live wallet.",
-		"sourceHash": "0a812c03"
+		"text": "### 12. It goes around again\n\nSold, cash back, room free, next signal. One position per crowd, never two, and\nit never re-enters a crowd it has already closed. On a first-ever start it\nbegins at the newest alert instead of replaying the whole history into a live\nwallet.",
+		"sourceHash": "5912bb08"
 	},
 	"cluster.page.sections.step13": {
-		"text": "### 13. Once a week it sweeps the profit\n\nIt counts the profit it booked and sends the surplus above the **$5** floor to\nthe payout address (`profit_destination`) — but only if that address is on the\nallowlist (`destination_allowlist`, the safety catch), only if the amount clears\nthe **$1** dust threshold (`dust_threshold_usdc`), and only if at least **2 POL**\nof gas is left (`gas_reserve_pol`). With no gas it could not close a position, so\nthe payout is the thing that gives way. A losing week pays out nothing at all.\nThe first payout ever made needs a human to say yes.",
-		"sourceHash": "2ce4da06"
+		"text": "### 13. Once a week it sweeps the profit\n\nIt counts the profit it booked and sends the surplus above the **$5** floor to\nthe payout address (`profit_destination`). It pays only if that address is on\nthe allowlist (`destination_allowlist`, the safety catch), only if the amount\nclears the **$1** dust threshold (`dust_threshold_usdc`), and only if at least\n**2 POL** of gas is left (`gas_reserve_pol`). With no gas it could not close a\nposition, so the payout is the thing that gives way. A losing week pays out\nnothing. The first payout ever made needs a human to say yes.",
+		"sourceHash": "f42855d7"
 	},
 	"cluster.page.sections.step14": {
-		"text": "### 14. The big red button\n\nAt any moment the kill switch (`kill_switch`) stops the bot **buying** anything\nnew — while it keeps watching and closing whatever is already open. It stops\ntaking risk; it does not abandon it. There is also a shadow mode that decides\nexactly as normal but writes each would-be order to a file instead of sending it.",
-		"sourceHash": "c5c2a2a7"
+		"text": "### 14. The big red button\n\nAt any moment the kill switch (`kill_switch`) stops the agent **buying** anything\nnew — while it keeps watching and closing whatever is already open. It stops\ntaking risk; it does not abandon it. A shadow mode decides exactly as normal but\nwrites each would-be order to a file instead of sending it.",
+		"sourceHash": "c7db6b75"
 	},
 	"cluster.page.sections.step2": {
-		"text": "### 2. If the crowd is selling, it buys the other side\n\nYou can only sell something you already own, and a fresh position owns nothing.\nSo for a long time every \"the crowd is selling\" signal simply bounced off the\nexchange — and that is roughly **40%** of the signals we get.\n\nThe way around it is the shape of the market itself. A market with two outcomes\nprices them so they add up to $1, and exactly one of them ends up worth $1. So\nselling \"yes\" at 90¢ and buying \"no\" at 10¢ are the same opinion, and the second\none is an ordinary purchase the bot can actually make.\n\nPositions opened that way are **mirrors**. The bot remembers both sides — the one\nit holds and the one the crowd trades — because it needs the second one to know\nwhen to get out.",
-		"sourceHash": "7865b040"
+		"text": "### 2. If the crowd is selling, it buys the other side\n\nYou can only sell what you already own, and a fresh position owns nothing. So\nfor a long time every \"the crowd is selling\" signal bounced off the exchange.\nThat is roughly **40%** of the signals we get.\n\nThe way around it is the shape of the market. A market with two outcomes prices\nthem to add up to $1, and exactly one of them ends up worth $1. Selling \"yes\" at\n90¢ and buying \"no\" at 10¢ are the same opinion. The second one is an ordinary\npurchase the agent can make.\n\nPositions opened that way are **mirrors**. The agent remembers both sides — the\none it holds and the one the crowd trades — because it needs the second one to\nknow when to get out.",
+		"sourceHash": "81f50b6f"
 	},
 	"cluster.page.sections.step3": {
-		"text": "### 3. Is the crowd even still of that opinion?\n\nA crowd can agree at 3pm and be arguing with itself by 3:02. If any of the same\nwallets was on the **opposite** side of this same market within the last\n**10 minutes** (`reversal_lookback_s`), the signal is refused — they are not a\ncrowd, they are a wallet changing its mind in public.\n\nThe window is not a guess. The flips actually recorded ran **121 to 457 seconds**\napart, and then nothing until 915 seconds; 600 sits in that gap, which buys the\nwhole benefit with the least collateral damage.\n\nThere is a second number here, and it is the most misleading one on the page.\n`max_reversed_wallets` is set to **0**, which looks like a switched-off rail and\nis the exact opposite: it means **no** flipper is tolerated, so a single one\nrefuses the whole crowd. Raising it is what loosens the rule. The rail is turned\noff by setting the *window* to zero, not this.\n\nIt also refuses from the other direction. If setting the flippers aside leaves\nfewer than 3 wallets still standing, the signal goes too — not because too many\nchanged their mind, but because the ones who did were the reason it looked like a\ncrowd at all.\n\nOne trap worth naming, because getting it wrong was worse than not having the\nrule. On a two-outcome market, buying \"yes\" and selling \"no\" are the *same*\ntrade, and the exchange reports both. Comparing the words \"bought\" and \"sold\"\ntherefore found **82 flips that never happened** out of 263 alerts — the same\ntrade, seen twice — and would have thrown away real winning positions, including\nthe best one on the book. Direction has to be worked out against the outcome\nbeing held, never read off the label.",
-		"sourceHash": "9f030849"
+		"text": "### 3. Is the crowd even still of that opinion?\n\nA crowd can agree at 3pm and argue with itself by 3:02. If any of the same\nwallets took the **opposite** side of this same market in the last **10 minutes**\n(`reversal_lookback_s`), the agent refuses the signal. That is not a crowd. That\nis a wallet changing its mind in public.\n\nThe window is not a guess. The flips we recorded ran **121 to 457 seconds**\napart, then nothing until 915. 600 sits in that gap. It buys the whole benefit\nwith the least collateral damage.\n\nA second number sits here, and it is the most misleading one on the page.\n`max_reversed_wallets` is **0**. That looks like a switched-off rail and means\nthe exact opposite: it tolerates **no** flipper, so a single one refuses the\nwhole crowd. Raising it loosens the rule. To turn the rail off you set the\n*window* to zero, not this.\n\nIt also refuses from the other direction. Set the flippers aside and fewer than\n3 wallets are left standing? The signal goes too — not because too many changed\ntheir mind, but because the ones who did were the reason it looked like a crowd.\n\nOne trap worth naming, because getting it wrong was worse than having no rule.\nOn a two-outcome market, buying \"yes\" and selling \"no\" are the *same* trade, and\nthe exchange reports both. Comparing the words \"bought\" and \"sold\" found\n**82 flips that never happened** out of 263 alerts — the same trade, seen twice.\nIt would have thrown away real winning positions, including the best one on the\nbook. We work direction out against the outcome being held. We never read it off\nthe label.",
+		"sourceHash": "21a993e1"
 	},
 	"cluster.page.sections.step4": {
-		"text": "### 4. Three safety checks before it will buy anything\n\n- **\"Is there anyone here to trade with?\"** — if the market holds less than\n  **$1,000** of liquidity (`min_liquidity_usdc`), it skips. Getting in is easy;\n  getting out of a thin market is the part that hurts.\n- **\"Is this market about to end?\"** — if less than **1 hour** remains before\n  resolution (`min_seconds_to_resolution`), it skips.\n- **\"Has the price already run?\"** — it skips only if the price moved against the\n  crowd's entry by more than **3%** (`staleness_pct`) *and* by more than\n  **two price steps** (`staleness_min_ticks`). Both, not either.\n\nWhy two rules for one question? Markets quote in fixed steps — a cent, or a\ntenth of a cent. Three percent of a 2¢ outcome is smaller than the smallest move\nthe market is able to make, so a percentage on its own would call the tiniest\npossible flicker \"stale\" and nothing would ever pass. The step floor says: a move\nthe market cannot subdivide is noise, not information.\n\nThe trade-off is real and worth stating plainly: on a market that only quotes\nwhole cents, two steps is 2¢ — and 2¢ against a 10¢ outcome is a 20% move, not a\n3% one. On those markets the step floor, not the percentage, is the rule that\nactually binds.\n\nFor a mirror, every one of these checks is measured on the side the bot really\nbuys. The same move is 5.4% on a 24¢ outcome and 1.7% on its 76¢ twin; measuring\nthe wrong one would throw away exactly the cheap outcomes that selling crowds\nfavour.",
-		"sourceHash": "6b2b5e3a"
+		"text": "### 4. Three safety checks before it will buy anything\n\n- **\"Is there anyone here to trade with?\"** — if the market holds less than\n  **$1,000** of liquidity (`min_liquidity_usdc`), it skips. Getting in is easy;\n  getting out of a thin market is the part that hurts.\n- **\"Is this market about to end?\"** — if less than **1 hour** remains before\n  resolution (`min_seconds_to_resolution`), it skips.\n- **\"Has the price already run?\"** — it skips only if the price moved against the\n  crowd's entry by more than **3%** (`staleness_pct`) *and* by more than\n  **two price steps** (`staleness_min_ticks`). Both, not either.\n\nWhy two rules for one question? Markets quote in fixed steps — a cent, or a\ntenth of a cent. Three percent of a 2¢ outcome is smaller than the smallest move\nthe market can make. A percentage on its own would call the tiniest flicker\n\"stale\" and nothing would ever pass. The step floor says it plainly: a move the\nmarket cannot subdivide is noise, not information.\n\nThe trade-off is real. On a market that only quotes whole cents, two steps is\n2¢ — and 2¢ against a 10¢ outcome is a 20% move, not a 3% one. On those markets\nthe step floor is the rule that binds, not the percentage.\n\nFor a mirror, the agent measures every one of these checks on the side it really\nbuys. The same move is 5.4% on a 24¢ outcome and 1.7% on its 76¢ twin. Measure\nthe wrong one and you throw away exactly the cheap outcomes that selling crowds\nfavour.",
+		"sourceHash": "5745421a"
 	},
 	"cluster.page.sections.step5": {
-		"text": "### 5. What the outcome costs, and what the fee takes\n\nTwo checks that between them decide which prices the bot will trade at all.\n\n**The fee.** The exchange charges its fee **per share**, not per dollar. Buy a\ncheap outcome and $5 buys a lot of shares, so the same $5 hands over far more in\nfees: as a share of the ticket the fee works out to `5% × (1 − price)`. It is\n**4.5% on a 10¢ outcome and 0.3% on a 94¢ one**. Capping that at **2%**\n(`max_entry_fee_pct`) is therefore not really a fee rule — it is a **minimum\nprice of $0.60**, written in the units that matter.\n\nThis was worth doing. Across the first eight closed positions the price moved\nagainst us by $0.46 in total while the fees came to **$1.58** — the fee was\n**77%** of everything lost, and 3.4× the market's own contribution. In one\nposition the price moved *in our favour* and the trade still lost money.\n\nRaising the bet does not help, and it is worth seeing why: the fee and the\nwinnings both scale with the number of shares, so the ratio never changes.\nDoubling the ticket doubles the loss.\n\n**The price.** Separately, it will not pay more than **$0.95** a share\n(`max_entry_price`). At 95¢ a $5 ticket can win 26¢ and lose $5 — about 19 to 1\nagainst. At 99.8¢ it stakes $5 to win a single cent, 500 to 1, where one bad\nresolution erases several hundred wins.\n\nThe fee is not the argument up here — as a share of the *available* gain it is\nroughly constant at any high price. The exchange's own **price grid** is. Markets\nquote in steps of a tenth of a cent, and one step is 2% of everything a 95¢\nticket can make, but **half** of everything a 99.8¢ one can. Above that the\nsmallest move the market is capable of showing is most of the prize.",
-		"sourceHash": "7691702f"
+		"text": "### 5. What the outcome costs, and what the fee takes\n\nTwo checks decide which prices the agent will trade.\n\n**The fee.** The exchange charges its fee **per share**, not per dollar. Buy a\ncheap outcome and $5 buys a lot of shares, so the same $5 hands over far more in\nfees. As a share of the ticket the fee works out to `5% × (1 − price)`. That is\n**4.5% on a 10¢ outcome and 0.3% on a 94¢ one**. Capping it at **2%**\n(`max_entry_fee_pct`) is not a fee rule at all. It is a **minimum price of\n$0.60**, written in the units that matter.\n\nThis was worth doing. Across the first eight closed positions the price moved\nagainst us by $0.46 in total. The fees came to **$1.58**. The fee was **77%** of\neverything lost, and 3.4× the market's own contribution. In one position the\nprice moved *in our favour* and the trade still lost money.\n\nRaising the bet does not help. The fee and the winnings both scale with the\nnumber of shares, so the ratio never changes. Doubling the ticket doubles the\nloss.\n\n**The price.** Separately, it will not pay more than **$0.95** a share\n(`max_entry_price`). At 95¢ a $5 ticket can win 26¢ and lose $5 — about 19 to 1\nagainst. At 99.8¢ it stakes $5 to win a single cent, 500 to 1, where one bad\nresolution erases several hundred wins.\n\nThe fee is not the argument up here. As a share of the *available* gain it stays\nroughly constant at any high price. The exchange's own **price grid** is the\nargument. Markets quote in steps of a tenth of a cent. One step is 2% of\neverything a 95¢ ticket can make, but **half** of everything a 99.8¢ one can.\nAbove that, the smallest move the market can show is most of the prize.",
+		"sourceHash": "bd3ebd85"
 	},
 	"cluster.page.sections.step6": {
-		"text": "### 6. It checks its own wallet\n\n*\"Do I have room?\"* — it holds at most **$20** open at any one moment\n(`exposure_cap_usdc`), which is four $5 tickets.\n\n*\"Will this take me too low?\"* — it never trades if the spendable balance would\ndrop below **$5** (`working_capital_floor_usdc`). In practice that floor is what\nstops it long before the cap does.",
-		"sourceHash": "83f368b1"
+		"text": "### 6. It checks its own wallet\n\n*\"Do I have room?\"* — it holds at most **$20** open at any one moment\n(`exposure_cap_usdc`), which is four $5 tickets.\n\n*\"Will this take me too low?\"* — it never trades if the spendable balance would\ndrop below **$5** (`working_capital_floor_usdc`). In practice that floor stops\nit long before the cap does.",
+		"sourceHash": "20638d93"
 	},
 	"cluster.page.sections.step7": {
-		"text": "### 7. It buys small, and refuses to overpay\n\nIf everything lines up it buys **$5** (`trade_size_usdc`), all-or-nothing: the\norder either fills completely or it is thrown away. The price limit is **1%**\nover what the crowd paid (`slippage_pct`), but never tighter than **two price\nsteps** (`slippage_min_ticks`) — 1% of a 34¢ outcome is less than one cent, which\non a whole-cent market rounds to no room at all, and an order with no room is an\norder that gets killed. The limit is then snapped onto the market's grid, because\nthe exchange only accepts prices that sit exactly on it.\n\nWhy **$5** and not $1? The exchange will not accept an order for fewer than\n**5 shares**. A dollar buys 5 shares only if the outcome costs 20¢ or less; above\nthat, every single order was refused. The bot now counts the shares itself before\nsending, rather than finding out from the exchange — a refusal for this reason is\nambiguous, and an ambiguous refusal ties up part of the cap for a position that\ndoes not exist.",
-		"sourceHash": "334aa023"
+		"text": "### 7. It buys small, and refuses to overpay\n\nIf everything lines up it buys **$5** (`trade_size_usdc`), all-or-nothing: the\norder fills completely or it dies. The price limit is **1%** over what the crowd\npaid (`slippage_pct`), but never tighter than **two price steps**\n(`slippage_min_ticks`). 1% of a 34¢ outcome is less than a cent, which on a\nwhole-cent market rounds to no room at all. An order with no room is an order\nthat dies. The agent then snaps the limit onto the market's grid, because the\nexchange only accepts prices that sit exactly on it.\n\nWhy **$5** and not $1? The exchange will not accept an order for fewer than\n**5 shares**. A dollar buys 5 shares only if the outcome costs 20¢ or less.\nAbove that, the exchange refused every order. The agent now counts the shares\nitself before sending instead of finding out from the exchange. A refusal for\nthis reason is ambiguous, and an ambiguous refusal ties up part of the cap for a\nposition that does not exist.",
+		"sourceHash": "17d4d982"
 	},
 	"cluster.page.sections.step8": {
-		"text": "### 8. Where the money actually sits\n\nSince Polymarket's exchange upgrade, a plain wallet is no longer accepted as the\nparty placing an order. So the cash sits in a Polymarket deposit wallet, and the\nkey only **signs** on that wallet's behalf.\n\nTwo separate on-chain permissions have to be in place: one to spend the cash (to\nbuy), one to move outcome tokens (to sell). They break independently — there was\nan afternoon when buying worked all day and every sale bounced off a missing\npermission. The pre-flight check now reads both straight off the chain instead of\ntrusting the config to be right about them.",
-		"sourceHash": "8145f32d"
+		"text": "### 8. Where the money actually sits\n\nSince Polymarket's exchange upgrade, the exchange no longer accepts a plain\nwallet as the party placing an order. So the cash sits in a Polymarket deposit\nwallet, and the key only **signs** on that wallet's behalf.\n\nTwo on-chain permissions have to be in place: one to spend the cash (to buy),\none to move outcome tokens (to sell). They break independently. One afternoon\nbuying worked all day while every sale bounced off a missing permission. The\npre-flight check now reads both straight off the chain instead of trusting the\nconfig.",
+		"sourceHash": "6bd0eae9"
 	},
 	"cluster.page.sections.step9": {
-		"text": "### 9. It holds, and leaves at the first reversal\n\nThen it watches the same wallets, and leaves as soon as the **first** of them\nturns around. It does not wait for the others to agree.\n\n- On a normal position it holds what they hold, so **their sale** is the exit.\n- On a mirror they hold the outcome they sold, so **their buy-back** is the exit.\n  Them selling *more* of it is doubling down — the same opinion again, not a\n  reversal — so it deliberately does not close us.\n\nRiding to resolution is only the fallback, for when nobody reverses first.\n\n*This one is hard-wired. There is no setting for it.*",
-		"sourceHash": "3bac78f5"
+		"text": "### 9. It holds, and leaves at the first reversal\n\nThen it watches the same wallets, and leaves as soon as the **first** of them\nturns around. It does not wait for the others to agree.\n\n- On a normal position it holds what they hold, so **their sale** is the exit.\n- On a mirror they hold the outcome they sold, so **their buy-back** is the exit.\n  Them selling *more* of it is doubling down — the same opinion again, not a\n  reversal — so it does not close us.\n\nRiding to resolution is only the fallback, for when nobody reverses first.\n\n*This one is hard-wired. There is no setting for it.*",
+		"sourceHash": "b0c3f917"
 	},
 	"cluster.page.sections.storyHeading": {
 		"text": "## The whole story, one step at a time",
@@ -244,16 +244,16 @@
 		"sourceHash": "7f716bd5"
 	},
 	"cluster.page.ui.explainer": {
-		"text": "The real executor short-circuits at the first ✗ in the second list and moves on. Every check is scored here so you can see what each knob does. Prices are always the ones on the side the bot would really buy — for a selling crowd, that is the opposite outcome. The last two checks are the exchange's own rules: the limit has to be reachable, and the order has to be big enough. Between the two lists the executor also runs a handful of bookkeeping checks — is this crowd already open, is the kill switch on — that are left out here because none of them is a number you can turn.",
-		"sourceHash": "1024e3a8"
+		"text": "The real executor stops at the first ✗ in the second list and moves on. We score every check here so you can see what each knob does. Prices are always the ones on the side the agent would really buy — for a selling crowd, that is the opposite outcome. The last two checks are the exchange's own rules: the limit has to be reachable, and the order has to be big enough. Between the two lists the executor runs a handful of bookkeeping checks — is this crowd already open, is the kill switch on. We leave them out here because none of them is a number you can turn.",
+		"sourceHash": "e352f658"
 	},
 	"cluster.page.ui.flagAlert": {
-		"text": "no alert is raised — the bot is never asked",
-		"sourceHash": "e98028b4"
+		"text": "no alert is raised — the agent is never asked",
+		"sourceHash": "eeede51c"
 	},
 	"cluster.page.ui.flagExecutor": {
-		"text": "the real bot stops here",
-		"sourceHash": "75aa497a"
+		"text": "the real agent stops here",
+		"sourceHash": "fb529306"
 	},
 	"cluster.page.ui.incomingSignal": {
 		"text": "Incoming signal",
@@ -272,20 +272,20 @@
 		"sourceHash": "e6227480"
 	},
 	"cluster.page.ui.stageExecutor": {
-		"text": "Then the bot's own rails, in order",
-		"sourceHash": "54d39948"
+		"text": "Then the agent's own rails, in order",
+		"sourceHash": "d11485d8"
 	},
 	"cluster.page.ui.tryIt": {
-		"text": "Try it — the bot's decision, live",
-		"sourceHash": "97b38b75"
+		"text": "Try it — the agent's decision, live",
+		"sourceHash": "9599b5b9"
 	},
 	"cluster.sim.detail.buy": {
 		"text": "Every check passed. {order} It holds until the first of those wallets sells.",
 		"sourceHash": "46df4f65"
 	},
 	"cluster.sim.detail.buyMirror": {
-		"text": "The crowd was selling, so the bot buys the opposite outcome at {entry} instead. {order} It holds until the first of those wallets buys back what they sold.",
-		"sourceHash": "0193fd80"
+		"text": "The crowd was selling, so the agent buys the opposite outcome at {entry} instead. {order} It holds until the first of those wallets buys back what they sold.",
+		"sourceHash": "d58ca380"
 	},
 	"cluster.sim.detail.order": {
 		"text": "It buys {size} at a limit of {limit} — about {shares} — all-or-nothing, or not at all.",
@@ -296,8 +296,8 @@
 		"sourceHash": "c2bcc77a"
 	},
 	"cluster.sim.gates.crowd.because": {
-		"text": "Only {wallets} traded it, under the {threshold} it takes to be a crowd — so no alert is raised, the executor is never handed anything, and nothing is recorded about it.",
-		"sourceHash": "94b48dc8"
+		"text": "Only {wallets} traded it, under the {threshold} it takes to be a crowd — so no alert fires, the executor never sees it, and nothing gets recorded.",
+		"sourceHash": "55b773b9"
 	},
 	"cluster.sim.gates.crowd.question": {
 		"text": "Is a crowd agreeing, not just one trader?",
@@ -316,8 +316,8 @@
 		"sourceHash": "5ee4868e"
 	},
 	"cluster.sim.gates.fill.because": {
-		"text": "The cheapest ask is {ask} and the bot's limit is {limit} — an all-or-nothing order at that limit is simply killed.",
-		"sourceHash": "27b7939e"
+		"text": "The cheapest ask is {ask} and the agent's limit is {limit} — an all-or-nothing order at that limit just dies.",
+		"sourceHash": "f19e81be"
 	},
 	"cluster.sim.gates.fill.question": {
 		"text": "Can I buy inside my own price limit?",
@@ -360,8 +360,8 @@
 		"sourceHash": "d4ba5735"
 	},
 	"cluster.sim.gates.price.question": {
-		"text": "Is a share too dear to be worth the downside?",
-		"sourceHash": "99ae575c"
+		"text": "Is a share too expensive to be worth the downside?",
+		"sourceHash": "e1dc3057"
 	},
 	"cluster.sim.gates.reversal.actualNone": {
 		"text": "none flipped",
@@ -440,8 +440,8 @@
 		"sourceHash": "b5e1ded5"
 	},
 	"cluster.sim.signal.trailSold": {
-		"text": "at {price} — so the bot would buy the opposite outcome at {mirror}.",
-		"sourceHash": "25a57102"
+		"text": "at {price} — so the agent would buy the opposite outcome at {mirror}.",
+		"sourceHash": "bc516db6"
 	},
 	"cluster.sim.summary.priceBand": {
 		"text": "pays between {min} and {max} a share,",
@@ -452,8 +452,8 @@
 		"sourceHash": "d5832e42"
 	},
 	"cluster.sim.summary.sentence": {
-		"text": "When {threshold}+ skilled wallets agree, none of them having been on the other side of it in the last {lookback}, and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and has not moved more than {staleness} against them → the bot buys {size} of what they bought (or of the opposite outcome, if they were selling), {priceBand} gives away no more than {fee} of the ticket in fees, does not pay more than {slippage} over the price they got, holds until the first of them reverses, keeps {floor} spendable and {gas} POL back for gas, and repeats with never more than {cap} in play at once.",
-		"sourceHash": "a5419437"
+		"text": "When {threshold}+ skilled wallets agree, none of them having been on the other side of it in the last {lookback}, and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and has not moved more than {staleness} against them → the agent buys {size} of what they bought (or of the opposite outcome, if they were selling), {priceBand} gives away no more than {fee} of the ticket in fees, does not pay more than {slippage} over the price they got, holds until the first of them reverses, keeps {floor} spendable and {gas} POL back for gas, and repeats with never more than {cap} in play at once.",
+		"sourceHash": "2beb618b"
 	},
 	"cluster.sim.verdict.buy": {
 		"text": "BUY {size}",
@@ -472,20 +472,20 @@
 		"sourceHash": "983ff027"
 	},
 	"hero.intro": {
-		"text": "Open-book strategy track record and project P&L. Aggregate-only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
-		"sourceHash": "b7febce4"
+		"text": "We keep the books open. The strategy track record and the project P&L. Aggregate numbers only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
+		"sourceHash": "203956b7"
 	},
 	"hub.advice.lead": {
-		"text": "Neither page is advice, and no wallet is ever published —",
-		"sourceHash": "0a90a546"
+		"text": "Neither page is advice. No wallet is ever published —",
+		"sourceHash": "d0c290f1"
 	},
 	"hub.advice.link": {
 		"text": "methodology & disclosure",
 		"sourceHash": "b3a8abdb"
 	},
 	"hub.advice.md": {
-		"text": "Neither page is advice or a signal service, and no wallet involved in either\nbot is ever published — see the [methodology and disclosure policy]({methodologyHref}).",
-		"sourceHash": "fd6c92df"
+		"text": "Neither page is advice or a signal service. No wallet involved in either agent\nis ever published. See the [methodology and disclosure policy]({methodologyHref}).",
+		"sourceHash": "88b6b844"
 	},
 	"hub.choose": {
 		"text": "Choose a walkthrough",
@@ -508,8 +508,8 @@
 		"sourceHash": "673a1776"
 	},
 	"hub.cluster.tagline": {
-		"text": "Waits until at least three skilled wallets land on the same side of the same bet, in separate trades, then buys $5 of it. One wallet is an opinion; three arriving separately is information.",
-		"sourceHash": "9f792c85"
+		"text": "Waits for at least three skilled wallets on the same side of the same bet, in separate trades. Then it buys $5 of it. One wallet is an opinion. Three arriving separately is information.",
+		"sourceHash": "6a08f349"
 	},
 	"hub.cluster.ticket": {
 		"text": "$5, all-or-nothing",
@@ -524,8 +524,8 @@
 		"sourceHash": "e8f7f617"
 	},
 	"hub.compare.exit.wallet": {
-		"text": "the leader has unwound half of their peak, flipped, or closed",
-		"sourceHash": "f030c58b"
+		"text": "the leader unwinds half of their peak, flips, or closes",
+		"sourceHash": "ebc73c5e"
 	},
 	"hub.compare.fees.cluster": {
 		"text": "yes — in effect a $0.60 minimum price",
@@ -588,8 +588,8 @@
 		"sourceHash": "e59af184"
 	},
 	"hub.description": {
-		"text": "Two small bots trade tiny, real money alongside the published track record — one follows a crowd of skilled wallets, the other mirrors two hand-picked traders. Pick your walkthrough; each explains every rule in plain English and lets you play with the live settings.",
-		"sourceHash": "4a1ff6a0"
+		"text": "Two small agents trade tiny amounts of real money next to the published track record. One follows a crowd of skilled wallets. The other mirrors two hand-picked traders. Pick a walkthrough. Each one explains every rule in plain English and lets you play with the live settings.",
+		"sourceHash": "98946f99"
 	},
 	"hub.eyebrow": {
 		"text": "for dummies",
@@ -612,8 +612,8 @@
 		"sourceHash": "6517b3e5"
 	},
 	"hub.heading": {
-		"text": "Two bots. Two questions.",
-		"sourceHash": "a59fd21c"
+		"text": "Two agents. Two questions.",
+		"sourceHash": "0d2b5c4c"
 	},
 	"hub.mdRead": {
 		"text": "Read the full walkthrough at {href} — or as markdown at {mdHref}.",
@@ -624,8 +624,8 @@
 		"sourceHash": "533033e2"
 	},
 	"hub.sharedNote": {
-		"text": "Everything else is shared DNA: Macro markets only, $5 all-or-nothing tickets on the exchange's own price grid, the same liquidity, timing and price-already-ran rails, a $5 spendable floor, kill switches that stop buying but never selling, a weekly profit sweep, and every skip written down with its numbers.",
-		"sourceHash": "4916858a"
+		"text": "Everything else is shared DNA. Macro markets only. $5 all-or-nothing tickets on the exchange's own price grid. The same rails for liquidity and timing. The same rail for a price that already ran. A $5 spendable floor. Kill switches that stop buying but never selling. A weekly profit sweep. Every skip written down with its numbers.",
+		"sourceHash": "eab18a80"
 	},
 	"hub.sideBySide": {
 		"text": "Side by side",
@@ -652,8 +652,8 @@
 		"sourceHash": "7002ce19"
 	},
 	"hub.wallet.tagline": {
-		"text": "Shadows two hand-picked skilled traders and ignores almost everything they do — until one commits serious money to a fresh bet. Then it places one small copy on its own separate account.",
-		"sourceHash": "18cf621d"
+		"text": "Shadows two hand-picked skilled traders and ignores almost everything they do. Then one commits serious money to a fresh bet. It places one small copy on its own separate account.",
+		"sourceHash": "a12415f7"
 	},
 	"hub.wallet.ticket": {
 		"text": "$5, all-or-nothing",
@@ -684,56 +684,56 @@
 		"sourceHash": "c232326e"
 	},
 	"methodology.description": {
-		"text": "How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.",
-		"sourceHash": "ad768128"
+		"text": "How ogsfrompoly separates skill from luck on Polymarket. How it scores past alerts. How it decides what is safe to publish.",
+		"sourceHash": "5f9e0cfd"
 	},
 	"methodology.note": {
-		"text": "This page is a translation of the English original — if anything differs, the English version, including its disclosure policy, is authoritative.",
-		"sourceHash": "59862971"
+		"text": "This page is a translation. If anything differs, the English original wins, including its disclosure policy.",
+		"sourceHash": "e1322d27"
 	},
 	"methodology.sections.academicIntro": {
-		"text": "## Academic foundation\n\nThe methodology is grounded in two 2026 papers on prediction-market skill,\ntrader persistence, and market outcomes:",
-		"sourceHash": "55b58db4"
+		"text": "## Academic foundation\n\nThe methodology rests on two 2026 papers about skill, trader persistence, and\noutcomes in prediction markets:",
+		"sourceHash": "c4e7c014"
 	},
 	"methodology.sections.academicOutro": {
-		"text": "Both papers point to a practical lesson: short-term realized PnL is a weak\nproxy for skill. A wallet can get lucky, and a lucky wallet can stop winning.\n\nThat is why ogsfrompoly starts with a statistical skill test, then publishes\nwhether the resulting signals actually worked in the public track record.",
-		"sourceHash": "de16ecf5"
+		"text": "Both papers point at the same lesson. Short-term realized PnL is a weak proxy\nfor skill. A wallet can get lucky. A lucky wallet can stop winning.\n\nSo ogsfrompoly starts with a statistical skill test. Then it publishes, in the\nopen track record, whether those signals worked.",
+		"sourceHash": "ba5eeddc"
 	},
 	"methodology.sections.controls": {
-		"text": "## Controls before publication\n\nThe public scorecard should measure repeatable trader signal, not address\nmanagement or market microstructure artifacts.\n\nBefore a wallet can affect the published record, the pipeline applies controls\nfor coordinated multi-wallet clusters, concentrated counterparty patterns, and\nwash-like behavior. These controls either remove or demote signals that can\nmake one address look more skilled than it really is.",
-		"sourceHash": "75c7a51c"
+		"text": "## Controls before publication\n\nThe public scorecard measures repeatable trader signal. It must not measure\naddress shuffling or artifacts of market microstructure.\n\nBefore a wallet reaches the published record, we screen it. We look for wallets\nmoving as one coordinated pack, for the same counterparty on the other side\nagain and again, and for trades that look like wash trades. A signal that fails\ngets cut or demoted.",
+		"sourceHash": "f6780ef4"
 	},
 	"methodology.sections.disclosure": {
-		"text": "## Disclosure policy\n\nThe site is open about methodology and aggregate results. It is closed about\nanything that could front-run a position or expose an individual trader's\nidentity.\n\nThese rules apply to the rendered HTML page, the raw `.md` feed, RSS, and\n`llms.txt`.\n\n- **Wallets appear only as truncated, opaque IDs** — e.g. `wallet_a3f8`. We\n  never publish a full EVM address. Truncated IDs are deliberately not\n  reversible to on-chain identities.\n- **No live alpha. Ever.** We never publish a live alert, a still-open\n  position, or anything a reader could use to front-run a trade in flight.\n  Results are retrospective and aggregate only.\n- **No leaderboards.** We do not rank named wallets against each other. The\n  unit of publication is the strategy cohort, not the individual address.\n- **No raw warehouse exports.** Aggregate counts, hit rates, and category\n  distributions only — never anything that could reconstruct an individual\n  wallet's history.\n- **No bot or leader addresses.** The live copy bots trade from their own\n  wallets, and watching those wallets in real time would expose open\n  positions — so their trading accounts, payout addresses, and the mirrored\n  leader wallets are never published. Leaders appear only as opaque labels\n  (e.g. `leader-a`), and the market of an open bot position is never named.\n\nWhen a published number sits close to the line, we delay by 30+ days or\nanonymize the category before publishing. When in doubt, we don't publish.",
-		"sourceHash": "063d7771"
+		"text": "## Disclosure policy\n\nWe are open about methodology and aggregate results. We are closed about\nanything that could front-run a position or expose a single trader.\n\nThese rules apply to the rendered HTML page, the raw `.md` feed, RSS, and\n`llms.txt`.\n\n- **Wallets appear only as truncated, opaque IDs** — e.g. `wallet_a3f8`. We\n  never publish a full EVM address. Truncated IDs do not reverse to an\n  on-chain identity, by design.\n- **No live alpha. Ever.** We never publish a live alert, a still-open\n  position, or anything a reader could use to front-run a trade in flight. We\n  publish results after the fact, in aggregate.\n- **No leaderboards.** We never rank named wallets against each other. We\n  publish the strategy cohort, not the address.\n- **No raw warehouse exports.** Aggregate counts, hit rates, and category\n  distributions only — never anything that could reconstruct an individual\n  wallet's history.\n- **No agent or leader addresses.** The live copy agents trade from their own\n  wallets. Watch those wallets in real time and you see our open positions. So\n  we never publish their trading accounts, their payout addresses, or the\n  leader wallets they mirror. Leaders appear only as opaque labels (e.g.\n  `leader-a`). We never name the market of an open agent position.\n\nWhen a published number sits close to the line, we delay it 30+ days or\nanonymize the category. When in doubt, we don't publish.",
+		"sourceHash": "9152e47c"
 	},
 	"methodology.sections.intro": {
-		"text": "ogsfrompoly asks a narrow question:\n\n> **Which Polymarket wallets look skilled after luck is stripped out, and do\n> their moves keep working when we score them later?**\n\nThe answer is published as a retrospective scorecard. We do not publish live\ntrade ideas, open-position details, or wallet leaderboards.",
-		"sourceHash": "063e95f1"
+		"text": "ogsfrompoly asks a narrow question:\n\n> **Which Polymarket wallets still look skilled once you strip the luck out —\n> and do their moves keep working when we score them later?**\n\nWe publish the answer after the fact, as a scorecard. We publish no live trade\nideas, no open positions, no wallet leaderboards.",
+		"sourceHash": "1442e11c"
 	},
 	"methodology.sections.notThis": {
-		"text": "## What this is not\n\nogsfrompoly is not an investment recommendation, trading signal service, or\nclaim that any wallet will keep winning.\n\nIt is an audit trail for one specific method: find wallets whose resolved\nhistory looks different from a sign-randomized null, follow their retrospective\nalerts in the categories we publish, and show the results.",
-		"sourceHash": "c41b9eda"
+		"text": "## What this is not\n\nogsfrompoly is not an investment recommendation, trading signal service, or\nclaim that any wallet will keep winning.\n\nIt is an audit trail for one method. Find wallets whose resolved history does\nnot look like random signs. Score their alerts after the fact, in the\ncategories we publish. Show the results.",
+		"sourceHash": "83829217"
 	},
 	"methodology.sections.qualify": {
-		"text": "## How a wallet qualifies\n\nA wallet first needs enough resolved history to test. Here, an **event** means\none real-world question being settled on Polymarket, even if that question has\nmultiple markets, outcomes, fills, or token legs. The minimum is at least\n20 events that have resolved within the measurement period.\n\nOnly resolved markets count. Open positions are ignored. For each eligible\nwallet, we build an **only-realized PnL** series: one profit-and-loss value per\nresolved real-world event.\n\nWe group at the event level because one real-world prediction can involve\nmultiple fills or market legs. Counting each fill as a separate decision would\nmake one position look like many independent bets. Counting at the event level\nkeeps the test closer to the thing we care about: whether the wallet repeatedly\npicked the right side of resolved Polymarket events.",
-		"sourceHash": "0c80af36"
+		"text": "## How a wallet qualifies\n\nA wallet needs enough resolved history to test. An **event** here means one\nreal-world question that Polymarket settles. One question can carry many\nmarkets, outcomes, fills, or single token positions, and it still counts once.\nThe bar is at least 20 events resolved inside the measurement period.\n\nOnly resolved markets count. We ignore open positions. For each eligible wallet\nwe build an **only-realized PnL** series: one profit-and-loss number per\nresolved event.\n\nWe group at the event level because one prediction can span many fills or\nmarkets. Count each fill as its own decision and one position starts to look\nlike a dozen independent bets. Grouping keeps the test on the thing we care\nabout: did this wallet pick the right side, again and again, on questions that\nhave already settled?",
+		"sourceHash": "7078b298"
 	},
 	"methodology.sections.scope": {
-		"text": "## Current scope\n\nThe public track record currently covers a single Polymarket area:\n\n- **Macro/Finance** - macro, rates, economic data, FOMC, earnings, and\n  finance-labeled Polymarket markets.\n\nThis narrow scope is deliberate. The goal is not broad category coverage.\nThe goal is a clean audit trail: skilled wallets, retrospective alerts, and\npublished outcomes that a reader can check later.",
-		"sourceHash": "522c9512"
+		"text": "## Current scope\n\nThe public track record covers one Polymarket area:\n\n- **Macro/Finance** - macro, rates, economic data, FOMC, earnings, and\n  finance-labeled Polymarket markets.\n\nThe narrowness is on purpose. We do not chase category coverage. We build a\nclean audit trail: skilled wallets, alerts scored after the fact, and outcomes\na reader can check later.",
+		"sourceHash": "ae1ea60f"
 	},
 	"methodology.sections.scoring": {
-		"text": "## How alerts are scored\n\nWeekly statements score the period after the fact. They report:\n\n- total alerts\n- resolved hit rate\n- hypothetical PnL\n- category mix\n- a small set of opaque wallet IDs when useful for auditability\n\nMonthly statements add the business side of the project: revenue, operating\nexpense, net result, and runway.\n\nThe published category is **macro-finance**. Anything outside the current\npublic scope is dropped from the landing-page statement surface instead of\nbeing merged into another category.\n\nEvery statement is retrospective. The site publishes whether historical\nsignals worked. It does not publish instructions for trades in flight.",
-		"sourceHash": "48b34512"
+		"text": "## How we score alerts\n\nWeekly statements score the period after the fact. They report:\n\n- total alerts\n- resolved hit rate\n- hypothetical PnL\n- category mix\n- a small set of opaque wallet IDs when useful for auditability\n\nMonthly statements add the business side of the project: revenue, operating\nexpense, net result, and runway.\n\nThe published category is **macro-finance**. Anything outside the public scope\ndrops off the statement pages. We never merge it into another category.\n\nEvery statement looks back. We publish whether past signals worked. We publish\nnothing about a trade in flight.",
+		"sourceHash": "be962336"
 	},
 	"methodology.sections.skillTest": {
-		"text": "## The skill test\n\nSkill is measured with an event-level **sign-randomization** test.\n\nFor each eligible wallet, the inputs are:\n\n- `n` = number of resolved events for the wallet.\n- `x_i` = the wallet's realized PnL on event `i`.\n- `A = sum(x_i)` = the wallet's actual total realized PnL.\n- `B = 1,000 simulations` = the size of the randomization run.\n\nEach simulation keeps the size of every event result but randomizes the sign.\nFor simulation `j`, each event gets a random sign:\n\n`s_{j,i} in {-1, +1}`\n\nThe simulated no-skill total is:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nThe p-value is:\n\n`p = count(T_j >= A) / B`\n\nIn words, the p-value answers:\n\n\"If this wallet had no skill, how often would random sign flips produce a total\nPnL at least as good as the wallet's actual total?\"\n\nA wallet is treated as skilled only when that p-value clears the\npre-registered threshold: `p <= 0.05`. A large raw PnL number is not enough.",
-		"sourceHash": "43dfeddd"
+		"text": "## The skill test\n\nWe measure skill with an event-level **sign-randomization** test.\n\nFor each eligible wallet, the inputs are:\n\n- `n` = number of resolved events for the wallet.\n- `x_i` = the wallet's realized PnL on event `i`.\n- `A = sum(x_i)` = the wallet's actual total realized PnL.\n- `B = 1,000 simulations` = the size of the randomization run.\n\nEach simulation keeps the size of every event result but randomizes the sign.\nFor simulation `j`, each event gets a random sign:\n\n`s_{j,i} in {-1, +1}`\n\nThe simulated no-skill total is:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nThe p-value is:\n\n`p = count(T_j >= A) / B`\n\nIn words, the p-value answers:\n\n\"If this wallet were just guessing, how often would random sign flips match or\nbeat its actual total?\"\n\nWe call a wallet skilled only when that p-value clears the pre-registered\nthreshold: `p <= 0.05`. A big raw PnL number is not enough.",
+		"sourceHash": "520a92e2"
 	},
 	"methodology.sections.skin": {
-		"text": "## Skin in the game: two small live bots\n\nThe scorecard is retrospective, but the project also puts a small amount of\nreal money behind its own signals. Two bots trade live, with deliberately tiny\n**$5** tickets:\n\n- **Cluster copy** (live since July 2026) buys only when several skilled\n  wallets land on the same side of the same market at once, in separate\n  trades.\n- **Wallet copy** (live since August 2026) mirrors two individual wallets from\n  the skilled roster, each published only under an opaque label.\n\nBoth are documented in plain English — every rule, every live setting, and a\nsimulator you can drag — at [copy trading for dummies](/for-dummies). Their\nrealized results reach the monthly statements as cash: profit is swept weekly\nto a collection wallet and counted as revenue only once it lands there.\nNothing about a bot position is published while that position is open.",
-		"sourceHash": "42ef81bc"
+		"text": "## Skin in the game: two small live agents\n\nThe scorecard looks back. The money does not. Two agents trade live behind our\nown signals, on tiny **$5** tickets:\n\n- **Cluster copy** (live since July 2026) buys only when several skilled\n  wallets land on the same side of the same market at once, in separate\n  trades.\n- **Wallet copy** (live since August 2026) mirrors two individual wallets from\n  the skilled roster, each published only under an opaque label.\n\nWe document both in plain English at [copy trading for dummies](/for-dummies):\nevery rule, every live setting, and a simulator you can drag. Their realized\nresults reach the monthly statements as cash. We sweep profit to a collection\nwallet each week and count it as revenue once it lands. We publish nothing\nabout an agent position while that position is open.",
+		"sourceHash": "34cab2e2"
 	},
 	"methodology.title": {
 		"text": "Methodology",
@@ -812,8 +812,8 @@
 		"sourceHash": "4f85c1a8"
 	},
 	"skin.body": {
-		"text": "Two small bots trade real money alongside the record — one follows a crowd of skilled wallets, one mirrors two hand-picked traders. Every rule and every live setting, explained in plain English with a simulator you can drag.",
-		"sourceHash": "a0b370cc"
+		"text": "Two small agents trade real money next to the record. One follows a crowd of skilled wallets. One mirrors two hand-picked traders. Every rule and every live setting in plain English, with a simulator you can drag.",
+		"sourceHash": "afc5b4e8"
 	},
 	"skin.cta": {
 		"text": "Copy trading for dummies →",
@@ -824,8 +824,8 @@
 		"sourceHash": "7f81645e"
 	},
 	"wallet.page.description": {
-		"text": "Plain-English walkthrough of the ogsfrompoly wallet-copy bot — the one that mirrors two hand-picked skilled traders: when it copies, when it refuses, when it leaves, and which numbers you can actually turn.",
-		"sourceHash": "41693a6a"
+		"text": "Plain-English walkthrough of the ogsfrompoly wallet-copy agent, the one that mirrors two hand-picked skilled traders. When it copies. When it refuses. When it leaves. And which numbers you can turn.",
+		"sourceHash": "661411e3"
 	},
 	"wallet.page.knobGroups.conviction": {
 		"text": "Does the leader really mean it?",
@@ -920,8 +920,8 @@
 		"sourceHash": "f87dd749"
 	},
 	"wallet.page.md.knobsBlurb": {
-		"text": "The site renders these as sliders you can drag to watch the bot's decision\nflip. In markdown they are just the table:",
-		"sourceHash": "e859566c"
+		"text": "The site renders these as sliders you can drag to watch the agent's decision\nflip. In markdown they are just the table:",
+		"sourceHash": "afec1924"
 	},
 	"wallet.page.md.knobsHeading": {
 		"text": "The knobs",
@@ -1000,68 +1000,68 @@
 		"sourceHash": "ec619559"
 	},
 	"wallet.page.sections.hardWired": {
-		"text": "## What is hard-wired, and not a setting\n\n- **The conviction bar fires once per fresh bet.** Scale-ins never re-trigger;\n  only a full close or a flip resets it.\n- **Positions are counted in the held outcome.** Buying one side and selling\n  the other are the same opinion, normalised before any rule looks at them.\n- **Exits close the whole leg, always** — at the trim threshold, on a flip, on\n  a close-out, on config removal, or at resolution. There is no partial close,\n  no take-profit and no stop-loss to tune.\n- **One leg per bet per leader.** The same market copied from both leaders is\n  two independent legs.\n- **Entry is a fill-or-kill order priced on the exchange's grid**, and the\n  venue's 5-share minimum is enforced at boot, not per order.\n- **Macro markets only**, qualified against the same catalog as everything\n  else on this site.\n- **The kill switch spares exits.** Only entries can be halted.\n\n**Why split it that way?** The same reason as on the cluster page: thresholds\nare numbers, and numbers are safe to expose. The copying logic itself — what\ncounts as conviction, how exits work — lives in code, so one careless line of\nYAML cannot quietly derail the strategy.",
-		"sourceHash": "5b43a5cb"
+		"text": "## What is hard-wired, and not a setting\n\n- **The conviction bar fires once per fresh bet.** Scale-ins never re-trigger;\n  only a full close or a flip resets it.\n- **The agent counts positions in the held outcome.** Buying one side and selling\n  the other are the same opinion, normalised before any rule looks at them.\n- **Exits close the whole leg, always** — at the trim threshold, on a flip, on\n  a close-out, on config removal, or at resolution. There is no partial close,\n  no take-profit and no stop-loss to tune.\n- **One leg per bet per leader.** The same market copied from both leaders is\n  two independent legs.\n- **Entry is a fill-or-kill order priced on the exchange's grid**, and the\n  venue's 5-share minimum is enforced at boot, not per order.\n- **Macro markets only**, qualified against the same catalog as everything\n  else on this site.\n- **The kill switch spares exits.** Only entries can be halted.\n\n**Why split it that way?** The same reason as on the cluster page: thresholds\nare numbers, and numbers are safe to expose. The copying logic itself — what\ncounts as conviction, how exits work — lives in code. One careless line of YAML\nmust never derail the strategy.",
+		"sourceHash": "4fd74a46"
 	},
 	"wallet.page.sections.intro": {
-		"text": "Alongside the published track record, a second small bot mirrors two individual\ntraders — wallets our skill test already flagged, promoted from the same\nleaderboard the weekly statements are built on. Where\n[cluster copy]({clusterHref}) waits for a *crowd* of skilled wallets\nto agree, this one asks a different question: **what does one proven trader do\nwhen they really mean it?**\n\nThink of it as a **very patient apprentice** shadowing two masters. It ignores\nalmost everything they do. Only when one of them commits serious money to a\nfresh bet does it place one small copy of its own — $5, on its own separate\naccount, behind its own kill switch.\n\nEvery number on this page is the live setting for the **{market}**\nmarkets as of **{asOf}**, read from `config/wallet_copy.yml`.\nNot sure which of the two bots you wanted? [The chooser]({hubHref}) compares\nthem side by side.",
-		"sourceHash": "661d5952"
+		"text": "A second small agent runs next to the published track record. It mirrors two\nindividual traders — wallets our skill test already flagged, promoted from the\nsame leaderboard the weekly statements are built on. Where\n[cluster copy]({clusterHref}) waits for a *crowd* of skilled wallets to agree,\nthis one asks a different question: **what does one proven trader do when they\nreally mean it?**\n\nThink of a **very patient apprentice** shadowing two masters. It ignores almost\neverything they do. Then one of them commits serious money to a fresh bet, and\nit places one small copy of its own — $5, on its own separate account, behind\nits own kill switch.\n\nEvery number on this page is the live setting for the **{market}**\nmarkets as of **{asOf}**, read from `config/wallet_copy.yml`.\nNot sure which of the two agents you wanted? [The chooser]({hubHref}) compares\nthem side by side.",
+		"sourceHash": "66dee6aa"
 	},
 	"wallet.page.sections.notClaiming": {
-		"text": "## What we are not claiming yet\n\n- **The live history is days old.** The feature went live on 2026-08-11 and\n  has opened a single-digit number of positions. Every rail on this page is\n  argued from measurements taken *before* it was armed; almost none has a\n  meaningful record of firing in production.\n- **There is no fee rail, and that is a bet, not a proof.** The cluster bot's\n  fee lesson (77% of its early losses) has no guard here. If the leaders'\n  conviction does not filter cheap outcomes the way we expect, this page will\n  say so — after the books do.\n- **The two-sided rail's early evidence was thin.** Most of its first readings\n  were zeros over empty measurement windows; the payload now distinguishes\n  \"measured clean\" from \"nothing to weigh\", but the rail itself has yet to\n  prove its threshold against real traffic.\n- **Redemption is not automatic.** A resolved win sits in the books as closed\n  but explicitly *unpaid* until it is redeemed — the books refuse to count\n  money that has not arrived.",
-		"sourceHash": "04fa6d2f"
+		"text": "## What we are not claiming yet\n\n- **The live history is days old.** The feature went live on 2026-08-11 and\n  has opened a single-digit number of positions. We argue every rail on this\n  page from measurements taken *before* it was armed. Almost none has a\n  meaningful record of firing in production.\n- **There is no fee rail, and that is a bet, not a proof.** The cluster agent's\n  fee lesson (77% of its early losses) has no guard here. If the leaders'\n  conviction does not filter cheap outcomes the way we expect, this page will\n  say so — after the books do.\n- **The two-sided rail's early evidence was thin.** Most of its first readings\n  were zeros over empty measurement windows. The payload now separates\n  \"measured clean\" from \"nothing to weigh\", but the rail has yet to prove its\n  threshold against real traffic.\n- **Redemption is not automatic.** A resolved win sits in the books as closed\n  but explicitly *unpaid* until it is redeemed — the books refuse to count\n  money that has not arrived.",
+		"sourceHash": "9466c665"
 	},
 	"wallet.page.sections.notThis": {
-		"text": "## What this page is not\n\nThese are the operating parameters of our own small bot, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled traders will keep working.\n\nNone of the wallets involved — the two leaders, the bot's own trading account,\nor the payout address — is ever published anywhere on this site. Watching any\nof them in real time would expose open positions, which is exactly what the\n[disclosure policy]({methodologyHref}) exists to prevent.",
-		"sourceHash": "ff6d2c88"
+		"text": "## What this page is not\n\nThese are the operating parameters of our own small agent, published in the same\nspirit as the rest of the track record. They are not advice, not a signal\nservice, and not a claim that mirroring skilled traders will keep working.\n\nWe never publish any of the wallets involved — the two leaders, the agent's own\ntrading account, or the payout address. Watch any of them in real time and you\nsee open positions, which is exactly what the\n[disclosure policy]({methodologyHref}) exists to prevent.",
+		"sourceHash": "c806924e"
 	},
 	"wallet.page.sections.step1": {
-		"text": "### 1. It follows two traders, not a crowd\n\nThe two wallets it mirrors were picked from our own skill leaderboard — the\nsame measured, classified roster the rest of this site reports on. On this page\nthey are only ever **leader-a** and **leader-b**, which are literally their\nlabels in the config. Their addresses are never published: flagging a skilled\nwallet in public would invite the whole market to front-run them, and watching\nthem watch us would leak our own positions too.\n\nOne signal here is one wallet's actions. There is no quorum to wait for and no\ncrowd to count — which is exactly why every remaining check works differently\nthan on the [cluster page]({clusterHref}).",
-		"sourceHash": "79ed58d9"
+		"text": "### 1. It follows two traders, not a crowd\n\nWe picked the two wallets it mirrors from our own skill leaderboard — the same\nmeasured, classified roster the rest of this site reports on. On this page they\nare only ever **leader-a** and **leader-b**, which are literally their labels in\nthe config. We never publish their addresses. Flag a skilled wallet in public\nand the whole market front-runs them, and watching them watch us would leak our\nown positions too.\n\nOne signal here is one wallet's actions. There is no quorum to wait for and no\ncrowd to count. That is exactly why every remaining check works differently\nthan on the [cluster page]({clusterHref}).",
+		"sourceHash": "f4dca315"
 	},
 	"wallet.page.sections.step10": {
 		"text": "### 10. The kill switch stops buying, never selling\n\nAt any moment the kill switch halts new entries **while exits, retries and\nsettlements keep working** — so a halt can never strand an open position. It\nstops taking risk; it does not abandon it.",
 		"sourceHash": "eaa6c38d"
 	},
 	"wallet.page.sections.step11": {
-		"text": "### 11. Its money cannot touch the other bot's\n\nWallet copy trades a **separate account with its own key**, its own books, its\nown alert channel, its own kill switch and its own service. A wallet-copy bug\ncan spend only wallet-copy money; neither bot can even read the other's\nrecords. The one thing they share, on purpose, is the destination of the\nweekly profit sweep — named in the config as `profit_destination` behind a\n`destination_allowlist`, with a **$1** dust threshold (`dust_threshold_usdc`);\nthe addresses themselves are never published.",
-		"sourceHash": "7903e26f"
+		"text": "### 11. Its money cannot touch the other agent's\n\nWallet copy trades a **separate account with its own key**, its own books, its\nown alert channel, its own kill switch and its own service. A wallet-copy bug\ncan spend only wallet-copy money. Neither agent can even read the other's\nrecords. The one thing they share, on purpose, is the destination of the\nweekly profit sweep — named in the config as `profit_destination` behind a\n`destination_allowlist`, with a **$1** dust threshold (`dust_threshold_usdc`).\nWe never publish the addresses themselves.",
+		"sourceHash": "d5001446"
 	},
 	"wallet.page.sections.step12": {
-		"text": "### 12. Where it is today\n\nThe feature went live on **2026-08-11**. It then spent its first days\ncorrectly copying **nothing** — with bars this high, silence is the expected\nstate, and the operations tooling exists precisely to prove that silence is\nhealth rather than breakage. Its first real position followed within days.\nThat is the entire live history so far: read every number on this page as a\nversion 1, argued from measurement but barely exercised in production.",
-		"sourceHash": "b7f4f96c"
+		"text": "### 12. Where it is today\n\nThe feature went live on **2026-08-11**. It spent its first days correctly\ncopying **nothing**. With bars this high, silence is the expected state, and the\noperations tooling exists to prove that silence is health rather than breakage.\nIts first real position followed within days. That is the entire live history so\nfar. Read every number on this page as a version 1: argued from measurement,\nbarely exercised in production.",
+		"sourceHash": "2cf42b80"
 	},
 	"wallet.page.sections.step2": {
-		"text": "### 2. It only moves when the leader really means it\n\nEach leader has a **conviction bar** (`min_leader_notional_usdc`): the bot\ncopies a bet only once that leader's own position on it reaches the bar. And\nthe bar is set *per leader*, against that leader's own history, because the\nsame dollar figure does not mean the same thing twice.\n\nMeasured over 90 days: leader-a's positions have a **median of $285** and a\n90th percentile of $1,729 — a **$500** bar selects their most convinced third,\nand our $5 copy is about 1% of what they stake. leader-b's median is **$5**;\nat a $500 bar this rail would fire roughly once a quarter while reading as an\narmed leader, so their bar is **$100**. A knob that looks armed and never fires\nis worse than no knob.\n\nThe bar fires **once per fresh bet**, at the moment it is first crossed.\nScale-ins never re-trigger it, and a bet only becomes fresh again after the\nleader has fully closed it — or flipped sides.",
-		"sourceHash": "cbe7d29d"
+		"text": "### 2. It only moves when the leader really means it\n\nEach leader has a **conviction bar** (`min_leader_notional_usdc`). The agent\ncopies a bet only once that leader's own position on it reaches the bar. The\nbar sits *per leader*, against that leader's own history, because the same\ndollar figure does not mean the same thing twice.\n\nMeasured over 90 days: leader-a's positions have a **median of $285** and a\n90th percentile of $1,729. A **$500** bar selects their most convinced third,\nand our $5 copy is about 1% of what they stake. leader-b's median is **$5**. At\na $500 bar this rail would fire roughly once a quarter while reading as an armed\nleader, so their bar is **$100**. A knob that looks armed and never fires is\nworse than no knob.\n\nThe bar fires **once per fresh bet**, at the moment it is first crossed.\nScale-ins never re-trigger it. A bet becomes fresh again only after the leader\ncloses it in full — or flips sides.",
+		"sourceHash": "fcb75df2"
 	},
 	"wallet.page.sections.step3": {
-		"text": "### 3. It counts what the leader holds, not what they clicked\n\nOn a two-outcome market, buying one side and selling the other are the same\nopinion. So conviction is measured in what the leader **ends up holding**, at\nthe price of *that* outcome — not in the words on the trade ticket.\n\nThe difference is not small. Selling 500 shares of a nearly-worthless outcome\nat half a cent collects about **$2** of cash — but it is roughly **$498** of\nconviction on the *other* outcome, and the bot now counts it that way. The\nentry price follows the held outcome too: before that was fixed, a position a\nleader had built by selling could show a price drift of thousands of percent\nand be refused as stale — a bug that rejected exactly the trades it existed to\ncopy.",
-		"sourceHash": "e292e912"
+		"text": "### 3. It counts what the leader holds, not what they clicked\n\nOn a two-outcome market, buying one side and selling the other are the same\nopinion. So the agent measures conviction in what the leader **ends up holding**,\nat the price of *that* outcome — not in the words on the trade ticket.\n\nThe difference is not small. Selling 500 shares of a nearly-worthless outcome\nat half a cent collects about **$2** of cash. It is also roughly **$498** of\nconviction on the *other* outcome, and the agent now counts it that way. The entry\nprice follows the held outcome too. Before we fixed that, a position a leader\nhad built by selling could show a price drift of thousands of percent and get\nrefused as stale — a bug that rejected exactly the trades it existed to copy.",
+		"sourceHash": "98c7a32d"
 	},
 	"wallet.page.sections.step4": {
-		"text": "### 4. It refuses a leader who trades both sides\n\nThe rail most likely to refuse an entry. Before copying, the bot looks at the\nleader's own flow on this bet over the last **48 hours** and compares buys to\nsells (smaller ÷ larger, in dollars). Above **0.5** (`max_wallet_two_sided_ratio`)\nit refuses: a wallet trading both sides of the same bet is making a market,\nnot expressing a view — and every flip a copier follows is a full, paid round\ntrip. On the cluster bot, one live flip-follow was measured at **$0.25 on a $5\nposition — about 5% — to end up short what it had just been long**.\n\nOne honest subtlety: an empty window is **\"nothing to weigh\"**, not a clean\nscore of zero. When the 48 hours contain no flow to measure, the rail stands\ndown and says it was unmeasured, rather than pretending the leader passed. The\ndistinction was added after real skips showed most early readings were exactly\nthis: zeros over empty windows, dressed up as evidence.",
-		"sourceHash": "20a7460d"
+		"text": "### 4. It refuses a leader who trades both sides\n\nThe rail most likely to refuse an entry. Before copying, the agent looks at the\nleader's own flow on this bet over the last **48 hours** and compares buys to\nsells (smaller ÷ larger, in dollars). Above **0.5**\n(`max_wallet_two_sided_ratio`) it refuses. A wallet trading both sides of the\nsame bet is making a market, not expressing a view — and every flip a copier\nfollows is a full, paid round trip. On the cluster agent, one live flip-follow\ncost **$0.25 on a $5 position — about 5% — to end up short what it had just\nbeen long**.\n\nOne honest subtlety: an empty window is **\"nothing to weigh\"**, not a clean\nscore of zero. When the 48 hours contain no flow to measure, the rail stands\ndown and says it was unmeasured instead of pretending the leader passed. We\nadded the distinction after real skips showed most early readings were exactly\nthis: zeros over empty windows, dressed up as evidence.",
+		"sourceHash": "ce269a1f"
 	},
 	"wallet.page.sections.step5": {
-		"text": "### 5. The usual safety checks\n\nThe rest of the entry gate is the same family of questions the cluster bot\nasks, in the same spirit:\n\n- **\"Is there anyone here to trade with?\"** — under **$1,000** of liquidity\n  (`min_liquidity_usdc`), skip.\n- **\"Is this market about to end?\"** — under **1 hour** to resolution\n  (`min_seconds_to_resolution`), skip.\n- **\"Has the price already run past the leader?\"** — skip if the ask has moved\n  more than **3%** past the leader's effective entry (`staleness_pct`) *and*\n  more than **two price steps** (`staleness_min_ticks`). A move the market's\n  own grid cannot subdivide is noise, not information.\n- **\"Is a share too dear?\"** — never pay more than **$0.95**\n  (`max_entry_price`). At the top of the price range a copy risks $5 to win\n  cents, and one bad resolution erases hundreds of wins.\n- **\"Am I already copying this leader enough?\"** — at most **2 open copies per\n  leader** (`max_open_copies_per_leader`), so one leader on a spree cannot eat\n  the whole budget. This rail has no cluster equivalent.\n- **\"Do I have room, and a floor?\"** — at most **$20** open in total\n  (`exposure_cap_usdc`), never spending the account below **$5**\n  (`working_capital_floor_usdc`).",
-		"sourceHash": "8b913483"
+		"text": "### 5. The usual safety checks\n\nThe rest of the entry gate is the same family of questions the cluster agent\nasks, in the same spirit:\n\n- **\"Is there anyone here to trade with?\"** — under **$1,000** of liquidity\n  (`min_liquidity_usdc`), skip.\n- **\"Is this market about to end?\"** — under **1 hour** to resolution\n  (`min_seconds_to_resolution`), skip.\n- **\"Has the price already run past the leader?\"** — skip if the ask has moved\n  more than **3%** past the leader's effective entry (`staleness_pct`) *and*\n  more than **two price steps** (`staleness_min_ticks`). A move the market's\n  own grid cannot subdivide is noise, not information.\n- **\"Is a share too expensive?\"** — never pay more than **$0.95**\n  (`max_entry_price`). At the top of the price range a copy risks $5 to win\n  cents, and one bad resolution erases hundreds of wins.\n- **\"Am I already copying this leader enough?\"** — at most **2 open copies per\n  leader** (`max_open_copies_per_leader`), so one leader on a spree cannot eat\n  the whole budget. This rail has no cluster equivalent.\n- **\"Do I have room, and a floor?\"** — at most **$20** open in total\n  (`exposure_cap_usdc`), never spending the account below **$5**\n  (`working_capital_floor_usdc`).",
+		"sourceHash": "d04f5d12"
 	},
 	"wallet.page.sections.step6": {
-		"text": "### 6. What it deliberately does not check\n\nThree rails from the cluster bot are **absent here**, and honesty about that\nmatters more than symmetry:\n\n- **No fee rail.** The cluster bot's most expensive lesson — the exchange's\n  per-share fee was 77% of its early losses — produced a fee ceiling there\n  that works out to a **$0.60 minimum price**. This bot has no such rail: a 7¢\n  outcome its sibling would refuse sails through. The bet is that a leader's\n  own conviction already filters the cheap-lottery-ticket trades; that bet is\n  not yet proven.\n- **No reversal window.** The cluster bot refuses a crowd whose members just\n  switched sides. Here the two-sided flow rail plays that role for a single\n  wallet.\n- **No gas check at entry.** The venue's relayer pays for settlement, and the\n  trading account itself structurally holds no gas at all — an entry-path gas\n  rail refused *every* entry before it was removed. Gas is a payout question:\n  the weekly sweep keeps **2 POL** back (`gas_reserve_pol`).",
-		"sourceHash": "58361e11"
+		"text": "### 6. What it deliberately does not check\n\nThree rails from the cluster agent are **missing here**. Honesty about that\nmatters more than symmetry:\n\n- **No fee rail.** The cluster agent's most expensive lesson — the exchange's\n  per-share fee was 77% of its early losses — produced a fee ceiling there\n  that works out to a **$0.60 minimum price**. This agent has no such rail. A 7¢\n  outcome its sibling would refuse sails through. We are betting that a\n  leader's own conviction already filters the cheap lottery tickets. That bet\n  is not yet proven.\n- **No reversal window.** The cluster agent refuses a crowd whose members just\n  switched sides. Here the two-sided flow rail plays that role for a single\n  wallet.\n- **No gas check at entry.** The venue's relayer pays for settlement, and the\n  trading account structurally holds no gas. An entry-path gas rail refused\n  *every* entry before we removed it. Gas is a payout question: the weekly\n  sweep keeps **2 POL** back (`gas_reserve_pol`).",
+		"sourceHash": "996b089d"
 	},
 	"wallet.page.sections.step7": {
-		"text": "### 7. A ticket that cannot exist refuses to boot\n\nThe order itself is the same shape as the cluster bot's: **fill-or-kill**, at\na limit of the current ask plus **1%** of room (`slippage_pct`) but never less\nthan **two price steps** (`slippage_min_ticks`), snapped onto the market's own\nprice grid. It fills completely or dies; a killed order is not retried.\n\nThe venue's 5-share minimum is handled differently, though — **at boot, not\nper order**. The service works out the worst limit price its own rails allow\n(with a $0.95 ceiling and two steps of room, that is $0.97) and refuses to\nstart at all if the ticket cannot buy five shares there. Under **$4.85** a bet,\nthe bot will not boot — a config that cannot trade should fail once, loudly,\nat startup, not once per signal forever.",
-		"sourceHash": "b8aea255"
+		"text": "### 7. A ticket that cannot exist refuses to boot\n\nThe order is the same shape as the cluster agent's: **fill-or-kill**, at a limit\nof the current ask plus **1%** of room (`slippage_pct`) but never less than\n**two price steps** (`slippage_min_ticks`), snapped onto the market's own price\ngrid. It fills completely or dies. A killed order gets no retry.\n\nThe venue's 5-share minimum works differently — **at boot, not per order**. The\nservice works out the worst limit price its own rails allow (with a $0.95\nceiling and two steps of room, that is $0.97) and refuses to start if the ticket\ncannot buy five shares there. Under **$4.85** a bet, the agent will not boot. A\nconfig that cannot trade should fail once, loudly, at startup — not once per\nsignal forever.",
+		"sourceHash": "e0a7b8b8"
 	},
 	"wallet.page.sections.step8": {
-		"text": "### 8. It holds through trims, and leaves at half\n\nExits are where this bot most differs from its sibling. The cluster bot leaves\nat the *first* sale by anyone in the crowd. This one is deliberately harder to\nshake out:\n\n- A leader **trimming** their position is information, not an exit. The bot\n  records it and holds.\n- Once the leader's cumulative selling reaches **50% of their peak position**\n  (`trim_close_fraction`), the bot closes its **whole** leg at once. Measured\n  against the peak, not per fill — a leader bleeding out 20% at a time would\n  never trip a per-fill rule. And always the whole leg, never a slice: a\n  proportional sliver can drop under the venue's 5-share minimum and become\n  unsellable.\n- A leader going to **zero**, or **flipping** to the other side, closes the leg\n  immediately. A flip also starts a fresh bet — the bot can close and re-enter\n  on the other side in the same breath, exactly as the leader did.\n- A leader **removed or disabled in the config** has their legs closed within a\n  minute. A market that **resolves** is redeemed.\n\n*The shape of this is hard-wired. The only exit number you can turn is the\ntrim threshold.*",
-		"sourceHash": "b9a0655c"
+		"text": "### 8. It holds through trims, and leaves at half\n\nExits are where this agent most differs from its sibling. The cluster agent leaves\nat the *first* sale by anyone in the crowd. This one is harder to shake out on\npurpose:\n\n- A leader **trimming** their position is information, not an exit. The agent\n  records it and holds.\n- Once the leader's cumulative selling reaches **50% of their peak position**\n  (`trim_close_fraction`), the agent closes its **whole** leg at once. Measured\n  against the peak, not per fill — a leader bleeding out 20% at a time would\n  never trip a per-fill rule. And always the whole leg, never a slice: a\n  proportional sliver can drop under the venue's 5-share minimum and become\n  unsellable.\n- A leader going to **zero**, or **flipping** to the other side, closes the leg\n  immediately. A flip also starts a fresh bet — the agent can close and re-enter\n  on the other side in the same breath, exactly as the leader did.\n- Remove or disable a leader in the config and the agent closes their legs within\n  a minute. When a market **resolves**, the agent redeems it.\n\n*The shape of this is hard-wired. The only exit number you can turn is the\ntrim threshold.*",
+		"sourceHash": "4d3ff191"
 	},
 	"wallet.page.sections.step9": {
-		"text": "### 9. A failed exit is queued, not forgotten\n\nAn exit order can die just like an entry. Each one gets **three attempts**,\ntracked per position in a durable queue — one stuck leg cannot block the\nothers — and if the third fails the bot says so loudly rather than going\nquiet. A market that resolved but has not been redeemed yet is marked\n**unpaid** in the books, never counted as cash it does not have.",
-		"sourceHash": "d5972989"
+		"text": "### 9. A failed exit is queued, not forgotten\n\nAn exit order can die just like an entry. Each one gets **three attempts**,\ntracked per position in a durable queue — one stuck leg cannot block the\nothers — and if the third fails the agent says so loudly instead of going quiet.\nA market that resolved but is not redeemed yet sits in the books as **unpaid**.\nThe books never count cash they do not have.",
+		"sourceHash": "e9852a0b"
 	},
 	"wallet.page.sections.storyHeading": {
 		"text": "## The whole story, one step at a time",
@@ -1092,20 +1092,20 @@
 		"sourceHash": "c6cdd246"
 	},
 	"wallet.page.ui.explainer": {
-		"text": "The real executor short-circuits at the first ✗ in the last list and moves on. Every check is scored here so you can see what each knob does. Prices are always on the outcome the leader actually holds — a position built by selling one side is a position in the other. The engine also runs a row of bookkeeping refusals left out here — is this bet already copied, is the market in scope, is the kill switch on — because none of them is a number you can turn.",
-		"sourceHash": "ce4bd4c2"
+		"text": "The real executor stops at the first ✗ in the last list and moves on. We score every check here so you can see what each knob does. Prices are always on the outcome the leader really holds — a position built by selling one side is a position in the other. The engine also runs a row of bookkeeping refusals — is this bet already copied, is the market in scope, is the kill switch on. We leave them out because none of them is a number you can turn.",
+		"sourceHash": "88926cc4"
 	},
 	"wallet.page.ui.flagAlert": {
-		"text": "no signal is emitted — the bot is never asked",
-		"sourceHash": "8a824aea"
+		"text": "no signal is emitted — the agent is never asked",
+		"sourceHash": "5871501a"
 	},
 	"wallet.page.ui.flagBoot": {
 		"text": "the service refuses to start — no signal is ever read",
 		"sourceHash": "d3b9ef8e"
 	},
 	"wallet.page.ui.flagExecutor": {
-		"text": "the real bot stops here",
-		"sourceHash": "75aa497a"
+		"text": "the real agent stops here",
+		"sourceHash": "fb529306"
 	},
 	"wallet.page.ui.incomingSignal": {
 		"text": "Incoming signal",
@@ -1144,28 +1144,28 @@
 		"sourceHash": "5127fe65"
 	},
 	"wallet.page.ui.stageExecutor": {
-		"text": "Then the bot's own rails, in order",
-		"sourceHash": "54d39948"
+		"text": "Then the agent's own rails, in order",
+		"sourceHash": "d11485d8"
 	},
 	"wallet.page.ui.tryIt": {
-		"text": "Try it — the bot's decision, live",
-		"sourceHash": "97b38b75"
+		"text": "Try it — the agent's decision, live",
+		"sourceHash": "9599b5b9"
 	},
 	"wallet.sim.detail.copy": {
 		"text": "Every check passed. {order} {hold}",
 		"sourceHash": "f5cd3133"
 	},
 	"wallet.sim.detail.copyViaSale": {
-		"text": "The leader built this position by selling the other side, so the bot buys the outcome they actually hold, at {ask}. {order} {hold}",
-		"sourceHash": "64965574"
+		"text": "The leader built this position by selling the other side, so the agent buys the outcome they actually hold, at {ask}. {order} {hold}",
+		"sourceHash": "2af10d68"
 	},
 	"wallet.sim.detail.hold": {
 		"text": "Then it holds through small trims and sells the whole leg the moment {leader} has unwound {threshold} of their peak — or flipped, or closed out.",
 		"sourceHash": "73c75273"
 	},
 	"wallet.sim.detail.order": {
-		"text": "It sends a {size} fill-or-kill order at a limit of {limit} — about {shares} — which fills completely or dies; a killed order is not retried.",
-		"sourceHash": "897f4023"
+		"text": "It sends a {size} fill-or-kill order at a limit of {limit} — about {shares} — it fills completely or dies. A killed order gets no retry.",
+		"sourceHash": "0eafb1c8"
 	},
 	"wallet.sim.drift.favour": {
 		"text": "moved in our favour",
@@ -1208,8 +1208,8 @@
 		"sourceHash": "f53ff873"
 	},
 	"wallet.sim.gates.conviction.because": {
-		"text": "{leader}'s whole position on this bet peaked at {stake}, under their {bar} bar — the tracker never emits an entry signal, so the bot is never asked and nothing is recorded about it.",
-		"sourceHash": "c587192d"
+		"text": "{leader}'s whole position on this bet peaked at {stake}, under their {bar} bar — the tracker never emits an entry signal, so the agent never gets asked and nothing gets recorded.",
+		"sourceHash": "5f38054b"
 	},
 	"wallet.sim.gates.conviction.question": {
 		"text": "Has {leader} bet enough to mean it?",
@@ -1264,8 +1264,8 @@
 		"sourceHash": "8c1e416a"
 	},
 	"wallet.sim.gates.price.question": {
-		"text": "Is a share too dear to be worth the downside?",
-		"sourceHash": "99ae575c"
+		"text": "Is a share too expensive to be worth the downside?",
+		"sourceHash": "e1dc3057"
 	},
 	"wallet.sim.gates.room.actual": {
 		"text": "{open} open + {size}",
@@ -1296,8 +1296,8 @@
 		"sourceHash": "4d1306b0"
 	},
 	"wallet.sim.signal.trailViaSale": {
-		"text": "— by selling the other side, so the outcome they actually hold trades at {entry}, and that is what the bot would buy.",
-		"sourceHash": "67f51618"
+		"text": "— by selling the other side, so the outcome they actually hold trades at {entry}, and that is what the agent would buy.",
+		"sourceHash": "f0e183c4"
 	},
 	"wallet.sim.summary.flowAny": {
 		"text": "whatever their recent flow looks like,",
@@ -1308,20 +1308,20 @@
 		"sourceHash": "a5f81350"
 	},
 	"wallet.sim.summary.sentence": {
-		"text": "When one of the two leaders builds at least {a} (leader-a) or {b} (leader-b) of a fresh bet, {flowClause} and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and the price has not run more than {staleness} past their entry → the bot buys {size} of the outcome they hold, pays at most {maxPrice} a share and {slippage} over the ask, runs at most {copies} copies per leader and {cap} open in total, keeps {floor} spendable, holds through small trims, and sells the whole leg once that leader has unwound {trim} of their peak — or flipped, or closed.",
-		"sourceHash": "b4a90a18"
+		"text": "When one of the two leaders builds at least {a} (leader-a) or {b} (leader-b) of a fresh bet, {flowClause} and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and the price has not run more than {staleness} past their entry → the agent buys {size} of the outcome they hold, pays at most {maxPrice} a share and {slippage} over the ask, runs at most {copies} copies per leader and {cap} open in total, keeps {floor} spendable, holds through small trims, and sells the whole leg once that leader has unwound {trim} of their peak — or flipped, or closed.",
+		"sourceHash": "0eb49b2c"
 	},
 	"wallet.sim.trim.closeDetail": {
-		"text": "{sold} of the peak is gone — at or past the {threshold} line. The bot sells the entire copy at once, never a slice: a proportional sliver can drop under the venue's {min}-share minimum and become unsellable.",
-		"sourceHash": "e49e686f"
+		"text": "{sold} of the peak is gone — at or past the {threshold} line. The agent sells the entire copy at once, never a slice: a proportional sliver can drop under the venue's {min}-share minimum and become unsellable.",
+		"sourceHash": "da16fc83"
 	},
 	"wallet.sim.trim.closeHeadline": {
 		"text": "CLOSE THE WHOLE LEG",
 		"sourceHash": "9d0fa55b"
 	},
 	"wallet.sim.trim.holdDetail": {
-		"text": "The leader has unwound {sold} of their peak — under the {threshold} line. That is information, not an exit: the bot writes it down and keeps the whole position.",
-		"sourceHash": "7de013f3"
+		"text": "The leader has unwound {sold} of their peak — under the {threshold} line. That is information, not an exit: the agent writes it down and keeps the whole position.",
+		"sourceHash": "b662fc43"
 	},
 	"wallet.sim.trim.holdHeadline": {
 		"text": "HOLD",

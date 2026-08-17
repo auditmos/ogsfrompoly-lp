@@ -3,45 +3,39 @@ import { getCollection } from "astro:content";
 import DisplayHeading from "@/components/brand/DisplayHeading.astro";
 import InstallSnippet from "@/components/brand/InstallSnippet.astro";
 import StatementCard from "@/components/brand/StatementCard.astro";
+import { resolveHomeProse } from "@/i18n/catalog";
 import Layout from "@/layouts/Layout.astro";
 import { SITE_URL } from "@/lib/site/config";
 import { pickLatestStatement } from "@/lib/statement-format/latest";
 import { excludeDrafts } from "@/lib/statement-format/published";
 
+// Every content string resolves through the same catalog the localized homes
+// read, so English can never drift from the source the overlays translate.
+// The empty-statement fallback below is English-only chrome and stays inline.
+const prose = resolveHomeProse("en");
+
 const statements = excludeDrafts(await getCollection("statements"));
 const latest = pickLatestStatement(statements);
 ---
 
-<Layout
-	title="ogsfrompoly — skilled traders on Polymarket"
-	description="We measure who is actually skilled on Polymarket — and we show our work, weekly."
-	localePath=""
->
+<Layout title={prose.meta.title} description={prose.meta.description} localePath="">
 	<main class="mx-auto flex max-w-4xl flex-col gap-24 px-gutter py-24">
 		<section class="flex flex-col gap-8">
-			<DisplayHeading eyebrow="ogsfrompoly">
-				We measure who is actually skilled on Polymarket — and we show our work,
-				weekly.
-			</DisplayHeading>
+			<DisplayHeading eyebrow="ogsfrompoly">{prose.hero.heading}</DisplayHeading>
 			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
-				Open-book strategy track record and project P&amp;L. Aggregate-only.
-				Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS
-				and a markdown feed your agent can read.
+				{prose.hero.intro}
 			</p>
 		</section>
 
 		<section class="flex flex-col gap-4">
 			<p class="font-mono text-eyebrow uppercase text-ink-5">
-				Install for your LLM agent
+				{prose.install.eyebrow}
 			</p>
-			<InstallSnippet
-				siteUrl={SITE_URL}
-				caption="Pipes the project's llms.txt into your agent's context"
-			/>
+			<InstallSnippet siteUrl={SITE_URL} caption={prose.install.caption} />
 		</section>
 
 		<section class="flex flex-col gap-4">
-			<p class="font-mono text-eyebrow uppercase text-ink-5">Latest statement</p>
+			<p class="font-mono text-eyebrow uppercase text-ink-5">{prose.latest.eyebrow}</p>
 			{
 				latest ? (
 					<>
@@ -62,7 +56,7 @@ const latest = pickLatestStatement(statements);
 							class="font-mono text-eyebrow uppercase tracking-wider text-ink-6 hover:text-accent"
 							href="/statements"
 						>
-							View all statements →
+							{prose.latest.viewAll}
 						</a>
 					</>
 				) : (
@@ -86,18 +80,15 @@ const latest = pickLatestStatement(statements);
 		</section>
 
 		<section class="flex flex-col gap-4">
-			<p class="font-mono text-eyebrow uppercase text-ink-5">Skin in the game</p>
+			<p class="font-mono text-eyebrow uppercase text-ink-5">{prose.skin.eyebrow}</p>
 			<p class="max-w-prose text-base text-ink-6 [text-wrap:pretty]">
-				Two small bots trade real money alongside the record — one follows a
-				crowd of skilled wallets, one mirrors two hand-picked traders. Every
-				rule and every live setting, explained in plain English with a
-				simulator you can drag.
+				{prose.skin.body}
 			</p>
 			<a
 				class="font-mono text-eyebrow uppercase tracking-wider text-ink-6 hover:text-accent"
 				href="/for-dummies"
 			>
-				Copy trading for dummies →
+				{prose.skin.cta}
 			</a>
 		</section>
 	</main>

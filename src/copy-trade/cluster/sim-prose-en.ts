@@ -49,7 +49,7 @@ export const CLUSTER_SIM_EN: ClusterSimStrings = {
 		crowd: {
 			question: "Is a crowd agreeing, not just one trader?",
 			because:
-				"Only {wallets} traded it, under the {threshold} it takes to be a crowd — so no alert is raised, the executor is never handed anything, and nothing is recorded about it.",
+				"Only {wallets} traded it, under the {threshold} it takes to be a crowd — so no alert fires, the executor never sees it, and nothing gets recorded.",
 		},
 		room: {
 			question: "Do I have room under my cap?",
@@ -87,7 +87,7 @@ export const CLUSTER_SIM_EN: ClusterSimStrings = {
 				"Setting aside the {flipped} that flipped {when} leaves only {clean} — under the {threshold} it takes to be a crowd, so the flip was carrying this signal.",
 		},
 		price: {
-			question: "Is a share too dear to be worth the downside?",
+			question: "Is a share too expensive to be worth the downside?",
 			because:
 				"A share costs {entry}, over the {ceiling} ceiling — it can win at most {gain} while still risking the whole {size}.",
 		},
@@ -104,7 +104,7 @@ export const CLUSTER_SIM_EN: ClusterSimStrings = {
 			question: "Can I buy inside my own price limit?",
 			actual: "asks {price}",
 			because:
-				"The cheapest ask is {ask} and the bot's limit is {limit} — an all-or-nothing order at that limit is simply killed.",
+				"The cheapest ask is {ask} and the agent's limit is {limit} — an all-or-nothing order at that limit just dies.",
 		},
 		size: {
 			question: "Is the order big enough for the venue?",
@@ -118,17 +118,17 @@ export const CLUSTER_SIM_EN: ClusterSimStrings = {
 		order: "It buys {size} at a limit of {limit} — about {shares} — all-or-nothing, or not at all.",
 		buy: "Every check passed. {order} It holds until the first of those wallets sells.",
 		buyMirror:
-			"The crowd was selling, so the bot buys the opposite outcome at {entry} instead. {order} It holds until the first of those wallets buys back what they sold.",
+			"The crowd was selling, so the agent buys the opposite outcome at {entry} instead. {order} It holds until the first of those wallets buys back what they sold.",
 	},
 	signal: {
 		leadBought: "{wallets} bought",
 		leadSold: "{wallets} sold",
 		trailBought: "at {price}.",
-		trailSold: "at {price} — so the bot would buy the opposite outcome at {mirror}.",
+		trailSold: "at {price} — so the agent would buy the opposite outcome at {mirror}.",
 	},
 	summary: {
 		sentence:
-			"When {threshold}+ skilled wallets agree, none of them having been on the other side of it in the last {lookback}, and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and has not moved more than {staleness} against them → the bot buys {size} of what they bought (or of the opposite outcome, if they were selling), {priceBand} gives away no more than {fee} of the ticket in fees, does not pay more than {slippage} over the price they got, holds until the first of them reverses, keeps {floor} spendable and {gas} POL back for gas, and repeats with never more than {cap} in play at once.",
+			"When {threshold}+ skilled wallets agree, none of them having been on the other side of it in the last {lookback}, and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and has not moved more than {staleness} against them → the agent buys {size} of what they bought (or of the opposite outcome, if they were selling), {priceBand} gives away no more than {fee} of the ticket in fees, does not pay more than {slippage} over the price they got, holds until the first of them reverses, keeps {floor} spendable and {gas} POL back for gas, and repeats with never more than {cap} in play at once.",
 		priceCapOnly: "pays at most {max} a share,",
 		priceBand: "pays between {min} and {max} a share,",
 	},

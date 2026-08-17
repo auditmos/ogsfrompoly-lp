@@ -36,45 +36,45 @@ export type MethodologyProse = {
 export const METHODOLOGY_EN: MethodologyProse = {
 	title: "Methodology",
 	description:
-		"How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.",
-	note: "This page is a translation of the English original — if anything differs, the English version, including its disclosure policy, is authoritative.",
+		"How ogsfrompoly separates skill from luck on Polymarket. How it scores past alerts. How it decides what is safe to publish.",
+	note: "This page is a translation. If anything differs, the English original wins, including its disclosure policy.",
 	sections: {
 		intro: `ogsfrompoly asks a narrow question:
 
-> **Which Polymarket wallets look skilled after luck is stripped out, and do
-> their moves keep working when we score them later?**
+> **Which Polymarket wallets still look skilled once you strip the luck out —
+> and do their moves keep working when we score them later?**
 
-The answer is published as a retrospective scorecard. We do not publish live
-trade ideas, open-position details, or wallet leaderboards.`,
+We publish the answer after the fact, as a scorecard. We publish no live trade
+ideas, no open positions, no wallet leaderboards.`,
 		scope: `## Current scope
 
-The public track record currently covers a single Polymarket area:
+The public track record covers one Polymarket area:
 
 - **Macro/Finance** - macro, rates, economic data, FOMC, earnings, and
   finance-labeled Polymarket markets.
 
-This narrow scope is deliberate. The goal is not broad category coverage.
-The goal is a clean audit trail: skilled wallets, retrospective alerts, and
-published outcomes that a reader can check later.`,
+The narrowness is on purpose. We do not chase category coverage. We build a
+clean audit trail: skilled wallets, alerts scored after the fact, and outcomes
+a reader can check later.`,
 		qualify: `## How a wallet qualifies
 
-A wallet first needs enough resolved history to test. Here, an **event** means
-one real-world question being settled on Polymarket, even if that question has
-multiple markets, outcomes, fills, or token legs. The minimum is at least
-20 events that have resolved within the measurement period.
+A wallet needs enough resolved history to test. An **event** here means one
+real-world question that Polymarket settles. One question can carry many
+markets, outcomes, fills, or single token positions, and it still counts once.
+The bar is at least 20 events resolved inside the measurement period.
 
-Only resolved markets count. Open positions are ignored. For each eligible
-wallet, we build an **only-realized PnL** series: one profit-and-loss value per
-resolved real-world event.
+Only resolved markets count. We ignore open positions. For each eligible wallet
+we build an **only-realized PnL** series: one profit-and-loss number per
+resolved event.
 
-We group at the event level because one real-world prediction can involve
-multiple fills or market legs. Counting each fill as a separate decision would
-make one position look like many independent bets. Counting at the event level
-keeps the test closer to the thing we care about: whether the wallet repeatedly
-picked the right side of resolved Polymarket events.`,
+We group at the event level because one prediction can span many fills or
+markets. Count each fill as its own decision and one position starts to look
+like a dozen independent bets. Grouping keeps the test on the thing we care
+about: did this wallet pick the right side, again and again, on questions that
+have already settled?`,
 		skillTest: `## The skill test
 
-Skill is measured with an event-level **sign-randomization** test.
+We measure skill with an event-level **sign-randomization** test.
 
 For each eligible wallet, the inputs are:
 
@@ -98,21 +98,21 @@ The p-value is:
 
 In words, the p-value answers:
 
-"If this wallet had no skill, how often would random sign flips produce a total
-PnL at least as good as the wallet's actual total?"
+"If this wallet were just guessing, how often would random sign flips match or
+beat its actual total?"
 
-A wallet is treated as skilled only when that p-value clears the
-pre-registered threshold: \`p <= 0.05\`. A large raw PnL number is not enough.`,
+We call a wallet skilled only when that p-value clears the pre-registered
+threshold: \`p <= 0.05\`. A big raw PnL number is not enough.`,
 		controls: `## Controls before publication
 
-The public scorecard should measure repeatable trader signal, not address
-management or market microstructure artifacts.
+The public scorecard measures repeatable trader signal. It must not measure
+address shuffling or artifacts of market microstructure.
 
-Before a wallet can affect the published record, the pipeline applies controls
-for coordinated multi-wallet clusters, concentrated counterparty patterns, and
-wash-like behavior. These controls either remove or demote signals that can
-make one address look more skilled than it really is.`,
-		scoring: `## How alerts are scored
+Before a wallet reaches the published record, we screen it. We look for wallets
+moving as one coordinated pack, for the same counterparty on the other side
+again and again, and for trades that look like wash trades. A signal that fails
+gets cut or demoted.`,
+		scoring: `## How we score alerts
 
 Weekly statements score the period after the fact. They report:
 
@@ -125,17 +125,15 @@ Weekly statements score the period after the fact. They report:
 Monthly statements add the business side of the project: revenue, operating
 expense, net result, and runway.
 
-The published category is **macro-finance**. Anything outside the current
-public scope is dropped from the landing-page statement surface instead of
-being merged into another category.
+The published category is **macro-finance**. Anything outside the public scope
+drops off the statement pages. We never merge it into another category.
 
-Every statement is retrospective. The site publishes whether historical
-signals worked. It does not publish instructions for trades in flight.`,
-		skin: `## Skin in the game: two small live bots
+Every statement looks back. We publish whether past signals worked. We publish
+nothing about a trade in flight.`,
+		skin: `## Skin in the game: two small live agents
 
-The scorecard is retrospective, but the project also puts a small amount of
-real money behind its own signals. Two bots trade live, with deliberately tiny
-**$5** tickets:
+The scorecard looks back. The money does not. Two agents trade live behind our
+own signals, on tiny **$5** tickets:
 
 - **Cluster copy** (live since July 2026) buys only when several skilled
   wallets land on the same side of the same market at once, in separate
@@ -143,55 +141,54 @@ real money behind its own signals. Two bots trade live, with deliberately tiny
 - **Wallet copy** (live since August 2026) mirrors two individual wallets from
   the skilled roster, each published only under an opaque label.
 
-Both are documented in plain English — every rule, every live setting, and a
-simulator you can drag — at [copy trading for dummies](/for-dummies). Their
-realized results reach the monthly statements as cash: profit is swept weekly
-to a collection wallet and counted as revenue only once it lands there.
-Nothing about a bot position is published while that position is open.`,
+We document both in plain English at [copy trading for dummies](/for-dummies):
+every rule, every live setting, and a simulator you can drag. Their realized
+results reach the monthly statements as cash. We sweep profit to a collection
+wallet each week and count it as revenue once it lands. We publish nothing
+about an agent position while that position is open.`,
 		academicIntro: `## Academic foundation
 
-The methodology is grounded in two 2026 papers on prediction-market skill,
-trader persistence, and market outcomes:`,
-		academicOutro: `Both papers point to a practical lesson: short-term realized PnL is a weak
-proxy for skill. A wallet can get lucky, and a lucky wallet can stop winning.
+The methodology rests on two 2026 papers about skill, trader persistence, and
+outcomes in prediction markets:`,
+		academicOutro: `Both papers point at the same lesson. Short-term realized PnL is a weak proxy
+for skill. A wallet can get lucky. A lucky wallet can stop winning.
 
-That is why ogsfrompoly starts with a statistical skill test, then publishes
-whether the resulting signals actually worked in the public track record.`,
+So ogsfrompoly starts with a statistical skill test. Then it publishes, in the
+open track record, whether those signals worked.`,
 		disclosure: `## Disclosure policy
 
-The site is open about methodology and aggregate results. It is closed about
-anything that could front-run a position or expose an individual trader's
-identity.
+We are open about methodology and aggregate results. We are closed about
+anything that could front-run a position or expose a single trader.
 
 These rules apply to the rendered HTML page, the raw \`.md\` feed, RSS, and
 \`llms.txt\`.
 
 - **Wallets appear only as truncated, opaque IDs** — e.g. \`wallet_a3f8\`. We
-  never publish a full EVM address. Truncated IDs are deliberately not
-  reversible to on-chain identities.
+  never publish a full EVM address. Truncated IDs do not reverse to an
+  on-chain identity, by design.
 - **No live alpha. Ever.** We never publish a live alert, a still-open
-  position, or anything a reader could use to front-run a trade in flight.
-  Results are retrospective and aggregate only.
-- **No leaderboards.** We do not rank named wallets against each other. The
-  unit of publication is the strategy cohort, not the individual address.
+  position, or anything a reader could use to front-run a trade in flight. We
+  publish results after the fact, in aggregate.
+- **No leaderboards.** We never rank named wallets against each other. We
+  publish the strategy cohort, not the address.
 - **No raw warehouse exports.** Aggregate counts, hit rates, and category
   distributions only — never anything that could reconstruct an individual
   wallet's history.
-- **No bot or leader addresses.** The live copy bots trade from their own
-  wallets, and watching those wallets in real time would expose open
-  positions — so their trading accounts, payout addresses, and the mirrored
-  leader wallets are never published. Leaders appear only as opaque labels
-  (e.g. \`leader-a\`), and the market of an open bot position is never named.
+- **No agent or leader addresses.** The live copy agents trade from their own
+  wallets. Watch those wallets in real time and you see our open positions. So
+  we never publish their trading accounts, their payout addresses, or the
+  leader wallets they mirror. Leaders appear only as opaque labels (e.g.
+  \`leader-a\`). We never name the market of an open agent position.
 
-When a published number sits close to the line, we delay by 30+ days or
-anonymize the category before publishing. When in doubt, we don't publish.`,
+When a published number sits close to the line, we delay it 30+ days or
+anonymize the category. When in doubt, we don't publish.`,
 		notThis: `## What this is not
 
 ogsfrompoly is not an investment recommendation, trading signal service, or
 claim that any wallet will keep winning.
 
-It is an audit trail for one specific method: find wallets whose resolved
-history looks different from a sign-randomized null, follow their retrospective
-alerts in the categories we publish, and show the results.`,
+It is an audit trail for one method. Find wallets whose resolved history does
+not look like random signs. Score their alerts after the fact, in the
+categories we publish. Show the results.`,
 	},
 };

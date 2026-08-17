@@ -52,7 +52,7 @@ export const WALLET_SIM_EN: WalletSimStrings = {
 			question: "Has {leader} bet enough to mean it?",
 			actual: "{stake} at peak",
 			because:
-				"{leader}'s whole position on this bet peaked at {stake}, under their {bar} bar — the tracker never emits an entry signal, so the bot is never asked and nothing is recorded about it.",
+				"{leader}'s whole position on this bet peaked at {stake}, under their {bar} bar — the tracker never emits an entry signal, so the agent never gets asked and nothing gets recorded.",
 		},
 		cap: {
 			question: "Am I already copying this leader enough?",
@@ -92,7 +92,7 @@ export const WALLET_SIM_EN: WalletSimStrings = {
 				"Over the last 48 hours this leader's buy and sell flow on this bet sit at {ratio} of each other, past the {ceiling} ceiling — a wallet trading both sides is making a market, not expressing a view, and every flip copied is a paid round trip.",
 		},
 		price: {
-			question: "Is a share too dear to be worth the downside?",
+			question: "Is a share too expensive to be worth the downside?",
 			because:
 				"The market prices this outcome at {price}, over the {ceiling} ceiling — a copy could win at most {gain} while still risking the whole {size}.",
 		},
@@ -110,29 +110,29 @@ export const WALLET_SIM_EN: WalletSimStrings = {
 	},
 	detail: {
 		order:
-			"It sends a {size} fill-or-kill order at a limit of {limit} — about {shares} — which fills completely or dies; a killed order is not retried.",
+			"It sends a {size} fill-or-kill order at a limit of {limit} — about {shares} — it fills completely or dies. A killed order gets no retry.",
 		hold: "Then it holds through small trims and sells the whole leg the moment {leader} has unwound {threshold} of their peak — or flipped, or closed out.",
 		copy: "Every check passed. {order} {hold}",
 		copyViaSale:
-			"The leader built this position by selling the other side, so the bot buys the outcome they actually hold, at {ask}. {order} {hold}",
+			"The leader built this position by selling the other side, so the agent buys the outcome they actually hold, at {ask}. {order} {hold}",
 	},
 	signal: {
 		lead: "{leader} built a {stake} position in",
 		trail: "at {entry}.",
 		trailViaSale:
-			"— by selling the other side, so the outcome they actually hold trades at {entry}, and that is what the bot would buy.",
+			"— by selling the other side, so the outcome they actually hold trades at {entry}, and that is what the agent would buy.",
 	},
 	trim: {
 		holdHeadline: "HOLD",
 		holdDetail:
-			"The leader has unwound {sold} of their peak — under the {threshold} line. That is information, not an exit: the bot writes it down and keeps the whole position.",
+			"The leader has unwound {sold} of their peak — under the {threshold} line. That is information, not an exit: the agent writes it down and keeps the whole position.",
 		closeHeadline: "CLOSE THE WHOLE LEG",
 		closeDetail:
-			"{sold} of the peak is gone — at or past the {threshold} line. The bot sells the entire copy at once, never a slice: a proportional sliver can drop under the venue's {min}-share minimum and become unsellable.",
+			"{sold} of the peak is gone — at or past the {threshold} line. The agent sells the entire copy at once, never a slice: a proportional sliver can drop under the venue's {min}-share minimum and become unsellable.",
 	},
 	summary: {
 		sentence:
-			"When one of the two leaders builds at least {a} (leader-a) or {b} (leader-b) of a fresh bet, {flowClause} and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and the price has not run more than {staleness} past their entry → the bot buys {size} of the outcome they hold, pays at most {maxPrice} a share and {slippage} over the ask, runs at most {copies} copies per leader and {cap} open in total, keeps {floor} spendable, holds through small trims, and sells the whole leg once that leader has unwound {trim} of their peak — or flipped, or closed.",
+			"When one of the two leaders builds at least {a} (leader-a) or {b} (leader-b) of a fresh bet, {flowClause} and the market holds at least {liquidity} of liquidity, has more than {horizon} left to run, and the price has not run more than {staleness} past their entry → the agent buys {size} of the outcome they hold, pays at most {maxPrice} a share and {slippage} over the ask, runs at most {copies} copies per leader and {cap} open in total, keeps {floor} spendable, holds through small trims, and sells the whole leg once that leader has unwound {trim} of their peak — or flipped, or closed.",
 		flowAny: "whatever their recent flow looks like,",
 		flowCapped: "and their recent flow on it is not two-sided beyond {ratio},",
 	},

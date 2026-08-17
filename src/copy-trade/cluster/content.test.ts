@@ -79,7 +79,7 @@ describe("copyTradeMarkdown", () => {
 		// misdescribing the thing. What is unproven now is the rails' youth.
 		expect(copyTradeMarkdown).toContain("## What we are not claiming yet");
 		expect(copyTradeMarkdown).toContain("mostly unexercised");
-		expect(copyTradeMarkdown).toContain("not justified by money recovered");
+		expect(copyTradeMarkdown).toContain("Money recovered does not justify the price ceiling");
 	});
 
 	it("does not still claim the exchange fee is unrecorded", () => {

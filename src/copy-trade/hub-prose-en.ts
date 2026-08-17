@@ -60,20 +60,20 @@ export type HubProse = {
 export const HUB_EN: HubProse = {
 	title: "Copy trading for dummies",
 	description:
-		"Two small bots trade tiny, real money alongside the published track record — one follows a crowd of skilled wallets, the other mirrors two hand-picked traders. Pick your walkthrough; each explains every rule in plain English and lets you play with the live settings.",
+		"Two small agents trade tiny amounts of real money next to the published track record. One follows a crowd of skilled wallets. The other mirrors two hand-picked traders. Pick a walkthrough. Each one explains every rule in plain English and lets you play with the live settings.",
 	eyebrow: "for dummies",
-	heading: "Two bots. Two questions.",
+	heading: "Two agents. Two questions.",
 	choose: "Choose a walkthrough",
 	read: "Read the walkthrough →",
 	sideBySide: "Side by side",
 	sharedNote:
-		"Everything else is shared DNA: Macro markets only, $5 all-or-nothing tickets on the exchange's own price grid, the same liquidity, timing and price-already-ran rails, a $5 spendable floor, kill switches that stop buying but never selling, a weekly profit sweep, and every skip written down with its numbers.",
+		"Everything else is shared DNA. Macro markets only. $5 all-or-nothing tickets on the exchange's own price grid. The same rails for liquidity and timing. The same rail for a price that already ran. A $5 spendable floor. Kill switches that stop buying but never selling. A weekly profit sweep. Every skip written down with its numbers.",
 	mdRead: "Read the full walkthrough at {href} — or as markdown at {mdHref}.",
 	advice: {
-		lead: "Neither page is advice, and no wallet is ever published —",
+		lead: "Neither page is advice. No wallet is ever published —",
 		link: "methodology & disclosure",
-		md: `Neither page is advice or a signal service, and no wallet involved in either
-bot is ever published — see the [methodology and disclosure policy]({methodologyHref}).`,
+		md: `Neither page is advice or a signal service. No wallet involved in either agent
+is ever published. See the [methodology and disclosure policy]({methodologyHref}).`,
 	},
 	facts: {
 		follows: "follows",
@@ -84,7 +84,7 @@ bot is ever published — see the [methodology and disclosure policy]({methodolo
 	cluster: {
 		name: "Copy the crowd",
 		tagline:
-			"Waits until at least three skilled wallets land on the same side of the same bet, in separate trades, then buys $5 of it. One wallet is an opinion; three arriving separately is information.",
+			"Waits for at least three skilled wallets on the same side of the same bet, in separate trades. Then it buys $5 of it. One wallet is an opinion. Three arriving separately is information.",
 		follows: "any crowd from our skilled roster",
 		fires: "3+ wallets agree at once",
 		leaves: "the first of them reverses",
@@ -93,7 +93,7 @@ bot is ever published — see the [methodology and disclosure policy]({methodolo
 	wallet: {
 		name: "Copy the trader",
 		tagline:
-			"Shadows two hand-picked skilled traders and ignores almost everything they do — until one commits serious money to a fresh bet. Then it places one small copy on its own separate account.",
+			"Shadows two hand-picked skilled traders and ignores almost everything they do. Then one commits serious money to a fresh bet. It places one small copy on its own separate account.",
 		follows: "two named leaders, anonymised",
 		fires: "a leader stakes past their own bar",
 		leaves: "the leader unwinds half, flips, or closes",
@@ -118,7 +118,7 @@ bot is ever published — see the [methodology and disclosure policy]({methodolo
 		exit: {
 			label: "Leaves when",
 			cluster: "the first wallet of the crowd reverses",
-			wallet: "the leader has unwound half of their peak, flipped, or closed",
+			wallet: "the leader unwinds half of their peak, flips, or closes",
 		},
 		money: {
 			label: "Money",
