@@ -111,6 +111,51 @@ describe("resolveHomeProse", () => {
 	});
 });
 
+describe("section-level fallback", () => {
+	const sectionsEn = () => ({
+		methodology: {
+			sections: {
+				intro: "English intro.",
+				scope: "English scope.",
+				disclosure: "English disclosure.",
+			},
+		},
+	});
+	const overlay: TranslationOverlay = {
+		"methodology.sections.intro": {
+			translation: "Polskie intro.",
+			sourceHash: hashSource("English intro."),
+		},
+		"methodology.sections.scope": {
+			translation: "Polski zakres.",
+			sourceHash: hashSource("English scope."),
+		},
+		"methodology.sections.disclosure": {
+			translation: "Polska polityka.",
+			sourceHash: hashSource("English disclosure."),
+		},
+	};
+
+	it.each([
+		["intro"],
+		["scope"],
+		["disclosure"],
+	] as const)("editing the English source of one section (%s) makes only that section fall back", (edited) => {
+		const en = sectionsEn();
+		en.methodology.sections[edited] = `${en.methodology.sections[edited]} Rewritten.`;
+
+		const resolved = resolveProse(en, overlay).methodology.sections;
+
+		for (const key of ["intro", "scope", "disclosure"] as const) {
+			if (key === edited) {
+				expect(resolved[key]).toBe(en.methodology.sections[key]);
+			} else {
+				expect(resolved[key]).toBe(overlay[`methodology.sections.${key}`]?.translation);
+			}
+		}
+	});
+});
+
 describe("seed coverage", () => {
 	it("delivers a fresh translation for every catalog key in every translated locale", () => {
 		for (const locale of TRANSLATED_LOCALES) {
@@ -126,12 +171,16 @@ describe("seed coverage", () => {
 
 describe("catalogEntries", () => {
 	it("walks every registered English key with its current source text", () => {
-		const entries = catalogEntries();
+		const keys = catalogEntries().map((entry) => entry.key);
 
-		expect(entries.map((entry) => entry.key)).toEqual(
-			proseEntries(HOME_EN).map((entry) => entry.key),
+		for (const entry of proseEntries(HOME_EN)) {
+			expect(keys).toContain(entry.key);
+		}
+		expect(keys).toContain("methodology.title");
+		expect(keys).toContain("methodology.sections.disclosure");
+		expect(catalogEntries().find((entry) => entry.key === "hero.heading")?.text).toBe(
+			HOME_EN.hero.heading,
 		);
-		expect(entries.find((entry) => entry.key === "hero.heading")?.text).toBe(HOME_EN.hero.heading);
 	});
 });
 

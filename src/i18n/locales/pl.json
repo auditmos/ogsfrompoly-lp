@@ -42,5 +42,61 @@
 	"skin.cta": {
 		"translation": "Copy trading dla opornych →",
 		"sourceHash": "c4f9add0"
+	},
+	"methodology.title": {
+		"translation": "Metodologia",
+		"sourceHash": "7a2321b0"
+	},
+	"methodology.description": {
+		"translation": "Jak ogsfrompoly testuje portfele na Polymarkecie pod kątem powtarzalnego skilla, ocenia retrospektywne alerty i decyduje, co można bezpiecznie opublikować.",
+		"sourceHash": "ad768128"
+	},
+	"methodology.note": {
+		"translation": "Ta strona jest tłumaczeniem angielskiego oryginału — w razie różnic wiążąca jest wersja angielska, łącznie z jej polityką ujawniania.",
+		"sourceHash": "59862971"
+	},
+	"methodology.sections.intro": {
+		"translation": "ogsfrompoly zadaje wąskie pytanie:\n\n> **Które portfele na Polymarkecie wyglądają na skilled po odsianiu szczęścia — i czy\n> ich ruchy nadal działają, gdy oceniamy je później?**\n\nOdpowiedź publikujemy jako retrospektywną kartę wyników. Nie publikujemy żywych\npomysłów na trade'y, szczegółów otwartych pozycji ani rankingów portfeli.",
+		"sourceHash": "063e95f1"
+	},
+	"methodology.sections.scope": {
+		"translation": "## Obecny zakres\n\nPubliczny track record obejmuje obecnie jeden obszar Polymarketu:\n\n- **Makro/Finanse** - makro, stopy procentowe, dane gospodarcze, FOMC, wyniki\n  spółek i rynki Polymarketu z etykietą finansową.\n\nTen wąski zakres jest celowy. Nie chodzi o szerokie pokrycie kategorii.\nChodzi o czysty ślad audytowy: skilled portfele, retrospektywne alerty i\nopublikowane wyniki, które czytelnik może później zweryfikować.",
+		"sourceHash": "522c9512"
+	},
+	"methodology.sections.qualify": {
+		"translation": "## Jak portfel się kwalifikuje\n\nPortfel musi najpierw mieć dość rozstrzygniętej historii, by dało się go\nprzetestować. **Event** oznacza tu jedno rozstrzygane na Polymarkecie pytanie ze\nświata rzeczywistego, nawet jeśli obejmuje ono wiele rynków, wyników, transakcji\nlub nóg tokenowych. Minimum to co najmniej 20 eventów rozstrzygniętych w okresie\npomiaru.\n\nLiczą się wyłącznie rozstrzygnięte rynki. Otwarte pozycje są ignorowane. Dla\nkażdego kwalifikującego się portfela budujemy serię **only-realized PnL**: jedną\nwartość zysku i straty na każdy rozstrzygnięty event.\n\nGrupujemy na poziomie eventu, bo jedna predykcja ze świata rzeczywistego może\nobejmować wiele transakcji lub nóg rynkowych. Liczenie każdej transakcji jako\nosobnej decyzji sprawiłoby, że jedna pozycja wygląda jak wiele niezależnych\nzakładów. Liczenie na poziomie eventu trzyma test bliżej tego, o co naprawdę\nchodzi: czy portfel raz za razem wybierał właściwą stronę rozstrzygniętych\neventów na Polymarkecie.",
+		"sourceHash": "0c80af36"
+	},
+	"methodology.sections.skillTest": {
+		"translation": "## Test skilla\n\nSkill mierzymy testem **randomizacji znaku** na poziomie eventów.\n\nDla każdego kwalifikującego się portfela dane wejściowe to:\n\n- `n` = liczba rozstrzygniętych eventów portfela.\n- `x_i` = zrealizowany PnL portfela na evencie `i`.\n- `A = sum(x_i)` = faktyczny łączny zrealizowany PnL portfela.\n- `B = 1,000 simulations` = rozmiar przebiegu randomizacji.\n\nKażda symulacja zachowuje wielkość wyniku każdego eventu, ale losuje jego znak.\nW symulacji `j` każdy event dostaje losowy znak:\n\n`s_{j,i} in {-1, +1}`\n\nSymulowany wynik łączny bez skilla to:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nP-wartość to:\n\n`p = count(T_j >= A) / B`\n\nSłowami: p-wartość odpowiada na pytanie:\n\n„Gdyby ten portfel nie miał skilla, jak często losowe odwrócenia znaków dałyby\nłączny PnL co najmniej tak dobry jak jego faktyczny wynik?\"\n\nPortfel uznajemy za skilled tylko wtedy, gdy ta p-wartość przechodzi\nprerejestrowany próg: `p <= 0.05`. Duży surowy PnL nie wystarczy.",
+		"sourceHash": "43dfeddd"
+	},
+	"methodology.sections.controls": {
+		"translation": "## Kontrole przed publikacją\n\nPubliczna karta wyników ma mierzyć powtarzalny sygnał tradera, a nie żonglerkę\nadresami czy artefakty mikrostruktury rynku.\n\nZanim portfel wpłynie na publikowany rejestr, pipeline stosuje kontrole na\nskoordynowane klastry wielu portfeli, skoncentrowane wzorce kontrahentów i\nzachowania przypominające wash trading. Te kontrole usuwają lub degradują\nsygnały, które mogą sprawić, że jeden adres wygląda na bardziej skilled, niż\njest naprawdę.",
+		"sourceHash": "75c7a51c"
+	},
+	"methodology.sections.scoring": {
+		"translation": "## Jak oceniane są alerty\n\nCotygodniowe sprawozdania oceniają miniony okres po fakcie. Raportują:\n\n- łączną liczbę alertów\n- hit rate rozstrzygniętych\n- hipotetyczny PnL\n- mix kategorii\n- mały zestaw nieprzejrzystych ID portfeli, gdy pomaga to w audycie\n\nMiesięczne sprawozdania dodają biznesową stronę projektu: przychód, koszty\noperacyjne, wynik netto i runway.\n\nPublikowana kategoria to **macro-finance**. Wszystko spoza obecnego publicznego\nzakresu jest usuwane z powierzchni sprawozdań na stronie, a nie doklejane do\ninnej kategorii.\n\nKażde sprawozdanie jest retrospektywne. Strona publikuje, czy historyczne\nsygnały zadziałały. Nie publikuje instrukcji dla trwających trade'ów.",
+		"sourceHash": "48b34512"
+	},
+	"methodology.sections.skin": {
+		"translation": "## Skin in the game: dwa małe żywe boty\n\nKarta wyników jest retrospektywna, ale projekt stawia też niewielkie prawdziwe\npieniądze za własnymi sygnałami. Dwa boty handlują na żywo, celowo maleńkimi\nbiletami po **5 $**:\n\n- **Cluster copy** (żywy od lipca 2026) kupuje tylko wtedy, gdy kilka skilled\n  portfeli ląduje po tej samej stronie tego samego rynku naraz, w osobnych\n  transakcjach.\n- **Wallet copy** (żywy od sierpnia 2026) lustrzanie kopiuje dwa pojedyncze\n  portfele z rosteru skilled, każdy publikowany wyłącznie pod nieprzejrzystą\n  etykietą.\n\nOba są udokumentowane po ludzku — każda reguła, każde aktualne ustawienie i\nsymulator do przeciągania — w [copy tradingu dla opornych](/for-dummies). Ich\nzrealizowane wyniki trafiają do miesięcznych sprawozdań jako gotówka: zysk jest\nco tydzień zgarniany do portfela zbiorczego i liczony jako przychód dopiero,\ngdy tam wyląduje. Nic o pozycji bota nie jest publikowane, dopóki ta pozycja\njest otwarta.",
+		"sourceHash": "42ef81bc"
+	},
+	"methodology.sections.academicIntro": {
+		"translation": "## Fundament akademicki\n\nMetodologia opiera się na dwóch artykułach z 2026 roku o skillu na rynkach\npredykcyjnych, trwałości wyników traderów i rezultatach rynkowych:",
+		"sourceHash": "55b58db4"
+	},
+	"methodology.sections.academicOutro": {
+		"translation": "Oba artykuły wskazują tę samą praktyczną lekcję: krótkoterminowy zrealizowany\nPnL to słaby wskaźnik skilla. Portfel może mieć szczęście, a szczęśliwy portfel\nmoże przestać wygrywać.\n\nDlatego ogsfrompoly zaczyna od statystycznego testu skilla, a potem publikuje w\npublicznym track recordzie, czy wynikające z niego sygnały faktycznie\nzadziałały.",
+		"sourceHash": "de16ecf5"
+	},
+	"methodology.sections.disclosure": {
+		"translation": "## Polityka ujawniania\n\nStrona jest otwarta w kwestii metodologii i zagregowanych wyników. Jest\nzamknięta na wszystko, co mogłoby posłużyć do front-runningu pozycji albo\nujawnić tożsamość pojedynczego tradera.\n\nTe zasady obowiązują dla renderowanej strony HTML, surowego feedu `.md`, RSS i\n`llms.txt`.\n\n- **Portfele występują wyłącznie jako skrócone, nieprzejrzyste ID** — np.\n  `wallet_a3f8`. Nigdy nie publikujemy pełnego adresu EVM. Skrócone ID są\n  celowo nieodwracalne do tożsamości on-chain.\n- **Zero żywej alfy. Nigdy.** Nie publikujemy żywych alertów, wciąż otwartych\n  pozycji ani niczego, czym czytelnik mógłby front-runnować trwający trade.\n  Wyniki są wyłącznie retrospektywne i zagregowane.\n- **Zero rankingów.** Nie zestawiamy nazwanych portfeli przeciwko sobie.\n  Jednostką publikacji jest kohorta strategii, nie pojedynczy adres.\n- **Zero surowych eksportów z hurtowni.** Wyłącznie zagregowane liczby, hit\n  rate'y i rozkłady kategorii — nigdy nic, z czego dałoby się odtworzyć\n  historię pojedynczego portfela.\n- **Zero adresów botów i liderów.** Żywe boty copy handlują z własnych\n  portfeli, a obserwowanie ich na żywo ujawniłoby otwarte pozycje — dlatego\n  ich konta tradingowe, adresy wypłat i lustrzane portfele liderów nigdy nie\n  są publikowane. Liderzy występują wyłącznie pod nieprzejrzystymi etykietami\n  (np. `leader-a`), a rynek otwartej pozycji bota nigdy nie jest nazywany.\n\nGdy publikowana liczba jest blisko granicy, opóźniamy publikację o 30+ dni albo\nanonimizujemy kategorię. W razie wątpliwości — nie publikujemy.",
+		"sourceHash": "063d7771"
+	},
+	"methodology.sections.notThis": {
+		"translation": "## Czym to nie jest\n\nogsfrompoly nie jest rekomendacją inwestycyjną, serwisem sygnałów tradingowych\nani obietnicą, że jakikolwiek portfel będzie dalej wygrywał.\n\nTo ślad audytowy jednej konkretnej metody: znajdź portfele, których\nrozstrzygnięta historia odstaje od nulla z randomizacji znaku, śledź ich\nretrospektywne alerty w publikowanych kategoriach i pokaż wyniki.",
+		"sourceHash": "c41b9eda"
 	}
 }

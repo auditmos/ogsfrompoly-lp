@@ -31,6 +31,62 @@
 		"text": "ogsfrompoly — skilled traders on Polymarket",
 		"sourceHash": "c232326e"
 	},
+	"methodology.description": {
+		"text": "How ogsfrompoly tests Polymarket wallets for repeatable skill, scores retrospective alerts, and decides what is safe to publish.",
+		"sourceHash": "ad768128"
+	},
+	"methodology.note": {
+		"text": "This page is a translation of the English original — if anything differs, the English version, including its disclosure policy, is authoritative.",
+		"sourceHash": "59862971"
+	},
+	"methodology.sections.academicIntro": {
+		"text": "## Academic foundation\n\nThe methodology is grounded in two 2026 papers on prediction-market skill,\ntrader persistence, and market outcomes:",
+		"sourceHash": "55b58db4"
+	},
+	"methodology.sections.academicOutro": {
+		"text": "Both papers point to a practical lesson: short-term realized PnL is a weak\nproxy for skill. A wallet can get lucky, and a lucky wallet can stop winning.\n\nThat is why ogsfrompoly starts with a statistical skill test, then publishes\nwhether the resulting signals actually worked in the public track record.",
+		"sourceHash": "de16ecf5"
+	},
+	"methodology.sections.controls": {
+		"text": "## Controls before publication\n\nThe public scorecard should measure repeatable trader signal, not address\nmanagement or market microstructure artifacts.\n\nBefore a wallet can affect the published record, the pipeline applies controls\nfor coordinated multi-wallet clusters, concentrated counterparty patterns, and\nwash-like behavior. These controls either remove or demote signals that can\nmake one address look more skilled than it really is.",
+		"sourceHash": "75c7a51c"
+	},
+	"methodology.sections.disclosure": {
+		"text": "## Disclosure policy\n\nThe site is open about methodology and aggregate results. It is closed about\nanything that could front-run a position or expose an individual trader's\nidentity.\n\nThese rules apply to the rendered HTML page, the raw `.md` feed, RSS, and\n`llms.txt`.\n\n- **Wallets appear only as truncated, opaque IDs** — e.g. `wallet_a3f8`. We\n  never publish a full EVM address. Truncated IDs are deliberately not\n  reversible to on-chain identities.\n- **No live alpha. Ever.** We never publish a live alert, a still-open\n  position, or anything a reader could use to front-run a trade in flight.\n  Results are retrospective and aggregate only.\n- **No leaderboards.** We do not rank named wallets against each other. The\n  unit of publication is the strategy cohort, not the individual address.\n- **No raw warehouse exports.** Aggregate counts, hit rates, and category\n  distributions only — never anything that could reconstruct an individual\n  wallet's history.\n- **No bot or leader addresses.** The live copy bots trade from their own\n  wallets, and watching those wallets in real time would expose open\n  positions — so their trading accounts, payout addresses, and the mirrored\n  leader wallets are never published. Leaders appear only as opaque labels\n  (e.g. `leader-a`), and the market of an open bot position is never named.\n\nWhen a published number sits close to the line, we delay by 30+ days or\nanonymize the category before publishing. When in doubt, we don't publish.",
+		"sourceHash": "063d7771"
+	},
+	"methodology.sections.intro": {
+		"text": "ogsfrompoly asks a narrow question:\n\n> **Which Polymarket wallets look skilled after luck is stripped out, and do\n> their moves keep working when we score them later?**\n\nThe answer is published as a retrospective scorecard. We do not publish live\ntrade ideas, open-position details, or wallet leaderboards.",
+		"sourceHash": "063e95f1"
+	},
+	"methodology.sections.notThis": {
+		"text": "## What this is not\n\nogsfrompoly is not an investment recommendation, trading signal service, or\nclaim that any wallet will keep winning.\n\nIt is an audit trail for one specific method: find wallets whose resolved\nhistory looks different from a sign-randomized null, follow their retrospective\nalerts in the categories we publish, and show the results.",
+		"sourceHash": "c41b9eda"
+	},
+	"methodology.sections.qualify": {
+		"text": "## How a wallet qualifies\n\nA wallet first needs enough resolved history to test. Here, an **event** means\none real-world question being settled on Polymarket, even if that question has\nmultiple markets, outcomes, fills, or token legs. The minimum is at least\n20 events that have resolved within the measurement period.\n\nOnly resolved markets count. Open positions are ignored. For each eligible\nwallet, we build an **only-realized PnL** series: one profit-and-loss value per\nresolved real-world event.\n\nWe group at the event level because one real-world prediction can involve\nmultiple fills or market legs. Counting each fill as a separate decision would\nmake one position look like many independent bets. Counting at the event level\nkeeps the test closer to the thing we care about: whether the wallet repeatedly\npicked the right side of resolved Polymarket events.",
+		"sourceHash": "0c80af36"
+	},
+	"methodology.sections.scope": {
+		"text": "## Current scope\n\nThe public track record currently covers a single Polymarket area:\n\n- **Macro/Finance** - macro, rates, economic data, FOMC, earnings, and\n  finance-labeled Polymarket markets.\n\nThis narrow scope is deliberate. The goal is not broad category coverage.\nThe goal is a clean audit trail: skilled wallets, retrospective alerts, and\npublished outcomes that a reader can check later.",
+		"sourceHash": "522c9512"
+	},
+	"methodology.sections.scoring": {
+		"text": "## How alerts are scored\n\nWeekly statements score the period after the fact. They report:\n\n- total alerts\n- resolved hit rate\n- hypothetical PnL\n- category mix\n- a small set of opaque wallet IDs when useful for auditability\n\nMonthly statements add the business side of the project: revenue, operating\nexpense, net result, and runway.\n\nThe published category is **macro-finance**. Anything outside the current\npublic scope is dropped from the landing-page statement surface instead of\nbeing merged into another category.\n\nEvery statement is retrospective. The site publishes whether historical\nsignals worked. It does not publish instructions for trades in flight.",
+		"sourceHash": "48b34512"
+	},
+	"methodology.sections.skillTest": {
+		"text": "## The skill test\n\nSkill is measured with an event-level **sign-randomization** test.\n\nFor each eligible wallet, the inputs are:\n\n- `n` = number of resolved events for the wallet.\n- `x_i` = the wallet's realized PnL on event `i`.\n- `A = sum(x_i)` = the wallet's actual total realized PnL.\n- `B = 1,000 simulations` = the size of the randomization run.\n\nEach simulation keeps the size of every event result but randomizes the sign.\nFor simulation `j`, each event gets a random sign:\n\n`s_{j,i} in {-1, +1}`\n\nThe simulated no-skill total is:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nThe p-value is:\n\n`p = count(T_j >= A) / B`\n\nIn words, the p-value answers:\n\n\"If this wallet had no skill, how often would random sign flips produce a total\nPnL at least as good as the wallet's actual total?\"\n\nA wallet is treated as skilled only when that p-value clears the\npre-registered threshold: `p <= 0.05`. A large raw PnL number is not enough.",
+		"sourceHash": "43dfeddd"
+	},
+	"methodology.sections.skin": {
+		"text": "## Skin in the game: two small live bots\n\nThe scorecard is retrospective, but the project also puts a small amount of\nreal money behind its own signals. Two bots trade live, with deliberately tiny\n**$5** tickets:\n\n- **Cluster copy** (live since July 2026) buys only when several skilled\n  wallets land on the same side of the same market at once, in separate\n  trades.\n- **Wallet copy** (live since August 2026) mirrors two individual wallets from\n  the skilled roster, each published only under an opaque label.\n\nBoth are documented in plain English — every rule, every live setting, and a\nsimulator you can drag — at [copy trading for dummies](/for-dummies). Their\nrealized results reach the monthly statements as cash: profit is swept weekly\nto a collection wallet and counted as revenue only once it lands there.\nNothing about a bot position is published while that position is open.",
+		"sourceHash": "42ef81bc"
+	},
+	"methodology.title": {
+		"text": "Methodology",
+		"sourceHash": "7a2321b0"
+	},
 	"skin.body": {
 		"text": "Two small bots trade real money alongside the record — one follows a crowd of skilled wallets, one mirrors two hand-picked traders. Every rule and every live setting, explained in plain English with a simulator you can drag.",
 		"sourceHash": "a0b370cc"

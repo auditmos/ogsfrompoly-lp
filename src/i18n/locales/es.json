@@ -42,5 +42,61 @@
 	"skin.cta": {
 		"translation": "Copy trading para dummies →",
 		"sourceHash": "c4f9add0"
+	},
+	"methodology.title": {
+		"translation": "Metodología",
+		"sourceHash": "7a2321b0"
+	},
+	"methodology.description": {
+		"translation": "Cómo ogsfrompoly somete a prueba las carteras de Polymarket en busca de habilidad repetible, puntúa alertas retrospectivas y decide qué es seguro publicar.",
+		"sourceHash": "ad768128"
+	},
+	"methodology.note": {
+		"translation": "Esta página es una traducción del original en inglés — ante cualquier diferencia, la versión inglesa, incluida su política de divulgación, es la autoritativa.",
+		"sourceHash": "59862971"
+	},
+	"methodology.sections.intro": {
+		"translation": "ogsfrompoly plantea una pregunta estrecha:\n\n> **¿Qué carteras de Polymarket parecen hábiles una vez descontada la suerte, y\n> siguen funcionando sus movimientos cuando los puntuamos después?**\n\nLa respuesta se publica como un marcador retrospectivo. No publicamos ideas de\ntrading en vivo, detalles de posiciones abiertas ni rankings de carteras.",
+		"sourceHash": "063e95f1"
+	},
+	"methodology.sections.scope": {
+		"translation": "## Alcance actual\n\nEl historial público cubre hoy una sola área de Polymarket:\n\n- **Macro/Finanzas** - macro, tipos de interés, datos económicos, FOMC,\n  resultados empresariales y mercados de Polymarket con etiqueta financiera.\n\nEste alcance estrecho es deliberado. El objetivo no es cubrir muchas\ncategorías. El objetivo es un rastro de auditoría limpio: carteras hábiles,\nalertas retrospectivas y resultados publicados que el lector pueda verificar\nmás tarde.",
+		"sourceHash": "522c9512"
+	},
+	"methodology.sections.qualify": {
+		"translation": "## Cómo se califica una cartera\n\nUna cartera necesita primero suficiente historial resuelto para poder\nsometerla a prueba. Aquí, un **evento** es una pregunta del mundo real que se\nliquida en Polymarket, aunque esa pregunta tenga varios mercados, resultados,\nejecuciones o patas de tokens. El mínimo es al menos 20 eventos resueltos\ndentro del período de medición.\n\nSolo cuentan los mercados resueltos. Las posiciones abiertas se ignoran. Para\ncada cartera elegible construimos una serie de **only-realized PnL**: un valor\nde pérdidas y ganancias por cada evento resuelto.\n\nAgrupamos a nivel de evento porque una predicción del mundo real puede\ninvolucrar varias ejecuciones o patas de mercado. Contar cada ejecución como\nuna decisión separada haría que una posición pareciera muchas apuestas\nindependientes. Contar a nivel de evento mantiene la prueba cerca de lo que\nimporta: si la cartera eligió repetidamente el lado correcto de los eventos\nresueltos de Polymarket.",
+		"sourceHash": "0c80af36"
+	},
+	"methodology.sections.skillTest": {
+		"translation": "## La prueba de habilidad\n\nLa habilidad se mide con una prueba de **aleatorización de signos** a nivel de\nevento.\n\nPara cada cartera elegible, las entradas son:\n\n- `n` = número de eventos resueltos de la cartera.\n- `x_i` = el PnL realizado de la cartera en el evento `i`.\n- `A = sum(x_i)` = el PnL total realizado real de la cartera.\n- `B = 1,000 simulations` = el tamaño de la corrida de aleatorización.\n\nCada simulación conserva el tamaño del resultado de cada evento pero\naleatoriza el signo. En la simulación `j`, cada evento recibe un signo\naleatorio:\n\n`s_{j,i} in {-1, +1}`\n\nEl total simulado sin habilidad es:\n\n`T_j = sum(s_{j,i} * abs(x_i))`\n\nEl p-valor es:\n\n`p = count(T_j >= A) / B`\n\nEn palabras, el p-valor responde:\n\n«Si esta cartera no tuviera habilidad, ¿con qué frecuencia unos giros de signo\naleatorios producirían un PnL total al menos tan bueno como el real?»\n\nUna cartera se considera hábil solo cuando ese p-valor supera el umbral\nprerregistrado: `p <= 0.05`. Un PnL bruto grande no basta.",
+		"sourceHash": "43dfeddd"
+	},
+	"methodology.sections.controls": {
+		"translation": "## Controles antes de publicar\n\nEl marcador público debe medir señal repetible del trader, no gestión de\ndirecciones ni artefactos de microestructura de mercado.\n\nAntes de que una cartera afecte el registro publicado, el pipeline aplica\ncontroles contra clústeres coordinados de varias carteras, patrones de\ncontraparte concentrados y comportamiento tipo wash trading. Estos controles\neliminan o degradan señales capaces de hacer que una dirección parezca más\nhábil de lo que es.",
+		"sourceHash": "75c7a51c"
+	},
+	"methodology.sections.scoring": {
+		"translation": "## Cómo se puntúan las alertas\n\nLos informes semanales puntúan el período a posteriori. Reportan:\n\n- total de alertas\n- hit rate de resueltos\n- PnL hipotético\n- mezcla de categorías\n- un pequeño conjunto de IDs opacos de carteras cuando ayuda a la auditoría\n\nLos informes mensuales añaden el lado empresarial del proyecto: ingresos,\ngastos operativos, resultado neto y runway.\n\nLa categoría publicada es **macro-finance**. Todo lo que queda fuera del\nalcance público actual se retira de la superficie de informes de la página en\nlugar de fusionarse con otra categoría.\n\nCada informe es retrospectivo. El sitio publica si las señales históricas\nfuncionaron. No publica instrucciones para operaciones en curso.",
+		"sourceHash": "48b34512"
+	},
+	"methodology.sections.skin": {
+		"translation": "## Skin in the game: dos pequeños bots en vivo\n\nEl marcador es retrospectivo, pero el proyecto también pone una pequeña\ncantidad de dinero real detrás de sus propias señales. Dos bots operan en\nvivo, con tickets deliberadamente diminutos de **$5**:\n\n- **Cluster copy** (en vivo desde julio de 2026) compra solo cuando varias\n  carteras hábiles caen del mismo lado del mismo mercado a la vez, en\n  operaciones separadas.\n- **Wallet copy** (en vivo desde agosto de 2026) replica dos carteras\n  individuales del roster hábil, cada una publicada solo bajo una etiqueta\n  opaca.\n\nAmbos están documentados en lenguaje llano — cada regla, cada ajuste en vivo y\nun simulador que puedes arrastrar — en [copy trading para dummies](/for-dummies).\nSus resultados realizados llegan a los informes mensuales como efectivo: el\nbeneficio se barre cada semana a una cartera de recolección y cuenta como\ningreso solo cuando aterriza allí. Nada de una posición de bot se publica\nmientras esa posición está abierta.",
+		"sourceHash": "42ef81bc"
+	},
+	"methodology.sections.academicIntro": {
+		"translation": "## Fundamento académico\n\nLa metodología se apoya en dos artículos de 2026 sobre habilidad en mercados\nde predicción, persistencia de los traders y resultados de mercado:",
+		"sourceHash": "55b58db4"
+	},
+	"methodology.sections.academicOutro": {
+		"translation": "Ambos artículos apuntan a una lección práctica: el PnL realizado a corto\nplazo es un proxy débil de la habilidad. Una cartera puede tener suerte, y una\ncartera con suerte puede dejar de ganar.\n\nPor eso ogsfrompoly empieza con una prueba estadística de habilidad y luego\npublica en el historial público si las señales resultantes funcionaron de\nverdad.",
+		"sourceHash": "de16ecf5"
+	},
+	"methodology.sections.disclosure": {
+		"translation": "## Política de divulgación\n\nEl sitio es abierto sobre la metodología y los resultados agregados. Es\ncerrado sobre cualquier cosa que permita hacer front-running a una posición o\nexponer la identidad de un trader individual.\n\nEstas reglas aplican a la página HTML renderizada, al feed `.md` en crudo, al\nRSS y a `llms.txt`.\n\n- **Las carteras aparecen solo como IDs truncados y opacos** — p. ej.\n  `wallet_a3f8`. Nunca publicamos una dirección EVM completa. Los IDs\n  truncados son deliberadamente irreversibles a identidades on-chain.\n- **Nada de alfa en vivo. Nunca.** Jamás publicamos una alerta en vivo, una\n  posición aún abierta ni nada que un lector pueda usar para adelantarse a\n  una operación en curso. Los resultados son solo retrospectivos y agregados.\n- **Sin leaderboards.** No clasificamos carteras nombradas entre sí. La\n  unidad de publicación es la cohorte de estrategia, no la dirección\n  individual.\n- **Sin exportes crudos del almacén.** Solo conteos agregados, hit rates y\n  distribuciones de categorías — nunca nada que permita reconstruir el\n  historial de una cartera individual.\n- **Sin direcciones de bots ni de líderes.** Los bots de copia operan desde\n  sus propias carteras, y observarlas en tiempo real expondría posiciones\n  abiertas — así que sus cuentas de trading, direcciones de cobro y las\n  carteras líder replicadas nunca se publican. Los líderes aparecen solo bajo\n  etiquetas opacas (p. ej. `leader-a`), y el mercado de una posición abierta\n  de un bot nunca se nombra.\n\nCuando una cifra publicada roza el límite, retrasamos 30+ días o anonimizamos\nla categoría antes de publicar. Ante la duda, no publicamos.",
+		"sourceHash": "063d7771"
+	},
+	"methodology.sections.notThis": {
+		"translation": "## Qué no es esto\n\nogsfrompoly no es una recomendación de inversión, un servicio de señales de\ntrading ni una promesa de que alguna cartera seguirá ganando.\n\nEs un rastro de auditoría de un método concreto: encontrar carteras cuyo\nhistorial resuelto se distinga de un nulo con signos aleatorizados, seguir sus\nalertas retrospectivas en las categorías publicadas y mostrar los resultados.",
+		"sourceHash": "c41b9eda"
 	}
 }

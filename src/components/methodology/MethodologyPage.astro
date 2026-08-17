@@ -1,0 +1,27 @@
+---
+import { marked } from "marked";
+import { type Locale, resolveMethodologyProse } from "@/i18n/catalog";
+import Layout from "@/layouts/Layout.astro";
+import { methodologyMarkdownFor } from "@/methodology/content";
+
+interface Props {
+	locale: Locale;
+}
+
+// One stitched markdown string per locale is the single source for both this
+// HTML render and the .md twin — the two surfaces can never disagree.
+const prose = resolveMethodologyProse(Astro.props.locale);
+const html = marked.parse(methodologyMarkdownFor(Astro.props.locale), { async: false }) as string;
+---
+
+<Layout
+	title={`${prose.title} · ogsfrompoly`}
+	description={prose.description}
+	localePath="/methodology"
+>
+	<main class="mx-auto max-w-5xl px-gutter py-16 sm:py-24">
+		<article class="long-form-article">
+			<Fragment set:html={html} />
+		</article>
+	</main>
+</Layout>

@@ -9,6 +9,7 @@
  */
 
 import { z } from "zod";
+import { METHODOLOGY_EN, type MethodologyProse } from "@/methodology/prose-en";
 import { HOME_EN, type HomeProse } from "./home-en";
 import esOverlayJson from "./locales/es.json";
 import plOverlayJson from "./locales/pl.json";
@@ -109,6 +110,12 @@ export function resolveHomeProse(locale: Locale): HomeProse {
 	return locale === "en" ? HOME_EN : resolveProse(HOME_EN, OVERLAYS[locale]);
 }
 
+/** Methodology prose resolved for a locale — the same shape as `METHODOLOGY_EN`. */
+export function resolveMethodologyProse(locale: Locale): MethodologyProse {
+	if (locale === "en") return METHODOLOGY_EN;
+	return resolveProse({ methodology: METHODOLOGY_EN }, OVERLAYS[locale]).methodology;
+}
+
 /** Locales translations are delivered for — the extractor reports on each. */
 export type TranslatedLocale = "pl" | "es";
 
@@ -130,5 +137,7 @@ export function localeOverlay(locale: TranslatedLocale): TranslationOverlay {
  * added by later phases join the registry here and appear automatically.
  */
 export function catalogEntries(): CatalogEntry[] {
-	return proseEntries(HOME_EN);
+	// Home keys are historically unprefixed; every later module registers under
+	// its own top-level namespace so keys can never collide.
+	return proseEntries({ ...HOME_EN, methodology: METHODOLOGY_EN });
 }
