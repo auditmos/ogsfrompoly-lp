@@ -1,6 +1,15 @@
 import { copyTradeDescription, copyTradeTitle } from "@/copy-trade/cluster/content";
 import { forDummiesDescription, forDummiesTitle } from "@/copy-trade/hub-content";
 import { walletCopyDescription, walletCopyTitle } from "@/copy-trade/wallet/content";
+import {
+	resolveClusterPage,
+	resolveHubProse,
+	resolveMethodologyProse,
+	resolveWalletPage,
+	TRANSLATED_LOCALES,
+	type TranslatedLocale,
+} from "@/i18n/catalog";
+import { localeHref } from "@/i18n/routes";
 import { methodologyDescription, methodologyTitle } from "@/methodology/content";
 import { sortEntries } from "./sort";
 import type { FeedEntry, FeedInput } from "./types";
@@ -56,17 +65,68 @@ const STATIC_DOCS: readonly StaticDoc[] = [
 	},
 ];
 
+/**
+ * The translated `.md` twins, one section per language (issue #75). Titles
+ * and summaries resolve through the same Translation Catalog the pages render
+ * from — never restated — so a retranslated page cannot drift away from what
+ * `llms.txt` promises. Each language lists its four translated editorial
+ * twins: methodology, the chooser hub, and the two bot walkthroughs.
+ */
+const LOCALE_SECTION_TITLES: Record<TranslatedLocale, string> = {
+	pl: "Polski",
+	es: "Español",
+};
+
+function localizedDocs(locale: TranslatedLocale): StaticDoc[] {
+	const section = LOCALE_SECTION_TITLES[locale];
+	const methodology = resolveMethodologyProse(locale);
+	const hub = resolveHubProse(locale);
+	const cluster = resolveClusterPage(locale);
+	const wallet = resolveWalletPage(locale);
+	return [
+		{
+			section,
+			title: methodology.title,
+			path: `${localeHref(locale, "/methodology")}.md`,
+			summary: methodology.description,
+		},
+		{
+			section,
+			title: hub.title,
+			path: `${localeHref(locale, "/for-dummies")}.md`,
+			summary: hub.description,
+		},
+		{
+			section,
+			title: cluster.title,
+			path: `${localeHref(locale, "/for-dummies/copy-cluster")}.md`,
+			summary: cluster.description,
+		},
+		{
+			section,
+			title: wallet.title,
+			path: `${localeHref(locale, "/for-dummies/copy-wallet")}.md`,
+			summary: wallet.description,
+		},
+	];
+}
+
+const ALL_DOCS: readonly StaticDoc[] = [
+	...STATIC_DOCS,
+	...TRANSLATED_LOCALES.flatMap((locale) => localizedDocs(locale)),
+];
+
 function renderLine(entry: FeedEntry, siteUrl: string): string {
 	const url = `${siteUrl}/${entry.collection}/${entry.slug}.md`;
 	return `- [${entry.title}](${url}): ${entry.summary}`;
 }
 
 function renderStaticSections(siteUrl: string): string[] {
-	const sections = [...new Set(STATIC_DOCS.map((doc) => doc.section))];
+	const sections = [...new Set(ALL_DOCS.map((doc) => doc.section))];
 	return sections.flatMap((section) => [
 		`## ${section}`,
 		"",
-		...STATIC_DOCS.filter((doc) => doc.section === section).map(
+		...ALL_DOCS.filter((doc) => doc.section === section).map(
 			(doc) => `- [${doc.title}](${siteUrl}${doc.path}): ${doc.summary}`,
 		),
 		"",

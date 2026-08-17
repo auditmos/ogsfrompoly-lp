@@ -140,6 +140,20 @@ describe("feed determinism (Phase 1 / Slice 3 invariant)", () => {
 			- [Cluster copy for dummies](https://ogsfrompoly.com/for-dummies/copy-cluster.md): Plain-English walkthrough of the ogsfrompoly cluster-copy bot — the one that follows a crowd of skilled wallets: when it buys, when it skips, when it sells, and which numbers you can actually turn.
 			- [Wallet copy for dummies](https://ogsfrompoly.com/for-dummies/copy-wallet.md): Plain-English walkthrough of the ogsfrompoly wallet-copy bot — the one that mirrors two hand-picked skilled traders: when it copies, when it refuses, when it leaves, and which numbers you can actually turn.
 
+			## Polski
+
+			- [Metodologia](https://ogsfrompoly.com/pl/methodology.md): Jak ogsfrompoly testuje portfele na Polymarkecie pod kątem powtarzalnego skilla, ocenia retrospektywne alerty i decyduje, co można bezpiecznie opublikować.
+			- [Copy trading dla opornych](https://ogsfrompoly.com/pl/for-dummies.md): Dwa małe boty handlują drobnymi, prawdziwymi pieniędzmi równolegle do publikowanego track recordu — jeden podąża za grupą skutecznych portfeli, drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Wybierz swój przewodnik; każdy tłumaczy każdą regułę po ludzku i pozwala pobawić się aktualnymi ustawieniami.
+			- [Cluster copy dla opornych](https://ogsfrompoly.com/pl/for-dummies/copy-cluster.md): Przewodnik po ludzku po bocie cluster-copy ogsfrompoly — tym, który podąża za grupą skutecznych portfeli: kiedy kupuje, kiedy odpuszcza, kiedy sprzedaje i którymi liczbami naprawdę da się kręcić.
+			- [Wallet copy dla opornych](https://ogsfrompoly.com/pl/for-dummies/copy-wallet.md): Przewodnik po ludzku po bocie wallet-copy ogsfrompoly — tym, który lustrzanie kopiuje dwóch ręcznie wybranych skutecznych traderów: kiedy kopiuje, kiedy odmawia, kiedy wychodzi i którymi liczbami naprawdę da się kręcić.
+
+			## Español
+
+			- [Metodología](https://ogsfrompoly.com/es/methodology.md): Cómo ogsfrompoly somete a prueba las carteras de Polymarket en busca de habilidad repetible, puntúa alertas retrospectivas y decide qué es seguro publicar.
+			- [Copy trading para dummies](https://ogsfrompoly.com/es/for-dummies.md): Dos pequeños bots operan con dinero real y diminuto junto al historial publicado — uno sigue a un grupo de carteras hábiles, el otro replica a dos traders elegidos a mano. Elige tu guía; cada una explica todas las reglas en lenguaje llano y te deja jugar con los ajustes en vivo.
+			- [Cluster copy para dummies](https://ogsfrompoly.com/es/for-dummies/copy-cluster.md): Guía en lenguaje llano del bot cluster-copy de ogsfrompoly — el que sigue a un grupo de carteras hábiles: cuándo compra, cuándo pasa, cuándo vende y qué números se pueden girar de verdad.
+			- [Wallet copy para dummies](https://ogsfrompoly.com/es/for-dummies/copy-wallet.md): Guía en lenguaje llano del bot wallet-copy de ogsfrompoly — el que replica a dos traders hábiles elegidos a mano: cuándo copia, cuándo se niega, cuándo sale y qué números se pueden girar de verdad.
+
 			## articles
 
 			- [Build log 01: warehouse](https://ogsfrompoly.com/articles/build-log-01.md): How we provisioned the warehouse.

@@ -1,3 +1,9 @@
+import {
+	resolveClusterPage,
+	resolveHubProse,
+	resolveMethodologyProse,
+	resolveWalletPage,
+} from "@/i18n/catalog";
 import { generateLlmsTxt } from "./llms-txt";
 import type { FeedInput } from "./types";
 
@@ -102,5 +108,47 @@ describe("generateLlmsTxt", () => {
 		expect(txt).toContain(
 			"- [Placeholder weekly statement](https://ogsfrompoly.com/statements/2026-05-25-placeholder.md): Schema-exercise fixture.",
 		);
+	});
+});
+
+/**
+ * Issue #75 assumptions: the discovery layer lists every translated `.md`
+ * twin (methodology + hub + two walkthroughs × pl/es) under a per-language
+ * section, with titles and summaries imported from the same catalog-resolved
+ * content modules the pages render — asserted by equality against the
+ * resolvers, so a restated string cannot drift. English sections stay
+ * byte-identical; per-language sections sit between them and the
+ * per-collection sections.
+ */
+describe("per-language sections", () => {
+	it("lists every translated twin under its language section with imported titles", () => {
+		const txt = generateLlmsTxt(baseInput);
+
+		const polishIdx = txt.indexOf("## Polski");
+		const spanishIdx = txt.indexOf("## Español");
+		const statementsIdx = txt.indexOf("## statements");
+		expect(polishIdx).toBeGreaterThan(txt.indexOf("## Copy trade"));
+		expect(spanishIdx).toBeGreaterThan(polishIdx);
+		expect(statementsIdx).toBeGreaterThan(spanishIdx);
+
+		for (const locale of ["pl", "es"] as const) {
+			const methodology = resolveMethodologyProse(locale);
+			const hub = resolveHubProse(locale);
+			const cluster = resolveClusterPage(locale);
+			const wallet = resolveWalletPage(locale);
+
+			expect(txt).toContain(
+				`- [${methodology.title}](https://ogsfrompoly.com/${locale}/methodology.md): ${methodology.description}`,
+			);
+			expect(txt).toContain(
+				`- [${hub.title}](https://ogsfrompoly.com/${locale}/for-dummies.md): ${hub.description}`,
+			);
+			expect(txt).toContain(
+				`- [${cluster.title}](https://ogsfrompoly.com/${locale}/for-dummies/copy-cluster.md): ${cluster.description}`,
+			);
+			expect(txt).toContain(
+				`- [${wallet.title}](https://ogsfrompoly.com/${locale}/for-dummies/copy-wallet.md): ${wallet.description}`,
+			);
+		}
 	});
 });

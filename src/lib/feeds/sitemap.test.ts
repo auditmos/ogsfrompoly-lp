@@ -123,3 +123,58 @@ describe("generateSitemap", () => {
 		]);
 	});
 });
+
+/**
+ * Issue #75 assumptions: localized static pages carry the full hreflang
+ * alternate set as sitemap xhtml:link annotations; English <url> blocks stay
+ * byte-identical to the pre-feature format, and the envelope only gains the
+ * xhtml namespace when some page actually declares alternates.
+ */
+describe("localized sitemap entries", () => {
+	const withAlternates: FeedInput = {
+		...baseInput,
+		staticPages: [
+			{ path: "/methodology" },
+			{
+				path: "/pl/methodology",
+				alternates: [
+					{ hreflang: "en", href: "https://ogsfrompoly.com/methodology" },
+					{ hreflang: "pl", href: "https://ogsfrompoly.com/pl/methodology" },
+					{ hreflang: "es", href: "https://ogsfrompoly.com/es/methodology" },
+					{ hreflang: "x-default", href: "https://ogsfrompoly.com/methodology" },
+				],
+			},
+		],
+	};
+
+	it("keeps English url blocks byte-identical while alternates exist elsewhere", () => {
+		const xml = generateSitemap(withAlternates);
+
+		expect(xml).toContain("<url>\n<loc>https://ogsfrompoly.com/methodology</loc>\n</url>");
+	});
+
+	it("annotates localized urls with the full hreflang alternate set", () => {
+		const xml = generateSitemap(withAlternates);
+
+		expect(xml).toContain(
+			'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+		);
+		expect(xml).toContain(
+			[
+				"<url>",
+				"<loc>https://ogsfrompoly.com/pl/methodology</loc>",
+				'<xhtml:link rel="alternate" hreflang="en" href="https://ogsfrompoly.com/methodology"/>',
+				'<xhtml:link rel="alternate" hreflang="pl" href="https://ogsfrompoly.com/pl/methodology"/>',
+				'<xhtml:link rel="alternate" hreflang="es" href="https://ogsfrompoly.com/es/methodology"/>',
+				'<xhtml:link rel="alternate" hreflang="x-default" href="https://ogsfrompoly.com/methodology"/>',
+				"</url>",
+			].join("\n"),
+		);
+	});
+
+	it("keeps the envelope unchanged when no page declares alternates", () => {
+		expect(generateSitemap(baseInput)).toContain(
+			'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+		);
+	});
+});
