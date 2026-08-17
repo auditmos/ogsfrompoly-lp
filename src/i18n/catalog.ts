@@ -9,6 +9,7 @@
  */
 
 import { z } from "zod";
+import { HUB_EN, type HubProse } from "@/copy-trade/hub-prose-en";
 import { METHODOLOGY_EN, type MethodologyProse } from "@/methodology/prose-en";
 import { HOME_EN, type HomeProse } from "./home-en";
 import esOverlayJson from "./locales/es.json";
@@ -116,6 +117,12 @@ export function resolveMethodologyProse(locale: Locale): MethodologyProse {
 	return resolveProse({ methodology: METHODOLOGY_EN }, OVERLAYS[locale]).methodology;
 }
 
+/** For-dummies hub strings resolved for a locale — the same shape as `HUB_EN`. */
+export function resolveHubProse(locale: Locale): HubProse {
+	if (locale === "en") return HUB_EN;
+	return resolveProse({ hub: HUB_EN }, OVERLAYS[locale]).hub;
+}
+
 /** Locales translations are delivered for — the extractor reports on each. */
 export type TranslatedLocale = "pl" | "es";
 
@@ -139,5 +146,5 @@ export function localeOverlay(locale: TranslatedLocale): TranslationOverlay {
 export function catalogEntries(): CatalogEntry[] {
 	// Home keys are historically unprefixed; every later module registers under
 	// its own top-level namespace so keys can never collide.
-	return proseEntries({ ...HOME_EN, methodology: METHODOLOGY_EN });
+	return proseEntries({ ...HOME_EN, methodology: METHODOLOGY_EN, hub: HUB_EN });
 }

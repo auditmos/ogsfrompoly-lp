@@ -98,5 +98,189 @@
 	"methodology.sections.notThis": {
 		"translation": "## Qué no es esto\n\nogsfrompoly no es una recomendación de inversión, un servicio de señales de\ntrading ni una promesa de que alguna cartera seguirá ganando.\n\nEs un rastro de auditoría de un método concreto: encontrar carteras cuyo\nhistorial resuelto se distinga de un nulo con signos aleatorizados, seguir sus\nalertas retrospectivas en las categorías publicadas y mostrar los resultados.",
 		"sourceHash": "c41b9eda"
+	},
+	"hub.title": {
+		"translation": "Copy trading para dummies",
+		"sourceHash": "a4ab9276"
+	},
+	"hub.description": {
+		"translation": "Dos pequeños bots operan con dinero real y diminuto junto al historial publicado — uno sigue a un grupo de carteras hábiles, el otro replica a dos traders elegidos a mano. Elige tu guía; cada una explica todas las reglas en lenguaje llano y te deja jugar con los ajustes en vivo.",
+		"sourceHash": "4a1ff6a0"
+	},
+	"hub.eyebrow": {
+		"translation": "para dummies",
+		"sourceHash": "0f509a28"
+	},
+	"hub.heading": {
+		"translation": "Dos bots. Dos preguntas.",
+		"sourceHash": "a59fd21c"
+	},
+	"hub.choose": {
+		"translation": "Elige una guía",
+		"sourceHash": "f1d9fb75"
+	},
+	"hub.read": {
+		"translation": "Lee la guía →",
+		"sourceHash": "533033e2"
+	},
+	"hub.sideBySide": {
+		"translation": "Lado a lado",
+		"sourceHash": "6f659592"
+	},
+	"hub.sharedNote": {
+		"translation": "Todo lo demás es ADN compartido: solo mercados Macro, tickets de $5 todo-o-nada sobre la propia rejilla de precios del exchange, los mismos raíles de liquidez, timing y precio-que-ya-corrió, un suelo de gasto de $5, interruptores de emergencia que detienen las compras pero nunca las ventas, un barrido semanal de beneficios y cada descarte anotado con sus números.",
+		"sourceHash": "4916858a"
+	},
+	"hub.mdRead": {
+		"translation": "Lee la guía completa en {href} — o como markdown en {mdHref}.",
+		"sourceHash": "2e3e3ba2"
+	},
+	"hub.advice.lead": {
+		"translation": "Ninguna página es un consejo, y ninguna cartera se publica jamás —",
+		"sourceHash": "0a90a546"
+	},
+	"hub.advice.link": {
+		"translation": "metodología y divulgación",
+		"sourceHash": "b3a8abdb"
+	},
+	"hub.advice.md": {
+		"translation": "Ninguna página es un consejo ni un servicio de señales, y ninguna cartera\ninvolucrada en cualquiera de los bots se publica jamás — ver la [metodología y política de divulgación]({methodologyHref}).",
+		"sourceHash": "fd6c92df"
+	},
+	"hub.facts.follows": {
+		"translation": "sigue a",
+		"sourceHash": "ee8061b9"
+	},
+	"hub.facts.fires": {
+		"translation": "dispara cuando",
+		"sourceHash": "75b99b42"
+	},
+	"hub.facts.leaves": {
+		"translation": "sale cuando",
+		"sourceHash": "fedbb877"
+	},
+	"hub.facts.ticket": {
+		"translation": "ticket",
+		"sourceHash": "6517b3e5"
+	},
+	"hub.cluster.name": {
+		"translation": "Copia a la multitud",
+		"sourceHash": "673a1776"
+	},
+	"hub.cluster.tagline": {
+		"translation": "Espera a que al menos tres carteras hábiles caigan del mismo lado de la misma apuesta, en operaciones separadas, y entonces compra $5. Una cartera es una opinión; tres llegando por separado son información.",
+		"sourceHash": "9f792c85"
+	},
+	"hub.cluster.follows": {
+		"translation": "cualquier multitud de nuestro roster hábil",
+		"sourceHash": "92b63225"
+	},
+	"hub.cluster.fires": {
+		"translation": "3+ carteras coinciden a la vez",
+		"sourceHash": "ae369683"
+	},
+	"hub.cluster.leaves": {
+		"translation": "la primera de ellas se da la vuelta",
+		"sourceHash": "abd7061e"
+	},
+	"hub.cluster.ticket": {
+		"translation": "$5, todo o nada",
+		"sourceHash": "a8fd269d"
+	},
+	"hub.wallet.name": {
+		"translation": "Copia al trader",
+		"sourceHash": "7002ce19"
+	},
+	"hub.wallet.tagline": {
+		"translation": "Sigue como una sombra a dos traders hábiles elegidos a mano e ignora casi todo lo que hacen — hasta que uno compromete dinero serio en una apuesta nueva. Entonces coloca una pequeña copia en su propia cuenta separada.",
+		"sourceHash": "18cf621d"
+	},
+	"hub.wallet.follows": {
+		"translation": "dos líderes con nombre, anonimizados",
+		"sourceHash": "68309c83"
+	},
+	"hub.wallet.fires": {
+		"translation": "un líder apuesta por encima de su propio listón",
+		"sourceHash": "e8f30341"
+	},
+	"hub.wallet.leaves": {
+		"translation": "el líder deshace la mitad, se gira o cierra",
+		"sourceHash": "e63fb7ce"
+	},
+	"hub.wallet.ticket": {
+		"translation": "$5, todo o nada",
+		"sourceHash": "a8fd269d"
+	},
+	"hub.compare.signal.label": {
+		"translation": "Una señal es",
+		"sourceHash": "0e71a388"
+	},
+	"hub.compare.signal.cluster": {
+		"translation": "3+ carteras hábiles del mismo lado, en operaciones separadas",
+		"sourceHash": "56811e67"
+	},
+	"hub.compare.signal.wallet": {
+		"translation": "una apuesta nueva de un líder cruzando su propio listón de convicción ($500 / $100)",
+		"sourceHash": "e59af184"
+	},
+	"hub.compare.guard.label": {
+		"translation": "Su guarda extra",
+		"sourceHash": "b9c2e81e"
+	},
+	"hub.compare.guard.cluster": {
+		"translation": "un miembro de la multitud en el otro lado dentro de 10 minutos anula la multitud",
+		"sourceHash": "0a5b3984"
+	},
+	"hub.compare.guard.wallet": {
+		"translation": "un líder operando ambos lados de la apuesta en 48 horas queda descartado",
+		"sourceHash": "9a7cce52"
+	},
+	"hub.compare.fees.label": {
+		"translation": "Raíl de comisiones",
+		"sourceHash": "0848e675"
+	},
+	"hub.compare.fees.cluster": {
+		"translation": "sí — en la práctica un precio mínimo de $0.60",
+		"sourceHash": "c8450f4a"
+	},
+	"hub.compare.fees.wallet": {
+		"translation": "ninguno, y su página lo dice claramente",
+		"sourceHash": "30315294"
+	},
+	"hub.compare.exit.label": {
+		"translation": "Sale cuando",
+		"sourceHash": "e8f7f617"
+	},
+	"hub.compare.exit.cluster": {
+		"translation": "la primera cartera de la multitud se da la vuelta",
+		"sourceHash": "67d5abd9"
+	},
+	"hub.compare.exit.wallet": {
+		"translation": "el líder ha deshecho la mitad de su pico, se ha girado o ha cerrado",
+		"sourceHash": "f030c58b"
+	},
+	"hub.compare.money.label": {
+		"translation": "Dinero",
+		"sourceHash": "b34b4bef"
+	},
+	"hub.compare.money.cluster": {
+		"translation": "su propio fondo, como máximo $20 abiertos",
+		"sourceHash": "4eb6bfab"
+	},
+	"hub.compare.money.wallet": {
+		"translation": "su propia cuenta separada, como máximo $20 abiertos",
+		"sourceHash": "c524835f"
+	},
+	"hub.compare.liveSince.label": {
+		"translation": "En vivo desde",
+		"sourceHash": "982b96a5"
+	},
+	"hub.compare.liveSince.cluster": {
+		"translation": "julio de 2026",
+		"sourceHash": "b3a0905b"
+	},
+	"hub.compare.liveSince.wallet": {
+		"translation": "11 de agosto de 2026",
+		"sourceHash": "ddf6ecac"
 	}
 }

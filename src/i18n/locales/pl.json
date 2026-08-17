@@ -98,5 +98,189 @@
 	"methodology.sections.notThis": {
 		"translation": "## Czym to nie jest\n\nogsfrompoly nie jest rekomendacją inwestycyjną, serwisem sygnałów tradingowych\nani obietnicą, że jakikolwiek portfel będzie dalej wygrywał.\n\nTo ślad audytowy jednej konkretnej metody: znajdź portfele, których\nrozstrzygnięta historia odstaje od nulla z randomizacji znaku, śledź ich\nretrospektywne alerty w publikowanych kategoriach i pokaż wyniki.",
 		"sourceHash": "c41b9eda"
+	},
+	"hub.title": {
+		"translation": "Copy trading dla opornych",
+		"sourceHash": "a4ab9276"
+	},
+	"hub.description": {
+		"translation": "Dwa małe boty handlują drobnymi, prawdziwymi pieniędzmi równolegle do publikowanego track recordu — jeden podąża za grupą skutecznych portfeli, drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Wybierz swój przewodnik; każdy tłumaczy każdą regułę po ludzku i pozwala pobawić się aktualnymi ustawieniami.",
+		"sourceHash": "4a1ff6a0"
+	},
+	"hub.eyebrow": {
+		"translation": "dla opornych",
+		"sourceHash": "0f509a28"
+	},
+	"hub.heading": {
+		"translation": "Dwa boty. Dwa pytania.",
+		"sourceHash": "a59fd21c"
+	},
+	"hub.choose": {
+		"translation": "Wybierz przewodnik",
+		"sourceHash": "f1d9fb75"
+	},
+	"hub.read": {
+		"translation": "Przeczytaj przewodnik →",
+		"sourceHash": "533033e2"
+	},
+	"hub.sideBySide": {
+		"translation": "Porównanie",
+		"sourceHash": "6f659592"
+	},
+	"hub.sharedNote": {
+		"translation": "Cała reszta to wspólne DNA: wyłącznie rynki Macro, bilety 5 $ wszystko-albo-nic na siatce cen samej giełdy, te same bezpieczniki płynności, timingu i ceny-która-już-uciekła, próg wydatków 5 $, wyłączniki awaryjne, które zatrzymują kupowanie, ale nigdy sprzedaż, cotygodniowy sweep zysku i każdy skip zapisany razem ze swoimi liczbami.",
+		"sourceHash": "4916858a"
+	},
+	"hub.mdRead": {
+		"translation": "Pełny przewodnik przeczytasz pod {href} — albo jako markdown pod {mdHref}.",
+		"sourceHash": "2e3e3ba2"
+	},
+	"hub.advice.lead": {
+		"translation": "Żadna z tych stron nie jest poradą, a żaden portfel nigdy nie jest publikowany —",
+		"sourceHash": "0a90a546"
+	},
+	"hub.advice.link": {
+		"translation": "metodologia i polityka ujawniania",
+		"sourceHash": "b3a8abdb"
+	},
+	"hub.advice.md": {
+		"translation": "Żadna z tych stron nie jest poradą ani serwisem sygnałów, a żaden portfel\nzaangażowany w któregokolwiek bota nigdy nie jest publikowany — zobacz [metodologię i politykę ujawniania]({methodologyHref}).",
+		"sourceHash": "fd6c92df"
+	},
+	"hub.facts.follows": {
+		"translation": "podąża za",
+		"sourceHash": "ee8061b9"
+	},
+	"hub.facts.fires": {
+		"translation": "strzela, gdy",
+		"sourceHash": "75b99b42"
+	},
+	"hub.facts.leaves": {
+		"translation": "wychodzi, gdy",
+		"sourceHash": "fedbb877"
+	},
+	"hub.facts.ticket": {
+		"translation": "bilet",
+		"sourceHash": "6517b3e5"
+	},
+	"hub.cluster.name": {
+		"translation": "Kopiuj tłum",
+		"sourceHash": "673a1776"
+	},
+	"hub.cluster.tagline": {
+		"translation": "Czeka, aż co najmniej trzy skilled portfele wylądują po tej samej stronie tego samego zakładu, w osobnych transakcjach, i dopiero wtedy kupuje za 5 $. Jeden portfel to opinia; trzy przychodzące osobno to informacja.",
+		"sourceHash": "9f792c85"
+	},
+	"hub.cluster.follows": {
+		"translation": "dowolny tłum z naszego rosteru skilled",
+		"sourceHash": "92b63225"
+	},
+	"hub.cluster.fires": {
+		"translation": "3+ portfele zgadzają się naraz",
+		"sourceHash": "ae369683"
+	},
+	"hub.cluster.leaves": {
+		"translation": "pierwszy z nich się wycofuje",
+		"sourceHash": "abd7061e"
+	},
+	"hub.cluster.ticket": {
+		"translation": "5 $, wszystko albo nic",
+		"sourceHash": "a8fd269d"
+	},
+	"hub.wallet.name": {
+		"translation": "Kopiuj tradera",
+		"sourceHash": "7002ce19"
+	},
+	"hub.wallet.tagline": {
+		"translation": "Chodzi cieniem za dwoma ręcznie wybranymi skilled traderami i ignoruje niemal wszystko, co robią — dopóki któryś nie postawi poważnych pieniędzy na świeży zakład. Wtedy stawia jedną małą kopię na własnym, osobnym koncie.",
+		"sourceHash": "18cf621d"
+	},
+	"hub.wallet.follows": {
+		"translation": "dwóch nazwanych liderów, zanonimizowanych",
+		"sourceHash": "68309c83"
+	},
+	"hub.wallet.fires": {
+		"translation": "lider przekracza własną poprzeczkę stawki",
+		"sourceHash": "e8f30341"
+	},
+	"hub.wallet.leaves": {
+		"translation": "lider zwija połowę, odwraca się albo zamyka",
+		"sourceHash": "e63fb7ce"
+	},
+	"hub.wallet.ticket": {
+		"translation": "5 $, wszystko albo nic",
+		"sourceHash": "a8fd269d"
+	},
+	"hub.compare.signal.label": {
+		"translation": "Sygnał to",
+		"sourceHash": "0e71a388"
+	},
+	"hub.compare.signal.cluster": {
+		"translation": "3+ skilled portfele po tej samej stronie, w osobnych transakcjach",
+		"sourceHash": "56811e67"
+	},
+	"hub.compare.signal.wallet": {
+		"translation": "świeży zakład jednego lidera przekraczający jego własną poprzeczkę przekonania (500 $ / 100 $)",
+		"sourceHash": "e59af184"
+	},
+	"hub.compare.guard.label": {
+		"translation": "Dodatkowy bezpiecznik",
+		"sourceHash": "b9c2e81e"
+	},
+	"hub.compare.guard.cluster": {
+		"translation": "członek tłumu po drugiej stronie w ciągu 10 minut dyskwalifikuje tłum",
+		"sourceHash": "0a5b3984"
+	},
+	"hub.compare.guard.wallet": {
+		"translation": "lider grający obie strony zakładu w ciągu 48 godzin jest odrzucany",
+		"sourceHash": "9a7cce52"
+	},
+	"hub.compare.fees.label": {
+		"translation": "Bariera opłat",
+		"sourceHash": "0848e675"
+	},
+	"hub.compare.fees.cluster": {
+		"translation": "tak — w praktyce cena minimalna 0,60 $",
+		"sourceHash": "c8450f4a"
+	},
+	"hub.compare.fees.wallet": {
+		"translation": "brak, i jego strona mówi to wprost",
+		"sourceHash": "30315294"
+	},
+	"hub.compare.exit.label": {
+		"translation": "Wychodzi, gdy",
+		"sourceHash": "e8f7f617"
+	},
+	"hub.compare.exit.cluster": {
+		"translation": "pierwszy portfel tłumu się wycofuje",
+		"sourceHash": "67d5abd9"
+	},
+	"hub.compare.exit.wallet": {
+		"translation": "lider zwinął połowę szczytu, odwrócił się albo zamknął",
+		"sourceHash": "f030c58b"
+	},
+	"hub.compare.money.label": {
+		"translation": "Pieniądze",
+		"sourceHash": "b34b4bef"
+	},
+	"hub.compare.money.cluster": {
+		"translation": "własna pula, maksymalnie 20 $ otwarte",
+		"sourceHash": "4eb6bfab"
+	},
+	"hub.compare.money.wallet": {
+		"translation": "własne osobne konto, maksymalnie 20 $ otwarte",
+		"sourceHash": "c524835f"
+	},
+	"hub.compare.liveSince.label": {
+		"translation": "Żywy od",
+		"sourceHash": "982b96a5"
+	},
+	"hub.compare.liveSince.cluster": {
+		"translation": "lipiec 2026",
+		"sourceHash": "b3a0905b"
+	},
+	"hub.compare.liveSince.wallet": {
+		"translation": "11 sierpnia 2026",
+		"sourceHash": "ddf6ecac"
 	}
 }

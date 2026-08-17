@@ -1,0 +1,96 @@
+---
+import DisplayHeading from "@/components/brand/DisplayHeading.astro";
+import { hubFor } from "@/copy-trade/hub-content";
+import type { Locale } from "@/i18n/catalog";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: Locale;
+}
+
+// Every string below comes from the same locale-resolved hub model the .md
+// twin stitches from — the two surfaces can never disagree. Bot eyebrows and
+// the table's bot names are product identifiers and stay English everywhere.
+const hub = hubFor(Astro.props.locale);
+---
+
+<Layout title={`${hub.title} · ogsfrompoly`} description={hub.description} localePath="/for-dummies">
+	<main class="mx-auto flex max-w-4xl flex-col gap-16 px-gutter py-16 sm:py-24">
+		<section class="flex flex-col gap-6">
+			<DisplayHeading eyebrow={hub.eyebrow}>{hub.heading}</DisplayHeading>
+			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
+				{hub.description}
+			</p>
+		</section>
+
+		<section class="grid gap-4 sm:grid-cols-2" aria-label={hub.choose}>
+			{
+				hub.cards.map((card) => (
+					<article class="flex flex-col gap-4 rounded-terminal border border-terminal-border bg-terminal-bg p-6 transition-colors hover:border-ink-4">
+						<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">{card.eyebrow}</p>
+						<h2 class="text-2xl font-bold leading-tight text-ink-8 [text-wrap:balance]">
+							<a class="hover:text-accent" href={card.href}>
+								{card.name}
+							</a>
+						</h2>
+						<p class="text-base leading-relaxed text-ink-6 [text-wrap:pretty]">{card.tagline}</p>
+						<dl class="mt-auto flex flex-col border-t border-ink-3 pt-3 font-mono text-[0.8rem]">
+							{card.facts.map((fact) => (
+								<div class="flex items-baseline justify-between gap-4 border-b border-ink-2 py-1.5 last:border-b-0">
+									<dt class="shrink-0 uppercase tracking-wider text-ink-5">{fact.label}</dt>
+									<dd class="text-right text-ink-7">{fact.value}</dd>
+								</div>
+							))}
+						</dl>
+						<p class="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-eyebrow uppercase tracking-wider">
+							<a class="text-accent hover:text-ink-8" href={card.href}>
+								{hub.read}
+							</a>
+							<a class="text-ink-5 hover:text-accent" href={card.mdHref}>
+								.md
+							</a>
+						</p>
+					</article>
+				))
+			}
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">{hub.sideBySide}</p>
+			<div class="overflow-x-auto rounded-terminal border border-terminal-border bg-terminal-bg">
+				<table class="w-full min-w-[36rem] border-collapse text-left font-sans text-sm">
+					<thead>
+						<tr class="border-b border-terminal-border font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+							<th scope="col" class="px-4 py-3 font-medium"></th>
+							<th scope="col" class="px-4 py-3 font-medium">Cluster copy</th>
+							<th scope="col" class="px-4 py-3 font-medium">Wallet copy</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							hub.rows.map((row) => (
+								<tr class="border-b border-ink-2 align-top last:border-b-0">
+									<th
+										scope="row"
+										class="whitespace-nowrap px-4 py-3 font-mono text-[0.7rem] font-medium uppercase tracking-wider text-ink-5"
+									>
+										{row.label}
+									</th>
+									<td class="px-4 py-3 leading-snug text-ink-7">{row.cluster}</td>
+									<td class="px-4 py-3 leading-snug text-ink-7">{row.wallet}</td>
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
+			<p class="max-w-prose text-sm leading-relaxed text-ink-6 [text-wrap:pretty]">
+				{hub.sharedNote}
+			</p>
+			<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+				{hub.adviceLead}
+				<a class="text-ink-7 hover:text-accent" href={hub.methodologyHref}>{hub.adviceLink}</a>
+			</p>
+		</section>
+	</main>
+</Layout>

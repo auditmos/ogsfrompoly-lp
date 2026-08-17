@@ -3,13 +3,19 @@
  * routes readers to the right bot's walkthrough.
  *
  * The cards and the comparison rows are data, not prose, and both surfaces
- * (the HTML page and the `.md` twin) render from the same arrays, so the two
- * can never disagree about what either bot does.
+ * (the HTML page and the `.md` twin) render from the same locale-resolved
+ * arrays, so the two can never disagree about what either bot does. All
+ * translatable leaves live in hub-prose-en.ts and resolve through the
+ * Translation Catalog; structural fields (ids, eyebrows, link targets) never
+ * enter the translation payload.
  */
 
-export const forDummiesTitle = "Copy trading for dummies";
-export const forDummiesDescription =
-	"Two small bots trade tiny, real money alongside the published track record — one follows a crowd of skilled wallets, the other mirrors two hand-picked traders. Pick your walkthrough; each explains every rule in plain English and lets you play with the live settings.";
+import { type Locale, resolveHubProse } from "@/i18n/catalog";
+import { localeHref } from "@/i18n/routes";
+import { HUB_EN } from "./hub-prose-en";
+
+export const forDummiesTitle = HUB_EN.title;
+export const forDummiesDescription = HUB_EN.description;
 
 interface BotFact {
 	readonly label: string;
@@ -30,83 +36,81 @@ export interface BotCard {
 	readonly facts: readonly BotFact[];
 }
 
-export const BOT_CARDS: readonly BotCard[] = [
-	{
-		id: "cluster",
-		eyebrow: "bot 01 · cluster copy",
-		name: "Copy the crowd",
-		tagline:
-			"Waits until at least three skilled wallets land on the same side of the same bet, in separate trades, then buys $5 of it. One wallet is an opinion; three arriving separately is information.",
-		href: "/for-dummies/copy-cluster",
-		mdHref: "/for-dummies/copy-cluster.md",
-		facts: [
-			{ label: "follows", value: "any crowd from our skilled roster" },
-			{ label: "fires when", value: "3+ wallets agree at once" },
-			{ label: "leaves when", value: "the first of them reverses" },
-			{ label: "ticket", value: "$5, all-or-nothing" },
-		],
-	},
-	{
-		id: "wallet",
-		eyebrow: "bot 02 · wallet copy",
-		name: "Copy the trader",
-		tagline:
-			"Shadows two hand-picked skilled traders and ignores almost everything they do — until one commits serious money to a fresh bet. Then it places one small copy on its own separate account.",
-		href: "/for-dummies/copy-wallet",
-		mdHref: "/for-dummies/copy-wallet.md",
-		facts: [
-			{ label: "follows", value: "two named leaders, anonymised" },
-			{ label: "fires when", value: "a leader stakes past their own bar" },
-			{ label: "leaves when", value: "the leader unwinds half, flips, or closes" },
-			{ label: "ticket", value: "$5, all-or-nothing" },
-		],
-	},
-];
-
 export interface CompareRow {
 	readonly label: string;
 	readonly cluster: string;
 	readonly wallet: string;
 }
 
-export const COMPARE_ROWS: readonly CompareRow[] = [
-	{
-		label: "A signal is",
-		cluster: "3+ skilled wallets on the same side, in separate trades",
-		wallet: "one leader's fresh bet crossing their own conviction bar ($500 / $100)",
-	},
-	{
-		label: "Its extra guard",
-		cluster: "a crowd member on the other side within 10 minutes refuses the crowd",
-		wallet: "a leader trading both sides of the bet within 48 hours is refused",
-	},
-	{
-		label: "Fee rail",
-		cluster: "yes — in effect a $0.60 minimum price",
-		wallet: "none, and its page says so plainly",
-	},
-	{
-		label: "Leaves when",
-		cluster: "the first wallet of the crowd reverses",
-		wallet: "the leader has unwound half of their peak, flipped, or closed",
-	},
-	{
-		label: "Money",
-		cluster: "its own pool, at most $20 open",
-		wallet: "its own separate account, at most $20 open",
-	},
-	{
-		label: "Live since",
-		cluster: "July 2026",
-		wallet: "August 11, 2026",
-	},
-];
+/** Everything either hub surface needs for one locale, arrays preserved. */
+export interface HubModel {
+	readonly title: string;
+	readonly description: string;
+	readonly eyebrow: string;
+	readonly heading: string;
+	readonly choose: string;
+	readonly read: string;
+	readonly sideBySide: string;
+	readonly sharedNote: string;
+	readonly adviceLead: string;
+	readonly adviceLink: string;
+	readonly methodologyHref: string;
+	readonly cards: readonly BotCard[];
+	readonly rows: readonly CompareRow[];
+}
 
-/** The shared-DNA note both surfaces show under the comparison. */
-export const forDummiesSharedNote =
-	"Everything else is shared DNA: Macro markets only, $5 all-or-nothing tickets on the exchange's own price grid, the same liquidity, timing and price-already-ran rails, a $5 spendable floor, kill switches that stop buying but never selling, a weekly profit sweep, and every skip written down with its numbers.";
+const CARD_STATIC = [
+	{ id: "cluster", eyebrow: "bot 01 · cluster copy", path: "/for-dummies/copy-cluster" },
+	{ id: "wallet", eyebrow: "bot 02 · wallet copy", path: "/for-dummies/copy-wallet" },
+] as const;
 
-function renderCardSection(card: BotCard): string[] {
+const COMPARE_ORDER = ["signal", "guard", "fees", "exit", "money", "liveSince"] as const;
+
+/**
+ * The hub resolved for a locale. Bot card links point at the English
+ * walkthrough pages from every locale for now — the localized walkthroughs
+ * don't exist yet, so the English page is the per-link fallback. The
+ * walkthrough issues flip these to same-locale URLs when they ship. The
+ * methodology link is same-locale already — those pages exist.
+ */
+export function hubFor(locale: Locale): HubModel {
+	const prose = resolveHubProse(locale);
+	const cards: BotCard[] = CARD_STATIC.map((entry) => {
+		const bot = prose[entry.id];
+		const href = entry.path;
+		return {
+			id: entry.id,
+			eyebrow: entry.eyebrow,
+			name: bot.name,
+			tagline: bot.tagline,
+			href,
+			mdHref: `${href}.md`,
+			facts: [
+				{ label: prose.facts.follows, value: bot.follows },
+				{ label: prose.facts.fires, value: bot.fires },
+				{ label: prose.facts.leaves, value: bot.leaves },
+				{ label: prose.facts.ticket, value: bot.ticket },
+			],
+		};
+	});
+	return {
+		title: prose.title,
+		description: prose.description,
+		eyebrow: prose.eyebrow,
+		heading: prose.heading,
+		choose: prose.choose,
+		read: prose.read,
+		sideBySide: prose.sideBySide,
+		sharedNote: prose.sharedNote,
+		adviceLead: prose.advice.lead,
+		adviceLink: prose.advice.link,
+		methodologyHref: localeHref(locale, "/methodology"),
+		cards,
+		rows: COMPARE_ORDER.map((key) => prose.compare[key]),
+	};
+}
+
+function renderCardSection(card: BotCard, mdRead: string): string[] {
 	return [
 		`## ${card.name} — ${card.eyebrow.split("·")[1]?.trim() ?? card.id}`,
 		"",
@@ -114,30 +118,45 @@ function renderCardSection(card: BotCard): string[] {
 		"",
 		...card.facts.map((fact) => `- **${fact.label}**: ${fact.value}`),
 		"",
-		`Read the full walkthrough at [${card.href}](${card.href}) — or as markdown at [${card.mdHref}](${card.mdHref}).`,
+		mdRead
+			.replace("{href}", `[${card.href}](${card.href})`)
+			.replace("{mdHref}", `[${card.mdHref}](${card.mdHref})`),
 		"",
 	];
 }
 
-function renderCompareTable(): string {
+function renderCompareTable(rows: readonly CompareRow[]): string {
 	return [
 		"| | Cluster copy | Wallet copy |",
 		"|---|---|---|",
-		...COMPARE_ROWS.map((row) => `| ${row.label} | ${row.cluster} | ${row.wallet} |`),
+		...rows.map((row) => `| ${row.label} | ${row.cluster} | ${row.wallet} |`),
 	].join("\n");
 }
 
-export const forDummiesMarkdown = `# ${forDummiesTitle}
+/**
+ * The hub `.md` twin for a locale — stitched from the identical resolved
+ * strings the HTML page renders, plus the twin-only link sentences.
+ */
+export function forDummiesMarkdownFor(locale: Locale): string {
+	const prose = resolveHubProse(locale);
+	const hub = hubFor(locale);
+	return `# ${hub.title}
 
-${forDummiesDescription}
+${hub.description}
 
-${BOT_CARDS.flatMap(renderCardSection).join("\n")}
-## Side by side
+${hub.cards.flatMap((card) => renderCardSection(card, prose.mdRead)).join("\n")}
+## ${hub.sideBySide}
 
-${renderCompareTable()}
+${renderCompareTable(hub.rows)}
 
-${forDummiesSharedNote}
+${hub.sharedNote}
 
-Neither page is advice or a signal service, and no wallet involved in either
-bot is ever published — see the [methodology and disclosure policy](/methodology).
+${prose.advice.md.replace("{methodologyHref}", hub.methodologyHref)}
 `;
+}
+
+export const forDummiesMarkdown = forDummiesMarkdownFor("en");
+
+export const BOT_CARDS: readonly BotCard[] = hubFor("en").cards;
+
+export const COMPARE_ROWS: readonly CompareRow[] = hubFor("en").rows;

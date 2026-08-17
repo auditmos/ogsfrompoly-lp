@@ -7,6 +7,190 @@
 		"text": "Open-book strategy track record and project P&L. Aggregate-only. Truncated wallet IDs. No live alpha, no signup, no newsletter — just RSS and a markdown feed your agent can read.",
 		"sourceHash": "b7febce4"
 	},
+	"hub.advice.lead": {
+		"text": "Neither page is advice, and no wallet is ever published —",
+		"sourceHash": "0a90a546"
+	},
+	"hub.advice.link": {
+		"text": "methodology & disclosure",
+		"sourceHash": "b3a8abdb"
+	},
+	"hub.advice.md": {
+		"text": "Neither page is advice or a signal service, and no wallet involved in either\nbot is ever published — see the [methodology and disclosure policy]({methodologyHref}).",
+		"sourceHash": "fd6c92df"
+	},
+	"hub.choose": {
+		"text": "Choose a walkthrough",
+		"sourceHash": "f1d9fb75"
+	},
+	"hub.cluster.fires": {
+		"text": "3+ wallets agree at once",
+		"sourceHash": "ae369683"
+	},
+	"hub.cluster.follows": {
+		"text": "any crowd from our skilled roster",
+		"sourceHash": "92b63225"
+	},
+	"hub.cluster.leaves": {
+		"text": "the first of them reverses",
+		"sourceHash": "abd7061e"
+	},
+	"hub.cluster.name": {
+		"text": "Copy the crowd",
+		"sourceHash": "673a1776"
+	},
+	"hub.cluster.tagline": {
+		"text": "Waits until at least three skilled wallets land on the same side of the same bet, in separate trades, then buys $5 of it. One wallet is an opinion; three arriving separately is information.",
+		"sourceHash": "9f792c85"
+	},
+	"hub.cluster.ticket": {
+		"text": "$5, all-or-nothing",
+		"sourceHash": "a8fd269d"
+	},
+	"hub.compare.exit.cluster": {
+		"text": "the first wallet of the crowd reverses",
+		"sourceHash": "67d5abd9"
+	},
+	"hub.compare.exit.label": {
+		"text": "Leaves when",
+		"sourceHash": "e8f7f617"
+	},
+	"hub.compare.exit.wallet": {
+		"text": "the leader has unwound half of their peak, flipped, or closed",
+		"sourceHash": "f030c58b"
+	},
+	"hub.compare.fees.cluster": {
+		"text": "yes — in effect a $0.60 minimum price",
+		"sourceHash": "c8450f4a"
+	},
+	"hub.compare.fees.label": {
+		"text": "Fee rail",
+		"sourceHash": "0848e675"
+	},
+	"hub.compare.fees.wallet": {
+		"text": "none, and its page says so plainly",
+		"sourceHash": "30315294"
+	},
+	"hub.compare.guard.cluster": {
+		"text": "a crowd member on the other side within 10 minutes refuses the crowd",
+		"sourceHash": "0a5b3984"
+	},
+	"hub.compare.guard.label": {
+		"text": "Its extra guard",
+		"sourceHash": "b9c2e81e"
+	},
+	"hub.compare.guard.wallet": {
+		"text": "a leader trading both sides of the bet within 48 hours is refused",
+		"sourceHash": "9a7cce52"
+	},
+	"hub.compare.liveSince.cluster": {
+		"text": "July 2026",
+		"sourceHash": "b3a0905b"
+	},
+	"hub.compare.liveSince.label": {
+		"text": "Live since",
+		"sourceHash": "982b96a5"
+	},
+	"hub.compare.liveSince.wallet": {
+		"text": "August 11, 2026",
+		"sourceHash": "ddf6ecac"
+	},
+	"hub.compare.money.cluster": {
+		"text": "its own pool, at most $20 open",
+		"sourceHash": "4eb6bfab"
+	},
+	"hub.compare.money.label": {
+		"text": "Money",
+		"sourceHash": "b34b4bef"
+	},
+	"hub.compare.money.wallet": {
+		"text": "its own separate account, at most $20 open",
+		"sourceHash": "c524835f"
+	},
+	"hub.compare.signal.cluster": {
+		"text": "3+ skilled wallets on the same side, in separate trades",
+		"sourceHash": "56811e67"
+	},
+	"hub.compare.signal.label": {
+		"text": "A signal is",
+		"sourceHash": "0e71a388"
+	},
+	"hub.compare.signal.wallet": {
+		"text": "one leader's fresh bet crossing their own conviction bar ($500 / $100)",
+		"sourceHash": "e59af184"
+	},
+	"hub.description": {
+		"text": "Two small bots trade tiny, real money alongside the published track record — one follows a crowd of skilled wallets, the other mirrors two hand-picked traders. Pick your walkthrough; each explains every rule in plain English and lets you play with the live settings.",
+		"sourceHash": "4a1ff6a0"
+	},
+	"hub.eyebrow": {
+		"text": "for dummies",
+		"sourceHash": "0f509a28"
+	},
+	"hub.facts.fires": {
+		"text": "fires when",
+		"sourceHash": "75b99b42"
+	},
+	"hub.facts.follows": {
+		"text": "follows",
+		"sourceHash": "ee8061b9"
+	},
+	"hub.facts.leaves": {
+		"text": "leaves when",
+		"sourceHash": "fedbb877"
+	},
+	"hub.facts.ticket": {
+		"text": "ticket",
+		"sourceHash": "6517b3e5"
+	},
+	"hub.heading": {
+		"text": "Two bots. Two questions.",
+		"sourceHash": "a59fd21c"
+	},
+	"hub.mdRead": {
+		"text": "Read the full walkthrough at {href} — or as markdown at {mdHref}.",
+		"sourceHash": "2e3e3ba2"
+	},
+	"hub.read": {
+		"text": "Read the walkthrough →",
+		"sourceHash": "533033e2"
+	},
+	"hub.sharedNote": {
+		"text": "Everything else is shared DNA: Macro markets only, $5 all-or-nothing tickets on the exchange's own price grid, the same liquidity, timing and price-already-ran rails, a $5 spendable floor, kill switches that stop buying but never selling, a weekly profit sweep, and every skip written down with its numbers.",
+		"sourceHash": "4916858a"
+	},
+	"hub.sideBySide": {
+		"text": "Side by side",
+		"sourceHash": "6f659592"
+	},
+	"hub.title": {
+		"text": "Copy trading for dummies",
+		"sourceHash": "a4ab9276"
+	},
+	"hub.wallet.fires": {
+		"text": "a leader stakes past their own bar",
+		"sourceHash": "e8f30341"
+	},
+	"hub.wallet.follows": {
+		"text": "two named leaders, anonymised",
+		"sourceHash": "68309c83"
+	},
+	"hub.wallet.leaves": {
+		"text": "the leader unwinds half, flips, or closes",
+		"sourceHash": "e63fb7ce"
+	},
+	"hub.wallet.name": {
+		"text": "Copy the trader",
+		"sourceHash": "7002ce19"
+	},
+	"hub.wallet.tagline": {
+		"text": "Shadows two hand-picked skilled traders and ignores almost everything they do — until one commits serious money to a fresh bet. Then it places one small copy on its own separate account.",
+		"sourceHash": "18cf621d"
+	},
+	"hub.wallet.ticket": {
+		"text": "$5, all-or-nothing",
+		"sourceHash": "a8fd269d"
+	},
 	"install.caption": {
 		"text": "Pipes the project's llms.txt into your agent's context",
 		"sourceHash": "eb382b81"

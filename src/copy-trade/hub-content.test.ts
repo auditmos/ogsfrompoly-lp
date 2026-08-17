@@ -4,7 +4,9 @@ import {
 	COMPARE_ROWS,
 	forDummiesDescription,
 	forDummiesMarkdown,
+	forDummiesMarkdownFor,
 	forDummiesTitle,
+	hubFor,
 } from "./hub-content";
 
 describe("for-dummies hub disclosure", () => {
@@ -18,6 +20,84 @@ describe("for-dummies hub disclosure", () => {
 
 	it("links to nothing on the private upstream repo", () => {
 		expect(forDummiesMarkdown).not.toContain("github.com/auditmos/ogsfrompoly");
+	});
+});
+
+describe("hubFor", () => {
+	it("stitches the English markdown identical to the legacy export", () => {
+		expect(forDummiesMarkdownFor("en")).toBe(forDummiesMarkdown);
+	});
+
+	// The localized walkthroughs don't exist yet — until the walkthrough issues
+	// ship them, every locale's cards link to the live English pages (the
+	// per-link English fallback) instead of dead same-locale URLs. The
+	// methodology link is same-locale already: those pages exist.
+	it.each([
+		["pl"],
+		["es"],
+	] as const)("falls %s bot card links back to the English walkthroughs", (locale) => {
+		const hub = hubFor(locale);
+
+		expect(hub.cards.map((card) => card.href)).toEqual([
+			"/for-dummies/copy-cluster",
+			"/for-dummies/copy-wallet",
+		]);
+		for (const card of hub.cards) {
+			expect(card.mdHref).toBe(`${card.href}.md`);
+		}
+		expect(hub.methodologyHref).toBe(`/${locale}/methodology`);
+	});
+
+	it.each([["pl"], ["es"]] as const)("resolves the %s hub translated in meaning", (locale) => {
+		const hub = hubFor(locale);
+		const english = hubFor("en");
+
+		expect(hub.title).not.toBe(english.title);
+		expect(hub.heading).not.toBe(english.heading);
+		for (const [index, card] of hub.cards.entries()) {
+			const englishCard = english.cards[index];
+			expect(card.name).not.toBe(englishCard?.name);
+			expect(card.tagline).not.toBe(englishCard?.tagline);
+		}
+	});
+
+	// The dual-format invariant shared with methodology: the HTML page renders
+	// the hubFor model and the .md twin renders forDummiesMarkdownFor — both
+	// resolve from the same catalog strings, so every model string the two
+	// surfaces share must appear verbatim in the stitched twin, in any locale.
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("stitches every shared %s hub string into the .md twin", (locale) => {
+		const hub = hubFor(locale);
+		const md = forDummiesMarkdownFor(locale);
+
+		expect(md).toContain(hub.title);
+		expect(md).toContain(hub.description);
+		expect(md).toContain(hub.sideBySide);
+		expect(md).toContain(hub.sharedNote);
+		for (const card of hub.cards) {
+			expect(md).toContain(card.name);
+			expect(md).toContain(card.tagline);
+			for (const fact of card.facts) {
+				expect(md).toContain(`- **${fact.label}**: ${fact.value}`);
+			}
+		}
+		for (const row of hub.rows) {
+			expect(md).toContain(`| ${row.label} | ${row.cluster} | ${row.wallet} |`);
+		}
+	});
+
+	it("keeps the English hub model on English URLs and strings", () => {
+		const hub = hubFor("en");
+
+		expect(hub.cards.map((card) => card.href)).toEqual([
+			"/for-dummies/copy-cluster",
+			"/for-dummies/copy-wallet",
+		]);
+		expect(hub.methodologyHref).toBe("/methodology");
+		expect(hub.title).toBe(forDummiesTitle);
 	});
 });
 
