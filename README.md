@@ -50,6 +50,8 @@ src/
 ├── content/            # Astro content collections (statement, future: article)
 ├── copy-trade/         # For-dummies content + simulators — shared format/market-math,
 │                       # hub-content, and one submodule per bot (cluster/, wallet/)
+├── i18n/               # Translation catalog + pl/es overlays (locales/), translator
+│                       # handoff (handoff/, generated), locale route helpers
 ├── methodology/        # Methodology page content + citations
 ├── lib/                # Feeds (rss/llms.txt/sitemap), dual-format .md serving, site meta
 ├── layouts/            # Shared HTML shells
@@ -74,6 +76,10 @@ Three deep modules carry the system. Each has a small public interface and is te
 | **Feed Generators** | `rss.xml`, `llms.txt`, `sitemap.xml` derived from content collections | Format renderers hidden; snapshot-tested for determinism |
 
 See [`.claude/rules/deep-modules.md`](.claude/rules/deep-modules.md) and the architectural decisions in [`plans/ogsfrompoly-lp.md`](plans/ogsfrompoly-lp.md).
+
+## Localization
+
+The editorial pages (home, methodology, for-dummies walkthroughs) also render in Polish and Spanish under `/pl/*` and `/es/*`. Translations live as per-key overlays in `src/i18n/locales/`, each string carrying the `sourceHash` of the English source it was translated against — a stale or missing key falls back to English per key, so translated pages never block on delivery. `pnpm i18n:extract` regenerates the translator handoff (`src/i18n/handoff/`); `pnpm i18n:slop` scores every locale's prose against per-language anti-slop rule packs (tooling from the private `auditmos/writes` repo — the check skips with a notice where it isn't installed, CI included). Style gate only: the disclosure-policy translation still requires stakeholder sign-off — see issue [#69](https://github.com/auditmos/ogsfrompoly-lp/issues/69) and [`plans/i18n-editorial-pages.md`](plans/i18n-editorial-pages.md).
 
 ## Brand reference
 
@@ -101,6 +107,8 @@ The same four are required by CI on every PR (see issue [#5](https://github.com/
 | `pnpm preview` | Preview the production build locally |
 | `pnpm deploy` | Build + `wrangler deploy` |
 | `pnpm cf-typegen` | Regenerate `Env` types from `wrangler.jsonc` |
+| `pnpm i18n:extract` | Regenerate the translator handoff (`src/i18n/handoff/`) |
+| `pnpm i18n:slop` | Anti-slop gate over en/pl/es prose (skips if the writes-repo sloplint is absent) |
 | `pnpm test` / `:watch` / `:coverage` | Vitest |
 | `pnpm types` | astro check + tsc --noEmit |
 | `pnpm lint` / `:fix` | Biome check / auto-fix |
