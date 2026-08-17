@@ -7,6 +7,10 @@
 // A type alias (not an interface) so the shape gets TypeScript's implicit
 // index signature and stays assignable to the catalog's ProseNode.
 export type HomeProse = {
+	meta: {
+		title: string;
+		description: string;
+	};
 	hero: {
 		heading: string;
 		intro: string;
@@ -27,6 +31,10 @@ export type HomeProse = {
 };
 
 export const HOME_EN: HomeProse = {
+	meta: {
+		title: "ogsfrompoly — skilled traders on Polymarket",
+		description: "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
+	},
 	hero: {
 		heading: "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
 		intro:

@@ -5,6 +5,7 @@ import {
 	proseEntries,
 	resolveHomeProse,
 	resolveProse,
+	TRANSLATED_LOCALES,
 	type TranslationOverlay,
 } from "./catalog";
 import { HOME_EN } from "./home-en";
@@ -97,11 +98,29 @@ describe("resolveHomeProse", () => {
 		expect(resolved.hero.heading).not.toBe(HOME_EN.hero.heading);
 	});
 
-	it("keeps missing and stale pl keys on current English", () => {
-		const resolved = resolveHomeProse("pl");
+	it("returns a Spanish translation distinct from English and Polish for locale es", () => {
+		const resolved = resolveHomeProse("es");
 
-		expect(resolved.install.eyebrow).toBe(HOME_EN.install.eyebrow);
-		expect(resolved.skin.eyebrow).toBe(HOME_EN.skin.eyebrow);
+		expect(resolved.hero.heading).not.toBe(HOME_EN.hero.heading);
+		expect(resolved.hero.heading).not.toBe(resolveHomeProse("pl").hero.heading);
+	});
+
+	it("resolves localized page meta for translated locales", () => {
+		expect(resolveHomeProse("pl").meta.title).not.toBe(HOME_EN.meta.title);
+		expect(resolveHomeProse("es").meta.description).not.toBe(HOME_EN.meta.description);
+	});
+});
+
+describe("seed coverage", () => {
+	it("delivers a fresh translation for every catalog key in every translated locale", () => {
+		for (const locale of TRANSLATED_LOCALES) {
+			const overlay = localeOverlay(locale);
+			for (const entry of catalogEntries()) {
+				const delivered = overlay[entry.key];
+				expect(delivered, `${locale} is missing ${entry.key}`).toBeDefined();
+				expect(delivered?.sourceHash, `${locale} ${entry.key} is stale`).toBe(entry.sourceHash);
+			}
+		}
 	});
 });
 
@@ -117,8 +136,8 @@ describe("catalogEntries", () => {
 });
 
 describe("localeOverlay", () => {
-	it("returns the delivered pl overlay and an empty es overlay", () => {
+	it("returns a delivered overlay for every translated locale", () => {
 		expect(Object.keys(localeOverlay("pl")).length).toBeGreaterThan(0);
-		expect(localeOverlay("es")).toEqual({});
+		expect(Object.keys(localeOverlay("es")).length).toBeGreaterThan(0);
 	});
 });

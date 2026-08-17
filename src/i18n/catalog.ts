@@ -10,6 +10,7 @@
 
 import { z } from "zod";
 import { HOME_EN, type HomeProse } from "./home-en";
+import esOverlayJson from "./locales/es.json";
 import plOverlayJson from "./locales/pl.json";
 
 interface TranslationEntry {
@@ -90,7 +91,7 @@ export function proseEntries(prose: ProseNode): CatalogEntry[] {
 	return out.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
 }
 
-export type Locale = "en" | "pl";
+export type Locale = "en" | "pl" | "es";
 
 // Overlays are repo-internal JSON, but hand-edited by a translator — validate
 // the shape once at module load so a malformed entry fails the build, not a
@@ -101,10 +102,11 @@ const OverlaySchema = z.record(
 );
 
 const PL_OVERLAY: TranslationOverlay = OverlaySchema.parse(plOverlayJson);
+const ES_OVERLAY: TranslationOverlay = OverlaySchema.parse(esOverlayJson);
 
 /** Home-page prose resolved for a locale — the same shape as `HOME_EN`. */
 export function resolveHomeProse(locale: Locale): HomeProse {
-	return locale === "en" ? HOME_EN : resolveProse(HOME_EN, PL_OVERLAY);
+	return locale === "en" ? HOME_EN : resolveProse(HOME_EN, OVERLAYS[locale]);
 }
 
 /** Locales translations are delivered for — the extractor reports on each. */
@@ -112,10 +114,9 @@ export type TranslatedLocale = "pl" | "es";
 
 export const TRANSLATED_LOCALES: readonly TranslatedLocale[] = ["pl", "es"];
 
-// Spanish has no delivered overlay yet (Phase 3) — it reports as all-missing.
 const OVERLAYS: Record<TranslatedLocale, TranslationOverlay> = {
 	pl: PL_OVERLAY,
-	es: {},
+	es: ES_OVERLAY,
 };
 
 /** The delivered overlay for a locale — empty until a delivery lands. */

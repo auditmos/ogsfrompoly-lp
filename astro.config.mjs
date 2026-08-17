@@ -11,10 +11,10 @@ export default defineConfig({
 	// Kills the /statements/foo vs /statements/foo/ duplicate at the routing layer.
 	trailingSlash: "never",
 	// English stays canonical and unprefixed at the root; translated pages live
-	// under /pl. Unknown locale prefixes (e.g. /fr) fall through to the
+	// under /pl and /es. Unknown locale prefixes (e.g. /fr) fall through to the
 	// collection catch-all and 404.
 	i18n: {
-		locales: ["en", "pl"],
+		locales: ["en", "pl", "es"],
 		defaultLocale: "en",
 		routing: {
 			prefixDefaultLocale: false,

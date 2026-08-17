@@ -1,0 +1,32 @@
+---
+import type { Locale } from "@/i18n/catalog";
+import { switcherOptions } from "@/i18n/routes";
+
+interface Props {
+	locale: Locale;
+	/** Locale-relative path of the current page — "" for home. */
+	path: string;
+}
+
+const options = switcherOptions(Astro.props.locale, Astro.props.path);
+---
+
+<nav aria-label="Language">
+	<ul class="flex items-center gap-x-3 font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+		{
+			options.map((option) => (
+				<li>
+					<a
+						class:list={["hover:text-accent", option.current && "text-ink-8"]}
+						href={option.href}
+						hreflang={option.locale}
+						lang={option.locale}
+						aria-current={option.current ? "page" : undefined}
+					>
+						{option.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>

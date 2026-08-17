@@ -1,0 +1,85 @@
+---
+import { getCollection } from "astro:content";
+import DisplayHeading from "@/components/brand/DisplayHeading.astro";
+import InstallSnippet from "@/components/brand/InstallSnippet.astro";
+import StatementCard from "@/components/brand/StatementCard.astro";
+import { resolveHomeProse, type TranslatedLocale } from "@/i18n/catalog";
+import Layout from "@/layouts/Layout.astro";
+import { SITE_URL } from "@/lib/site/config";
+import { pickLatestStatement } from "@/lib/statement-format/latest";
+import { excludeDrafts } from "@/lib/statement-format/published";
+
+interface Props {
+	locale: TranslatedLocale;
+}
+
+// Every home content string resolves through the Translation Catalog (issue
+// #70). Site chrome (nav, footer) and statement-card internals are shared
+// with the frozen English statements surface and deliberately stay English.
+const prose = resolveHomeProse(Astro.props.locale);
+
+const statements = excludeDrafts(await getCollection("statements"));
+const latest = pickLatestStatement(statements);
+---
+
+<Layout title={prose.meta.title} description={prose.meta.description} localePath="">
+	<main class="mx-auto flex max-w-4xl flex-col gap-24 px-gutter py-24">
+		<section class="flex flex-col gap-8">
+			<DisplayHeading eyebrow="ogsfrompoly">{prose.hero.heading}</DisplayHeading>
+			<p class="max-w-prose text-lg text-ink-6 [text-wrap:pretty]">
+				{prose.hero.intro}
+			</p>
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">
+				{prose.install.eyebrow}
+			</p>
+			<InstallSnippet siteUrl={SITE_URL} caption={prose.install.caption} />
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">
+				{prose.latest.eyebrow}
+			</p>
+			{
+				latest && (
+					<>
+						<StatementCard
+							slug={latest.id}
+							type={latest.data.type}
+							title={latest.data.title}
+							summary={latest.data.summary}
+							periodStart={latest.data.period_start}
+							periodEnd={latest.data.period_end}
+							hitRate={latest.data.hit_rate}
+							resolvedCount={latest.data.resolved_count}
+							alertCount={latest.data.alert_count}
+							hypotheticalPnlUsd={latest.data.hypothetical_pnl_usd}
+							categories={latest.data.categories}
+						/>
+						<a
+							class="font-mono text-eyebrow uppercase tracking-wider text-ink-6 hover:text-accent"
+							href="/statements"
+						>
+							{prose.latest.viewAll}
+						</a>
+					</>
+				)
+			}
+		</section>
+
+		<section class="flex flex-col gap-4">
+			<p class="font-mono text-eyebrow uppercase text-ink-5">{prose.skin.eyebrow}</p>
+			<p class="max-w-prose text-base text-ink-6 [text-wrap:pretty]">
+				{prose.skin.body}
+			</p>
+			<a
+				class="font-mono text-eyebrow uppercase tracking-wider text-ink-6 hover:text-accent"
+				href="/for-dummies"
+			>
+				{prose.skin.cta}
+			</a>
+		</section>
+	</main>
+</Layout>

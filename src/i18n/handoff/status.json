@@ -1,24 +1,28 @@
 {
 	"es": {
-		"hero.heading": "missing",
-		"hero.intro": "missing",
-		"install.caption": "missing",
-		"install.eyebrow": "missing",
-		"latest.eyebrow": "missing",
-		"latest.viewAll": "missing",
-		"skin.body": "missing",
-		"skin.cta": "missing",
-		"skin.eyebrow": "missing"
+		"hero.heading": "translated",
+		"hero.intro": "translated",
+		"install.caption": "translated",
+		"install.eyebrow": "translated",
+		"latest.eyebrow": "translated",
+		"latest.viewAll": "translated",
+		"meta.description": "translated",
+		"meta.title": "translated",
+		"skin.body": "translated",
+		"skin.cta": "translated",
+		"skin.eyebrow": "translated"
 	},
 	"pl": {
 		"hero.heading": "translated",
 		"hero.intro": "translated",
-		"install.caption": "missing",
-		"install.eyebrow": "missing",
-		"latest.eyebrow": "missing",
-		"latest.viewAll": "missing",
-		"skin.body": "missing",
-		"skin.cta": "missing",
-		"skin.eyebrow": "stale"
+		"install.caption": "translated",
+		"install.eyebrow": "translated",
+		"latest.eyebrow": "translated",
+		"latest.viewAll": "translated",
+		"meta.description": "translated",
+		"meta.title": "translated",
+		"skin.body": "translated",
+		"skin.cta": "translated",
+		"skin.eyebrow": "translated"
 	}
 }

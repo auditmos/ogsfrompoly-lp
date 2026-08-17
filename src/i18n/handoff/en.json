@@ -23,6 +23,14 @@
 		"text": "View all statements →",
 		"sourceHash": "b0171481"
 	},
+	"meta.description": {
+		"text": "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
+		"sourceHash": "983ff027"
+	},
+	"meta.title": {
+		"text": "ogsfrompoly — skilled traders on Polymarket",
+		"sourceHash": "c232326e"
+	},
 	"skin.body": {
 		"text": "Two small bots trade real money alongside the record — one follows a crowd of skilled wallets, one mirrors two hand-picked traders. Every rule and every live setting, explained in plain English with a simulator you can drag.",
 		"sourceHash": "a0b370cc"

@@ -1,5 +1,7 @@
 ---
 import { env } from "cloudflare:workers";
+import LocaleSwitcher from "@/components/i18n/LocaleSwitcher.astro";
+import { hreflangAlternates, toLocale } from "@/i18n/routes";
 import { buildBeaconAttributes } from "@/lib/analytics/cloudflare-beacon";
 import { FEED_CACHE_CONTROL } from "@/lib/http/cached-response";
 import { OG_DEFAULT_IMAGE_PATH } from "@/lib/og/paths";
@@ -13,6 +15,13 @@ interface Props {
 	ogType?: OpenGraphType;
 	/** Social card image path; defaults to the static brand card. */
 	ogImage?: string;
+	/**
+	 * Locale-relative path of a page published in all three locales ("" for
+	 * home). Providing it marks the page editorial: the head gains mutual
+	 * hreflang alternates and the header gains the EN/PL/ES switcher. Frozen
+	 * surfaces (statements) never pass it.
+	 */
+	localePath?: string;
 }
 
 const {
@@ -20,7 +29,11 @@ const {
 	description = "We measure who is actually skilled on Polymarket — and we show our work, weekly.",
 	ogType = "website",
 	ogImage = OG_DEFAULT_IMAGE_PATH,
+	localePath,
 } = Astro.props;
+
+const locale = toLocale(Astro.currentLocale);
+const alternates = localePath !== undefined ? hreflangAlternates(SITE_URL, localePath) : [];
 
 // Every HTML page inherits the shared cache policy from one place (issue #37):
 // content changes at most weekly, so a 1h edge cache is safe and spares the
@@ -54,6 +67,9 @@ const navLinks = [
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={meta.canonical} />
+		{alternates.map((alternate) => (
+			<link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
+		))}
 		{Object.entries(meta.og).map(([property, content]) => <meta property={property} content={content} />)}
 		{Object.entries(meta.twitter).map(([name, content]) => <meta name={name} content={content} />)}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -83,6 +99,13 @@ const navLinks = [
 				</ul>
 			</nav>
 		</header>
+		{
+			localePath !== undefined && (
+				<div class="mx-auto flex max-w-4xl justify-end px-gutter pb-2">
+					<LocaleSwitcher locale={locale} path={localePath} />
+				</div>
+			)
+		}
 
 		<slot />
 

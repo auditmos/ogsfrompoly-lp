@@ -1,4 +1,12 @@
 {
+	"meta.title": {
+		"translation": "ogsfrompoly — skuteczni traderzy na Polymarkecie",
+		"sourceHash": "c232326e"
+	},
+	"meta.description": {
+		"translation": "Mierzymy, kto na Polymarkecie faktycznie ma skilla — i co tydzień pokazujemy nasze wyliczenia.",
+		"sourceHash": "983ff027"
+	},
 	"hero.heading": {
 		"translation": "Mierzymy, kto na Polymarkecie faktycznie ma skilla — i co tydzień pokazujemy nasze wyliczenia.",
 		"sourceHash": "983ff027"
@@ -7,8 +15,32 @@
 		"translation": "Otwarta księga: track record strategii i P&L projektu. Wyłącznie zagregowane dane, skrócone identyfikatory portfeli. Zero żywej alfy, zapisów i newslettera — tylko RSS i markdownowy feed, który przeczyta twój agent.",
 		"sourceHash": "b7febce4"
 	},
+	"install.eyebrow": {
+		"translation": "Zainstaluj dla swojego agenta LLM",
+		"sourceHash": "591ebb40"
+	},
+	"install.caption": {
+		"translation": "Wpina llms.txt projektu w kontekst twojego agenta",
+		"sourceHash": "eb382b81"
+	},
+	"latest.eyebrow": {
+		"translation": "Najnowsze sprawozdanie",
+		"sourceHash": "4d09725b"
+	},
+	"latest.viewAll": {
+		"translation": "Zobacz wszystkie sprawozdania →",
+		"sourceHash": "b0171481"
+	},
 	"skin.eyebrow": {
 		"translation": "Gramy własnymi pieniędzmi",
-		"sourceHash": "00000000"
+		"sourceHash": "7f81645e"
+	},
+	"skin.body": {
+		"translation": "Dwa małe boty handlują prawdziwymi pieniędzmi równolegle do rejestru — jeden podąża za grupą skutecznych portfeli, drugi lustrzanie kopiuje dwóch ręcznie wybranych traderów. Każda reguła i każde aktualne ustawienie, wyjaśnione po ludzku, z symulatorem do przeciągania.",
+		"sourceHash": "a0b370cc"
+	},
+	"skin.cta": {
+		"translation": "Copy trading dla opornych →",
+		"sourceHash": "c4f9add0"
 	}
 }

@@ -1,0 +1,46 @@
+{
+	"meta.title": {
+		"translation": "ogsfrompoly — traders con habilidad real en Polymarket",
+		"sourceHash": "c232326e"
+	},
+	"meta.description": {
+		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
+		"sourceHash": "983ff027"
+	},
+	"hero.heading": {
+		"translation": "Medimos quién tiene habilidad real en Polymarket — y mostramos nuestro trabajo cada semana.",
+		"sourceHash": "983ff027"
+	},
+	"hero.intro": {
+		"translation": "Historial de la estrategia y P&L del proyecto a libro abierto. Solo datos agregados. IDs de carteras truncados. Sin alfa en vivo, sin registro, sin newsletter — solo RSS y un feed en markdown que tu agente puede leer.",
+		"sourceHash": "b7febce4"
+	},
+	"install.eyebrow": {
+		"translation": "Instálalo para tu agente LLM",
+		"sourceHash": "591ebb40"
+	},
+	"install.caption": {
+		"translation": "Inyecta el llms.txt del proyecto en el contexto de tu agente",
+		"sourceHash": "eb382b81"
+	},
+	"latest.eyebrow": {
+		"translation": "Último informe",
+		"sourceHash": "4d09725b"
+	},
+	"latest.viewAll": {
+		"translation": "Ver todos los informes →",
+		"sourceHash": "b0171481"
+	},
+	"skin.eyebrow": {
+		"translation": "Nos jugamos nuestro propio dinero",
+		"sourceHash": "7f81645e"
+	},
+	"skin.body": {
+		"translation": "Dos pequeños bots operan con dinero real junto al registro — uno sigue a un grupo de carteras hábiles, el otro replica a dos traders elegidos a mano. Cada regla y cada ajuste en vivo, explicados en lenguaje llano con un simulador que puedes arrastrar.",
+		"sourceHash": "a0b370cc"
+	},
+	"skin.cta": {
+		"translation": "Copy trading para dummies →",
+		"sourceHash": "c4f9add0"
+	}
+}
