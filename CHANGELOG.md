@@ -1,3 +1,17 @@
+# [1.34.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.33.0...v1.34.0) (2026-08-17)
+
+
+### Bug Fixes
+
+* **i18n:** the big red agenteón goes back to being a button ([565aadd](https://github.com/auditmos/ogsfrompoly-lp/commit/565aadd78102a35b5cedd14595860a1f9eea3dee))
+
+
+### Features
+
+* **copy-trade:** both walkthroughs learn that the agents now sell on their own numbers ([433592c](https://github.com/auditmos/ogsfrompoly-lp/commit/433592cc6aea7f79c9e427936460e64c44d6d92b)), closes [#77](https://github.com/auditmos/ogsfrompoly-lp/issues/77)
+* **copy-trade:** the auto-close rail arrives, pinned to the bots' own evaluator ([ecdadf5](https://github.com/auditmos/ogsfrompoly-lp/commit/ecdadf5abffeca3737da3488ba79c0da0593cc25)), closes [#77](https://github.com/auditmos/ogsfrompoly-lp/issues/77)
+* **copy-trade:** the rail becomes something you can drag ([4dc04cb](https://github.com/auditmos/ogsfrompoly-lp/commit/4dc04cb521907b4e921c7cb9b8c715dab1665d7c)), closes [#77](https://github.com/auditmos/ogsfrompoly-lp/issues/77)
+
 # [1.33.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.32.0...v1.33.0) (2026-08-17)
 
 
