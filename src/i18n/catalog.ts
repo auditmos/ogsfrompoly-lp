@@ -13,6 +13,8 @@ import { CLUSTER_PAGE_EN, type ClusterPageProse } from "@/copy-trade/cluster/pag
 import { CLUSTER_SIM_EN, type ClusterSimStrings } from "@/copy-trade/cluster/sim-prose-en";
 import { HUB_EN, type HubProse } from "@/copy-trade/hub-prose-en";
 import { SIM_UNITS_EN, type SimUnits } from "@/copy-trade/sim-units-en";
+import { WALLET_PAGE_EN, type WalletPageProse } from "@/copy-trade/wallet/page-prose-en";
+import { WALLET_SIM_EN, type WalletSimStrings } from "@/copy-trade/wallet/sim-prose-en";
 import { METHODOLOGY_EN, type MethodologyProse } from "@/methodology/prose-en";
 import { HOME_EN, type HomeProse } from "./home-en";
 import esOverlayJson from "./locales/es.json";
@@ -144,6 +146,18 @@ export function resolveClusterPage(locale: Locale): ClusterPageProse {
 	return resolveProse({ cluster: { page: CLUSTER_PAGE_EN } }, OVERLAYS[locale]).cluster.page;
 }
 
+/** Wallet-simulator decision strings resolved for a locale. */
+export function resolveWalletSim(locale: Locale): WalletSimStrings {
+	if (locale === "en") return WALLET_SIM_EN;
+	return resolveProse({ wallet: { sim: WALLET_SIM_EN } }, OVERLAYS[locale]).wallet.sim;
+}
+
+/** Wallet walkthrough page prose resolved for a locale. */
+export function resolveWalletPage(locale: Locale): WalletPageProse {
+	if (locale === "en") return WALLET_PAGE_EN;
+	return resolveProse({ wallet: { page: WALLET_PAGE_EN } }, OVERLAYS[locale]).wallet.page;
+}
+
 /** Locales translations are delivered for — the extractor reports on each. */
 export type TranslatedLocale = "pl" | "es";
 
@@ -173,5 +187,6 @@ export function catalogEntries(): CatalogEntry[] {
 		hub: HUB_EN,
 		sim: SIM_UNITS_EN,
 		cluster: { sim: CLUSTER_SIM_EN, page: CLUSTER_PAGE_EN },
+		wallet: { sim: WALLET_SIM_EN, page: WALLET_PAGE_EN },
 	});
 }

@@ -1,6 +1,6 @@
 ---
 /**
- * The semi-interactive panels on `/for-dummies/copy-wallet`: drag the
+ * The semi-interactive panels on the copy-wallet walkthrough: drag the
  * executor's knobs, pick an incoming leader signal, watch the copy/skip
  * decision change — and below it, the exit rule as its own little widget.
  *
@@ -9,31 +9,47 @@
  * just shows the live config against the first example signal. The gate list
  * is a fixed set of rows in a fixed order, so the script only rewrites text
  * and toggles classes; there is no second markup renderer to drift.
+ *
+ * Localization (issue #74) reuses the cluster mechanism: every string
+ * resolves through the Translation Catalog server-side, and the resolved
+ * simulator bundle is embedded as a JSON island so the client recompute
+ * rewrites text in the same language without shipping the catalog.
  */
 import {
 	formatWalletKnobValue,
 	WALLET_CONFIG_AS_OF,
 	WALLET_CONFIG_MARKET,
 	WALLET_ENTRY_GROUP_ORDER,
-	WALLET_KNOB_GROUP_LABELS,
 	WALLET_LIVE_CONFIG,
 	WALLET_SCENARIOS,
 	walletKnobsInGroup,
 } from "@/copy-trade/wallet/config";
+import { walletSimFor } from "@/copy-trade/wallet/content";
 import {
 	evaluateLeaderSignal,
 	evaluateTrim,
 	leaderSignalLine,
 	walletSummarySentence,
 } from "@/copy-trade/wallet/simulator";
+import { fillTemplate, formattersFor } from "@/copy-trade/locale-format";
+import { type Locale, resolveWalletPage } from "@/i18n/catalog";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const page = resolveWalletPage(locale);
+const sim = walletSimFor(locale);
+const fmt = formattersFor(locale, sim.units);
 
 const initialScenario = WALLET_SCENARIOS[0];
-const initial = evaluateLeaderSignal(WALLET_LIVE_CONFIG, initialScenario);
-const initialLine = leaderSignalLine(initialScenario);
+const initial = evaluateLeaderSignal(WALLET_LIVE_CONFIG, initialScenario, sim);
+const initialLine = leaderSignalLine(initialScenario, sim);
 
 /** The exit widget's scenario-side input: how much of the peak the leader sold. */
 const INITIAL_SOLD_PCT = 30;
-const initialTrim = evaluateTrim(WALLET_LIVE_CONFIG, INITIAL_SOLD_PCT);
+const initialTrim = evaluateTrim(WALLET_LIVE_CONFIG, INITIAL_SOLD_PCT, sim);
 
 const trimKnob = walletKnobsInGroup("exit")[0];
 
@@ -44,33 +60,37 @@ type GateStage = (typeof initial.gates)[number]["stage"];
 const GATE_STAGE_ORDER = ["boot", "alert", "executor"] as const satisfies readonly GateStage[];
 
 const GATE_STAGE_LABELS: Record<GateStage, string> = {
-	boot: "First — would the service even start?",
-	alert: "Then upstream — does the tracker raise a signal at all?",
-	executor: "Then the bot's own rails, in order",
+	boot: page.ui.stageBoot,
+	alert: page.ui.stageAlert,
+	executor: page.ui.stageExecutor,
 };
 
 /* What a ✗ on this row actually means. A boot ✗ is a service that never ran;
    an upstream ✗ is a signal never emitted. Neither is a refusal. */
 const GATE_STAGE_FLAGS: Record<GateStage, string> = {
-	boot: "the service refuses to start — no signal is ever read",
-	alert: "no signal is emitted — the bot is never asked",
-	executor: "the real bot stops here",
+	boot: page.ui.flagBoot,
+	alert: page.ui.flagAlert,
+	executor: page.ui.flagExecutor,
 };
+
+// `</script>`-safe: the payload is parsed by the client script, never executed.
+const simPayload = JSON.stringify(sim).replace(/</g, "\\u003c");
 ---
 
 <section
 	class="@container not-prose my-12 overflow-hidden rounded-terminal border border-terminal-border bg-terminal-bg"
 	data-wallet-copy-sim
-	aria-label="Wallet-copy decision simulator"
+	aria-label={page.ui.ariaLabel}
 >
+	<script type="application/json" data-sim-locale set:html={simPayload} />
 	<header
 		class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-terminal-border px-5 py-4"
 	>
 		<h2 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
-			Try it — the bot's decision, live
+			{page.ui.tryIt}
 		</h2>
 		<p class="font-mono text-[0.7rem] text-ink-5">
-			defaults = {WALLET_CONFIG_MARKET} config, {WALLET_CONFIG_AS_OF}
+			{fillTemplate(page.ui.defaultsNote, { market: WALLET_CONFIG_MARKET, asOf: WALLET_CONFIG_AS_OF })}
 		</p>
 	</header>
 
@@ -82,17 +102,19 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				WALLET_ENTRY_GROUP_ORDER.map((group) => (
 					<fieldset class="flex flex-col gap-4 border-0 p-0">
 						<legend class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
-							{WALLET_KNOB_GROUP_LABELS[group]}
+							{page.knobGroups[group]}
 						</legend>
 						{walletKnobsInGroup(group).map((knob) => (
 							<label class="flex flex-col gap-1">
 								<span class="flex items-baseline justify-between gap-3">
-									<span class="font-sans text-sm leading-snug text-ink-7">{knob.label}</span>
+									<span class="font-sans text-sm leading-snug text-ink-7">
+										{page.knobs[knob.key] ?? knob.label}
+									</span>
 									<output
 										data-knob-value={knob.key}
 										class="shrink-0 font-mono text-sm tabular-nums text-accent"
 									>
-										{formatWalletKnobValue(knob.unit, WALLET_LIVE_CONFIG[knob.key])}
+										{formatWalletKnobValue(knob.unit, WALLET_LIVE_CONFIG[knob.key], fmt)}
 									</output>
 								</span>
 								<input
@@ -102,7 +124,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 									max={knob.max}
 									step={knob.step}
 									value={WALLET_LIVE_CONFIG[knob.key]}
-									aria-label={knob.label}
+									aria-label={page.knobs[knob.key] ?? knob.label}
 									class="w-full accent-accent"
 								/>
 								<span class="font-mono text-[0.7rem] text-ink-5">{knob.yamlKey}</span>
@@ -116,7 +138,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				data-reset
 				class="self-start rounded-card border border-ink-3 px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-accent-dim hover:text-accent"
 			>
-				Reset to our live config
+				{page.ui.reset}
 			</button>
 		</div>
 
@@ -124,7 +146,9 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		     width, which is roughly half the panel once the split kicks in. -->
 		<div class="@container flex flex-col gap-4 bg-terminal-bg p-5">
 			<div class="flex flex-col gap-2">
-				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">Incoming signal</p>
+				<p class="font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+					{page.ui.incomingSignal}
+				</p>
 				<div class="flex flex-wrap gap-1.5">
 					{
 						WALLET_SCENARIOS.map((scenario) => (
@@ -134,7 +158,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 								aria-pressed={scenario.id === initialScenario.id ? "true" : "false"}
 								class="rounded-card border border-ink-3 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-5 hover:border-ink-4 hover:text-ink-7 aria-pressed:border-accent-dim aria-pressed:text-accent"
 							>
-								{scenario.label}
+								{page.scenarios[scenario.id] ?? scenario.label}
 							</button>
 						))
 					}
@@ -228,17 +252,11 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 			</div>
 
 			<p class="font-sans text-xs leading-snug text-ink-5">
-				The real executor short-circuits at the first ✗ in the last list and moves on. Every
-				check is scored here so you can see what each knob does. Prices are always on the
-				outcome the leader actually holds — a position built by selling one side is a position
-				in the other. The engine also runs a row of bookkeeping refusals left out here — is
-				this bet already copied, is the market in scope, is the kill switch on — because none
-				of them is a number you can turn.
+				{page.ui.explainer}
 			</p>
 			<noscript>
 				<p class="font-sans text-xs leading-snug text-warn">
-					With JavaScript off this shows our live config against the first example signal. The
-					sliders and signal buttons need JavaScript to recompute.
+					{page.ui.noscript}
 				</p>
 			</noscript>
 		</div>
@@ -248,14 +266,14 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 	<div class="border-t border-terminal-border">
 		<div class="flex flex-col gap-4 p-5">
 			<h3 class="font-mono text-eyebrow uppercase tracking-wider text-ink-7">
-				And when does it leave? Drag the leader's selling
+				{page.ui.exitHeading}
 			</h3>
 			<div class="grid gap-6 @3xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
 				<div class="flex flex-col gap-4">
 					<label class="flex flex-col gap-1">
 						<span class="flex items-baseline justify-between gap-3">
 							<span class="font-sans text-sm leading-snug text-ink-7">
-								The leader has sold this much of their peak position
+								{page.ui.soldLabel}
 							</span>
 							<output data-sold-value class="shrink-0 font-mono text-sm tabular-nums text-accent">
 								{INITIAL_SOLD_PCT}%
@@ -268,21 +286,23 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 							max="100"
 							step="5"
 							value={INITIAL_SOLD_PCT}
-							aria-label="How much of their peak position the leader has sold"
+							aria-label={page.ui.soldAria}
 							class="w-full accent-accent"
 						/>
-						<span class="font-mono text-[0.7rem] text-ink-5">the signal, not a setting</span>
+						<span class="font-mono text-[0.7rem] text-ink-5">{page.ui.soldNote}</span>
 					</label>
 					{
 						trimKnob && (
 							<label class="flex flex-col gap-1">
 								<span class="flex items-baseline justify-between gap-3">
-									<span class="font-sans text-sm leading-snug text-ink-7">{trimKnob.label}</span>
+									<span class="font-sans text-sm leading-snug text-ink-7">
+										{page.knobs[trimKnob.key] ?? trimKnob.label}
+									</span>
 									<output
 										data-knob-value={trimKnob.key}
 										class="shrink-0 font-mono text-sm tabular-nums text-accent"
 									>
-										{formatWalletKnobValue(trimKnob.unit, WALLET_LIVE_CONFIG[trimKnob.key])}
+										{formatWalletKnobValue(trimKnob.unit, WALLET_LIVE_CONFIG[trimKnob.key], fmt)}
 									</output>
 								</span>
 								<input
@@ -292,7 +312,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 									max={trimKnob.max}
 									step={trimKnob.step}
 									value={WALLET_LIVE_CONFIG[trimKnob.key]}
-									aria-label={trimKnob.label}
+									aria-label={page.knobs[trimKnob.key] ?? trimKnob.label}
 									class="w-full accent-accent"
 								/>
 								<span class="font-mono text-[0.7rem] text-ink-5">{trimKnob.yamlKey}</span>
@@ -321,8 +341,8 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 							</div>
 						</div>
 						<div class="flex justify-between font-mono text-[0.7rem] text-ink-5">
-							<span>their peak position</span>
-							<span class="text-accent">close line</span>
+							<span>{page.ui.peakLabel}</span>
+							<span class="text-accent">{page.ui.closeLine}</span>
 						</div>
 					</div>
 					<div
@@ -341,9 +361,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 						</p>
 					</div>
 					<p class="font-sans text-xs leading-snug text-ink-5">
-						A flip to the other side, a close to zero, a leader removed from the config, or the
-						market resolving — each of those closes the leg whatever this slider says. Only the
-						trim line is a setting.
+						{page.ui.exitNote}
 					</p>
 				</div>
 			</div>
@@ -351,9 +369,11 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 	</div>
 
 	<footer class="border-t border-terminal-border px-5 py-4">
-		<p class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">In one sentence</p>
+		<p class="mb-2 font-mono text-eyebrow uppercase tracking-wider text-ink-5">
+			{page.md.inOneSentence}
+		</p>
 		<p data-summary class="font-sans text-sm leading-relaxed text-ink-7">
-			{walletSummarySentence(WALLET_LIVE_CONFIG)}
+			{walletSummarySentence(WALLET_LIVE_CONFIG, sim)}
 		</p>
 	</footer>
 </section>
@@ -371,12 +391,19 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		evaluateLeaderSignal,
 		evaluateTrim,
 		leaderSignalLine,
+		type WalletSimLocale,
 		walletSummarySentence,
 	} from "@/copy-trade/wallet/simulator";
+	import { formattersFor } from "@/copy-trade/locale-format";
 
 	const root = document.querySelector<HTMLElement>("[data-wallet-copy-sim]");
+	// The SSR-embedded locale bundle: the same catalog-resolved strings the
+	// server painted with, so both recomputes can never disagree on a string.
+	const payload = root?.querySelector("[data-sim-locale]")?.textContent;
 
-	if (root) {
+	if (root && payload) {
+		const sim = JSON.parse(payload) as WalletSimLocale;
+		const fmt = formattersFor(sim.locale, sim.units);
 		const values: WalletKnobValues = { ...WALLET_LIVE_CONFIG };
 		let scenarioId: string = WALLET_SCENARIOS[0].id;
 		let soldPct = 30;
@@ -389,13 +416,13 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 		const render = (): void => {
 			const scenario =
 				WALLET_SCENARIOS.find((entry) => entry.id === scenarioId) ?? WALLET_SCENARIOS[0];
-			const verdict = evaluateLeaderSignal(values, scenario);
-			const trim = evaluateTrim(values, soldPct);
+			const verdict = evaluateLeaderSignal(values, scenario, sim);
+			const trim = evaluateTrim(values, soldPct, sim);
 
 			for (const knob of WALLET_KNOBS) {
 				setText(
 					`[data-knob-value="${knob.key}"]`,
-					formatWalletKnobValue(knob.unit, values[knob.key]),
+					formatWalletKnobValue(knob.unit, values[knob.key], fmt),
 				);
 			}
 
@@ -406,7 +433,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 				);
 			});
 
-			const line = leaderSignalLine(scenario);
+			const line = leaderSignalLine(scenario, sim);
 			setText("[data-signal-lead]", line.lead);
 			setText("[data-signal-market]", `“${line.market}”`);
 			setText("[data-signal-trail]", line.trail);
@@ -455,7 +482,7 @@ const GATE_STAGE_FLAGS: Record<GateStage, string> = {
 			setText("[data-trim-headline]", trim.headline);
 			setText("[data-trim-detail]", trim.detail);
 
-			setText("[data-summary]", walletSummarySentence(values));
+			setText("[data-summary]", walletSummarySentence(values, sim));
 		};
 
 		root.addEventListener("input", (event) => {

@@ -1,3 +1,4 @@
+import { resolveSimUnits, resolveWalletSim } from "@/i18n/catalog";
 import {
 	isWalletKnobKey,
 	WALLET_LIVE_CONFIG,
@@ -339,5 +340,81 @@ describe("walletSummarySentence", () => {
 
 		expect(sentence).toContain("whatever their recent flow looks like");
 		expect(sentence).not.toContain("two-sided beyond");
+	});
+});
+
+/**
+ * Issue #74 assumptions: the wallet simulator reuses the issue-#73 mechanism —
+ * an optional locale bundle (shared units + wallet strings resolved through
+ * the Translation Catalog) parameterizes strings only. Decisions are asserted
+ * identical across locales; string assertions check language and number
+ * conventions, not exact seed-translation bytes. Leader labels (`leader-a`,
+ * `leader-b`) must survive translation untouched.
+ */
+describe("localized wallet simulation", () => {
+	const plSim = {
+		locale: "pl",
+		units: resolveSimUnits("pl"),
+		strings: resolveWalletSim("pl"),
+	} as const;
+	const esSim = {
+		locale: "es",
+		units: resolveSimUnits("es"),
+		strings: resolveWalletSim("es"),
+	} as const;
+
+	it("keeps every decision identical across locales", () => {
+		for (const scenario of WALLET_SCENARIOS) {
+			const english = evaluateLeaderSignal(WALLET_LIVE_CONFIG, scenario);
+			const polish = evaluateLeaderSignal(WALLET_LIVE_CONFIG, scenario, plSim);
+
+			expect(polish.action).toBe(english.action);
+			expect(polish.gates.map(({ id, passed, blocker }) => ({ id, passed, blocker }))).toEqual(
+				english.gates.map(({ id, passed, blocker }) => ({ id, passed, blocker })),
+			);
+		}
+	});
+
+	it("resolves verdict and gate strings in the target language", () => {
+		const thin = WALLET_SCENARIOS.find((scenario) => scenario.id === "thin");
+		if (!thin) throw new Error("thin scenario missing");
+		const english = evaluateLeaderSignal(WALLET_LIVE_CONFIG, thin);
+		const polish = evaluateLeaderSignal(WALLET_LIVE_CONFIG, thin, plSim);
+
+		expect(polish.headline).not.toBe(english.headline);
+		expect(polish.detail).not.toBe(english.detail);
+		for (const [index, gateResult] of polish.gates.entries()) {
+			expect(gateResult.question).not.toBe(english.gates[index]?.question);
+		}
+	});
+
+	it("keeps leader labels untranslated inside localized strings", () => {
+		const textbookSignal = WALLET_SCENARIOS[0];
+		const polish = evaluateLeaderSignal(WALLET_LIVE_CONFIG, textbookSignal, plSim);
+		const conviction = polish.gates.find((entry) => entry.id === "conviction");
+
+		expect(conviction?.question).toContain("leader-a");
+		expect(leaderSignalLine(textbookSignal, plSim).lead).toContain("leader-a");
+		expect(walletSummarySentence(WALLET_LIVE_CONFIG, plSim)).toContain("(leader-a)");
+		expect(walletSummarySentence(WALLET_LIVE_CONFIG, esSim)).toContain("(leader-b)");
+	});
+
+	it("formats numbers inside resolved strings with the locale conventions", () => {
+		const polish = evaluateLeaderSignal(WALLET_LIVE_CONFIG, WALLET_SCENARIOS[0], plSim);
+		const spanish = evaluateLeaderSignal(WALLET_LIVE_CONFIG, WALLET_SCENARIOS[0], esSim);
+
+		expect(polish.gates.find((entry) => entry.id === "liquidity")?.rule).toContain("1\u00a0000");
+		expect(spanish.gates.find((entry) => entry.id === "liquidity")?.rule).toContain("1.000");
+	});
+
+	it("speaks the trim verdicts in the target language", () => {
+		const englishHold = evaluateTrim(WALLET_LIVE_CONFIG, 30);
+		const polishHold = evaluateTrim(WALLET_LIVE_CONFIG, 30, plSim);
+		const polishClose = evaluateTrim(WALLET_LIVE_CONFIG, 60, plSim);
+
+		expect(polishHold.action).toBe(englishHold.action);
+		expect(polishHold.headline).not.toBe(englishHold.headline);
+		expect(polishHold.detail).not.toBe(englishHold.detail);
+		expect(polishClose.action).toBe("close");
 	});
 });

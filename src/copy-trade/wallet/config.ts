@@ -11,7 +11,10 @@
  * so are their balances.
  */
 
-import { formatDuration, formatFraction, formatPct, formatSteps, formatUsd } from "../format";
+import { formattersFor, type SimFormatters } from "../locale-format";
+import { SIM_UNITS_EN } from "../sim-units-en";
+
+const EN_FORMATTERS = formattersFor("en", SIM_UNITS_EN);
 
 /** The market family whose live config the defaults reflect. */
 export const WALLET_CONFIG_MARKET = "Macro";
@@ -573,35 +576,36 @@ export const WALLET_SCENARIOS = [
 
 /** A two-sided flow ratio: `0.78` → `"0.78"`, and at `1` the rail is off. */
 export function formatRatio(value: number): string {
-	if (value >= 1) return "off";
-	return value.toFixed(2);
+	return EN_FORMATTERS.ratio(value);
 }
 
-/** A price ceiling, where `0` means the rail is switched off rather than free. */
-function formatPriceLimit(value: number): string {
-	if (value <= 0) return "off";
-	const rounded = Math.round(value * 1000) / 1000;
-	return `$${rounded.toFixed(3).replace(/0$/, "")}`;
-}
-
-export function formatWalletKnobValue(unit: WalletKnobUnit, value: number): string {
+/**
+ * A knob's live value as the reader sees it beside the slider and in the
+ * `.md` table. Locale-aware through the optional formatter set (issue #74) —
+ * omitted, it renders the canonical English strings.
+ */
+export function formatWalletKnobValue(
+	unit: WalletKnobUnit,
+	value: number,
+	fmt: SimFormatters = EN_FORMATTERS,
+): string {
 	switch (unit) {
 		case "usdc":
-			return formatUsd(value);
+			return fmt.usd(value);
 		case "pct":
-			return formatPct(value);
+			return fmt.pct(value);
 		case "fraction":
-			return formatFraction(value);
+			return fmt.fraction(value);
 		case "price":
-			return formatPriceLimit(value);
+			return fmt.priceLimit(value);
 		case "seconds":
-			return formatDuration(value);
+			return fmt.duration(value);
 		case "steps":
-			return formatSteps(value);
+			return fmt.steps(value);
 		case "count":
 			return String(value);
 		case "ratio":
-			return formatRatio(value);
+			return fmt.ratio(value);
 	}
 }
 

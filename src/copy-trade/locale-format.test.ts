@@ -60,6 +60,12 @@ describe("formattersFor", () => {
 		expect(fmt.wallets(22)).toBe("22 portfele");
 	});
 
+	it("renders flow ratios with locale decimals, off at 1", () => {
+		expect(formattersFor("en", SIM_UNITS_EN).ratio(0.78)).toBe("0.78");
+		expect(formattersFor("en", SIM_UNITS_EN).ratio(1)).toBe("off");
+		expect(formattersFor("pl", SIM_UNITS_EN).ratio(0.5)).toBe("0,50");
+	});
+
 	it("renders translated unit templates with locale decimals", () => {
 		const plUnits = { ...SIM_UNITS_EN, usd: "{n} $", hours: "{n} godz." };
 		const fmt = formattersFor("pl", plUnits);

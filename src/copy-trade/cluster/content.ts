@@ -9,9 +9,9 @@
  * never disagree about a default. All translatable text lives in
  * page-prose-en.ts / sim-prose-en.ts; the stitcher fills link targets and
  * config values (`{market}`, `{asOf}`, `{walletHref}`, `{hubHref}`,
- * `{methodologyHref}`) so they never enter the translation payload. The
- * wallet-copy link stays on the English route in every locale until issue #74
- * ships the localized target.
+ * `{methodologyHref}`) so they never enter the translation payload; every
+ * cross-page link is same-locale now that issue #74 shipped the localized
+ * wallet walkthrough.
  */
 
 import {
@@ -43,9 +43,7 @@ export function clusterContentFor(locale: Locale): ClusterContent {
 	const page = resolveClusterPage(locale);
 	const sections = page.sections;
 	const intro = fillTemplate(sections.intro, {
-		// English route on purpose: the localized wallet walkthrough does not
-		// exist until issue #74 — a same-locale URL here would be a dead link.
-		walletHref: "/for-dummies/copy-wallet",
+		walletHref: localeHref(locale, "/for-dummies/copy-wallet"),
 		hubHref: localeHref(locale, "/for-dummies"),
 		market: CONFIG_MARKET,
 		asOf: CONFIG_AS_OF,

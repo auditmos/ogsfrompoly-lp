@@ -822,5 +822,525 @@
 	"cluster.page.ui.ariaLabel": {
 		"translation": "Simulador de decisiones de copy-trading",
 		"sourceHash": "a2bae839"
+	},
+	"wallet.sim.gates.boot.question": {
+		"translation": "¿Puede mi ticket comprar siquiera {min} participaciones al peor precio que permito?",
+		"sourceHash": "44a22d56"
+	},
+	"wallet.sim.gates.boot.actual": {
+		"translation": "{size} → {shares} a {limit}",
+		"sourceHash": "47a2e21a"
+	},
+	"wallet.sim.gates.boot.because": {
+		"translation": "Un ticket de {size} al peor límite que permiten las demás perillas ({limit}) compra menos que el mínimo de {min} participaciones de la casa, así que el servicio se niega a arrancar con esta config en vez de fallar orden a orden.",
+		"sourceHash": "e2d0d0b8"
+	},
+	"wallet.sim.gates.conviction.question": {
+		"translation": "¿Ha apostado {leader} lo bastante como para ir en serio?",
+		"sourceHash": "d9558f67"
+	},
+	"wallet.sim.gates.conviction.actual": {
+		"translation": "{stake} en el pico",
+		"sourceHash": "f53ff873"
+	},
+	"wallet.sim.gates.conviction.because": {
+		"translation": "La posición completa de {leader} en esta apuesta llegó en su pico a {stake}, por debajo de su listón de {bar} — el tracker nunca emite señal de entrada, al bot nunca se le pregunta y nada queda registrado.",
+		"sourceHash": "c587192d"
+	},
+	"wallet.sim.gates.cap.question": {
+		"translation": "¿No estoy copiando ya bastante a este líder?",
+		"sourceHash": "3a5223bf"
+	},
+	"wallet.sim.gates.cap.actual": {
+		"translation": "{n} abiertas de {leader}",
+		"sourceHash": "fbb7f495"
+	},
+	"wallet.sim.gates.cap.because.one": {
+		"translation": "{n} copia de {leader} ya está abierta, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "40e963c8"
+	},
+	"wallet.sim.gates.cap.because.few": {
+		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "b8c369d6"
+	},
+	"wallet.sim.gates.cap.because.many": {
+		"translation": "{n} copias de {leader} ya están abiertas, en el tope de {cap} por líder — un líder desatado no puede comerse todo el presupuesto.",
+		"sourceHash": "b8c369d6"
+	},
+	"wallet.sim.gates.room.question": {
+		"translation": "¿Tengo sitio bajo mi tope?",
+		"sourceHash": "ca2c72ff"
+	},
+	"wallet.sim.gates.room.actual": {
+		"translation": "{open} abiertos + {size}",
+		"sourceHash": "511d479d"
+	},
+	"wallet.sim.gates.room.because": {
+		"translation": "Ya hay {open} abiertos entre ambos líderes; otra copia de {size} rompería el tope de {cap}.",
+		"sourceHash": "59ec0658"
+	},
+	"wallet.sim.gates.liquidity.question": {
+		"translation": "¿Hay alguien aquí con quien operar?",
+		"sourceHash": "61d03dbb"
+	},
+	"wallet.sim.gates.liquidity.because": {
+		"translation": "{liquidity} de liquidez queda por debajo del suelo de {floor} — entrar es fácil, salir es lo que duele.",
+		"sourceHash": "4f2ea6bd"
+	},
+	"wallet.sim.gates.timing.question": {
+		"translation": "¿Está este mercado a punto de terminar?",
+		"sourceHash": "d23cb86d"
+	},
+	"wallet.sim.gates.timing.because": {
+		"translation": "Quedan {left} hasta la resolución, menos del mínimo de {min} — sin margen para volver a salir.",
+		"sourceHash": "5dbf4e29"
+	},
+	"wallet.sim.gates.freshness.question": {
+		"translation": "¿Se ha escapado ya el precio del líder?",
+		"sourceHash": "3bcc4f25"
+	},
+	"wallet.sim.gates.freshness.rulePctOnly": {
+		"translation": "≤ {pct}",
+		"sourceHash": "364242d8"
+	},
+	"wallet.sim.gates.freshness.ruleWithFloor": {
+		"translation": "≤ {pct} o < {steps}",
+		"sourceHash": "1e33b50a"
+	},
+	"wallet.sim.gates.freshness.because": {
+		"translation": "El precio de venta está {drift} por encima de la entrada del líder a {entry} (ahora {ask}), más allá del límite de {limit} y del suelo de ruido de {floor} — el movimiento ya ocurrió.",
+		"sourceHash": "ed9c0534"
+	},
+	"wallet.sim.gates.flow.question": {
+		"translation": "¿Opera este líder ambos lados de esta apuesta?",
+		"sourceHash": "70153acb"
+	},
+	"wallet.sim.gates.flow.actualNone": {
+		"translation": "nada que pesar",
+		"sourceHash": "20c3264b"
+	},
+	"wallet.sim.gates.flow.because": {
+		"translation": "En las últimas 48 horas el flujo de compra y de venta de este líder en esta apuesta están a {ratio} el uno del otro, más allá del techo de {ceiling} — una cartera que opera ambos lados está haciendo mercado, no expresando una opinión, y cada giro copiado es un viaje de ida y vuelta pagado.",
+		"sourceHash": "26fd4584"
+	},
+	"wallet.sim.gates.price.question": {
+		"translation": "¿Es una participación demasiado cara para lo que arriesga?",
+		"sourceHash": "99ae575c"
+	},
+	"wallet.sim.gates.price.because": {
+		"translation": "El mercado valora este resultado en {price}, por encima del techo de {ceiling} — una copia podría ganar como mucho {gain} mientras sigue arriesgando los {size} enteros.",
+		"sourceHash": "8c1e416a"
+	},
+	"wallet.sim.gates.floor.question": {
+		"translation": "¿Me dejará esto por debajo de mi suelo?",
+		"sourceHash": "d32b7df4"
+	},
+	"wallet.sim.gates.floor.because": {
+		"translation": "Una copia de {size} dejaría {left}, por debajo del suelo gastable de {floor}.",
+		"sourceHash": "1360d312"
+	},
+	"wallet.sim.drift.favour": {
+		"translation": "se movió a nuestro favor",
+		"sourceHash": "c2bcc77a"
+	},
+	"wallet.sim.verdict.copy": {
+		"translation": "COPIA {size}",
+		"sourceHash": "376968a3"
+	},
+	"wallet.sim.verdict.skip": {
+		"translation": "PASA",
+		"sourceHash": "7ebdb0c2"
+	},
+	"wallet.sim.verdict.noSignal": {
+		"translation": "SIN SEÑAL",
+		"sourceHash": "9d7aa6e6"
+	},
+	"wallet.sim.verdict.noBoot": {
+		"translation": "RECHAZADO AL ARRANCAR",
+		"sourceHash": "4e8f8cdc"
+	},
+	"wallet.sim.detail.order": {
+		"translation": "Envía una orden fill-or-kill de {size} con un límite de {limit} — unas {shares} — que se llena entera o muere; una orden cancelada no se reintenta.",
+		"sourceHash": "897f4023"
+	},
+	"wallet.sim.detail.hold": {
+		"translation": "Luego aguanta los recortes pequeños y vende la pierna entera en cuanto {leader} haya deshecho {threshold} de su pico — o girado, o cerrado.",
+		"sourceHash": "73c75273"
+	},
+	"wallet.sim.detail.copy": {
+		"translation": "Todos los controles pasaron. {order} {hold}",
+		"sourceHash": "f5cd3133"
+	},
+	"wallet.sim.detail.copyViaSale": {
+		"translation": "El líder construyó esta posición vendiendo el otro lado, así que el bot compra el resultado que realmente sostiene, a {ask}. {order} {hold}",
+		"sourceHash": "64965574"
+	},
+	"wallet.sim.signal.lead": {
+		"translation": "{leader} construyó una posición de {stake} en",
+		"sourceHash": "cbca887f"
+	},
+	"wallet.sim.signal.trail": {
+		"translation": "a {entry}.",
+		"sourceHash": "4d1306b0"
+	},
+	"wallet.sim.signal.trailViaSale": {
+		"translation": "— vendiendo el otro lado, así que el resultado que realmente sostiene cotiza a {entry}, y eso es lo que compraría el bot.",
+		"sourceHash": "67f51618"
+	},
+	"wallet.sim.trim.holdHeadline": {
+		"translation": "MANTIENE",
+		"sourceHash": "ebb64f78"
+	},
+	"wallet.sim.trim.holdDetail": {
+		"translation": "El líder ha deshecho {sold} de su pico — por debajo de la línea del {threshold}. Eso es información, no una salida: el bot lo apunta y conserva la posición entera.",
+		"sourceHash": "7de013f3"
+	},
+	"wallet.sim.trim.closeHeadline": {
+		"translation": "CIERRA LA PIERNA ENTERA",
+		"sourceHash": "9d0fa55b"
+	},
+	"wallet.sim.trim.closeDetail": {
+		"translation": "{sold} del pico ha desaparecido — en la línea del {threshold} o más allá. El bot vende la copia entera de una vez, nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de {min} participaciones de la casa y volverse invendible.",
+		"sourceHash": "e49e686f"
+	},
+	"wallet.sim.summary.sentence": {
+		"translation": "Cuando uno de los dos líderes construye al menos {a} (leader-a) o {b} (leader-b) de una apuesta nueva, {flowClause} y el mercado tiene al menos {liquidity} de liquidez, le quedan más de {horizon} y el precio no ha corrido más de {staleness} desde su entrada → el bot compra {size} del resultado que sostienen, paga como mucho {maxPrice} por participación y {slippage} sobre el precio de venta, lleva como mucho {copies} copias por líder y {cap} abiertos en total, conserva {floor} gastables, aguanta los recortes pequeños y vende la pierna entera cuando ese líder haya deshecho {trim} de su pico — o girado, o cerrado.",
+		"sourceHash": "b4a90a18"
+	},
+	"wallet.sim.summary.flowAny": {
+		"translation": "sea cual sea su flujo reciente,",
+		"sourceHash": "e86e86f7"
+	},
+	"wallet.sim.summary.flowCapped": {
+		"translation": "y su flujo reciente en ella no es de doble lado más allá de {ratio},",
+		"sourceHash": "a5f81350"
+	},
+	"wallet.page.title": {
+		"translation": "Wallet copy para dummies",
+		"sourceHash": "b7ea685a"
+	},
+	"wallet.page.description": {
+		"translation": "Guía en lenguaje llano del bot wallet-copy de ogsfrompoly — el que replica a dos traders hábiles elegidos a mano: cuándo copia, cuándo se niega, cuándo sale y qué números se pueden girar de verdad.",
+		"sourceHash": "41693a6a"
+	},
+	"wallet.page.sections.intro": {
+		"translation": "Junto al historial publicado, un segundo pequeño bot replica a dos traders\nindividuales — carteras que nuestra prueba de habilidad ya señaló, ascendidas\ndel mismo ranking sobre el que se construyen los informes semanales. Donde\n[cluster copy]({clusterHref}) espera a que un *grupo* de carteras hábiles se\nponga de acuerdo, este hace una pregunta distinta: **¿qué hace un trader\nprobado cuando va realmente en serio?**\n\nPiénsalo como un **aprendiz muy paciente** siguiendo a dos maestros. Ignora\ncasi todo lo que hacen. Solo cuando uno de ellos compromete dinero serio en\nuna apuesta nueva coloca una pequeña copia propia — $5, en su propia cuenta\nseparada, tras su propio interruptor de emergencia.\n\nCada número de esta página es el ajuste vivo para los mercados **{market}** a\nfecha de **{asOf}**, leído de `config/wallet_copy.yml`.\n¿No sabes cuál de los dos bots buscabas? [El selector]({hubHref}) los compara\nlado a lado.",
+		"sourceHash": "661d5952"
+	},
+	"wallet.page.sections.storyHeading": {
+		"translation": "## La historia completa, paso a paso",
+		"sourceHash": "8e715273"
+	},
+	"wallet.page.sections.step1": {
+		"translation": "### 1. Sigue a dos traders, no a una multitud\n\nLas dos carteras que replica se eligieron de nuestro propio ranking de\nhabilidad — la misma lista medida y clasificada sobre la que informa el resto\nde este sitio. En esta página son solo **leader-a** y **leader-b**, que son\nliteralmente sus etiquetas en la config. Sus direcciones no se publican nunca:\nseñalar en público una cartera hábil invitaría a todo el mercado a\nadelantarse a ella, y observarlas observándonos filtraría también nuestras\npropias posiciones.\n\nUna señal aquí son las acciones de una sola cartera. No hay quórum que esperar\nni multitud que contar — que es exactamente por lo que cada control restante\nfunciona distinto que en la [página del clúster]({clusterHref}).",
+		"sourceHash": "79ed58d9"
+	},
+	"wallet.page.sections.step2": {
+		"translation": "### 2. Solo se mueve cuando el líder va en serio\n\nCada líder tiene un **listón de convicción** (`min_leader_notional_usdc`): el\nbot copia una apuesta solo cuando la posición del propio líder en ella alcanza\nel listón. Y el listón se fija *por líder*, contra la historia de ese líder,\nporque la misma cifra en dólares no significa lo mismo dos veces.\n\nMedido a 90 días: las posiciones de leader-a tienen una **mediana de $285** y\nun percentil 90 de $1.729 — un listón de **$500** selecciona su tercio más\nconvencido, y nuestra copia de $5 es cerca del 1 % de lo que apuestan. La\nmediana de leader-b es de **$5**; con un listón de $500 este raíl dispararía\nmás o menos una vez por trimestre mientras aparenta ser un líder armado, así\nque su listón es de **$100**. Una perilla que parece armada y nunca dispara es\npeor que ninguna perilla.\n\nEl listón dispara **una vez por apuesta nueva**, en el momento en que se cruza\npor primera vez. Las ampliaciones nunca lo reactivan, y una apuesta solo\nvuelve a ser nueva cuando el líder la ha cerrado del todo — o ha cambiado de\nlado.",
+		"sourceHash": "cbe7d29d"
+	},
+	"wallet.page.sections.step3": {
+		"translation": "### 3. Cuenta lo que el líder sostiene, no lo que pulsó\n\nEn un mercado de dos resultados, comprar un lado y vender el otro son la misma\nopinión. Así que la convicción se mide en lo que el líder **acaba\nsosteniendo**, al precio de *ese* resultado — no en las palabras del ticket de\nla operación.\n\nLa diferencia no es pequeña. Vender 500 participaciones de un resultado casi\nsin valor a medio centavo recauda unos **$2** de efectivo — pero son\naproximadamente **$498** de convicción en el *otro* resultado, y el bot ahora\nlo cuenta así. El precio de entrada sigue también al resultado sostenido:\nantes de arreglarlo, una posición construida vendiendo podía mostrar una\nderiva de precio de miles por ciento y rechazarse por rancia — un bug que\nrechazaba exactamente las operaciones que existía para copiar.",
+		"sourceHash": "e292e912"
+	},
+	"wallet.page.sections.step4": {
+		"translation": "### 4. Se niega ante un líder que opera ambos lados\n\nEl raíl con más probabilidades de rechazar una entrada. Antes de copiar, el\nbot mira el flujo del propio líder en esta apuesta durante las últimas\n**48 horas** y compara compras con ventas (menor ÷ mayor, en dólares). Por\nencima de **0,5** (`max_wallet_two_sided_ratio`) se niega: una cartera que\nopera ambos lados de la misma apuesta está haciendo mercado, no expresando\nuna opinión — y cada giro que un copiador sigue es un viaje de ida y vuelta\ncompleto y pagado. En el bot de clúster, un seguimiento de giro en vivo se\nmidió en **$0,25 sobre una posición de $5 — cerca del 5 % — para acabar corto\nen lo que acababa de estar largo**.\n\nUna sutileza honesta: una ventana vacía es **«nada que pesar»**, no una\npuntuación limpia de cero. Cuando las 48 horas no contienen flujo que medir,\nel raíl se retira y dice que no hubo medición, en vez de fingir que el líder\naprobó. La distinción se añadió cuando los pases reales mostraron que la\nmayoría de las primeras lecturas eran exactamente eso: ceros sobre ventanas\nvacías, disfrazados de evidencia.",
+		"sourceHash": "20a7460d"
+	},
+	"wallet.page.sections.step5": {
+		"translation": "### 5. Los controles de seguridad habituales\n\nEl resto de la puerta de entrada es la misma familia de preguntas que hace el\nbot de clúster, con el mismo espíritu:\n\n- **«¿Hay alguien aquí con quien operar?»** — por debajo de **$1.000** de\n  liquidez (`min_liquidity_usdc`), pasa.\n- **«¿Está este mercado a punto de terminar?»** — a menos de **1 hora** de la\n  resolución (`min_seconds_to_resolution`), pasa.\n- **«¿Se ha escapado ya el precio del líder?»** — pasa si el precio de venta\n  se ha movido más de un **3 %** desde la entrada efectiva del líder\n  (`staleness_pct`) *y* más de **dos pasos de precio** (`staleness_min_ticks`).\n  Un movimiento que la propia parrilla del mercado no puede subdividir es\n  ruido, no información.\n- **«¿Es una participación demasiado cara?»** — nunca pagar más de **$0,95**\n  (`max_entry_price`). En lo alto del rango de precios una copia arriesga $5\n  para ganar centavos, y una mala resolución borra cientos de victorias.\n- **«¿No estoy copiando ya bastante a este líder?»** — como mucho **2 copias\n  abiertas por líder** (`max_open_copies_per_leader`), para que un líder\n  desatado no se coma todo el presupuesto. Este raíl no tiene equivalente en\n  el clúster.\n- **«¿Tengo sitio, y un suelo?»** — como mucho **$20** abiertos en total\n  (`exposure_cap_usdc`), sin gastar nunca la cuenta por debajo de **$5**\n  (`working_capital_floor_usdc`).",
+		"sourceHash": "8b913483"
+	},
+	"wallet.page.sections.step6": {
+		"translation": "### 6. Lo que deliberadamente no comprueba\n\nTres raíles del bot de clúster están **ausentes aquí**, y la honestidad al\nrespecto importa más que la simetría:\n\n- **Sin raíl de comisiones.** La lección más cara del bot de clúster — la\n  comisión por participación de la casa fue el 77 % de sus primeras pérdidas —\n  produjo allí un techo de comisión que equivale a un **precio mínimo de\n  $0,60**. Este bot no tiene tal raíl: un resultado de 7¢ que su hermano\n  rechazaría pasa sin más. La apuesta es que la propia convicción del líder ya\n  filtra los billetes de lotería baratos; esa apuesta aún no está probada.\n- **Sin ventana de giros.** El bot de clúster rechaza una multitud cuyos\n  miembros acaban de cambiar de lado. Aquí el raíl de flujo de doble lado\n  juega ese papel para una sola cartera.\n- **Sin control de gas en la entrada.** El relayer de la casa paga la\n  liquidación, y la cuenta de trading estructuralmente no guarda gas en\n  absoluto — un raíl de gas en la ruta de entrada rechazaba *todas* las\n  entradas antes de eliminarse. El gas es una cuestión de pagos: el barrido\n  semanal reserva **2 POL** (`gas_reserve_pol`).",
+		"sourceHash": "58361e11"
+	},
+	"wallet.page.sections.step7": {
+		"translation": "### 7. Un ticket que no puede existir se niega a arrancar\n\nLa orden en sí tiene la misma forma que la del bot de clúster:\n**fill-or-kill**, con un límite del precio de venta actual más un **1 %** de\nmargen (`slippage_pct`) pero nunca menos de **dos pasos de precio**\n(`slippage_min_ticks`), ajustado a la propia parrilla de precios del mercado.\nSe llena entera o muere; una orden cancelada no se reintenta.\n\nEl mínimo de 5 participaciones de la casa se maneja distinto, eso sí — **al\narrancar, no por orden**. El servicio calcula el peor precio límite que sus\npropios raíles permiten (con un techo de $0,95 y dos pasos de margen, eso es\n$0,97) y se niega a arrancar del todo si el ticket no puede comprar cinco\nparticipaciones ahí. Por debajo de **$4,85** por apuesta, el bot no arranca —\nuna config que no puede operar debería fallar una vez, en voz alta, al\narrancar, no una vez por señal para siempre.",
+		"sourceHash": "b8aea255"
+	},
+	"wallet.page.sections.step8": {
+		"translation": "### 8. Aguanta los recortes, y sale a la mitad\n\nLas salidas son donde este bot más se diferencia de su hermano. El bot de\nclúster sale a la *primera* venta de cualquiera de la multitud. Este es\ndeliberadamente más difícil de sacudir:\n\n- Un líder **recortando** su posición es información, no una salida. El bot lo\n  registra y aguanta.\n- Cuando la venta acumulada del líder alcanza el **50 % de su posición pico**\n  (`trim_close_fraction`), el bot cierra su pierna **entera** de una vez.\n  Medido contra el pico, no por llenado — un líder desangrándose de 20 % en\n  20 % nunca activaría una regla por llenado. Y siempre la pierna entera,\n  nunca un trozo: una esquirla proporcional puede caer bajo el mínimo de 5\n  participaciones de la casa y volverse invendible.\n- Un líder que llega a **cero**, o que **gira** al otro lado, cierra la pierna\n  de inmediato. Un giro además inicia una apuesta nueva — el bot puede cerrar\n  y reentrar por el otro lado en el mismo aliento, exactamente como el líder.\n- Un líder **eliminado o desactivado en la config** ve sus piernas cerradas en\n  un minuto. Un mercado que **resuelve** se redime.\n\n*La forma de esto está cableada. El único número de salida que puedes girar es\nel umbral de recorte.*",
+		"sourceHash": "b9a0655c"
+	},
+	"wallet.page.sections.step9": {
+		"translation": "### 9. Una salida fallida se encola, no se olvida\n\nUna orden de salida puede morir igual que una entrada. Cada una recibe **tres\nintentos**, rastreados por posición en una cola duradera — una pierna atascada\nno puede bloquear a las demás — y si el tercero falla el bot lo dice en voz\nalta en vez de callarse. Un mercado resuelto pero aún no redimido queda\nmarcado **sin pagar** en los libros, nunca contado como efectivo que no tiene.",
+		"sourceHash": "d5972989"
+	},
+	"wallet.page.sections.step10": {
+		"translation": "### 10. El interruptor de emergencia para las compras, nunca las ventas\n\nEn cualquier momento el interruptor detiene las entradas nuevas **mientras las\nsalidas, los reintentos y las liquidaciones siguen funcionando** — así que un\nalto nunca puede dejar tirada una posición abierta. Deja de tomar riesgo; no\nlo abandona.",
+		"sourceHash": "eaa6c38d"
+	},
+	"wallet.page.sections.step11": {
+		"translation": "### 11. Su dinero no puede tocar el del otro bot\n\nWallet copy opera una **cuenta separada con su propia clave**, sus propios\nlibros, su propio canal de alertas, su propio interruptor y su propio\nservicio. Un bug de wallet-copy solo puede gastar dinero de wallet-copy;\nninguno de los bots puede siquiera leer los registros del otro. Lo único que\ncomparten, a propósito, es el destino del barrido semanal de beneficios —\nnombrado en la config como `profit_destination` tras una\n`destination_allowlist`, con un umbral de polvo de **$1**\n(`dust_threshold_usdc`); las direcciones en sí no se publican nunca.",
+		"sourceHash": "7903e26f"
+	},
+	"wallet.page.sections.step12": {
+		"translation": "### 12. Dónde está hoy\n\nLa función entró en vivo el **2026-08-11**. Luego pasó sus primeros días\ncopiando correctamente **nada** — con listones así de altos, el silencio es el\nestado esperado, y las herramientas de operación existen precisamente para\ndemostrar que el silencio es salud y no avería. Su primera posición real llegó\na los pocos días. Esa es toda la historia en vivo hasta ahora: lee cada número\nde esta página como una versión 1, argumentada desde la medición pero apenas\nejercitada en producción.",
+		"sourceHash": "b7f4f96c"
+	},
+	"wallet.page.sections.hardWired": {
+		"translation": "## Qué está cableado, y no es un ajuste\n\n- **El listón de convicción dispara una vez por apuesta nueva.** Las\n  ampliaciones nunca lo reactivan; solo un cierre completo o un giro lo\n  reinician.\n- **Las posiciones se cuentan en el resultado sostenido.** Comprar un lado y\n  vender el otro son la misma opinión, normalizada antes de que ninguna regla\n  las mire.\n- **Las salidas cierran la pierna entera, siempre** — en el umbral de recorte,\n  en un giro, en un cierre total, al eliminarse de la config o en la\n  resolución. No hay cierre parcial, ni take-profit ni stop-loss que afinar.\n- **Una pierna por apuesta por líder.** El mismo mercado copiado de ambos\n  líderes son dos piernas independientes.\n- **La entrada es una orden fill-or-kill valorada sobre la parrilla de la\n  casa**, y el mínimo de 5 participaciones se impone al arrancar, no por\n  orden.\n- **Solo mercados macro**, calificados contra el mismo catálogo que todo lo\n  demás en este sitio.\n- **El interruptor perdona las salidas.** Solo las entradas pueden detenerse.\n\n**¿Por qué dividirlo así?** Por la misma razón que en la página del clúster:\nlos umbrales son números, y los números son seguros de exponer. La lógica de\ncopia en sí — qué cuenta como convicción, cómo funcionan las salidas — vive en\ncódigo, para que una línea descuidada de YAML no pueda descarrilar la\nestrategia en silencio.",
+		"sourceHash": "5b43a5cb"
+	},
+	"wallet.page.sections.notClaiming": {
+		"translation": "## Lo que aún no afirmamos\n\n- **La historia en vivo tiene días.** La función entró en vivo el 2026-08-11 y\n  ha abierto un número de posiciones de un solo dígito. Cada raíl de esta\n  página se argumenta con mediciones tomadas *antes* de armarlo; casi ninguno\n  tiene un historial significativo de disparos en producción.\n- **No hay raíl de comisiones, y eso es una apuesta, no una prueba.** La\n  lección de comisiones del bot de clúster (77 % de sus primeras pérdidas) no\n  tiene guardia aquí. Si la convicción de los líderes no filtra los resultados\n  baratos como esperamos, esta página lo dirá — después de los libros.\n- **La evidencia temprana del raíl de doble lado era fina.** La mayoría de sus\n  primeras lecturas eran ceros sobre ventanas de medición vacías; el payload\n  distingue ahora «medido limpio» de «nada que pesar», pero el raíl en sí aún\n  no ha probado su umbral contra tráfico real.\n- **La redención no es automática.** Una victoria resuelta queda en los libros\n  como cerrada pero explícitamente *sin pagar* hasta que se redime — los\n  libros se niegan a contar dinero que no ha llegado.",
+		"sourceHash": "04fa6d2f"
+	},
+	"wallet.page.sections.notThis": {
+		"translation": "## Lo que esta página no es\n\nEstos son los parámetros operativos de nuestro propio bot pequeño, publicados\ncon el mismo espíritu que el resto del historial. No son consejo, no son un\nservicio de señales y no son la afirmación de que replicar traders hábiles\nseguirá funcionando.\n\nNinguna de las carteras implicadas — los dos líderes, la propia cuenta de\ntrading del bot o la dirección de pago — se publica jamás en ningún lugar de\neste sitio. Observar cualquiera de ellas en tiempo real expondría posiciones\nabiertas, que es exactamente lo que la\n[política de divulgación]({methodologyHref}) existe para impedir.",
+		"sourceHash": "ff6d2c88"
+	},
+	"wallet.page.md.inOneSentence": {
+		"translation": "En una frase",
+		"sourceHash": "7de3e1c3"
+	},
+	"wallet.page.md.knobsHeading": {
+		"translation": "Las perillas",
+		"sourceHash": "3db32689"
+	},
+	"wallet.page.md.knobsBlurb": {
+		"translation": "El sitio las muestra como deslizadores que puedes arrastrar para ver la\ndecisión del bot cambiar. En markdown son solo la tabla:",
+		"sourceHash": "e859566c"
+	},
+	"wallet.page.md.tableRole": {
+		"translation": "Papel en la historia",
+		"sourceHash": "8bddd4de"
+	},
+	"wallet.page.md.tableKey": {
+		"translation": "Clave",
+		"sourceHash": "cd1ac90c"
+	},
+	"wallet.page.md.tableLive": {
+		"translation": "En vivo ({market})",
+		"sourceHash": "8677d97e"
+	},
+	"wallet.page.md.gasLabel": {
+		"translation": "Gas reservado antes de cualquier pago (solo barrido, no raíl de entrada)",
+		"sourceHash": "6b6f33e9"
+	},
+	"wallet.page.md.payoutLabel": {
+		"translation": "Dirección de pago, lista permitida, umbral de polvo",
+		"sourceHash": "af059b4f"
+	},
+	"wallet.page.md.notPublished": {
+		"translation": "no publicado",
+		"sourceHash": "c0bab374"
+	},
+	"wallet.page.md.killLabel": {
+		"translation": "Parar entradas nuevas (las salidas siguen funcionando)",
+		"sourceHash": "f87dd749"
+	},
+	"wallet.page.ui.ariaLabel": {
+		"translation": "Simulador de decisiones de wallet-copy",
+		"sourceHash": "b53e8f76"
+	},
+	"wallet.page.ui.tryIt": {
+		"translation": "Pruébalo — la decisión del bot, en vivo",
+		"sourceHash": "97b38b75"
+	},
+	"wallet.page.ui.defaultsNote": {
+		"translation": "por defecto = config {market}, {asOf}",
+		"sourceHash": "7f716bd5"
+	},
+	"wallet.page.ui.reset": {
+		"translation": "Restaurar nuestra config en vivo",
+		"sourceHash": "62792b0b"
+	},
+	"wallet.page.ui.incomingSignal": {
+		"translation": "Señal entrante",
+		"sourceHash": "b6c20e5b"
+	},
+	"wallet.page.ui.stageBoot": {
+		"translation": "Primero — ¿arrancaría siquiera el servicio?",
+		"sourceHash": "5127fe65"
+	},
+	"wallet.page.ui.stageAlert": {
+		"translation": "Luego aguas arriba — ¿emite el tracker una señal siquiera?",
+		"sourceHash": "ef8ee58f"
+	},
+	"wallet.page.ui.stageExecutor": {
+		"translation": "Luego los raíles del propio bot, en orden",
+		"sourceHash": "54d39948"
+	},
+	"wallet.page.ui.flagBoot": {
+		"translation": "el servicio se niega a arrancar — ninguna señal llega a leerse",
+		"sourceHash": "d3b9ef8e"
+	},
+	"wallet.page.ui.flagAlert": {
+		"translation": "no se emite señal — al bot nunca se le pregunta",
+		"sourceHash": "8a824aea"
+	},
+	"wallet.page.ui.flagExecutor": {
+		"translation": "el bot real se detiene aquí",
+		"sourceHash": "75aa497a"
+	},
+	"wallet.page.ui.explainer": {
+		"translation": "El ejecutor real se corta en el primer ✗ de la última lista y sigue adelante. Aquí se puntúa cada control para que veas qué hace cada perilla. Los precios están siempre en el resultado que el líder realmente sostiene — una posición construida vendiendo un lado es una posición en el otro. El motor corre además una fila de rechazos contables omitidos aquí — ¿está esta apuesta ya copiada, está el mercado en alcance, está puesto el interruptor? — porque ninguno es un número que puedas girar.",
+		"sourceHash": "ce4bd4c2"
+	},
+	"wallet.page.ui.noscript": {
+		"translation": "Sin JavaScript esto muestra nuestra config en vivo contra la primera señal de ejemplo. Los deslizadores y los botones de señal necesitan JavaScript para recalcular.",
+		"sourceHash": "abce22be"
+	},
+	"wallet.page.ui.exitHeading": {
+		"translation": "¿Y cuándo sale? Arrastra las ventas del líder",
+		"sourceHash": "dabe1bb4"
+	},
+	"wallet.page.ui.soldLabel": {
+		"translation": "El líder ha vendido este tanto de su posición pico",
+		"sourceHash": "130b4873"
+	},
+	"wallet.page.ui.soldAria": {
+		"translation": "Cuánto de su posición pico ha vendido el líder",
+		"sourceHash": "681bd7a3"
+	},
+	"wallet.page.ui.soldNote": {
+		"translation": "la señal, no un ajuste",
+		"sourceHash": "86c18682"
+	},
+	"wallet.page.ui.peakLabel": {
+		"translation": "su posición pico",
+		"sourceHash": "f3e67221"
+	},
+	"wallet.page.ui.closeLine": {
+		"translation": "línea de cierre",
+		"sourceHash": "08cdd643"
+	},
+	"wallet.page.ui.exitNote": {
+		"translation": "Un giro al otro lado, un cierre a cero, un líder eliminado de la config o la resolución del mercado — cada uno de ellos cierra la pierna diga lo que diga este deslizador. Solo la línea de recorte es un ajuste.",
+		"sourceHash": "c6cdd246"
+	},
+	"wallet.page.knobs.leader_a_min_notional_usdc": {
+		"translation": "Copiar a leader-a solo cuando su apuesta alcance",
+		"sourceHash": "e3879958"
+	},
+	"wallet.page.knobs.leader_b_min_notional_usdc": {
+		"translation": "Copiar a leader-b solo cuando su apuesta alcance",
+		"sourceHash": "a0281b11"
+	},
+	"wallet.page.knobs.max_open_copies_per_leader": {
+		"translation": "Nunca llevar más copias de un líder que",
+		"sourceHash": "e75150db"
+	},
+	"wallet.page.knobs.max_wallet_two_sided_ratio": {
+		"translation": "Rechazar a un líder que opera ambos lados más allá de",
+		"sourceHash": "3ee77a20"
+	},
+	"wallet.page.knobs.min_liquidity_usdc": {
+		"translation": "Pasar de mercados más finos que",
+		"sourceHash": "212826b6"
+	},
+	"wallet.page.knobs.min_seconds_to_resolution": {
+		"translation": "Pasar de mercados que resuelven dentro de",
+		"sourceHash": "1a7c23d3"
+	},
+	"wallet.page.knobs.staleness_pct": {
+		"translation": "Pasar si el precio ya corrió más de",
+		"sourceHash": "b34be1fa"
+	},
+	"wallet.page.knobs.staleness_min_ticks": {
+		"translation": "…pero tratar como ruido un movimiento menor que",
+		"sourceHash": "ae4d2d11"
+	},
+	"wallet.page.knobs.max_entry_price": {
+		"translation": "Nunca pagar por participación más de",
+		"sourceHash": "3bb889bf"
+	},
+	"wallet.page.knobs.trade_size_usdc": {
+		"translation": "Tamaño de una copia",
+		"sourceHash": "adb06e66"
+	},
+	"wallet.page.knobs.exposure_cap_usdc": {
+		"translation": "Nunca mantener abierto más de",
+		"sourceHash": "eee65c54"
+	},
+	"wallet.page.knobs.working_capital_floor_usdc": {
+		"translation": "Nunca dejar caer el saldo gastable por debajo de",
+		"sourceHash": "6ab9f735"
+	},
+	"wallet.page.knobs.slippage_pct": {
+		"translation": "Retirarse antes que pagar de más por encima de",
+		"sourceHash": "6446b4b4"
+	},
+	"wallet.page.knobs.slippage_min_ticks": {
+		"translation": "…pero dar siempre a la orden al menos este margen",
+		"sourceHash": "b8cca0a1"
+	},
+	"wallet.page.knobs.trim_close_fraction": {
+		"translation": "Cerrarlo todo cuando el líder haya deshecho",
+		"sourceHash": "11a48495"
+	},
+	"wallet.page.knobGroups.conviction": {
+		"translation": "¿Va el líder realmente en serio?",
+		"sourceHash": "a887bd3e"
+	},
+	"wallet.page.knobGroups.gate": {
+		"translation": "¿Debería copiar esto siquiera?",
+		"sourceHash": "a6ef7aa5"
+	},
+	"wallet.page.knobGroups.size": {
+		"translation": "¿Cuánto puedo poner en riesgo?",
+		"sourceHash": "0cf0295f"
+	},
+	"wallet.page.knobGroups.execution": {
+		"translation": "¿Cómo consigo llenarme?",
+		"sourceHash": "f7277e44"
+	},
+	"wallet.page.knobGroups.exit": {
+		"translation": "¿Cuándo salgo?",
+		"sourceHash": "f8969ecb"
+	},
+	"wallet.page.scenarios.textbook": {
+		"translation": "Copia de manual",
+		"sourceHash": "6fc24670"
+	},
+	"wallet.page.scenarios.small-poke": {
+		"translation": "Toque pequeño",
+		"sourceHash": "a77cbd79"
+	},
+	"wallet.page.scenarios.leader-b-bar": {
+		"translation": "El listón de leader-b",
+		"sourceHash": "27244810"
+	},
+	"wallet.page.scenarios.cheap-side": {
+		"translation": "Lado barato",
+		"sourceHash": "49ce38cb"
+	},
+	"wallet.page.scenarios.two-sided": {
+		"translation": "Doble lado",
+		"sourceHash": "ec619559"
+	},
+	"wallet.page.scenarios.empty-window": {
+		"translation": "Ventana vacía",
+		"sourceHash": "ab8de1c6"
+	},
+	"wallet.page.scenarios.spree": {
+		"translation": "Desatado",
+		"sourceHash": "5f928076"
+	},
+	"wallet.page.scenarios.full": {
+		"translation": "Sin sitio libre",
+		"sourceHash": "bddb8796"
+	},
+	"wallet.page.scenarios.chased": {
+		"translation": "El precio se escapó",
+		"sourceHash": "5f414887"
+	},
+	"wallet.page.scenarios.too-dear": {
+		"translation": "Demasiado caro",
+		"sourceHash": "563569d3"
+	},
+	"wallet.page.scenarios.ends-soon": {
+		"translation": "Termina muy pronto",
+		"sourceHash": "addd7194"
+	},
+	"wallet.page.scenarios.thin": {
+		"translation": "Mercado fino",
+		"sourceHash": "9ba617b6"
+	},
+	"wallet.page.scenarios.broke": {
+		"translation": "Sin efectivo",
+		"sourceHash": "7f5079da"
 	}
 }

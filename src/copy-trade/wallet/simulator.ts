@@ -7,6 +7,13 @@
  * can never show a verdict the module would not produce. `evaluateTrim` is the
  * exit rule's own little decision, for the second widget.
  *
+ * Localization (issue #74) reuses the cluster mechanism unchanged: an optional
+ * `WalletSimLocale` bundle carries the catalog-resolved templates and shared
+ * unit words plus the locale whose number conventions format the values. The
+ * decision path never reads it, and omitting it yields the canonical English
+ * verdicts. `{leader}` placeholders are always filled with the anonymous
+ * config labels (`leader-a` / `leader-b`), never translated.
+ *
  * Three pipelines are modelled, and the distinction is load-bearing:
  *
  * - the venue's 5-share minimum belongs to **boot** — the service checks it
@@ -24,18 +31,11 @@
  * real bot would have stopped at is marked `blocker`.
  */
 
-import {
-	formatDuration,
-	formatFraction,
-	formatPct,
-	formatPrice,
-	formatShares,
-	formatSteps,
-	formatUsd,
-} from "../format";
+import type { Locale } from "@/i18n/catalog";
+import { fillTemplate, formattersFor, type SimFormatters } from "../locale-format";
 import { complement, roundTo, snapDown } from "../market-math";
+import { SIM_UNITS_EN, type SimUnits } from "../sim-units-en";
 import {
-	formatRatio,
 	LIVE_TICK_SIZES,
 	leaderKnobKey,
 	VENUE_MIN_ORDER_SHARES,
@@ -43,6 +43,20 @@ import {
 	type WalletKnobValues,
 	type WalletScenario,
 } from "./config";
+import { WALLET_SIM_EN, type WalletSimStrings } from "./sim-prose-en";
+
+/**
+ * Everything one locale needs to speak the simulator's mind — plain data end
+ * to end, so the SSR page can hand it to the client script as JSON and both
+ * sides recompute the identical strings.
+ */
+export interface WalletSimLocale {
+	readonly locale: Locale;
+	readonly units: SimUnits;
+	readonly strings: WalletSimStrings;
+}
+
+const EN_SIM: WalletSimLocale = { locale: "en", units: SIM_UNITS_EN, strings: WALLET_SIM_EN };
 
 // The verdict shapes stay module-private: every consumer (the Astro page, the
 // client script, the tests) reads them off the evaluate functions' inferred
@@ -163,17 +177,22 @@ function hasRunAway(values: WalletKnobValues, signal: WalletScenario, plan: Orde
 	return plan.adverseMove > roundTo(allowed, 6);
 }
 
-function driftReadout(plan: OrderPlan): string {
-	if (plan.adverseMove <= 0) return "moved in our favour";
-	if (plan.adverseSteps <= 0) return formatPct(plan.driftPct);
-	return `${formatPct(plan.driftPct)} (${formatSteps(plan.adverseSteps)})`;
+function driftReadout(plan: OrderPlan, sim: WalletSimLocale, fmt: SimFormatters): string {
+	if (plan.adverseMove <= 0) return sim.strings.drift.favour;
+	if (plan.adverseSteps <= 0) return fmt.pct(plan.driftPct);
+	return `${fmt.pct(plan.driftPct)} (${fmt.steps(plan.adverseSteps)})`;
 }
 
 /** The staleness rail as one readable rule, collapsing when the floor is off. */
-function freshnessRule(values: WalletKnobValues): string {
-	const pct = `≤ ${formatPct(values.staleness_pct)}`;
-	if (values.staleness_min_ticks <= 0) return pct;
-	return `${pct} or < ${formatSteps(values.staleness_min_ticks)}`;
+function freshnessRule(values: WalletKnobValues, sim: WalletSimLocale, fmt: SimFormatters): string {
+	const pct = fmt.pct(values.staleness_pct);
+	if (values.staleness_min_ticks <= 0) {
+		return fillTemplate(sim.strings.gates.freshness.rulePctOnly, { pct });
+	}
+	return fillTemplate(sim.strings.gates.freshness.ruleWithFloor, {
+		pct,
+		steps: fmt.steps(values.staleness_min_ticks),
+	});
 }
 
 /**
@@ -204,135 +223,215 @@ function maxGain(values: WalletKnobValues, price: number): number {
  * kill switch, a copy already open on this exact bet — because none of them is
  * a number you can turn.
  */
-function checks(values: WalletKnobValues, signal: WalletScenario, plan: OrderPlan): GateCheck[] {
+function checks(
+	values: WalletKnobValues,
+	signal: WalletScenario,
+	plan: OrderPlan,
+	sim: WalletSimLocale,
+	fmt: SimFormatters,
+): GateCheck[] {
 	const bar = values[leaderKnobKey(signal.leader)];
 	const worstLimit = worstReachableLimit(values);
 	const minTicket = minimumBootTicket(values);
 	const wouldOpen = signal.openExposureUsdc + values.trade_size_usdc;
 	const wouldLeave = signal.balanceUsdc - values.trade_size_usdc;
+	const gates = sim.strings.gates;
+	const size = fmt.usd(values.trade_size_usdc);
+	const minShares = String(VENUE_MIN_ORDER_SHARES);
 
 	return [
 		{
 			id: "boot",
 			stage: "boot",
-			question: "Can my ticket even buy 5 shares at the worst price I allow?",
+			question: fillTemplate(gates.boot.question, { min: minShares }),
 			knob: "trade_size_usdc",
-			actual: `${formatUsd(values.trade_size_usdc)} → ${formatShares(values.trade_size_usdc / worstLimit)} at ${formatPrice(worstLimit)}`,
-			rule: `≥ ${formatUsd(minTicket)}`,
+			actual: fillTemplate(gates.boot.actual, {
+				size,
+				shares: fmt.shares(values.trade_size_usdc / worstLimit),
+				limit: fmt.price(worstLimit),
+			}),
+			rule: `≥ ${fmt.usd(minTicket)}`,
 			passed: values.trade_size_usdc >= minTicket,
-			because: `A ${formatUsd(values.trade_size_usdc)} ticket at the worst limit the other knobs allow (${formatPrice(worstLimit)}) buys under the venue's ${VENUE_MIN_ORDER_SHARES}-share minimum, so the service refuses to start on this config at all rather than fail one order at a time.`,
+			because: fillTemplate(gates.boot.because, {
+				size,
+				limit: fmt.price(worstLimit),
+				min: minShares,
+			}),
 		},
 		{
 			id: "conviction",
 			stage: "alert",
-			question: `Has ${signal.leader} bet enough to mean it?`,
+			question: fillTemplate(gates.conviction.question, { leader: signal.leader }),
 			knob: leaderKnobKey(signal.leader),
-			actual: `${formatUsd(signal.stakeUsdc)} at peak`,
-			rule: `≥ ${formatUsd(bar)}`,
+			actual: fillTemplate(gates.conviction.actual, { stake: fmt.usd(signal.stakeUsdc) }),
+			rule: `≥ ${fmt.usd(bar)}`,
 			passed: signal.stakeUsdc >= bar,
-			because: `${signal.leader}'s whole position on this bet peaked at ${formatUsd(signal.stakeUsdc)}, under their ${formatUsd(bar)} bar — the tracker never emits an entry signal, so the bot is never asked and nothing is recorded about it.`,
+			because: fillTemplate(gates.conviction.because, {
+				leader: signal.leader,
+				stake: fmt.usd(signal.stakeUsdc),
+				bar: fmt.usd(bar),
+			}),
 		},
 		{
 			id: "cap",
 			stage: "executor",
-			question: "Am I already copying this leader enough?",
+			question: gates.cap.question,
 			knob: "max_open_copies_per_leader",
-			actual: `${signal.openCopiesForLeader} open for ${signal.leader}`,
+			actual: fillTemplate(gates.cap.actual, {
+				n: String(signal.openCopiesForLeader),
+				leader: signal.leader,
+			}),
 			rule: `< ${values.max_open_copies_per_leader}`,
 			passed: signal.openCopiesForLeader < values.max_open_copies_per_leader,
-			because: `${signal.openCopiesForLeader} ${signal.openCopiesForLeader === 1 ? "copy" : "copies"} of ${signal.leader} ${signal.openCopiesForLeader === 1 ? "is" : "are"} already open, at the per-leader cap of ${values.max_open_copies_per_leader} — one leader on a spree cannot eat the whole budget.`,
+			because: fillTemplate(fmt.pluralize(gates.cap.because, signal.openCopiesForLeader), {
+				leader: signal.leader,
+				cap: String(values.max_open_copies_per_leader),
+			}),
 		},
 		{
 			id: "room",
 			stage: "executor",
-			question: "Do I have room under my cap?",
+			question: gates.room.question,
 			knob: "exposure_cap_usdc",
-			actual: `${formatUsd(signal.openExposureUsdc)} open + ${formatUsd(values.trade_size_usdc)}`,
-			rule: `≤ ${formatUsd(values.exposure_cap_usdc)}`,
+			actual: fillTemplate(gates.room.actual, {
+				open: fmt.usd(signal.openExposureUsdc),
+				size,
+			}),
+			rule: `≤ ${fmt.usd(values.exposure_cap_usdc)}`,
 			passed: wouldOpen <= values.exposure_cap_usdc,
-			because: `${formatUsd(signal.openExposureUsdc)} is already open across both leaders; another ${formatUsd(values.trade_size_usdc)} copy would breach the ${formatUsd(values.exposure_cap_usdc)} cap.`,
+			because: fillTemplate(gates.room.because, {
+				open: fmt.usd(signal.openExposureUsdc),
+				size,
+				cap: fmt.usd(values.exposure_cap_usdc),
+			}),
 		},
 		{
 			id: "liquidity",
 			stage: "executor",
-			question: "Is there anyone here to trade with?",
+			question: gates.liquidity.question,
 			knob: "min_liquidity_usdc",
-			actual: formatUsd(signal.liquidityUsdc),
-			rule: `≥ ${formatUsd(values.min_liquidity_usdc)}`,
+			actual: fmt.usd(signal.liquidityUsdc),
+			rule: `≥ ${fmt.usd(values.min_liquidity_usdc)}`,
 			passed: signal.liquidityUsdc >= values.min_liquidity_usdc,
-			because: `${formatUsd(signal.liquidityUsdc)} of liquidity is under the ${formatUsd(values.min_liquidity_usdc)} floor — easy to get in, hard to get out.`,
+			because: fillTemplate(gates.liquidity.because, {
+				liquidity: fmt.usd(signal.liquidityUsdc),
+				floor: fmt.usd(values.min_liquidity_usdc),
+			}),
 		},
 		{
 			id: "timing",
 			stage: "executor",
-			question: "Is this market about to end?",
+			question: gates.timing.question,
 			knob: "min_seconds_to_resolution",
-			actual: formatDuration(signal.secondsToResolution),
-			rule: `≥ ${formatDuration(values.min_seconds_to_resolution)}`,
+			actual: fmt.duration(signal.secondsToResolution),
+			rule: `≥ ${fmt.duration(values.min_seconds_to_resolution)}`,
 			passed: signal.secondsToResolution >= values.min_seconds_to_resolution,
-			because: `${formatDuration(signal.secondsToResolution)} left before resolution, under the ${formatDuration(values.min_seconds_to_resolution)} minimum — no room to get back out.`,
+			because: fillTemplate(gates.timing.because, {
+				left: fmt.duration(signal.secondsToResolution),
+				min: fmt.duration(values.min_seconds_to_resolution),
+			}),
 		},
 		{
 			id: "freshness",
 			stage: "executor",
-			question: "Has the price already run past the leader?",
+			question: gates.freshness.question,
 			knob: "staleness_pct",
-			actual: driftReadout(plan),
-			rule: freshnessRule(values),
+			actual: driftReadout(plan, sim, fmt),
+			rule: freshnessRule(values, sim, fmt),
 			passed: !hasRunAway(values, signal, plan),
-			because: `The ask sits ${formatPct(plan.driftPct)} past the leader's ${formatPrice(signal.entryPrice)} entry (now ${formatPrice(signal.bestAsk)}), beyond the ${formatPct(values.staleness_pct)} limit and the ${formatSteps(values.staleness_min_ticks)} noise floor — the move already happened.`,
+			because: fillTemplate(gates.freshness.because, {
+				drift: fmt.pct(plan.driftPct),
+				entry: fmt.price(signal.entryPrice),
+				ask: fmt.price(signal.bestAsk),
+				limit: fmt.pct(values.staleness_pct),
+				floor: fmt.steps(values.staleness_min_ticks),
+			}),
 		},
 		{
 			id: "flow",
 			stage: "executor",
-			question: "Does this leader trade both sides of this bet?",
+			question: gates.flow.question,
 			knob: "max_wallet_two_sided_ratio",
-			actual: signal.flowRatio === null ? "nothing to weigh" : formatRatio(signal.flowRatio),
+			actual: signal.flowRatio === null ? gates.flow.actualNone : fmt.ratio(signal.flowRatio),
 			rule:
 				values.max_wallet_two_sided_ratio >= 1
-					? "off"
-					: `≤ ${formatRatio(values.max_wallet_two_sided_ratio)}`,
+					? sim.units.off
+					: `≤ ${fmt.ratio(values.max_wallet_two_sided_ratio)}`,
 			passed: !isTwoSided(values, signal),
 			because:
 				signal.flowRatio === null
 					? ""
-					: `Over the last 48 hours this leader's buy and sell flow on this bet sit at ${formatRatio(signal.flowRatio)} of each other, past the ${formatRatio(values.max_wallet_two_sided_ratio)} ceiling — a wallet trading both sides is making a market, not expressing a view, and every flip copied is a paid round trip.`,
+					: fillTemplate(gates.flow.because, {
+							ratio: fmt.ratio(signal.flowRatio),
+							ceiling: fmt.ratio(values.max_wallet_two_sided_ratio),
+						}),
 		},
 		{
 			id: "price",
 			stage: "executor",
-			question: "Is a share too dear to be worth the downside?",
+			question: gates.price.question,
 			knob: "max_entry_price",
-			actual: formatPrice(signal.currentPrice),
-			rule: values.max_entry_price <= 0 ? "off" : `≤ ${formatPrice(values.max_entry_price)}`,
+			actual: fmt.price(signal.currentPrice),
+			rule: values.max_entry_price <= 0 ? sim.units.off : `≤ ${fmt.price(values.max_entry_price)}`,
 			passed: values.max_entry_price <= 0 || signal.currentPrice <= values.max_entry_price,
-			because: `The market prices this outcome at ${formatPrice(signal.currentPrice)}, over the ${formatPrice(values.max_entry_price)} ceiling — a copy could win at most ${formatUsd(maxGain(values, signal.currentPrice))} while still risking the whole ${formatUsd(values.trade_size_usdc)}.`,
+			because: fillTemplate(gates.price.because, {
+				price: fmt.price(signal.currentPrice),
+				ceiling: fmt.price(values.max_entry_price),
+				gain: fmt.usd(maxGain(values, signal.currentPrice)),
+				size,
+			}),
 		},
 		{
 			id: "floor",
 			stage: "executor",
-			question: "Will this take me below my floor?",
+			question: gates.floor.question,
 			knob: "working_capital_floor_usdc",
-			actual: `${formatUsd(signal.balanceUsdc)} → ${formatUsd(wouldLeave)}`,
-			rule: `≥ ${formatUsd(values.working_capital_floor_usdc)}`,
+			actual: `${fmt.usd(signal.balanceUsdc)} → ${fmt.usd(wouldLeave)}`,
+			rule: `≥ ${fmt.usd(values.working_capital_floor_usdc)}`,
 			passed: wouldLeave >= values.working_capital_floor_usdc,
-			because: `A ${formatUsd(values.trade_size_usdc)} copy would leave ${formatUsd(wouldLeave)}, under the ${formatUsd(values.working_capital_floor_usdc)} spendable floor.`,
+			because: fillTemplate(gates.floor.because, {
+				size,
+				left: fmt.usd(wouldLeave),
+				floor: fmt.usd(values.working_capital_floor_usdc),
+			}),
 		},
 	];
 }
 
-function copyDetail(values: WalletKnobValues, signal: WalletScenario, plan: OrderPlan): string {
-	const order = `It sends a ${formatUsd(values.trade_size_usdc)} fill-or-kill order at a limit of ${formatPrice(plan.limitPrice)} — about ${formatShares(plan.shares)} — which fills completely or dies; a killed order is not retried.`;
-	const hold = `Then it holds through small trims and sells the whole leg the moment ${signal.leader} has unwound ${formatFraction(values.trim_close_fraction)} of their peak — or flipped, or closed out.`;
+function copyDetail(
+	values: WalletKnobValues,
+	signal: WalletScenario,
+	plan: OrderPlan,
+	sim: WalletSimLocale,
+	fmt: SimFormatters,
+): string {
+	const order = fillTemplate(sim.strings.detail.order, {
+		size: fmt.usd(values.trade_size_usdc),
+		limit: fmt.price(plan.limitPrice),
+		shares: fmt.shares(plan.shares),
+	});
+	const hold = fillTemplate(sim.strings.detail.hold, {
+		leader: signal.leader,
+		threshold: fmt.fraction(values.trim_close_fraction),
+	});
 	if (signal.viaSale) {
-		return `The leader built this position by selling the other side, so the bot buys the outcome they actually hold, at ${formatPrice(signal.bestAsk)}. ${order} ${hold}`;
+		return fillTemplate(sim.strings.detail.copyViaSale, {
+			ask: fmt.price(signal.bestAsk),
+			order,
+			hold,
+		});
 	}
-	return `Every check passed. ${order} ${hold}`;
+	return fillTemplate(sim.strings.detail.copy, { order, hold });
 }
 
-export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletScenario): Verdict {
+export function evaluateLeaderSignal(
+	values: WalletKnobValues,
+	signal: WalletScenario,
+	sim: WalletSimLocale = EN_SIM,
+): Verdict {
+	const fmt = formattersFor(sim.locale, sim.units);
 	const plan = planOrder(values, signal);
-	const raw = checks(values, signal, plan);
+	const raw = checks(values, signal, plan, sim, fmt);
 	const firstFailure = raw.find((check) => !check.passed);
 
 	const gates: GateResult[] = raw.map((check) => ({
@@ -345,8 +444,10 @@ export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletSce
 		return {
 			action: "copy",
 			gates,
-			headline: `COPY ${formatUsd(values.trade_size_usdc)}`,
-			detail: copyDetail(values, signal, plan),
+			headline: fillTemplate(sim.strings.verdict.copy, {
+				size: fmt.usd(values.trade_size_usdc),
+			}),
+			detail: copyDetail(values, signal, plan, sim, fmt),
 		};
 	}
 
@@ -356,7 +457,7 @@ export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletSce
 		return {
 			action: "no-boot",
 			gates,
-			headline: "REFUSED AT BOOT",
+			headline: sim.strings.verdict.noBoot,
 			detail: firstFailure.because,
 		};
 	}
@@ -367,7 +468,7 @@ export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletSce
 		return {
 			action: "no-signal",
 			gates,
-			headline: "NO SIGNAL",
+			headline: sim.strings.verdict.noSignal,
 			detail: firstFailure.because,
 		};
 	}
@@ -375,7 +476,7 @@ export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletSce
 	return {
 		action: "skip",
 		gates,
-		headline: "SKIP",
+		headline: sim.strings.verdict.skip,
 		detail: firstFailure.because,
 	};
 }
@@ -384,17 +485,25 @@ export function evaluateLeaderSignal(values: WalletKnobValues, signal: WalletSce
  * The signal, in one sentence, split so the panel can style the market title.
  * A position built by selling carries the translation with it — the bot buys
  * the outcome the leader actually holds, and nothing else makes sense without
- * that.
+ * that. The invented market titles are quoted as-is in every locale.
  */
-export function leaderSignalLine(signal: WalletScenario): {
+export function leaderSignalLine(
+	signal: WalletScenario,
+	sim: WalletSimLocale = EN_SIM,
+): {
 	lead: string;
 	market: string;
 	trail: string;
 } {
-	const lead = `${signal.leader} built a ${formatUsd(signal.stakeUsdc)} position in`;
-	const trail = signal.viaSale
-		? `— by selling the other side, so the outcome they actually hold trades at ${formatPrice(signal.entryPrice)}, and that is what the bot would buy.`
-		: `at ${formatPrice(signal.entryPrice)}.`;
+	const fmt = formattersFor(sim.locale, sim.units);
+	const lead = fillTemplate(sim.strings.signal.lead, {
+		leader: signal.leader,
+		stake: fmt.usd(signal.stakeUsdc),
+	});
+	const trail = fillTemplate(
+		signal.viaSale ? sim.strings.signal.trailViaSale : sim.strings.signal.trail,
+		{ entry: fmt.price(signal.entryPrice) },
+	);
 	return { lead, market: signal.market, trail };
 }
 
@@ -407,45 +516,59 @@ export function leaderSignalLine(signal: WalletScenario): {
 export function evaluateTrim(
 	values: WalletKnobValues,
 	soldPctOfPeak: number,
+	sim: WalletSimLocale = EN_SIM,
 ): { action: "hold" | "close"; headline: string; detail: string } {
+	const fmt = formattersFor(sim.locale, sim.units);
 	const reduced = soldPctOfPeak / 100;
-	const threshold = formatFraction(values.trim_close_fraction);
+	const threshold = fmt.fraction(values.trim_close_fraction);
 	if (reduced < values.trim_close_fraction) {
 		return {
 			action: "hold",
-			headline: "HOLD",
-			detail: `The leader has unwound ${formatPct(soldPctOfPeak)} of their peak — under the ${threshold} line. That is information, not an exit: the bot writes it down and keeps the whole position.`,
+			headline: sim.strings.trim.holdHeadline,
+			detail: fillTemplate(sim.strings.trim.holdDetail, {
+				sold: fmt.pct(soldPctOfPeak),
+				threshold,
+			}),
 		};
 	}
 	return {
 		action: "close",
-		headline: "CLOSE THE WHOLE LEG",
-		detail: `${formatPct(soldPctOfPeak)} of the peak is gone — at or past the ${threshold} line. The bot sells the entire copy at once, never a slice: a proportional sliver can drop under the venue's ${VENUE_MIN_ORDER_SHARES}-share minimum and become unsellable.`,
+		headline: sim.strings.trim.closeHeadline,
+		detail: fillTemplate(sim.strings.trim.closeDetail, {
+			sold: fmt.pct(soldPctOfPeak),
+			threshold,
+			min: String(VENUE_MIN_ORDER_SHARES),
+		}),
 	};
 }
 
 /**
  * The "in one sentence" summary, rewritten from whatever the knobs currently say.
  */
-export function walletSummarySentence(values: WalletKnobValues): string {
+export function walletSummarySentence(
+	values: WalletKnobValues,
+	sim: WalletSimLocale = EN_SIM,
+): string {
+	const fmt = formattersFor(sim.locale, sim.units);
 	const flowClause =
 		values.max_wallet_two_sided_ratio >= 1
-			? "whatever their recent flow looks like,"
-			: `and their recent flow on it is not two-sided beyond ${formatRatio(values.max_wallet_two_sided_ratio)},`;
-	return [
-		`When one of the two leaders builds at least ${formatUsd(values.leader_a_min_notional_usdc)}`,
-		`(leader-a) or ${formatUsd(values.leader_b_min_notional_usdc)} (leader-b) of a fresh bet,`,
+			? sim.strings.summary.flowAny
+			: fillTemplate(sim.strings.summary.flowCapped, {
+					ratio: fmt.ratio(values.max_wallet_two_sided_ratio),
+				});
+	return fillTemplate(sim.strings.summary.sentence, {
+		a: fmt.usd(values.leader_a_min_notional_usdc),
+		b: fmt.usd(values.leader_b_min_notional_usdc),
 		flowClause,
-		`and the market holds at least ${formatUsd(values.min_liquidity_usdc)} of liquidity,`,
-		`has more than ${formatDuration(values.min_seconds_to_resolution)} left to run,`,
-		`and the price has not run more than ${formatPct(values.staleness_pct)} past their entry`,
-		`→ the bot buys ${formatUsd(values.trade_size_usdc)} of the outcome they hold,`,
-		`pays at most ${formatPrice(values.max_entry_price)} a share`,
-		`and ${formatPct(values.slippage_pct)} over the ask,`,
-		`runs at most ${values.max_open_copies_per_leader} copies per leader`,
-		`and ${formatUsd(values.exposure_cap_usdc)} open in total,`,
-		`keeps ${formatUsd(values.working_capital_floor_usdc)} spendable,`,
-		"holds through small trims,",
-		`and sells the whole leg once that leader has unwound ${formatFraction(values.trim_close_fraction)} of their peak — or flipped, or closed.`,
-	].join(" ");
+		liquidity: fmt.usd(values.min_liquidity_usdc),
+		horizon: fmt.duration(values.min_seconds_to_resolution),
+		staleness: fmt.pct(values.staleness_pct),
+		size: fmt.usd(values.trade_size_usdc),
+		maxPrice: fmt.price(values.max_entry_price),
+		slippage: fmt.pct(values.slippage_pct),
+		copies: String(values.max_open_copies_per_leader),
+		cap: fmt.usd(values.exposure_cap_usdc),
+		floor: fmt.usd(values.working_capital_floor_usdc),
+		trim: fmt.fraction(values.trim_close_fraction),
+	});
 }

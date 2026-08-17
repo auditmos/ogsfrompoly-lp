@@ -110,8 +110,8 @@ describe("example signals", () => {
  * the same catalog-resolved strings (the dual-format invariant shared with
  * methodology and the hub); the English stitch is byte-identical to the
  * legacy exports; link targets and config values are filled by the stitcher,
- * never carried inside translations. The wallet-copy link stays on the
- * English route in every locale until issue #74 ships the localized target.
+ * never carried inside translations. Cross-page links are same-locale now
+ * that issue #74 shipped the localized wallet walkthrough.
  */
 describe("clusterContentFor", () => {
 	it("stitches the English twin identical to the legacy export", () => {
@@ -135,12 +135,12 @@ describe("clusterContentFor", () => {
 	it.each([
 		["pl"],
 		["es"],
-	] as const)("links the %s page to the same-locale hub and methodology, English wallet page", (locale) => {
+	] as const)("links the %s page to the same-locale hub, methodology and wallet pages", (locale) => {
 		const localized = clusterContentFor(locale);
 
 		expect(localized.introMarkdown).toContain(`(/${locale}/for-dummies)`);
 		expect(localized.closingMarkdown).toContain(`(/${locale}/methodology)`);
-		expect(localized.introMarkdown).toContain("(/for-dummies/copy-wallet)");
+		expect(localized.introMarkdown).toContain(`(/${locale}/for-dummies/copy-wallet)`);
 	});
 
 	it.each([

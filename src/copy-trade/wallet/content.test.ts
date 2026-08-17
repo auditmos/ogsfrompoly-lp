@@ -1,13 +1,18 @@
 import { findRawWalletHex, findScaffoldingPhrases } from "@/content/body-disclosure";
+import { resolveSimUnits, resolveWalletPage, resolveWalletSim } from "@/i18n/catalog";
+import { formattersFor } from "../locale-format";
 import { formatWalletKnobValue, WALLET_KNOBS, WALLET_LIVE_CONFIG } from "./config";
 import {
+	walletContentFor,
 	walletCopyClosingMarkdown,
 	walletCopyDescription,
 	walletCopyIntroMarkdown,
 	walletCopyMarkdown,
 	walletCopyStoryMarkdown,
 	walletCopyTitle,
+	walletMarkdownFor,
 } from "./content";
+import { walletSummarySentence } from "./simulator";
 
 // The HTML page renders the three blocks with the simulator slotted between
 // them; the `.md` twin has to carry the same prose plus a static knob table.
@@ -101,5 +106,82 @@ describe("walletCopyMarkdown", () => {
 		// The first live position's market is public knowledge nowhere but the
 		// operator's own channels; naming it would leak an open position.
 		expect(walletCopyMarkdown).not.toMatch(/anthropic/i);
+	});
+});
+
+/**
+ * Issue #74 assumptions: every locale's HTML page and `.md` twin stitch from
+ * the same catalog-resolved strings (the shared dual-format invariant); the
+ * English stitch is byte-identical to the legacy exports; the cluster and hub
+ * links are same-locale (their localized pages exist); leader labels stay
+ * `leader-a` / `leader-b` in every locale and no raw wallet hex ever appears.
+ */
+describe("walletContentFor", () => {
+	it("stitches the English twin identical to the legacy export", () => {
+		expect(walletMarkdownFor("en")).toBe(walletCopyMarkdown);
+		const english = walletContentFor("en");
+		expect(english.introMarkdown).toBe(walletCopyIntroMarkdown);
+		expect(english.storyMarkdown).toBe(walletCopyStoryMarkdown);
+		expect(english.closingMarkdown).toBe(walletCopyClosingMarkdown);
+	});
+
+	it.each([["pl"], ["es"]] as const)("resolves the %s page translated in meaning", (locale) => {
+		const localized = walletContentFor(locale);
+		const english = walletContentFor("en");
+
+		expect(localized.title).not.toBe(english.title);
+		expect(localized.introMarkdown).not.toBe(english.introMarkdown);
+		expect(localized.storyMarkdown).not.toBe(english.storyMarkdown);
+		expect(localized.closingMarkdown).not.toBe(english.closingMarkdown);
+	});
+
+	it.each([
+		["pl"],
+		["es"],
+	] as const)("links the %s page to the same-locale cluster, hub and methodology pages", (locale) => {
+		const localized = walletContentFor(locale);
+
+		expect(localized.introMarkdown).toContain(`(/${locale}/for-dummies/copy-cluster)`);
+		expect(localized.introMarkdown).toContain(`(/${locale}/for-dummies)`);
+		expect(localized.storyMarkdown).toContain(`(/${locale}/for-dummies/copy-cluster)`);
+		expect(localized.closingMarkdown).toContain(`(/${locale}/methodology)`);
+	});
+
+	it.each([
+		["en"],
+		["pl"],
+		["es"],
+	] as const)("stitches every shared %s string into the .md twin", (locale) => {
+		const content = walletContentFor(locale);
+		const md = walletMarkdownFor(locale);
+		const page = resolveWalletPage(locale);
+		const sim = {
+			locale,
+			units: resolveSimUnits(locale),
+			strings: resolveWalletSim(locale),
+		};
+		const fmt = formattersFor(locale, sim.units);
+
+		expect(md).toContain(content.introMarkdown);
+		expect(md).toContain(content.storyMarkdown);
+		expect(md).toContain(content.closingMarkdown);
+		expect(md).toContain(walletSummarySentence(WALLET_LIVE_CONFIG, sim));
+		for (const knob of WALLET_KNOBS) {
+			const label = page.knobs[knob.key];
+			expect(label).toBeDefined();
+			expect(md).toContain(
+				`| ${label} | \`${knob.yamlKey}\` | ${formatWalletKnobValue(knob.unit, WALLET_LIVE_CONFIG[knob.key], fmt)} |`,
+			);
+		}
+	});
+
+	it.each([["pl"], ["es"]] as const)("keeps the %s twin inside the disclosure line", (locale) => {
+		const md = walletMarkdownFor(locale);
+
+		expect(findRawWalletHex(md)).toEqual([]);
+		expect(findScaffoldingPhrases(md)).toEqual([]);
+		expect(md).not.toContain("github.com/auditmos/ogsfrompoly");
+		expect(md).toContain("leader-a");
+		expect(md).toContain("leader-b");
 	});
 });

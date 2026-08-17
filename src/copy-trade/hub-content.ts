@@ -59,32 +59,21 @@ export interface HubModel {
 	readonly rows: readonly CompareRow[];
 }
 
-// `localized` marks a walkthrough that ships /pl and /es pages: its card links
-// same-locale. The wallet page has no localized variants until issue #74, so
-// its card keeps the live English page rather than a dead same-locale URL.
+// Both walkthroughs ship /pl and /es pages (issues #73 and #74), so every
+// card links same-locale.
 const CARD_STATIC = [
-	{
-		id: "cluster",
-		eyebrow: "bot 01 · cluster copy",
-		path: "/for-dummies/copy-cluster",
-		localized: true,
-	},
-	{
-		id: "wallet",
-		eyebrow: "bot 02 · wallet copy",
-		path: "/for-dummies/copy-wallet",
-		localized: false,
-	},
+	{ id: "cluster", eyebrow: "bot 01 · cluster copy", path: "/for-dummies/copy-cluster" },
+	{ id: "wallet", eyebrow: "bot 02 · wallet copy", path: "/for-dummies/copy-wallet" },
 ] as const;
 
 const COMPARE_ORDER = ["signal", "guard", "fees", "exit", "money", "liveSince"] as const;
 
-/** The hub resolved for a locale, card links per `CARD_STATIC.localized`. */
+/** The hub resolved for a locale, every card link same-locale. */
 export function hubFor(locale: Locale): HubModel {
 	const prose = resolveHubProse(locale);
 	const cards: BotCard[] = CARD_STATIC.map((entry) => {
 		const bot = prose[entry.id];
-		const href = entry.localized ? localeHref(locale, entry.path) : entry.path;
+		const href = localeHref(locale, entry.path);
 		return {
 			id: entry.id,
 			eyebrow: entry.eyebrow,

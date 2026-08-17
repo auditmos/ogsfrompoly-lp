@@ -32,6 +32,8 @@ export interface SimFormatters {
 	fraction(value: number): string;
 	wallets(count: number): string;
 	skilledWallets(count: number): string;
+	/** A two-sided flow ratio: `0.78` → `"0.78"`, and at `1` the rail is off. */
+	ratio(value: number): string;
 	/** Pick the CLDR form for `count` and fill its `{n}` with the count. */
 	pluralize(templates: PluralTemplates, count: number): string;
 }
@@ -142,6 +144,9 @@ export function formattersFor(locale: Locale, units: SimUnits): SimFormatters {
 		},
 		skilledWallets(count) {
 			return plural(units.skilledWallet, count, render(String(count)));
+		},
+		ratio(value) {
+			return value >= 1 ? units.off : render(value.toFixed(2));
 		},
 		pluralize(templates, count) {
 			return plural(templates, count, render(String(count)));
