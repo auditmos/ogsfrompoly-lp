@@ -1,6 +1,8 @@
 # Plan: i18n — Polish & Spanish editorial pages
 
 > Source PRD: [#66](https://github.com/auditmos/ogsfrompoly-lp/issues/66) — carved 2026-08-16 from the signed-off discovery record (Q1–Q10).
+>
+> **Status: delivered (2026-08-17).** All eight phases shipped; PRD [#66](https://github.com/auditmos/ogsfrompoly-lp/issues/66) and delivery track [#69](https://github.com/auditmos/ogsfrompoly-lp/issues/69) closed. One deviation from the PRD: no external translator was engaged — overlays are AI-generated and verified per locale with `pnpm i18n:slop`, with the stakeholder disclosure-policy gate kept and exercised (recorded on #69).
 
 ## Architectural decisions
 
