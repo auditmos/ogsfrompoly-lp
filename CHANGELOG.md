@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.26.0...v1.27.0) (2026-08-17)
+
+
+### Features
+
+* **i18n:** methodology in three tongues — section keys, authority note, twins ([a299687](https://github.com/auditmos/ogsfrompoly-lp/commit/a299687d6a24a783c19558af53a3553dab0967eb)), closes [#71](https://github.com/auditmos/ogsfrompoly-lp/issues/71)
+
 # [1.26.0](https://github.com/auditmos/ogsfrompoly-lp/compare/v1.25.0...v1.26.0) (2026-08-17)
 
 
